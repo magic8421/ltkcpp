@@ -1,0 +1,54 @@
+<Style name="default">
+    <NinePatch name="default_button">
+        <Normal>
+            <Atlas x="4" y="3" w="21" h="67" />
+            <Margin left="8" top="8" right="8" bottom="9" />
+        </Normal>
+        <Hover>
+            <Atlas x="54" y="3" w="21" h="67" />
+            <Margin left="8" top="8" right="8" bottom="9" />
+        </Hover>
+        <Pressed>
+            <Atlas x="79" y="3" w="21" h="67" />
+            <Margin left="8" top="8" right="8" bottom="9" />
+        </Pressed>
+        <Disable>
+            <Atlas x="29" y="3" w="21" h="67" />
+            <Margin left="8" top="8" right="8" bottom="9" />
+        </Disable>
+    </NinePatch>
+    
+    <NinePatch name="window_bg">
+        <Normal>
+            <Atlas x="2" y="98" w="152" h="167" />
+            <Margin left="40" top="68" right="40" bottom="40" />
+        </Normal>
+    </NinePatch>
+    
+    <OnePatch name="min_button">
+        <Normal  x="103" y="3"  w="22" h="20" />
+        <Hover   x="103" y="23" w="22" h="20" />
+        <Pressed x="103" y="43" w="22" h="20" />
+    </OnePatch>
+    <OnePatch name="max_button">
+        <Normal  x="125" y="3"  w="22" h="20" />
+        <Hover   x="125" y="23" w="22" h="20" />
+        <Pressed x="125" y="43" w="22" h="20" />
+    </OnePatch>
+    <OnePatch name="close_button">
+        <Normal  x="147" y="3"  w="22" h="20" />
+        <Hover   x="147" y="23" w="22" h="20" />
+        <Pressed x="147" y="43" w="22" h="20" />
+    </OnePatch>
+    
+    <Color name="TextNormal"        value="#000000" />
+    <Color name="TextHover"         value="#766200" />
+    <Color name="TextCaption"       value="#eae4c9" />
+    <Color name="ListBoxHover"      value="#fafad2" />
+    <Color name="ListBoxSelected"   value="#bbb073" />
+
+    <Measurement name="SysButtonWidth" value="22" />
+    <Measurement name="SysButtonHeight" value="23" />
+    <Measurement name="CaptionHeight" value="34" />
+
+</Style>

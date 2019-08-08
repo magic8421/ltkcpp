@@ -1,0 +1,476 @@
+#include "stdafx.h"
+#include "StyleManager.h"
+#include "ltk.h"
+#include "Window.h"
+
+namespace ltk {
+
+StyleManager * StyleManager::m_instance = nullptr;
+
+StyleManager::StyleManager()
+{
+    for (int i = 0; i < clrLast; i ++) {
+        m_colors.push_back(D2D1::ColorF(D2D1::ColorF::Cyan));
+    }
+    for (int i = 0; i < mLast; i++) {
+        m_measurements.push_back(10.0f);
+    }
+}
+
+
+StyleManager::~StyleManager()
+{
+    for (auto iter = m_mapBackgroundStyle.begin();
+        iter != m_mapBackgroundStyle.end(); iter++) {
+        iter->second->Release();
+    }
+}
+
+StyleManager * StyleManager::Instance()
+{
+    if (!m_instance) {
+        m_instance = new StyleManager;
+    }
+    return m_instance;
+}
+
+void StyleManager::Free()
+{
+    delete m_instance;
+}
+
+D2D1_COLOR_F StyleManager::GetColor(Colors clr)
+{
+    return m_colors.at((size_t)clr);
+}
+
+float StyleManager::GetMeasurement(Measurement m)
+{
+    return m_measurements.at((size_t)m);
+}
+
+D2D1_COLOR_F StyleManager::ColorFromString(const char *psz)
+{
+    if (strlen(psz) != 7) {
+        return D2D1::ColorF(D2D1::ColorF::Cyan);
+    }
+    if (psz[0] != '#') {
+        return D2D1::ColorF(D2D1::ColorF::Cyan);
+    }
+    long bin = strtol(psz + 1, NULL, 16);
+    D2D1_COLOR_F clr;
+    clr.a = 1.0f;
+    clr.b = (bin & 0xFF) / 256.0f;
+    bin >>= 8;
+    clr.g = (bin & 0xFF) / 256.0f;
+    bin >>= 8;
+    clr.r = (bin & 0xFF) / 256.0f;
+    bin >>= 8;
+    return clr;
+}
+
+AbstractBackground *StyleManager::GetBackground(const char *name) const
+{
+    std::string strName(name);
+    auto iter = m_mapBackgroundStyle.find(strName);
+    if (iter != m_mapBackgroundStyle.end()) {
+        return iter->second;
+    }
+    else {
+        return nullptr;
+    }
+}
+
+bool StyleManager::AddBackgroundStyle(const char *name, AbstractBackground *bg)
+{
+    std::string strName(name);
+    auto iter = m_mapBackgroundStyle.find(strName);
+    if (iter == m_mapBackgroundStyle.end()) {
+        m_mapBackgroundStyle[strName] = bg;
+        bg->AddRef();
+        return true;
+    }
+    else {
+        return false;
+    }
+}
+
+RectF StyleManager::RectFromXml(tinyxml2::XMLElement *elm)
+{
+    RectF rc;
+    rc.X = (float)elm->IntAttribute("x");
+    rc.Y = (float)elm->IntAttribute("y");
+    rc.Width = (float)elm->IntAttribute("w");
+    rc.Height = (float)elm->IntAttribute("h");
+    return rc;
+}
+
+Margin StyleManager::MarginFromXml(tinyxml2::XMLElement *elm)
+{
+    Margin margin;
+    margin.left = (float)elm->IntAttribute("left");
+    margin.top = (float)elm->IntAttribute("top");
+    margin.right = (float)elm->IntAttribute("right");
+    margin.bottom = (float)elm->IntAttribute("bottom");
+    return margin;
+}
+
+bool StyleManager::TextureFromXml(tinyxml2::XMLElement *elm, TextureInfo *tex)
+{
+    auto atlas_elm = elm->FirstChildElement("Atlas");
+    if (!atlas_elm) return false;
+    tex->atlas = RectFromXml(atlas_elm);
+    auto margin_elm = elm->FirstChildElement("Margin");
+    if (!margin_elm) return false;
+    tex->margin = MarginFromXml(margin_elm);
+
+    return true;
+}
+
+bool StyleManager::LoadFromXml(LPCSTR file_name)
+{
+    using namespace tinyxml2;
+    tinyxml2::XMLDocument doc;
+    if (doc.LoadFile(file_name) != XML_NO_ERROR) return false;
+    auto style_elm = doc.FirstChildElement("Style");
+    if (!style_elm) return false;
+
+    auto nine_path_elm = style_elm->FirstChildElement("NinePatch");
+    while (nine_path_elm) {
+        auto normal_elm = nine_path_elm->FirstChildElement("Normal");
+        if (!normal_elm) return false;
+        RefPtr<NinePatchBackground> npbg;
+        npbg.Attach(new NinePatchBackground);
+
+        if (!TextureFromXml(normal_elm, &npbg->texNormal)) return false;
+
+        auto hover_elm = nine_path_elm->FirstChildElement("Hover");
+        if (!hover_elm) {
+            npbg->texHover = npbg->texNormal;
+        } else if (!TextureFromXml(hover_elm, &npbg->texHover)) {
+            return false;
+        }
+        auto pressed_elm = nine_path_elm->FirstChildElement("Pressed");
+        if (!pressed_elm) {
+            npbg->texPressed = npbg->texNormal;
+        } else if (!TextureFromXml(pressed_elm, &npbg->texPressed)) {
+            return false;
+        }
+        auto disable_elm = nine_path_elm->FirstChildElement("Disable");
+        if (!disable_elm) {
+            npbg->texDisable = npbg->texNormal;
+        } else if (!TextureFromXml(disable_elm, &npbg->texDisable)) {
+            return false;
+        }
+        auto style_name = nine_path_elm->Attribute("name");
+        if (!style_name) return false;
+        this->AddBackgroundStyle(style_name, npbg.Get());
+
+        nine_path_elm = nine_path_elm->NextSiblingElement("NinePatch");
+    }
+
+    auto one_path_elm = style_elm->FirstChildElement("OnePatch");
+    while (one_path_elm) {
+        auto normal_elm = one_path_elm->FirstChildElement("Normal");
+        if (!normal_elm) return false;
+
+        RefPtr<OnePatchBackground> opbg;
+        opbg.Attach(new OnePatchBackground);
+        opbg->iconNormal.atlas = RectFromXml(normal_elm);
+
+        auto hover_elm = one_path_elm->FirstChildElement("Hover");
+        if (!hover_elm) {
+            opbg->iconHover = opbg->iconNormal;
+        } else {
+            opbg->iconHover.atlas = RectFromXml(hover_elm);
+        }
+        auto press_elm = one_path_elm->FirstChildElement("Pressed");
+        if (!press_elm) {
+            opbg->iconPressed = opbg->iconNormal;
+        } else {
+            opbg->iconPressed.atlas = RectFromXml(press_elm);
+        }
+        auto disable_elm = one_path_elm->FirstChildElement("Disable");
+        if (!disable_elm) {
+            opbg->iconDisable = opbg->iconNormal;
+        } else {
+            opbg->iconDisable.atlas = RectFromXml(disable_elm);
+        }
+
+        auto style_name = one_path_elm->Attribute("name");
+        if (!style_name) return false;
+        this->AddBackgroundStyle(style_name, opbg.Get());
+
+        one_path_elm = one_path_elm->NextSiblingElement("OnePatch");
+    }
+
+    auto color_elm = style_elm->FirstChildElement("Color");
+    while (color_elm) {
+        auto name = color_elm->Attribute("name");
+        auto value = color_elm->Attribute("value");
+        if (!name || !value) return false;
+
+        // TODO change to a map
+        if (!strcmp(name, "TextNormal")) {
+            m_colors[clrTextNormal] = ColorFromString(value);
+        } else if (!strcmp(name, "TextHover")) {
+            m_colors[clrTextHover] = ColorFromString(value);
+        } else if (!strcmp(name, "TextCaption")) {
+            m_colors[clrTextCaption] = ColorFromString(value);
+        } else if (!strcmp(name, "ListBoxHover")) {
+            m_colors[clrListBoxHover] = ColorFromString(value);
+        } else if (!strcmp(name, "ListBoxSelected")) {
+            m_colors[clrListBoxSelected] = ColorFromString(value);
+        }
+
+        color_elm = color_elm->NextSiblingElement("Color");
+    }
+
+    auto meauare_elm = style_elm->FirstChildElement("Measurement");
+    while (meauare_elm) {
+        auto name = meauare_elm->Attribute("name");
+        auto value = (float)meauare_elm->IntAttribute("value");
+        if (!name || !value) return false;
+
+        // TODO change to a map
+        if (!strcmp(name, "SysButtonWidth")) {
+            m_measurements[mSysButtonWidth] = value;
+        } else if (!strcmp(name, "SysButtonHeight")) {
+            m_measurements[mSysButtonHeight] = value;
+        } else if (!strcmp(name, "CaptionHeight")) {
+            m_measurements[mCaptionHeight] = value;
+        } 
+        meauare_elm = meauare_elm->NextSiblingElement("Measurement");
+    }
+
+    return true;
+}
+
+/*
+TextureInfo StyleManager::CheckTextureInfo(lua_State *L, int idx)
+{
+    TextureInfo info;
+
+    if (!lua_istable(L, idx)) goto Error;
+    lua_getfield(L, -1, "atlas"); // [...][atlas]
+    if (!lua_istable(L, -1)) goto Error;
+    info.atlas = LuaCheckRectF(L, -1);
+    lua_pop(L, 1); // [...]
+
+    lua_getfield(L, -1, "margin"); // [...][margin]
+    if (!lua_istable(L, -1)) goto Error;
+    info.margin = LuaCheckMargin(L, -1);
+    lua_pop(L, 1); // [...]
+
+    LuaGetField(L, idx, "scale", info.scale);
+    return info;
+Error:
+    luaL_error(L, "TextureInfo format error.");
+    return info;
+}
+
+int StyleManager::RegisterNinePatchStyle(lua_State *L)
+{
+    LuaStackCheck chk(L);
+    StyleManager *thiz = Instance();
+    auto name = luaL_checkstring(L, 2);
+    luaL_checktype(L, 3, LUA_TTABLE);
+
+    auto bg = new NinePatchBackground();
+
+    lua_getfield(L, 3, "normal"); // [][][style][normal]
+    bg->texNormal = CheckTextureInfo(L, -1);
+    lua_pop(L, 1); // [][][style]
+
+    lua_getfield(L, 3, "hover"); // [][][style][hover]
+    if (!lua_istable(L, -1)) {
+        bg->texHover = bg->texNormal;
+    }
+    else {
+        bg->texHover = CheckTextureInfo(L, -1);
+    }
+    lua_pop(L, 1); // [][][style]
+
+    lua_getfield(L, 3, "pressed"); // [][][style][pressed]
+    if (!lua_istable(L, -1)) {
+        bg->texPressed = bg->texNormal;
+    }
+    else {
+        bg->texPressed = CheckTextureInfo(L, -1);
+    }
+    lua_pop(L, 1); // [][][style]
+
+    lua_getfield(L, 3, "disable"); // [][][style][disable]
+    if (!lua_istable(L, -1)) {
+        bg->texDisable = bg->texNormal;
+    }
+    else {
+        bg->texDisable = CheckTextureInfo(L, -1);
+    }
+    lua_pop(L, 1); // [][][style]
+
+    thiz->AddBackgroundStyle(name, bg);
+    bg->Release();
+    return 0;
+}
+
+int StyleManager::RegisterOnePatchStyle(lua_State *L)
+{
+    LuaStackCheck chk(L);
+    StyleManager *thiz = Instance();
+    const char *name = luaL_checkstring(L, 2);
+    luaL_checktype(L, 3, LUA_TTABLE);
+
+    IconInfo normal;
+    IconInfo hover;
+    IconInfo pressed;
+    IconInfo disable;
+
+    lua_getfield(L, 3, "normal"); // [][][style][normal]
+    normal.atlas = LuaCheckRectF(L, -1);
+    lua_pop(L, 1); // [][][style]
+
+    lua_getfield(L, 3, "hover"); // [][][style][hover]
+    if (!lua_istable(L, -1)) {
+        hover = normal;
+    }
+    else {
+        hover.atlas = LuaCheckRectF(L, -1);
+    }
+    lua_pop(L, 1); // [][][style]
+
+    lua_getfield(L, 3, "pressed"); // [][][style][pressed]
+    if (!lua_istable(L, -1)) {
+        pressed = normal;
+    }
+    else {
+        pressed.atlas = LuaCheckRectF(L, -1);
+    }
+    lua_pop(L, 1); // [][][style]
+
+    lua_getfield(L, 3, "disable"); // [][][style][disable]
+    if (!lua_istable(L, -1)) {
+        disable = normal;
+    }
+    else {
+        disable.atlas = LuaCheckRectF(L, -1);
+    }
+    lua_pop(L, 1); // [][][style]
+
+    auto bg = new OnePatchBackground();
+    bg->iconNormal = normal;
+    bg->iconHover = hover;
+    bg->iconPressed = pressed;
+    bg->iconDisable = disable;
+    thiz->AddBackgroundStyle(name, bg);
+    bg->Release();
+
+    return 0;
+}
+
+int StyleManager::LuaConstructor(lua_State *L)
+{
+    luaL_error(L, "StyleManager is singleton.");
+    return 0;
+}
+
+int StyleManager::SetColorScheme(lua_State *L)
+{
+    StyleManager *thiz = Instance();
+    luaL_checktype(L, 2, LUA_TTABLE);
+    size_t size = LuaObjLen(L, 2);
+    if (size < clrLast) {
+        luaL_error(L, "not enough colors");
+    }
+    thiz->m_colors.clear();
+    int i = 1;
+    LuaGetI(L, 2, i);
+    while (lua_isstring(L, -1)) {
+        const char *psz = lua_tostring(L, -1);
+        thiz->m_colors.push_back(ColorFromString(psz));
+        i++;
+        lua_pop(L, 1); // for the color string
+        LuaGetI(L, 2, i);
+    }
+    lua_pop(L, 1); // for nil
+    return 0;
+}
+
+int StyleManager::SetMeasurements(lua_State *L)
+{
+    StyleManager *thiz = Instance();
+    luaL_checktype(L, 2, LUA_TTABLE);
+    size_t size = LuaObjLen(L, 2);
+    for (size_t i = 1; i <= size && (i - 1) < thiz->m_measurements.size(); i++) {
+        lua_rawgeti(L, 2, i);
+        float value = (float)lua_tonumber(L, -1);
+        thiz->m_measurements.at(i - 1) = value;
+        lua_pop(L, 1);
+    }
+    return 0;
+}
+*/
+
+void NinePatchBackground::Draw(Window *wnd, ID2D1RenderTarget *targe, const RectF &rc, State state, float blend)
+{
+    auto bmp = wnd->GetAtlasBitmap();
+    TextureInfo *tex = nullptr;
+
+    switch (state) {
+    case Normal:
+        tex = &texNormal;
+        break;;
+    case Hover:
+        tex = &texHover;
+        break;
+    case Normal2Hover:
+    case Hover2Normal:
+        //LTK_LOG("blend: %f", blend);
+        DrawTextureNineInOne(targe, bmp, texNormal.atlas, texNormal.margin, rc, 1.0f - blend, texNormal.scale);
+        DrawTextureNineInOne(targe, bmp, texHover.atlas, texHover.margin, rc, blend, texHover.scale);
+        return;
+    case Pressed:
+        tex = &texPressed;
+        break;
+    case Disable:
+        tex = &texDisable;
+        break;
+    }
+    DrawTextureNineInOne(targe, bmp, tex->atlas, tex->margin, rc, blend, tex->scale);
+}
+
+void OnePatchBackground::Draw(Window *wnd, ID2D1RenderTarget *targe, const RectF &rc, State state, float blend)
+{
+    auto bmp = wnd->GetAtlasBitmap();
+    IconInfo *icon = nullptr;
+    D2D1_BITMAP_INTERPOLATION_MODE interp_mode = D2D1_BITMAP_INTERPOLATION_MODE_LINEAR;
+
+    switch (state) {
+    case Normal:
+        icon = &iconNormal;
+        break;
+    case Hover:
+        icon = &iconHover;
+        break;
+    case Normal2Hover:
+    case Hover2Normal:
+        targe->DrawBitmap(bmp, D2D1RectF(rc), 1.0f - blend,
+            interp_mode,
+            D2D1RectF(iconNormal.atlas));
+        targe->DrawBitmap(bmp, D2D1RectF(rc), blend,
+            interp_mode,
+            D2D1RectF(iconHover.atlas));
+        return;
+    case Pressed:
+        icon = &iconPressed;
+        break;
+    case Disable:
+        icon = &iconDisable;
+        break;
+    }
+    targe->DrawBitmap(bmp, D2D1RectF(rc), 1.0f,
+        interp_mode,
+        D2D1RectF(icon->atlas));
+}
+
+}
