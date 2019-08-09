@@ -4,19 +4,19 @@
 #pragma once
 #include "Common.h"
 #include "Event.h"
-#include "RefCounted.h"
+#include "RTTI.h"
 
 namespace ltk {
 
 class Window;
 
-class Sprite : public RefCounted
+class Sprite : public RTTI
 {
 protected:
     virtual ~Sprite(void);
 
 public:
-    RTTI_DECLARATIONS(Sprite, RefCounted);
+    RTTI_DECLARATIONS(Sprite, RTTI);
 
     Sprite(void);
 

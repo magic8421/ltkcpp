@@ -9,23 +9,20 @@
 #include "ImeInput.h"
 #include "RefCounted.h"
 #include "Delegate.h"
+#include "BoxLayout.h"
 
 namespace ltk {
 
-class Sprite;
 class Button;
-class BoxLayout;
 class Label;
 
-class Window : public RefCounted
+class Window : public RTTI
 {
-protected:
-    virtual ~Window(void);
-
 public:
-    RTTI_DECLARATIONS(Window, RefCounted);
+    RTTI_DECLARATIONS(Window, RTTI);
 
     Window(void);
+    virtual ~Window(void);
 
     virtual bool OnEvent(Event *ev) override;
 
@@ -51,6 +48,8 @@ public:
 	void OnImeInput(LPCTSTR text);
 
 	void SetImePosition( float x, float y );
+
+    Sprite *GetRootSprite() { return m_sprite; }
 
 	void SetFocusSprite(Sprite *sp);
 

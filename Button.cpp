@@ -17,8 +17,8 @@ Button::~Button()
 {
     this->EndAnimation();
 
-    RELEASE_AND_INVALIDATE(Label, m_label);
-    RELEASE_AND_INVALIDATE(IconSprite, m_image);
+    //RELEASE_AND_INVALIDATE(Label, m_label);
+    //RELEASE_AND_INVALIDATE(IconSprite, m_image);
     RELEASE_AND_INVALIDATE(AbstractBackground, m_background);
 }
 

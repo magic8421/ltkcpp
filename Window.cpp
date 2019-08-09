@@ -42,14 +42,15 @@ m_shadowBottom(ShadowFrame::eBottom)
 Window::~Window(void)
 {
     if (m_sprite) {
-        m_sprite->SetWindowRecursive(nullptr);
-        m_sprite->Release();
+        //m_sprite->SetWindowRecursive(nullptr);
+        //m_sprite->Release();
+        delete m_sprite;
     }
     m_sprite = INVALID_POINTER(BoxLayout);
-    if (m_hboxCaption) {
-        m_hboxCaption->Release();
-    }
-    m_hboxCaption = INVALID_POINTER(BoxLayout);
+    //if (m_hboxCaption) {
+    //    m_hboxCaption->Release();
+    //}
+    //m_hboxCaption = INVALID_POINTER(BoxLayout);
 
     m_spFocus = INVALID_POINTER(Sprite);
     m_spCapture = INVALID_POINTER(Sprite);
@@ -65,25 +66,25 @@ Window::~Window(void)
     }
     m_brush = INVALID_POINTER(ID2D1SolidColorBrush);
 
-    if (m_btnClose) {
-        m_btnClose->Release();
-    }
-    m_btnClose = INVALID_POINTER(Button);
+    //if (m_btnClose) {
+    //    m_btnClose->Release();
+    //}
+    //m_btnClose = INVALID_POINTER(Button);
 
-    if (m_btnMinimize) {
-        m_btnMinimize->Release();
-    }
-    m_btnMinimize = INVALID_POINTER(Button);
+    //if (m_btnMinimize) {
+    //    m_btnMinimize->Release();
+    //}
+    //m_btnMinimize = INVALID_POINTER(Button);
 
-    if (m_btnMaximize) {
-        m_btnMaximize->Release();
-    }
-    m_btnMaximize = INVALID_POINTER(Button);
+    //if (m_btnMaximize) {
+    //    m_btnMaximize->Release();
+    //}
+    //m_btnMaximize = INVALID_POINTER(Button);
 
-    if (m_labelTitle) {
-        m_labelTitle->Release();
-    }
-    m_labelTitle = INVALID_POINTER(Label);
+    //if (m_labelTitle) {
+    //    m_labelTitle->Release();
+    //}
+    //m_labelTitle = INVALID_POINTER(Label);
 
     if (m_atlas) {
         m_atlas->Release();

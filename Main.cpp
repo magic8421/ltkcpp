@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "StyleManager.h"
 #include "Window.h"
+#include "Button.h"
 
 using namespace ltk;
 
@@ -18,14 +19,24 @@ int CALLBACK WinMain(
 
     StyleManager::Instance()->LoadFromXml("res\\style.xml");
 
-    RefPtr<Window> wnd;
-    wnd.Attach(new Window);
+    unique_ptr<Window> wnd;
+    wnd.reset(new Window);
     wnd->SetBackground("window_bg");
     wnd->Create(nullptr, RectF(0, 0, 400, 300));
     wnd->CloseEvent.Attach([](bool &proceed) {
         //proceed = false;
         ::PostQuitMessage(0);
     });
+
+    Button *btn1 = new Button;
+    btn1->SetText(L"´ó¼ÒºÃ");
+    //btn1->SetRect(RectF(10, 50, 100, 40));
+    //wnd->GetRootSprite()->AddChild(btn1);
+    BoxLayout *vbox = wnd->GetRootSprite()->As<BoxLayout>();
+    vbox->SetMargin(10);
+    vbox->AddLayoutItem(btn1, 40);
+
+    vbox->DoLayout();
 
     MSG msg;
     BOOL bRet;

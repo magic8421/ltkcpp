@@ -11,17 +11,17 @@ BoxLayout::BoxLayout(Mode m) :  m_mode(m)
 
 BoxLayout::~BoxLayout()
 {
-    for (size_t i = 0; i < m_params.size(); i++) {
-        if (m_params[i].item) {
-            m_params[i].item->Release();
-        }
-    }
+    //for (size_t i = 0; i < m_params.size(); i++) {
+    //    if (m_params[i].item) {
+    //        m_params[i].item->Release();
+    //    }
+    //}
 }
 
 void BoxLayout::AddLayoutItem(Sprite *item, float preferedSize, float growFactor)
 {
     Sprite::AddChild(item);
-    item->AddRef();
+    //item->AddRef();
     BoxLayoutParam param;
     param.item = item;
     param.size = preferedSize;
@@ -31,7 +31,7 @@ void BoxLayout::AddLayoutItem(Sprite *item, float preferedSize, float growFactor
 void BoxLayout::InsertLayoutItem(UINT before, Sprite *item, float preferedSize, float growFactor)
 {
     Sprite::AddChild(item);
-    item->AddRef();
+    //item->AddRef();
     BoxLayoutParam param;
     param.item = item;
     param.size = preferedSize;

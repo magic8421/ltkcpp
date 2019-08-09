@@ -27,9 +27,7 @@ Sprite::Sprite(void)
 Sprite::~Sprite(void)
 {
     for (size_t i = 0; i < m_children.Length(); i++) {
-        auto sp = m_children[i];
-        sp->m_parent = nullptr;
-        sp->Release();
+        delete m_children[i];
 	}
     m_window = INVALID_POINTER(Window);
     m_parent = INVALID_POINTER(Sprite);
@@ -58,7 +56,7 @@ void Sprite::DelegateEvent(Event *ev)
 void Sprite::SetName(const char *name)
 {
     delete m_name;
-    m_name = strdup(name);
+    m_name = _strdup(name);
 }
 
 const char * Sprite::GetName()
@@ -178,12 +176,12 @@ void Sprite::HandlePaint( ID2D1RenderTarget *target )
 
 void Sprite::AddChild(Sprite *sp)
 {
-    sp->AddRef();
     this->RemoveChild(sp); // to avoid duplication.
     m_children.PushBack(sp);
 	sp->SetWindow(m_window);
     if (sp->m_parent) {
-        // TODO if sp already has a parent, remove it first.
+        // if sp already has a parent, remove it first.
+        sp->m_parent->RemoveChild(sp);
     }
 	sp->m_parent = this;
 }
@@ -389,7 +387,7 @@ void Sprite::RemoveChild( Sprite *sp )
     for (int i = m_children.Length() - 1; i >= 0; i--) {
         auto sp2 = m_children[i];
         if (sp2 == sp) {
-            sp2->Release();
+            //sp2->Release();
             for (int j = i + 1; j < (int)m_children.Length(); j++) {
                 m_children[j - 1] = m_children[j];
             }
