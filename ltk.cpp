@@ -23,29 +23,43 @@ namespace ltk {
     IDWriteFactory *GetDWriteFactory() { return g_dw_factory; }
 
     // convert DIP to screen
-    void MapCoordByDpi(float &x, float &y) 
+    void DipCoordToScreen(float &x, float &y) 
     {
-        static float dpi_x = 0.0f;
-        static float dpi_y = 0.0f;
-        if (dpi_x == 0.0f) {
-            g_d2d_factory->GetDesktopDpi(&dpi_x, &dpi_y); // wtf? non-square pixel?
-        }
+        float dpi_x = 0.0f;
+        float dpi_y = 0.0f;
+        g_d2d_factory->GetDesktopDpi(&dpi_x, &dpi_y); // wtf? non-square pixel?
+
         x = dpi_x * x / 96.0f;
         y = dpi_y * y / 96.0f;
     }
 
     // convert screen to DIP
-    void UnmapCoordByDpi(float &x, float &y)
+    void ScreenCoordToDip(float &x, float &y)
     {
-        static float dpi_x = 0.0f;
-        static float dpi_y = 0.0f;
-        if (dpi_x == 0.0f) {
-            g_d2d_factory->GetDesktopDpi(&dpi_x, &dpi_y); // wtf? non-square pixel?
-        }
+        float dpi_x = 0.0f;
+        float dpi_y = 0.0f;
+        g_d2d_factory->GetDesktopDpi(&dpi_x, &dpi_y); // wtf? non-square pixel?
+
         x = x * 96.0f / dpi_x;
         y = y * 96.0f / dpi_y;
     }
 
+    RECT DipRectToScreen(const RectF &rc)
+    {
+        float dpi_x = 0.0f;
+        float dpi_y = 0.0f;
+        g_d2d_factory->GetDesktopDpi(&dpi_x, &dpi_y); // wtf? non-square pixel?
+
+        RECT out;
+        out.left = dpi_x * rc.X / 96.0f;
+        out.top = dpi_y * rc.Y / 96.0f;
+        out.right = out.left + dpi_x * rc.Width / 96.0f;
+        out.bottom = out.top + dpi_y * rc.Height / 96.0f;
+
+        return out;
+    }
+
+    // try to snap to screen pixel
     static void AdjustRect(D2D1_RECT_F &src, D2D1_RECT_F &dst, float scale)
     {
         //src.left = (float)(int)(src.left + 0.5f);
@@ -73,7 +87,7 @@ namespace ltk {
         float scale = 1.0f;
         float scale2 = 1.0f;
 
-        UnmapCoordByDpi(scale, scale2);
+        ScreenCoordToDip(scale, scale2);
         dMargin.left = margin.left * scale;
         dMargin.top = margin.top * scale;
         dMargin.right = margin.right * scale;
@@ -195,14 +209,14 @@ namespace ltk {
     void DrawRectSnapped(ID2D1RenderTarget *target, const RectF &rc, ID2D1Brush *brush)
     {
         D2D1_RECT_F rc2 = D2D1RectF(rc);
-        MapCoordByDpi(rc2.left, rc2.top);
-        MapCoordByDpi(rc2.right, rc2.bottom);
+        DipCoordToScreen(rc2.left, rc2.top);
+        DipCoordToScreen(rc2.right, rc2.bottom);
         rc2.left = Round45(rc2.left) + 0.5f;
         rc2.top = Round45(rc2.top) + 0.5f;
         rc2.right = Round45(rc2.right) + 0.5f;
         rc2.bottom = Round45(rc2.bottom) + 0.5f;
-        UnmapCoordByDpi(rc2.left, rc2.top);
-        UnmapCoordByDpi(rc2.right, rc2.bottom);
+        ScreenCoordToDip(rc2.left, rc2.top);
+        ScreenCoordToDip(rc2.right, rc2.bottom);
 
         static float dpi_x = 0.0f;
         static float dpi_y = 0.0f;

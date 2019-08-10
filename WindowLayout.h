@@ -19,6 +19,9 @@ public:
 
     void DoLayout();
     void UpdateEventHandler();
+    RectF GetCaptionRect();
+    LPCWSTR GetCaptionText();
+    void SetCaptionText(LPCWSTR text);
 
     virtual bool OnSize(SizeEvent *ev) override;
 
@@ -30,7 +33,7 @@ private:
     DelegateTracker m_minTrack;
     DelegateTracker m_maxTrack;
     DelegateTracker m_closeTrack;
-    Label *m_title = nullptr;
+    Label *m_caption = nullptr;
 };
 
 } // namespace ltk

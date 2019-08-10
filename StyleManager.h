@@ -110,4 +110,28 @@ public:
     float roundCorner = 0.0f;
 };
 
+struct WindowStyle
+{
+    float SysButtonWidth = 20;
+    float SysButtonHeight = 20;
+
+    std::string MinimizeButtonStyle;
+    std::string MaximizeButtonStyle;
+    std::string CloseButtonStyle;
+
+    bool HasMaximize = true;
+    bool HasMinimize = true;
+    bool HasClose = true;
+
+    float BorderSize = 4;
+    float CaptionHeight = 35;
+
+    std::string IconStyle;
+    float IconSize = 16;
+    bool HasIcon = false;
+
+private:
+    DISALLOW_COPY_AND_ASSIGN(WindowStyle);
+};
+
 }

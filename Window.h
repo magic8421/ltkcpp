@@ -29,12 +29,11 @@ public:
     void Create(Window *parent, RectF rc);
 
     void SetRect(RectF rc);
-
     RectF GetRect();
 
     SizeF GetClientSize();
 
-    void SetTitle(const wchar_t *title);
+    void SetCaption(LPCWSTR text);
 
 	static void RegisterWndClass();
 
@@ -46,24 +45,20 @@ public:
 	HWND Handle();
 
 	void OnImeInput(LPCTSTR text);
-
 	void SetImePosition( float x, float y );
 
     Sprite *GetRootSprite();
     Sprite *SetClientSprite(Sprite *sp);
 
 	void SetFocusSprite(Sprite *sp);
-
 	Sprite *GetFocusSprite();
 
 	void SetCaretHeight(float);
 
 	void ShowCaret();
-
 	void HideCaret();
 
 	void SetCapture(Sprite *sp);
-
 	void ReleaseCapture();
 
 	void TrackMouseLeave(Sprite *sp);
@@ -109,8 +104,8 @@ private:
 	int m_caretHeight;
 
 	WindowLayout *m_sprite = nullptr; // owner
-    Sprite *m_spFocus = nullptr; // TODO change to strong ref
-    Sprite *m_spCapture = nullptr; // TODO change to strong ref
+    Sprite *m_spFocus = nullptr;
+    Sprite *m_spCapture = nullptr;
     Sprite *m_spHover = nullptr;
 	std::unordered_set<Sprite *> m_setTrackMouseLeave;
     std::unordered_set<Sprite *> m_setAnimation;

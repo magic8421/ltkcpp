@@ -54,8 +54,9 @@ namespace ltk {
 
     void DrawRectSnapped(ID2D1RenderTarget *target, const RectF &rc, ID2D1Brush *brush);
 
-    void MapCoordByDpi(float &x, float &y);
-    void UnmapCoordByDpi(float &x, float &y);
+    void DipCoordToScreen(float &x, float &y);
+    void ScreenCoordToDip(float &x, float &y);
+    RECT DipRectToScreen(const RectF &rc);
 
     struct TextureInfo {
         UINT idx = 0;

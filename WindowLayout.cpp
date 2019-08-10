@@ -3,6 +3,7 @@
 #include "Label.h"
 #include "Window.h"
 #include "WindowLayout.h"
+#include "StyleManager.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW 
@@ -22,6 +23,12 @@ WindowLayout::WindowLayout()
     m_closeBtn = new Button;
     m_closeBtn->SetBackgroundStyle("close_button");
     this->AddChild(m_closeBtn);
+    m_caption = new Label;
+    m_caption->SetTextAlign(DWRITE_TEXT_ALIGNMENT_LEADING);
+    m_caption->SetParagraphAlign(DWRITE_PARAGRAPH_ALIGNMENT_NEAR);
+    m_caption->SetTextColor(
+        StyleManager::Instance()->GetColor(StyleManager::clrTextCaption));
+    this->AddChild(m_caption);
 }
 
 WindowLayout::~WindowLayout()
@@ -45,17 +52,36 @@ Sprite *WindowLayout::GetClientSprite()
     return m_client;
 }
 
+RectF WindowLayout::GetCaptionRect()
+{
+    return m_caption->GetAbsRect();
+}
+
+LPCWSTR WindowLayout::GetCaptionText()
+{
+    return m_caption->GetText();
+}
+
+void WindowLayout::SetCaptionText(LPCWSTR text)
+{
+    m_caption->SetText(text);
+}
+
 void WindowLayout::DoLayout()
 {
-    float btn_w = 22; // TODO load from StyleManager
-    float btn_h = 20;
-    float caption_h = 35;
+    auto sm = StyleManager::Instance();
+    float btn_w = sm->GetMeasurement(StyleManager::mSysButtonWidth);
+    float btn_h = sm->GetMeasurement(StyleManager::mSysButtonHeight);
+    float caption_h = sm->GetMeasurement(StyleManager::mCaptionHeight);
     float margin = 5;
 
     RectF rc = this->GetClientRect();
     m_closeBtn->SetRect(RectF(rc.Width - btn_w, 0, btn_w, btn_h));
     m_maxBtn->SetRect(RectF(rc.Width - btn_w * 2, 0, btn_w, btn_h));
     m_minBtn->SetRect(RectF(rc.Width - btn_w * 3, 0, btn_w, btn_h));
+
+    m_caption->SetRect(RectF(margin, margin, 
+        rc.Width - btn_w * 3 - margin * 3, caption_h));
 
     if (m_client) {
         m_client->SetRect(RectF(margin, caption_h + margin,

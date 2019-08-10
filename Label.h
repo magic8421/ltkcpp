@@ -12,7 +12,9 @@ public:
     virtual bool OnPaint(PaintEvent *ev);
     virtual void RecreateResouce(ID2D1RenderTarget *target);
 
-    void SetText(const wchar_t *t);
+    LPCWSTR GetText();
+    void SetText(LPCWSTR text);
+
     void SetTextAlign(DWRITE_TEXT_ALIGNMENT);
     void SetParagraphAlign(DWRITE_PARAGRAPH_ALIGNMENT);
     void SetTextColor(D2D1_COLOR_F);

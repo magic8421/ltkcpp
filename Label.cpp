@@ -60,7 +60,12 @@ void Label::RecreateResouce(ID2D1RenderTarget *target)
     assert(SUCCEEDED(hr));
 }
 
-void Label::SetText(const wchar_t *t)
+LPCWSTR Label::GetText()
+{
+    return m_text.c_str();
+}
+
+void Label::SetText(LPCWSTR t)
 {
     m_text = t;
     this->Invalidate();

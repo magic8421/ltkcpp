@@ -152,8 +152,8 @@ void Window::Create(Window *parent, RectF rc)
 
     style |=  WS_SYSMENU | WS_MINIMIZEBOX | WS_MAXIMIZEBOX;
 
-    MapCoordByDpi(rc.X, rc.Y);
-    MapCoordByDpi(rc.Width, rc.Height);
+    DipCoordToScreen(rc.X, rc.Y);
+    DipCoordToScreen(rc.Width, rc.Height);
     ::CreateWindowEx(0, ClsName, L"", style,
         (int)rc.X, (int)rc.Y, (int)rc.Width, (int)rc.Height,
         hParent, NULL, HINST_THISCOMPONENT, this);
@@ -176,14 +176,10 @@ void Window::SetRect(RectF rc)
     ::MoveWindow(m_hwnd, (int)rc.X, (int)rc.Y, (int)rc.Width, (int)rc.Height, TRUE);
 }
 
-void Window::SetTitle(const wchar_t *title)
+void Window::SetCaption(LPCWSTR text)
 {
-    ::SetWindowText(m_hwnd, title);
-    /* TODO
-    if (m_labelTitle) {
-        m_labelTitle->SetText(title);
-    }
-    */
+    ::SetWindowText(m_hwnd, text);
+    m_sprite->SetCaptionText(text);
 }
 
 SizeF Window::GetClientSize()
@@ -191,7 +187,7 @@ SizeF Window::GetClientSize()
     RECT rc;
     ::GetClientRect(m_hwnd, &rc);
     SizeF sf((float)rc.right - rc.left, (float)rc.bottom - rc.top);
-    UnmapCoordByDpi(sf.Width, sf.Height);
+    ScreenCoordToDip(sf.Width, sf.Height);
     return sf;
 }
 
@@ -240,7 +236,7 @@ void Window::HandleMouseMessage(UINT message, WPARAM wparam, LPARAM lparam)
 		event.y = (float)(short)HIWORD(lparam);
 		event.delta = 0.0f;
 	}
-    UnmapCoordByDpi(event.x, event.y);
+    ScreenCoordToDip(event.x, event.y);
 
     if (WM_LBUTTONDBLCLK == message)
     {
@@ -312,8 +308,8 @@ LRESULT Window::HandleNcHitTest(const POINT &pt)
     ::GetClientRect(m_hwnd, &rcWnd);
     const long width = rcWnd.right - rcWnd.left;
     const long height = rcWnd.bottom - rcWnd.top;
-    //auto rcMin = m_btnMinimize->GetAbsRect();
-    //MapCoordByDpi(rcMin.X, rcMin.Y);
+    auto rcCaption = DipRectToScreen(m_sprite->GetCaptionRect());
+    
     long caption_h = (long)StyleManager::Instance()->GetMeasurement(StyleManager::mCaptionHeight);
 
     if (pt.x < margin && pt.y < margin) {
@@ -343,9 +339,9 @@ LRESULT Window::HandleNcHitTest(const POINT &pt)
     //if (pt.y < caption_h && pt.x < 30) {
     //    return HTSYSMENU;
     //}
-    //if (pt.y < caption_h && pt.x < rcMin.X) {
-    //    return HTCAPTION;
-    //}
+    if (::PtInRect(&rcCaption, pt)) {
+        return HTCAPTION;
+    }
     return HTCLIENT;
 }
 
@@ -627,7 +623,7 @@ void Window::OnPaint(HWND hwnd )
 
 bool Window::OnSize(float cx, float cy, DWORD flag)
 {
-    UnmapCoordByDpi(cx, cy);
+    ScreenCoordToDip(cx, cy);
     m_sprite->SetRect(RectF(1.0f, 1.0f, (float)(cx - 2.0f), (float)(cy - 1.0f)));
     return false;
 }
