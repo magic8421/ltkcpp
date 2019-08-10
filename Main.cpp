@@ -3,7 +3,16 @@
 #include "Window.h"
 #include "Button.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW 
+#endif
+
 using namespace ltk;
+
+void MyDumpMemoryLeak()
+{
+    _CrtDumpMemoryLeaks();
+}
 
 int CALLBACK WinMain(
     _In_ HINSTANCE hInstance,
@@ -56,6 +65,8 @@ int CALLBACK WinMain(
     ::Sleep(2000);
 
     LtkUninitialize();
+    int *p = new int[10];
 
+    atexit(MyDumpMemoryLeak);
     return 0;
 }

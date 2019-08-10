@@ -114,8 +114,6 @@ private:
 	std::unordered_set<Sprite *> m_setTrackMouseLeave;
     std::unordered_set<Sprite *> m_setAnimation;
 
-    BoxLayout *m_hboxCaption = nullptr; // owner
-
     Label *m_labelTitle = nullptr; // owner
 
     ID2D1HwndRenderTarget *m_target = nullptr; // owner

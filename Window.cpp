@@ -6,10 +6,7 @@
 #include "Window.h"
 #include "Common.h"
 #include "Sprite.h"
-#include "Button.h"
 #include "ltk.h"
-#include "BoxLayout.h"
-#include "Label.h"
 #include "StyleManager.h"
 #include "Common.h"
 
@@ -113,6 +110,7 @@ void Window::Create(Window *parent, RectF rc)
     
     style |= WS_OVERLAPPEDWINDOW;
 
+    /*
     m_hboxCaption = new BoxLayout(BoxLayout::Horizontal);
     m_hboxCaption->SetMargin(0.0f);
     m_hboxCaption->SetTopMargin(3.0f);
@@ -126,7 +124,6 @@ void Window::Create(Window *parent, RectF rc)
         StyleManager::Instance()->GetColor(StyleManager::clrTextCaption));
     m_hboxCaption->AddLayoutItem(m_labelTitle, 0.0f, 1.0f);
 
-    /*
     float sysbtn_w = StyleManager::Instance()->GetMeasurement(StyleManager::mSysButtonWidth);
     m_btnMinimize = new Button;
     m_btnMinimize->SetDelegate(this);
@@ -142,10 +139,10 @@ void Window::Create(Window *parent, RectF rc)
     m_btnClose->SetDelegate(this);
     m_btnClose->SetBackgroundStyle("close_button");
     m_hboxCaption->AddLayoutItem(m_btnClose, (float)sysbtn_w);
-    */
 
     m_sprite->AddLayoutItem(m_hboxCaption, 
         StyleManager::Instance()->GetMeasurement(StyleManager::mSysButtonHeight));
+    */
 
     m_shadowLeft.Create();
     m_shadowTop.Create();
@@ -181,9 +178,11 @@ void Window::SetRect(RectF rc)
 void Window::SetTitle(const wchar_t *title)
 {
     ::SetWindowText(m_hwnd, title);
+    /* TODO
     if (m_labelTitle) {
         m_labelTitle->SetText(title);
     }
+    */
 }
 
 SizeF Window::GetClientSize()
