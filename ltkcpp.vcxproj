@@ -159,6 +159,7 @@
     <ClCompile Include="StyleManager.cpp" />
     <ClCompile Include="UniConversion.cpp" />
     <ClCompile Include="Window.cpp" />
+    <ClCompile Include="WindowLayout.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="3rd\tinyxml2.h" />
@@ -177,6 +178,7 @@
     <ClInclude Include="StyleManager.h" />
     <ClInclude Include="UniConversion.h" />
     <ClInclude Include="Window.h" />
+    <ClInclude Include="WindowLayout.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

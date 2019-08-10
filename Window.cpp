@@ -126,6 +126,7 @@ void Window::Create(Window *parent, RectF rc)
         StyleManager::Instance()->GetColor(StyleManager::clrTextCaption));
     m_hboxCaption->AddLayoutItem(m_labelTitle, 0.0f, 1.0f);
 
+    /*
     float sysbtn_w = StyleManager::Instance()->GetMeasurement(StyleManager::mSysButtonWidth);
     m_btnMinimize = new Button;
     m_btnMinimize->SetDelegate(this);
@@ -141,6 +142,7 @@ void Window::Create(Window *parent, RectF rc)
     m_btnClose->SetDelegate(this);
     m_btnClose->SetBackgroundStyle("close_button");
     m_hboxCaption->AddLayoutItem(m_btnClose, (float)sysbtn_w);
+    */
 
     m_sprite->AddLayoutItem(m_hboxCaption, 
         StyleManager::Instance()->GetMeasurement(StyleManager::mSysButtonHeight));
@@ -310,8 +312,8 @@ LRESULT Window::HandleNcHitTest(const POINT &pt)
     ::GetClientRect(m_hwnd, &rcWnd);
     const long width = rcWnd.right - rcWnd.left;
     const long height = rcWnd.bottom - rcWnd.top;
-    auto rcMin = m_btnMinimize->GetAbsRect();
-    MapCoordByDpi(rcMin.X, rcMin.Y);
+    //auto rcMin = m_btnMinimize->GetAbsRect();
+    //MapCoordByDpi(rcMin.X, rcMin.Y);
     long caption_h = (long)StyleManager::Instance()->GetMeasurement(StyleManager::mCaptionHeight);
 
     if (pt.x < margin && pt.y < margin) {
@@ -341,9 +343,9 @@ LRESULT Window::HandleNcHitTest(const POINT &pt)
     //if (pt.y < caption_h && pt.x < 30) {
     //    return HTSYSMENU;
     //}
-    if (pt.y < caption_h && pt.x < rcMin.X) {
-        return HTCAPTION;
-    }
+    //if (pt.y < caption_h && pt.x < rcMin.X) {
+    //    return HTCAPTION;
+    //}
     return HTCLIENT;
 }
 
@@ -489,15 +491,7 @@ LRESULT Window::WndProc(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam)
         //} while (0);
         return 0;
     case WM_CLOSE:
-        do
-        {
-            bool proceed = false;
-            OnClose(proceed);
-            if (proceed)
-            {
-                ::DestroyWindow(hwnd);
-            }
-        } while (0);
+        this->CloseWindow();
         return 0;
     case WM_DESTROY:
         OnDestroy();
@@ -638,6 +632,25 @@ bool Window::OnSize(float cx, float cy, DWORD flag)
     UnmapCoordByDpi(cx, cy);
     m_sprite->SetRect(RectF(1.0f, 1.0f, (float)(cx - 2.0f), (float)(cy - 1.0f)));
     return false;
+}
+
+void Window::CloseWindow()
+{
+    bool proceed = false;
+    OnClose(proceed);
+    if (proceed) {
+        ::DestroyWindow(m_hwnd);
+    }
+}
+
+void Window::Minimize()
+{
+    ::ShowWindow(m_hwnd, SW_MINIMIZE);
+}
+
+void Window::Maximize()
+{
+
 }
 
 bool Window::OnClose(bool &proceed)
@@ -833,12 +846,12 @@ void Window::EndAnimation(Sprite *sp)
 void Window::OnBtnCloseClicked()
 {
     //::CloseWindow(m_hwnd); // MSDN: Minimizes (but does not destroy) the specified window. WTF??
-    ::SendMessage(m_hwnd, WM_CLOSE, 0, 0);
+    this->CloseWindow();
 }
 
 void Window::OnBtnMinimizeClicked()
 {
-    ::ShowWindow(m_hwnd, SW_MINIMIZE);
+    this->Minimize();
 }
 
 void Window::OnBtnMaximizeClicked()
@@ -879,18 +892,18 @@ void Window::UpdateShadowFrame(bool bRedraw)
 
 bool Window::OnEvent(Event *ev)
 {
-    if (ev->id == eClicked) {
-        if (ev->sender == m_btnMinimize) {
-            this->OnBtnMinimizeClicked();
-        }
-        else if (ev->sender == m_btnMaximize) {
-            this->OnBtnMaximizeClicked();
-        }
-        else if (ev->sender == m_btnClose) {
-            this->OnBtnCloseClicked();
-        }
-        return true;
-    }
+    //if (ev->id == eClicked) {
+    //    if (ev->sender == m_btnMinimize) {
+    //        this->OnBtnMinimizeClicked();
+    //    }
+    //    else if (ev->sender == m_btnMaximize) {
+    //        this->OnBtnMaximizeClicked();
+    //    }
+    //    else if (ev->sender == m_btnClose) {
+    //        this->OnBtnCloseClicked();
+    //    }
+    //    return true;
+    //}
     return false;
 }
 

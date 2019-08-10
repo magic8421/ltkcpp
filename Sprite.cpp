@@ -176,13 +176,22 @@ void Sprite::HandlePaint( ID2D1RenderTarget *target )
 
 void Sprite::AddChild(Sprite *sp)
 {
-    this->RemoveChild(sp); // to avoid duplication.
+    if (sp->m_parent == this) {
+        LTK_LOG("same parent");
+        return;
+    }
+    for (UINT i = 0; i < m_children.Length(); i ++) {
+        if (m_children[i] == sp) {
+            __debugbreak();
+        }
+    }
     m_children.PushBack(sp);
 	sp->SetWindow(m_window);
     if (sp->m_parent) {
         // if sp already has a parent, remove it first.
         sp->m_parent->RemoveChild(sp);
     }
+    sp->OnParentChanged(sp->m_parent, this);
 	sp->m_parent = this;
 }
 

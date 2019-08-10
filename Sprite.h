@@ -12,13 +12,11 @@ class Window;
 
 class Sprite : public RTTI
 {
-protected:
-    virtual ~Sprite(void);
-
 public:
     RTTI_DECLARATIONS(Sprite, RTTI);
 
     Sprite(void);
+    virtual ~Sprite(void);
 
 	RectF GetRect();
 
@@ -73,16 +71,7 @@ public:
 	void RemoveChild(Sprite *sp);
 
 	Sprite *GetAncestor();
-
 	Sprite *GetParent();
-
-	Sprite *GetNextSprite();
-
-	Sprite *GetPrevSprite();
-
-	Sprite *GetFirstChild();
-
-	Sprite *GetLastChild();
 
     void ShowCaret();
     void SetCaretPos(RectF rc);
@@ -115,6 +104,7 @@ public:
     void DelegateEvent(Event *ev);
 
     virtual void RecreateResouce(ID2D1RenderTarget *target){}
+    virtual void OnParentChanged(Sprite *old, Sprite *new_){}
 
     void SetName(const char *name);
     const char *GetName();

@@ -137,11 +137,7 @@ bool Button::OnLBtnUp(MouseEvent *ev)
     }
     auto rc = this->GetClientRect();
     if (rc.Contains(Gdiplus::PointF(ev->x, ev->y))) {
-        Event notify;
-        notify.id = eClicked;
-        notify.sender = this;
-        this->DelegateEvent(&notify);
-        //this->CallEventHandler(GetGlobalLuaState(), "OnClick", 0, 0);
+        this->OnClicked();
     }
     else {
         this->OnMouseLeave(ev);
@@ -152,6 +148,11 @@ bool Button::OnLBtnUp(MouseEvent *ev)
 
 void Button::RecreateResouce(ID2D1RenderTarget *target)
 {
+}
+
+void Button::OnClicked()
+{
+    this->ClickedEvent.Invoke();
 }
 
 void Button::SetText(LPCWSTR text)

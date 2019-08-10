@@ -30,6 +30,10 @@ int CALLBACK WinMain(
 
     Button *btn1 = new Button;
     btn1->SetText(L"´ó¼ÒºÃ");
+    btn1->ClickedEvent.Attach([&]() {
+        wnd->CloseWindow(); // WTF, with [&] you can capture unique_ptr
+        ::PostQuitMessage(0);
+    });
     //btn1->SetRect(RectF(10, 50, 100, 40));
     //wnd->GetRootSprite()->AddChild(btn1);
     BoxLayout *vbox = wnd->GetRootSprite()->As<BoxLayout>();

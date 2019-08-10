@@ -70,6 +70,10 @@ public:
     void BeginAnimation(Sprite *sp);
     void EndAnimation(Sprite *sp);
 
+    void Minimize();
+    void Maximize();
+    void CloseWindow();
+
     virtual bool OnSize(float cx, float cy, DWORD flag);
     virtual bool OnClose(bool &proceed);
     virtual bool OnDestroy() { return false; }
@@ -111,9 +115,7 @@ private:
     std::unordered_set<Sprite *> m_setAnimation;
 
     BoxLayout *m_hboxCaption = nullptr; // owner
-    Button *m_btnClose = nullptr; // owner
-    Button *m_btnMaximize = nullptr; // owner
-    Button *m_btnMinimize = nullptr; // owner
+
     Label *m_labelTitle = nullptr; // owner
 
     ID2D1HwndRenderTarget *m_target = nullptr; // owner

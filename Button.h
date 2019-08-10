@@ -2,6 +2,7 @@
 
 #include "BoxLayout.h"
 #include "StyleManager.h"
+#include "Delegate.h"
 
 namespace ltk {
 
@@ -36,6 +37,10 @@ public:
     virtual bool OnLBtnUp(MouseEvent *ev) override;
 
     virtual void RecreateResouce(ID2D1RenderTarget *target) override;
+
+public:
+    virtual void OnClicked();
+    Delegate<void()> ClickedEvent;
 
 private:
     bool m_bCaptureMouse = true;
