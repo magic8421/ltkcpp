@@ -8,7 +8,11 @@
 #include "Sprite.h"
 #include "ltk.h"
 #include "StyleManager.h"
-#include "Common.h"
+#include "WindowLayout.h"
+
+#ifdef _DEBUG
+#define new DEBUG_NEW 
+#endif
 
 namespace ltk {
 
@@ -29,9 +33,9 @@ m_shadowBottom(ShadowFrame::eBottom)
 	m_rectComposition.right = 5;
 	m_rectComposition.bottom = 20;
 
-    m_sprite = new BoxLayout(BoxLayout::Vertical);
-    m_sprite->SetMargin(0.0f);
+    m_sprite = new WindowLayout;
     m_sprite->SetWindow(this);
+    m_sprite->UpdateEventHandler();
     
 	m_caretHeight = 20;
 }
@@ -39,11 +43,8 @@ m_shadowBottom(ShadowFrame::eBottom)
 Window::~Window(void)
 {
     if (m_sprite) {
-        //m_sprite->SetWindowRecursive(nullptr);
-        //m_sprite->Release();
         delete m_sprite;
     }
-    m_sprite = INVALID_POINTER(BoxLayout);
     //if (m_hboxCaption) {
     //    m_hboxCaption->Release();
     //}
@@ -402,11 +403,9 @@ LRESULT Window::WndProc(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam)
 
             //LTK_LOG("WM_SIZE %d", wparam);
             if (wparam == SIZE_MAXIMIZED) {
-                m_sprite->SetMargin(5.0f);
                 m_sprite->DoLayout();
             }
             else if (wparam == SIZE_RESTORED){
-                m_sprite->SetMargin(0.0f);
                 m_sprite->DoLayout();
             }
             else if (wparam == SIZE_MINIMIZED) {
@@ -728,6 +727,16 @@ void Window::SetImePosition( float x, float y )
 	m_rectComposition.right = (int)x + 5;
 	m_rectComposition.top = (int)y;
 	m_rectComposition.bottom = (int)y + 20;
+}
+
+Sprite *Window::GetRootSprite()
+{
+    return m_sprite;
+}
+
+Sprite *Window::SetClientSprite(Sprite *sp)
+{
+    return m_sprite->SetClientSprite(sp);
 }
 
 void Window::SetFocusSprite( Sprite *sp )

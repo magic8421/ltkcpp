@@ -4,17 +4,17 @@
 #pragma once
 #include "stdafx.h"
 #include "ShadowFrame.h"
-#include "StyleManager.h"
 #include "Event.h"
 #include "ImeInput.h"
 #include "RefCounted.h"
 #include "Delegate.h"
-#include "BoxLayout.h"
 
 namespace ltk {
 
 class Button;
 class Label;
+class WindowLayout;
+class AbstractBackground;
 
 class Window : public RTTI
 {
@@ -49,7 +49,8 @@ public:
 
 	void SetImePosition( float x, float y );
 
-    Sprite *GetRootSprite() { return m_sprite; }
+    Sprite *GetRootSprite();
+    Sprite *SetClientSprite(Sprite *sp);
 
 	void SetFocusSprite(Sprite *sp);
 
@@ -107,14 +108,12 @@ private:
 	RECT m_rectComposition;
 	int m_caretHeight;
 
-	BoxLayout *m_sprite = nullptr; // owner
+	WindowLayout *m_sprite = nullptr; // owner
     Sprite *m_spFocus = nullptr; // TODO change to strong ref
     Sprite *m_spCapture = nullptr; // TODO change to strong ref
     Sprite *m_spHover = nullptr;
 	std::unordered_set<Sprite *> m_setTrackMouseLeave;
     std::unordered_set<Sprite *> m_setAnimation;
-
-    Label *m_labelTitle = nullptr; // owner
 
     ID2D1HwndRenderTarget *m_target = nullptr; // owner
     ID2D1SolidColorBrush *m_brush = nullptr; // owner

@@ -4,10 +4,14 @@
 #include "Window.h"
 #include "WindowLayout.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW 
+#endif
+
 namespace ltk
 {
 
-WindowLayout::~WindowLayout()
+WindowLayout::WindowLayout()
 {
     m_minBtn = new Button;
     m_minBtn->SetBackgroundStyle("min_button");
@@ -20,11 +24,19 @@ WindowLayout::~WindowLayout()
     this->AddChild(m_closeBtn);
 }
 
+WindowLayout::~WindowLayout()
+{
+}
+
 Sprite *WindowLayout::SetClientSprite(Sprite *sp)
 {
-    this->RemoveChild(m_client);
+    if (m_client) {
+        this->RemoveChild(m_client);
+    }
     auto old = m_client;
+    m_client = sp;
     this->AddChild(sp);
+    this->DoLayout();
     return old;
 }
 
@@ -44,29 +56,31 @@ void WindowLayout::DoLayout()
     m_closeBtn->SetRect(RectF(rc.Width - btn_w, 0, btn_w, btn_h));
     m_maxBtn->SetRect(RectF(rc.Width - btn_w * 2, 0, btn_w, btn_h));
     m_minBtn->SetRect(RectF(rc.Width - btn_w * 3, 0, btn_w, btn_h));
-    m_client->SetRect(RectF(margin, caption_h + margin,
-        rc.Width - margin * 2, rc.Height - margin * 2 - caption_h));
+
+    if (m_client) {
+        m_client->SetRect(RectF(margin, caption_h + margin,
+            rc.Width - margin * 2, rc.Height - margin * 2 - caption_h));
+    }
+}
+
+void WindowLayout::UpdateEventHandler()
+{
+    auto wnd = this->GetWindow();
+    m_minTrack.Disconnect();
+    m_minBtn->ClickedEvent.Attach([=]() {
+        wnd->Minimize();
+    });
+
+    m_closeTrack.Disconnect();
+    m_closeBtn->ClickedEvent.Attach([=]() {
+        wnd->CloseWindow();
+    });
 }
 
 bool WindowLayout::OnSize(SizeEvent *ev)
 {
     this->DoLayout();
     return false;
-}
-
-void WindowLayout::OnParentChanged(Sprite *old, Sprite *new_)
-{
-    m_minTrack.Disconnect();
-    m_minBtn->ClickedEvent.Attach([new_]() {
-        auto wnd = new_->GetWindow();
-        wnd->Minimize();
-    });
-
-    m_closeTrack.Disconnect();
-    m_closeBtn->ClickedEvent.Attach([new_](){
-        auto wnd = new_->GetWindow();
-        wnd->CloseWindow();
-    });
 }
 
 } // namespace ltk

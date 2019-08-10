@@ -25,7 +25,7 @@ public:
         delete m_conn; 
     }
 
-    void Disconnect() { m_conn->Close(); }
+    void Disconnect() { if(m_conn) m_conn->Close(); }
 
 private:
     IConnection * m_conn = nullptr;

@@ -45,9 +45,10 @@ int CALLBACK WinMain(
     });
     //btn1->SetRect(RectF(10, 50, 100, 40));
     //wnd->GetRootSprite()->AddChild(btn1);
-    BoxLayout *vbox = wnd->GetRootSprite()->As<BoxLayout>();
+    BoxLayout *vbox = new BoxLayout(BoxLayout::Vertical);
     vbox->SetMargin(10);
     vbox->AddLayoutItem(btn1, 40);
+    wnd->SetClientSprite(vbox);
 
     vbox->DoLayout();
 
@@ -65,8 +66,7 @@ int CALLBACK WinMain(
     ::Sleep(2000);
 
     LtkUninitialize();
-    int *p = new int[10];
 
-    atexit(MyDumpMemoryLeak);
+    ::atexit(MyDumpMemoryLeak);
     return 0;
 }

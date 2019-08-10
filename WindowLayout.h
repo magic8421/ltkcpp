@@ -11,16 +11,16 @@ class WindowLayout : public Sprite
 {
 public:
     RTTI_DECLARATIONS(WindowLayout, Sprite);
-    WindowLayout() {}
+    WindowLayout();
     ~WindowLayout();
 
     Sprite *SetClientSprite(Sprite *sp);
     Sprite *GetClientSprite();
 
     void DoLayout();
+    void UpdateEventHandler();
 
     virtual bool OnSize(SizeEvent *ev) override;
-    virtual void OnParentChanged(Sprite *old, Sprite *new_) override;
 
 private:
     Sprite *m_client = nullptr;
