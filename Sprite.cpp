@@ -183,27 +183,28 @@ void Sprite::AddChild(Sprite *sp)
 	sp->m_parent = this;
 }
 
-void Sprite::TranslateMouseEvent( MouseEvent *ev )
+bool Sprite::TranslateMouseEvent( MouseEvent *ev )
 {
+    bool ret = false;
 	switch(ev->message)
 	{
 	case WM_MOUSEMOVE:
         ev->id = eMouseMove;
-        OnEvent(ev);
+        ret = OnEvent(ev);
 		if (!m_bMouseIn)
 		{
 			m_bMouseIn = true;
             ev->id = eMouseEnter;
-            OnEvent(ev);
+            OnEvent(ev); // Р§Эт
 		}
 		break;
 	case WM_MOUSEWHEEL:
         ev->id = eMouseWheel;
-        OnEvent(ev);
+        ret = OnEvent(ev);
 		break;
 	case WM_LBUTTONDOWN:
         ev->id = eLBtnDown;
-        OnEvent(ev);
+        ret = OnEvent(ev);
 		if (m_enableFocus)
 		{
 			GetWindow()->SetFocusSprite(this);
@@ -211,14 +212,15 @@ void Sprite::TranslateMouseEvent( MouseEvent *ev )
 		break;
 	case WM_LBUTTONUP:
         ev->id = eLBtnUp;
-        OnEvent(ev);
+        ret = OnEvent(ev);
         break;
 	case WM_MOUSELEAVE:
 		m_bMouseIn = false;
         ev->id = eMouseLeave;
-        OnEvent(ev);
+        OnEvent(ev); // Р§Эт
         break;
-	}		
+	}
+    return ret;
 }
 
 void Sprite::HandleCapturedMouseEvent( MouseEvent *ev)
@@ -339,9 +341,8 @@ bool Sprite::GetClipChildren()
 	return m_bClipChildren;
 }
 
-void Sprite::DispatchMouseEvent(MouseEvent *ev)
+bool Sprite::DispatchMouseEvent(MouseEvent *ev)
 {
-    this->TranslateMouseEvent(ev);
     for (size_t i = 0; i < m_children.Length(); i++) {
         auto sp = m_children[i];
         RectF rc = sp->GetRect();
@@ -349,9 +350,12 @@ void Sprite::DispatchMouseEvent(MouseEvent *ev)
             MouseEvent ev2 = *ev;
             ev2.x -= rc.X;
             ev2.y -= rc.Y;
-            sp->DispatchMouseEvent(&ev2);
+            if (sp->DispatchMouseEvent(&ev2)) {
+                return true;
+            }
         }
     }
+    return this->TranslateMouseEvent(ev);
 }
 
 Sprite * Sprite::GetAncestor()

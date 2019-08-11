@@ -38,7 +38,7 @@ public:
 
     void HandlePaint( ID2D1RenderTarget *target );
 
-    void TranslateMouseEvent(MouseEvent *ev);
+    bool TranslateMouseEvent(MouseEvent *ev);
 
 	void HandleCapturedMouseEvent( MouseEvent *ev );
 
@@ -62,7 +62,7 @@ public:
 
 	void TrackMouseLeave();
 
-	void DispatchMouseEvent(MouseEvent *ev);
+	bool DispatchMouseEvent(MouseEvent *ev);
 
     Sprite *DispatchMouseEvent2(MouseEvent *ev);
 
