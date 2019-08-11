@@ -216,30 +216,25 @@ void ListView::SetColumns(std::vector<float> &columns)
     m_vecColumns.swap(columns);
 }
 
-void ListView::SetHeaderCtrl(HeaderCtrl *head)
+void ListView::UpdateColumnWidth()
 {
-    if (m_header) {
-        LTK_LOG("the ListView already has a HeadCtrl");
-        return;
-    }
-    m_header = head;
     std::vector<float> cols;
     m_header->GetColumnWidth(cols);
     this->SetColumns(cols);
 }
 
-//void ListView::ShowHeader(bool show)
-//{
-//    if (show) {
-//        if (!m_header) {
-//            m_header = new HeaderCtrl;
-//            m_header->SetDelegate(this);
-//            Sprite::AddChild(m_header);
-//        }
-//    } else {
-//        Sprite::RemoveChild(m_header);
-//        SAFE_RELEASE(m_header);
-//    }
-//}
+void ListView::SetHeaderCtrl(HeaderCtrl *head)
+{
+    if (m_header) {
+        LTK_LOG("the ListView already has a HeadCtrl");
+        m_columnResizeTracker.Disconnect();
+    }
+    m_header = head;
+    m_columnResizeTracker = m_header->ColumnResizeEvent.Attach([this]() {
+        this->UpdateColumnWidth();
+    });
+    this->UpdateColumnWidth();
+}
+
 
 } // namespace ltk

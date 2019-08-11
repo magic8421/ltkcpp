@@ -30,7 +30,7 @@ void HeaderCtrl::GetColumnWidth(std::vector<float> &vecColumns)
 
 void HeaderCtrl::AddColumn(LPCWSTR name, float size)
 {
-    auto btn = new Button;
+    auto btn = new HeaderButton(this);
     btn->SetBackgroundStyle("header_btn");
     btn->SetText(name);
     ComlunData data;
@@ -48,6 +48,45 @@ bool HeaderCtrl::OnSize(SizeEvent *ev)
     return true;
 }
 
+void HeaderCtrl::OnColumnResizeBegin(HeaderButton *btn, PointF pt)
+{
+    m_dragPoint = pt;
+    m_draggingButton = btn;
+    int i = 0;
+    for (; i < (int)m_vecColumns.size(); i ++) {
+        if (m_vecColumns[i].button == btn) {
+            break;
+        }
+    }
+    i--;
+    if (i >= 0) {
+        m_resizingCol = i;
+    }
+    this->SetCapture();
+}
+
+bool HeaderCtrl::OnMouseMove(MouseEvent *ev)
+{
+    if (m_resizingCol >= 0) {
+        auto x = ev->x;
+        for (int i = 0; i < m_resizingCol; i ++) {
+            x -= m_vecColumns[i].width;
+        }
+        x -= m_dragPoint.X;
+        m_vecColumns[m_resizingCol].width = x;
+        this->DoLayout();
+        this->ColumnResizeEvent.Invoke();
+    }
+    return false;
+}
+
+bool HeaderCtrl::OnLBtnUp(MouseEvent *ev)
+{
+    m_resizingCol = -1;
+    this->ReleaseCapture();
+    return false;
+}
+
 void HeaderCtrl::DoLayout()
 {
     auto rc = this->GetClientRect();
@@ -59,14 +98,31 @@ void HeaderCtrl::DoLayout()
     }
 }
 
-bool HeaderCtrl::OnEvent(Event *ev)
-{
-    switch (ev->id) {
-    case eDelegateMouseEvent:
+//////////////////////////////////////////////////////////////////////////
+// HeaderButton
+//////////////////////////////////////////////////////////////////////////
 
-        break;
+HeaderButton::HeaderButton(HeaderCtrl *parent) : m_parent(parent)
+{}
+
+bool HeaderButton::OnMouseMove(MouseEvent *ev)
+{
+    if (ev->x < 5.0f) {
+        ::SetCursor(::LoadCursor(NULL, IDC_SIZEWE));
+    } else {
+        Button::OnMouseMove(ev);
     }
-    return __super::OnEvent(ev);
+    return false;
+}
+
+bool HeaderButton::OnLBtnDown(MouseEvent *ev)
+{
+    if (ev->x < 5.0f) {
+        m_parent->OnColumnResizeBegin(this, PointF(ev->x, ev->y));
+    } else {
+        Button::OnLBtnDown(ev);
+    }
+    return true;
 }
 
 } // namespace ltk

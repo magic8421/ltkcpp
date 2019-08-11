@@ -33,6 +33,7 @@ public:
     LPCWSTR GetItemText(int row);
     void ScrollToBottom();
     void SetColumns(std::vector<float> &columns);
+    void UpdateColumnWidth();
     //void ShowHeader(bool show);
     void SetHeaderCtrl(HeaderCtrl *head);
 
@@ -56,6 +57,8 @@ private:
     std::vector<float> m_vecColumns;
 
     const float ItemHeight = 25.0f;
+
+    DelegateTracker m_columnResizeTracker;
 };
 
 } // namespace ltk
