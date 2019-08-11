@@ -60,7 +60,7 @@ private:
     std::unordered_map<std::string, AbstractBackground*> m_mapBackgroundStyle;
 };
 
-class AbstractBackground : public RefCounted
+class AbstractBackground
 {
 public:
     enum State {Normal, Hover, Normal2Hover, Hover2Normal, Pressed, Disable};

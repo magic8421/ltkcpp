@@ -22,7 +22,7 @@ StyleManager::~StyleManager()
 {
     for (auto iter = m_mapBackgroundStyle.begin();
         iter != m_mapBackgroundStyle.end(); iter++) {
-        iter->second->Release();
+        delete iter->second;
     }
 }
 
@@ -87,7 +87,6 @@ bool StyleManager::AddBackgroundStyle(const char *name, AbstractBackground *bg)
     auto iter = m_mapBackgroundStyle.find(strName);
     if (iter == m_mapBackgroundStyle.end()) {
         m_mapBackgroundStyle[strName] = bg;
-        bg->AddRef();
         return true;
     }
     else {
@@ -139,8 +138,8 @@ bool StyleManager::LoadFromXml(LPCSTR file_name)
     while (nine_path_elm) {
         auto normal_elm = nine_path_elm->FirstChildElement("Normal");
         if (!normal_elm) return false;
-        RefPtr<NinePatchBackground> npbg;
-        npbg.Attach(new NinePatchBackground);
+        unique_ptr<NinePatchBackground> npbg;
+        npbg.reset(new NinePatchBackground);
 
         if (!TextureFromXml(normal_elm, &npbg->texNormal)) return false;
 
@@ -164,7 +163,7 @@ bool StyleManager::LoadFromXml(LPCSTR file_name)
         }
         auto style_name = nine_path_elm->Attribute("name");
         if (!style_name) return false;
-        this->AddBackgroundStyle(style_name, npbg.Get());
+        this->AddBackgroundStyle(style_name, npbg.release());
 
         nine_path_elm = nine_path_elm->NextSiblingElement("NinePatch");
     }
@@ -174,8 +173,8 @@ bool StyleManager::LoadFromXml(LPCSTR file_name)
         auto normal_elm = one_path_elm->FirstChildElement("Normal");
         if (!normal_elm) return false;
 
-        RefPtr<OnePatchBackground> opbg;
-        opbg.Attach(new OnePatchBackground);
+        unique_ptr<OnePatchBackground> opbg;
+        opbg.reset(new OnePatchBackground);
         opbg->iconNormal.atlas = RectFromXml(normal_elm);
 
         auto hover_elm = one_path_elm->FirstChildElement("Hover");
@@ -199,7 +198,7 @@ bool StyleManager::LoadFromXml(LPCSTR file_name)
 
         auto style_name = one_path_elm->Attribute("name");
         if (!style_name) return false;
-        this->AddBackgroundStyle(style_name, opbg.Get());
+        this->AddBackgroundStyle(style_name, opbg.release());
 
         one_path_elm = one_path_elm->NextSiblingElement("OnePatch");
     }

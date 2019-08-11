@@ -10,23 +10,16 @@ namespace ltk {
 Button::Button() : BoxLayout(BoxLayout::Horizontal)
 {
     m_background = StyleManager::Instance()->GetBackground("default_button");
-    m_background->AddRef();
 }
 
 Button::~Button()
 {
     this->EndAnimation();
-
-    //RELEASE_AND_INVALIDATE(Label, m_label);
-    //RELEASE_AND_INVALIDATE(IconSprite, m_image);
-    RELEASE_AND_INVALIDATE(AbstractBackground, m_background);
 }
 
 void Button::SetBackgroundStyle(const char *style)
 {
-    SAFE_RELEASE(m_background);
     m_background = StyleManager::Instance()->GetBackground(style);
-    m_background->AddRef();
 }
 
 bool Button::OnPaint(PaintEvent *ev)

@@ -63,36 +63,10 @@ Window::~Window(void)
     }
     m_brush = INVALID_POINTER(ID2D1SolidColorBrush);
 
-    //if (m_btnClose) {
-    //    m_btnClose->Release();
-    //}
-    //m_btnClose = INVALID_POINTER(Button);
-
-    //if (m_btnMinimize) {
-    //    m_btnMinimize->Release();
-    //}
-    //m_btnMinimize = INVALID_POINTER(Button);
-
-    //if (m_btnMaximize) {
-    //    m_btnMaximize->Release();
-    //}
-    //m_btnMaximize = INVALID_POINTER(Button);
-
-    //if (m_labelTitle) {
-    //    m_labelTitle->Release();
-    //}
-    //m_labelTitle = INVALID_POINTER(Label);
-
     if (m_atlas) {
         m_atlas->Release();
     }
     m_atlas = INVALID_POINTER(ID2D1Bitmap);
-
-    if (m_background) {
-        m_background->Release();
-    }
-    
-    LTK_LOG("Window dtor()");
 }
 
 void Window::Create(Window *parent, RectF rc)
@@ -857,9 +831,7 @@ ID2D1Bitmap *Window::GetAtlasBitmap()
 
 void Window::SetBackground(LPCSTR style)
 {
-    SAFE_RELEASE(m_background);
     m_background = StyleManager::Instance()->GetBackground(style);
-    m_background->AddRef();
 }
 
 void Window::UpdateShadowFrame(bool bRedraw)
