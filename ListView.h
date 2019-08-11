@@ -58,7 +58,7 @@ private:
 
     const float ItemHeight = 25.0f;
 
-    DelegateTracker m_columnResizeTracker;
+    Cookie m_columnResizeTracker = 0;
 };
 
 } // namespace ltk

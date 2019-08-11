@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Sprite.h"
+#include "Delegate.h"
 
 namespace ltk { 
 
@@ -12,13 +13,13 @@ class WindowLayout : public Sprite
 public:
     RTTI_DECLARATIONS(WindowLayout, Sprite);
     WindowLayout();
-    ~WindowLayout();
+    virtual ~WindowLayout();
 
     Sprite *SetClientSprite(Sprite *sp);
     Sprite *GetClientSprite();
 
     void DoLayout();
-    void UpdateEventHandler();
+    void SetWindow(Window *wnd);
     RectF GetCaptionRect();
     LPCWSTR GetCaptionText();
     void SetCaptionText(LPCWSTR text);
@@ -30,9 +31,10 @@ private:
     Button *m_minBtn = nullptr;
     Button *m_maxBtn = nullptr;
     Button *m_closeBtn = nullptr;
-    DelegateTracker m_minTrack;
-    DelegateTracker m_maxTrack;
-    DelegateTracker m_closeTrack;
+    
+    Cookie m_minTrack = 0;
+    Cookie m_maxTrack = 0;
+    Cookie m_closeTrack = 0;
     Label *m_caption = nullptr;
 };
 

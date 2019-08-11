@@ -35,7 +35,6 @@ m_shadowBottom(ShadowFrame::eBottom)
 
     m_sprite = new WindowLayout;
     m_sprite->SetWindow(this);
-    m_sprite->UpdateEventHandler();
     
 	m_caretHeight = 20;
 }

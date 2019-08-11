@@ -89,16 +89,17 @@ void WindowLayout::DoLayout()
     }
 }
 
-void WindowLayout::UpdateEventHandler()
+void WindowLayout::SetWindow( Window *wnd )
 {
-    auto wnd = this->GetWindow();
-    m_minTrack.Disconnect();
-    m_minBtn->ClickedEvent.Attach([=]() {
+    Sprite::SetWindow(wnd);
+
+    m_minBtn->ClickedEvent.Remove(m_minTrack);
+    m_minTrack = m_minBtn->ClickedEvent.Attach([=]() {
         wnd->Minimize();
     });
 
-    m_closeTrack.Disconnect();
-    m_closeBtn->ClickedEvent.Attach([=]() {
+    m_closeBtn->ClickedEvent.Remove(m_closeTrack);
+    m_closeTrack = m_closeBtn->ClickedEvent.Attach([=]() {
         wnd->CloseWindow();
     });
 }

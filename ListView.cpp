@@ -227,7 +227,7 @@ void ListView::SetHeaderCtrl(HeaderCtrl *head)
 {
     if (m_header) {
         LTK_LOG("the ListView already has a HeadCtrl");
-        m_columnResizeTracker.Disconnect();
+        m_header->ColumnResizeEvent.Remove(m_columnResizeTracker);
     }
     m_header = head;
     m_columnResizeTracker = m_header->ColumnResizeEvent.Attach([this]() {
