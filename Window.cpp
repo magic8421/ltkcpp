@@ -640,7 +640,14 @@ void Window::Minimize()
 
 void Window::Maximize()
 {
-
+    WINDOWPLACEMENT wp = { 0 };
+    wp.length = sizeof(wp);
+    ::GetWindowPlacement(m_hwnd, &wp);
+    if (wp.showCmd == SW_MAXIMIZE) {
+        ::ShowWindow(m_hwnd, SW_RESTORE);
+    } else {
+        ::ShowWindow(m_hwnd, SW_MAXIMIZE);
+    }
 }
 
 bool Window::OnClose(bool &proceed)
@@ -843,30 +850,6 @@ void Window::EndAnimation(Sprite *sp)
     }
 }
 
-void Window::OnBtnCloseClicked()
-{
-    //::CloseWindow(m_hwnd); // MSDN: Minimizes (but does not destroy) the specified window. WTF??
-    this->CloseWindow();
-}
-
-void Window::OnBtnMinimizeClicked()
-{
-    this->Minimize();
-}
-
-void Window::OnBtnMaximizeClicked()
-{
-    WINDOWPLACEMENT wp = {0};
-    wp.length = sizeof(wp);
-    ::GetWindowPlacement(m_hwnd, &wp);
-    if (wp.showCmd == SW_MAXIMIZE) {
-        ::ShowWindow(m_hwnd, SW_RESTORE);
-    }
-    else {
-        ::ShowWindow(m_hwnd, SW_MAXIMIZE);
-    }
-}
-
 ID2D1Bitmap *Window::GetAtlasBitmap()
 {
     return m_atlas;
@@ -888,23 +871,6 @@ void Window::UpdateShadowFrame(bool bRedraw)
     m_shadowBottom.Update(m_hwnd, hdwp, bRedraw);
     BOOL ret = ::EndDeferWindowPos(hdwp);
     LTK_ASSERT(ret);
-}
-
-bool Window::OnEvent(Event *ev)
-{
-    //if (ev->id == eClicked) {
-    //    if (ev->sender == m_btnMinimize) {
-    //        this->OnBtnMinimizeClicked();
-    //    }
-    //    else if (ev->sender == m_btnMaximize) {
-    //        this->OnBtnMaximizeClicked();
-    //    }
-    //    else if (ev->sender == m_btnClose) {
-    //        this->OnBtnCloseClicked();
-    //    }
-    //    return true;
-    //}
-    return false;
 }
 
 } // namespace ltk

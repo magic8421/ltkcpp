@@ -10,11 +10,9 @@ namespace ltk {
 
 class Window;
 
-class Sprite : public RTTI
+class Sprite 
 {
 public:
-    RTTI_DECLARATIONS(Sprite, RTTI);
-
     Sprite(void);
     virtual ~Sprite(void);
 
@@ -80,7 +78,7 @@ public:
     void BeginAnimation();
     void EndAnimation();
 
-    virtual bool OnEvent(Event *ev) override;
+    virtual bool OnEvent(Event *ev);
 
     virtual bool OnPaint            (PaintEvent *ev) { return false; }
     virtual bool OnLBtnDown         (MouseEvent *ev) { return false; }

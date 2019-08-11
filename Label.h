@@ -6,7 +6,6 @@ namespace ltk {
 class Label : public Sprite
 {
 public:
-    RTTI_DECLARATIONS(Label, Sprite)
     Label();
     virtual ~Label();
     virtual bool OnPaint(PaintEvent *ev);

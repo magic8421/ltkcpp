@@ -17,7 +17,6 @@ struct ColumnData {
 class HeaderCtrl : public Sprite
 {
 public:
-    RTTI_DECLARATIONS(HeaderCtrl, Sprite);
     HeaderCtrl();
     virtual ~HeaderCtrl();
 

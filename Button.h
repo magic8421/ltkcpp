@@ -12,7 +12,6 @@ class IconSprite;
 class Button : public BoxLayout
 {
 public:
-    RTTI_DECLARATIONS(Button, BoxLayout);
     Button();
     virtual ~Button();
 

@@ -98,6 +98,11 @@ void WindowLayout::SetWindow( Window *wnd )
         wnd->Minimize();
     });
 
+    m_maxBtn->ClickedEvent.Remove(m_maxTrack);
+    m_maxTrack = m_maxBtn->ClickedEvent.Attach([=]() {
+        wnd->Maximize();
+    });
+
     m_closeBtn->ClickedEvent.Remove(m_closeTrack);
     m_closeTrack = m_closeBtn->ClickedEvent.Attach([=]() {
         wnd->CloseWindow();

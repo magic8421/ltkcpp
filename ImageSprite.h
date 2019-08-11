@@ -7,7 +7,6 @@ namespace ltk {
 class IconSprite : public Sprite
 {
 public:
-    RTTI_DECLARATIONS(IconSprite, Sprite);
     IconSprite() {}
     ~IconSprite() {}
 
@@ -22,7 +21,6 @@ private:
 class TextureSprite : public Sprite
 {
 public:
-    RTTI_DECLARATIONS(TextureSprite, Sprite);
     TextureSprite() {}
     ~TextureSprite() {}
 
@@ -36,7 +34,6 @@ private:
 class ImageSprite : public Sprite
 {
 public:
-    RTTI_DECLARATIONS(ImageSprite, Sprite);
     ImageSprite() {}
     ~ImageSprite();
 

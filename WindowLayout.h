@@ -11,7 +11,6 @@ class Label;
 class WindowLayout : public Sprite
 {
 public:
-    RTTI_DECLARATIONS(WindowLayout, Sprite);
     WindowLayout();
     virtual ~WindowLayout();
 

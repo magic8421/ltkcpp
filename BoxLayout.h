@@ -13,7 +13,6 @@ struct BoxLayoutParam {
 class BoxLayout : public Sprite
 {
 public:
-    RTTI_DECLARATIONS(BoxLayout, Sprite)
     enum Mode {
         Horizontal, Vertical
     };

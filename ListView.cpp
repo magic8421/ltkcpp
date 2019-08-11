@@ -139,16 +139,6 @@ bool ListView::OnMouseLeave(MouseEvent *ev)
     return true;
 }
 
-bool ListView::OnEvent(Event *ev)
-{
-    switch (ev->id) {
-    case eValueChanged:
-        this->HandleScrollBar(ev->sender->As<ScrollBar>()->GetValue());
-        return true;
-    }
-    return __super::OnEvent(ev);
-}
-
 float ListView::GetTotalHeight()
 {
     return m_vecData.size() * ItemHeight;

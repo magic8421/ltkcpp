@@ -10,11 +10,9 @@ namespace ltk {
 class ListView : public Sprite
 {
 public:
-    RTTI_DECLARATIONS(ListView, Sprite);
     ListView();
     virtual ~ListView();
 
-    virtual bool OnEvent(Event *ev) override;
     virtual bool OnPaint(PaintEvent *ev) override;
     virtual bool OnLBtnDown(MouseEvent *ev) override;
     virtual bool OnMouseWheel(MouseEvent *ev) override;

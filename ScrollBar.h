@@ -10,8 +10,6 @@ class Button;
 class ScrollBar : public Sprite
 {
 public:
-    RTTI_DECLARATIONS(ScrollBar, Sprite)
-
     virtual bool OnEvent(Event *ev) override;
 
     enum Mode {

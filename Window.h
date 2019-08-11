@@ -16,15 +16,11 @@ class Label;
 class WindowLayout;
 class AbstractBackground;
 
-class Window : public RTTI
+class Window
 {
 public:
-    RTTI_DECLARATIONS(Window, RTTI);
-
     Window(void);
     virtual ~Window(void);
-
-    virtual bool OnEvent(Event *ev) override;
 
     void Create(Window *parent, RectF rc);
 
@@ -73,10 +69,6 @@ public:
     virtual bool OnSize(float cx, float cy, DWORD flag);
     virtual bool OnClose(bool &proceed);
     virtual bool OnDestroy() { return false; }
-
-    void OnBtnCloseClicked();
-    void OnBtnMinimizeClicked();
-    void OnBtnMaximizeClicked();
 
     ID2D1Bitmap *GetAtlasBitmap();
     void SetBackground(LPCSTR style);
