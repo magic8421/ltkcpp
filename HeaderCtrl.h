@@ -7,7 +7,7 @@ namespace ltk {
 
 class HeaderButton;
 
-struct ComlunData {
+struct ColumnData {
     std::wstring name;
     float width = 100.0f;
     int order = -1;
@@ -34,7 +34,7 @@ public:
     virtual bool OnLBtnUp(MouseEvent *ev) override;
 
 private:
-    std::vector<ComlunData> m_vecColumns;
+    std::vector<ColumnData> m_vecColumns;
     PointF m_dragPoint;
     HeaderButton *m_draggingButton = nullptr;
     int m_resizingCol = -1;

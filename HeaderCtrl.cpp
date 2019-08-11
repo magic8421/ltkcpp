@@ -11,13 +11,17 @@ namespace ltk
 HeaderCtrl::HeaderCtrl()
 {
     this->SetClipChildren(true);
+
+    auto btn = new HeaderButton(this);
+    btn->SetBackgroundStyle("header_btn");
+    ColumnData data;
+    data.button = btn;
+    m_vecColumns.push_back(data);
+    Sprite::AddChild(btn);
 }
 
 HeaderCtrl::~HeaderCtrl()
 {
-    for (auto& col : m_vecColumns) {
-        col.button->SetDelegate(nullptr);
-    }
 }
 
 void HeaderCtrl::GetColumnWidth(std::vector<float> &vecColumns)
@@ -33,12 +37,11 @@ void HeaderCtrl::AddColumn(LPCWSTR name, float size)
     auto btn = new HeaderButton(this);
     btn->SetBackgroundStyle("header_btn");
     btn->SetText(name);
-    ComlunData data;
+    ColumnData data;
     data.name = name;
     data.width = size;
     data.button = btn;
-    m_vecColumns.push_back(data);
-    btn->SetDelegate(this);
+    m_vecColumns.insert(m_vecColumns.end() - 1, data);
     Sprite::AddChild(btn);
 }
 
@@ -73,6 +76,7 @@ bool HeaderCtrl::OnMouseMove(MouseEvent *ev)
             x -= m_vecColumns[i].width;
         }
         x -= m_dragPoint.X;
+        x = max(30.0f, x);
         m_vecColumns[m_resizingCol].width = x;
         this->DoLayout();
         this->ColumnResizeEvent.Invoke();
@@ -90,6 +94,15 @@ bool HeaderCtrl::OnLBtnUp(MouseEvent *ev)
 void HeaderCtrl::DoLayout()
 {
     auto rc = this->GetClientRect();
+    float sum = 0.0f;
+    for (UINT i = 0; i < m_vecColumns.size() - 1; i++) {
+        sum += m_vecColumns[i].width;
+    }
+    float last_column_w = rc.Width - sum + 10.0f;
+    last_column_w = max(10.0f, last_column_w);
+    m_vecColumns[m_vecColumns.size() - 1].width = last_column_w;
+    //LTK_LOG("last_column_w %f", last_column_w);
+
     float x = 0.0f;
     for (UINT i = 0; i < m_vecColumns.size(); i++) {
         m_vecColumns[i].button->SetRect(
