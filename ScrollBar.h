@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Sprite.h"
+#include "Delegate.h"
 
 namespace ltk {
 
@@ -37,9 +38,11 @@ public:
 
     virtual bool OnLBtnUp(MouseEvent *ev) override;
 
-    virtual bool OnThumbDragging(float pos);
+    virtual bool OnValueChanged(float pos);
 
     virtual void RecreateResouce(ID2D1RenderTarget *target);
+
+    Delegate<void(float)> ValueChangedEvent;
 
 private:
     Mode m_mode;

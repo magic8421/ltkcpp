@@ -126,17 +126,14 @@ void Window::Create(Window *parent, RectF rc)
 
     float sysbtn_w = StyleManager::Instance()->GetMeasurement(StyleManager::mSysButtonWidth);
     m_btnMinimize = new Button;
-    m_btnMinimize->SetDelegate(this);
     m_btnMinimize->SetBackgroundStyle("min_button");
     m_hboxCaption->AddLayoutItem(m_btnMinimize, (float)sysbtn_w);
 
     m_btnMaximize = new Button;
-    m_btnMaximize->SetDelegate(this);
     m_btnMaximize->SetBackgroundStyle("max_button");
     m_hboxCaption->AddLayoutItem(m_btnMaximize, (float)sysbtn_w);
 
     m_btnClose = new Button();
-    m_btnClose->SetDelegate(this);
     m_btnClose->SetBackgroundStyle("close_button");
     m_hboxCaption->AddLayoutItem(m_btnClose, (float)sysbtn_w);
 

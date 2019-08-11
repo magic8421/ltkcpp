@@ -12,7 +12,9 @@ ScrollBar::ScrollBar(Mode mode) : m_mode(mode)
 {
     m_slider = new Button;
     m_slider->EnableCapture(false);
-    m_slider->SetDelegate(this);
+    m_slider->DelegateMouseEvent.Attach([this](MouseEvent *ev, bool &bHandled) {
+        this->OnSilderEvent(ev, bHandled);
+    });
     if (m_mode == Horizontal) {
         m_slider->SetBackgroundStyle("scrollbar_h");
     } else {
@@ -112,7 +114,7 @@ bool ScrollBar::OnMouseMove(MouseEvent *ev)
             m_slider->SetRect(RectF(1.0f, y, rcSlider.Width, rcSlider.Height));
             m_position = y / (rcRoot.Height - rcSlider.Height) * (m_contentSize - rcRoot.Height);
         }
-        this->OnThumbDragging(m_position);
+        this->OnValueChanged(m_position);
     }
     return true;
 }
@@ -127,12 +129,9 @@ bool ScrollBar::OnLBtnUp(MouseEvent *ev)
     return true;
 }
 
-bool ScrollBar::OnThumbDragging(float pos)
+bool ScrollBar::OnValueChanged(float pos)
 {
-    Event nt;
-    nt.id = eValueChanged;
-    nt.sender = this;
-    this->DelegateEvent(&nt);
+    this->ValueChangedEvent.Invoke(pos);
     return false;
 }
 

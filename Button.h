@@ -41,6 +41,7 @@ public:
 public:
     virtual void OnClicked();
     Delegate<void()> ClickedEvent;
+    Delegate<void(MouseEvent*, bool&)> DelegateMouseEvent;
 
 private:
     bool m_bCaptureMouse = true;

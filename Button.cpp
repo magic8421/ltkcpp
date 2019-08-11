@@ -86,13 +86,7 @@ bool Button::OnEvent(Event *ev)
 {
     bool bHandled = false;
     if (ev->id > eMouseFirst && ev->id < eMouseLast) {
-        DelegateMouseEvent dlgt;
-        dlgt.id = eDelegateMouseEvent;
-        dlgt.sender = this;
-        dlgt.data = (MouseEvent *)ev;
-        dlgt.bHandled = false;
-        this->DelegateEvent(&dlgt);
-        bHandled = dlgt.bHandled;
+        this->DelegateMouseEvent.Invoke((MouseEvent *)ev, std::ref(bHandled));
     }
     if (!bHandled) {
         return Sprite::OnEvent(ev);

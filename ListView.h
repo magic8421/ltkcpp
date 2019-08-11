@@ -50,7 +50,8 @@ private:
     ID2D1SolidColorBrush *m_brush = nullptr;
     IDWriteTextFormat *m_textFormat = nullptr;
     ScrollAnimation m_scroll;
-    ScrollBar *m_sb = nullptr;
+    ScrollBar *m_vsb = nullptr;
+    ScrollBar *m_hsb = nullptr;
     HeaderCtrl *m_header = nullptr;
     int m_hoverItem = -1;
     int m_selectedItem = -1;

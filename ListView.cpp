@@ -12,9 +12,11 @@ namespace ltk
 
 ListView::ListView()
 {
-    m_sb = new ScrollBar(ScrollBar::Vertical);
-    m_sb->SetDelegate(this);
-    this->AddChild(m_sb);
+    m_vsb = new ScrollBar(ScrollBar::Vertical);
+    m_vsb->ValueChangedEvent.Attach([this](float pos) {
+        this->HandleScrollBar(pos);
+    });
+    this->AddChild(m_vsb);
 }
 
 ListView::~ListView()
@@ -29,7 +31,7 @@ bool ListView::OnPaint(PaintEvent *ev)
     if (m_scroll.UpdateScroll(this->GetTotalHeight() - rcSprite.Height)) {
         this->EndAnimation();
     }
-    m_sb->SetPosition(m_scroll.GetScroll());
+    m_vsb->SetPosition(m_scroll.GetScroll());
 
     D2D1_RECT_F rcClip;
     rcClip.left = 0;
@@ -93,7 +95,7 @@ void ListView::AddItem(LPCWSTR text)
     LineData data;
     data.cells.push_back(std::move(std::wstring(text)));
     m_vecData.push_back(std::move(data));
-    m_sb->SetContentSize(this->GetTotalHeight());
+    m_vsb->SetContentSize(this->GetTotalHeight());
     this->Invalidate();
 }
 
@@ -183,7 +185,7 @@ void ListView::HandleScrollBar(float pos)
 bool ListView::OnSize(SizeEvent *ev)
 {
     RectF rc = this->GetRect();
-    m_sb->SetRect(RectF(rc.Width - 6, 0, 6, rc.Height));
+    m_vsb->SetRect(RectF(rc.Width - 6, 0, 6, rc.Height));
     return true;
 }
 

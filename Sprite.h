@@ -100,9 +100,6 @@ public:
     virtual bool OnSetFocus         (FocusEvent *ev) { return false; }
     virtual bool OnKillFocus        (FocusEvent *ev) { return false; }
 
-    void SetDelegate(RTTI *dlgt);
-    void DelegateEvent(Event *ev);
-
     virtual void RecreateResouce(ID2D1RenderTarget *target){}
     virtual void OnParentChanged(Sprite *old, Sprite *new_){}
 
@@ -123,7 +120,6 @@ private:
     Sprite *m_parent = nullptr;
 
     const char *m_name = nullptr;
-    RTTI *m_delegate = nullptr;
 
 	DISALLOW_COPY_AND_ASSIGN(Sprite);
 };

@@ -41,18 +41,6 @@ RectF Sprite::GetRect()
 	return m_rect;
 }
 
-void Sprite::SetDelegate(RTTI *dlgt)
-{
-    m_delegate = dlgt;
-}
-
-void Sprite::DelegateEvent(Event *ev)
-{
-    if (m_delegate) {
-        m_delegate->OnEvent(ev);
-    }
-}
-
 void Sprite::SetName(const char *name)
 {
     delete m_name;
