@@ -2,6 +2,7 @@
 #include "StyleManager.h"
 #include "Window.h"
 #include "Button.h"
+#include "ListView.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW 
@@ -50,6 +51,25 @@ int CALLBACK WinMain(
     vbox->SetMargin(10);
     vbox->AddLayoutItem(btn1, 40);
     wnd->SetClientSprite(vbox);
+
+    HeaderCtrl *header = new HeaderCtrl;
+    header->AddColumn(L"项目名", 100);
+    header->AddColumn(L"工程名", 100);
+    header->AddColumn(L"负责人", 100);
+    vbox->AddLayoutItem(header, 30, 0.0f);
+
+    ListView *listview1 = new ListView();
+    vbox->AddLayoutItem(listview1, 0.0f, 1.0f);
+    listview1->SetHeaderCtrl(header);
+    std::wstring text;
+    for (UINT i = 0; i < 200; i++) {
+        text = WStringFormat(L"item:%d", i);
+        listview1->AddItem(text.c_str());
+        text = WStringFormat(L"subitem1:%d", i);
+        listview1->SetSubItemText(i, 1, text.c_str());
+        text = WStringFormat(L"subitem2:%d", i);
+        listview1->SetSubItemText(i, 2, text.c_str());
+    }
 
     vbox->DoLayout();
 

@@ -46,11 +46,15 @@ public:
 
     bool LoadFromXml(LPCSTR file_name);
 
+    bool IsDebuggingLayout();
+    void SetDebuggingLayout(bool);
+
 private:
     StyleManager();
     ~StyleManager();
     static StyleManager *m_instance;
 
+    bool m_bDebugLayout = false;
     std::vector<D2D1_COLOR_F> m_colors;
     std::vector<float> m_measurements;
     std::unordered_map<std::string, AbstractBackground*> m_mapBackgroundStyle;

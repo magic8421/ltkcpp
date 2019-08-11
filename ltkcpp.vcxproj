@@ -143,14 +143,18 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="3rd\tinyxml2.cpp" />
+    <ClCompile Include="Animation.cpp" />
     <ClCompile Include="BoxLayout.cpp" />
     <ClCompile Include="Button.cpp" />
     <ClCompile Include="Common.cpp" />
+    <ClCompile Include="HeaderCtrl.cpp" />
     <ClCompile Include="ImageSprite.cpp" />
     <ClCompile Include="ImeInput.cpp" />
     <ClCompile Include="Label.cpp" />
+    <ClCompile Include="ListView.cpp" />
     <ClCompile Include="ltk.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="ScrollBar.cpp" />
     <ClCompile Include="ShadowFrame.cpp" />
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="stdafx.cpp">
@@ -163,15 +167,19 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="3rd\tinyxml2.h" />
+    <ClInclude Include="Animation.h" />
     <ClInclude Include="BoxLayout.h" />
     <ClInclude Include="Button.h" />
     <ClInclude Include="Common.h" />
     <ClInclude Include="Container.h" />
     <ClInclude Include="Delegate.h" />
+    <ClInclude Include="HeaderCtrl.h" />
     <ClInclude Include="ImageSprite.h" />
     <ClInclude Include="ImeInput.h" />
     <ClInclude Include="Label.h" />
+    <ClInclude Include="ListView.h" />
     <ClInclude Include="ltk.h" />
+    <ClInclude Include="ScrollBar.h" />
     <ClInclude Include="ShadowFrame.h" />
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="stdafx.h" />

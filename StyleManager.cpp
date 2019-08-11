@@ -246,6 +246,16 @@ bool StyleManager::LoadFromXml(LPCSTR file_name)
     return true;
 }
 
+bool StyleManager::IsDebuggingLayout()
+{
+    return m_bDebugLayout;
+}
+
+void StyleManager::SetDebuggingLayout(bool b)
+{
+    m_bDebugLayout = b;
+}
+
 /*
 TextureInfo StyleManager::CheckTextureInfo(lua_State *L, int idx)
 {

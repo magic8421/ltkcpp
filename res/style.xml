@@ -18,6 +18,32 @@
         </Disable>
     </NinePatch>
     
+    <NinePatch name="scrollbar_v">
+        <Normal>
+            <Atlas x="142" y="68" w="6" h="15" />
+            <Margin left="2" top="3" right="2" bottom="3" />
+        </Normal>
+        <Hover>
+            <Atlas x="125" y="68" w="6" h="15" />
+            <Margin left="2" top="3" right="2" bottom="3" />
+        </Hover>
+    </NinePatch>
+    
+    <NinePatch name="header_btn">
+        <Normal>
+            <Atlas x="177" y="10" w="8" h="23" />
+            <Margin left="3" top="3" right="3" bottom="3" />
+        </Normal>
+        <Hover>
+            <Atlas x="189" y="10" w="8" h="23" />
+            <Margin left="3" top="3" right="3" bottom="3" />
+        </Hover>
+        <Pressed>
+            <Atlas x="201" y="10" w="8" h="23" />
+            <Margin left="3" top="3" right="3" bottom="3" />
+        </Pressed>
+    </NinePatch>
+    
     <NinePatch name="window_bg">
         <Normal>
             <Atlas x="2" y="98" w="152" h="167" />

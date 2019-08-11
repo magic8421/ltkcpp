@@ -1,0 +1,245 @@
+#include "stdafx.h"
+#include "ListView.h"
+#include "Animation.h"
+#include "StyleManager.h"
+
+#ifdef _DEBUG
+#define new DEBUG_NEW 
+#endif
+
+namespace ltk
+{
+
+ListView::ListView()
+{
+    m_sb = new ScrollBar(ScrollBar::Vertical);
+    m_sb->SetDelegate(this);
+    this->AddChild(m_sb);
+}
+
+ListView::~ListView()
+{
+    RELEASE_AND_INVALIDATE(ID2D1SolidColorBrush, m_brush);
+    RELEASE_AND_INVALIDATE(IDWriteTextFormat, m_textFormat);
+}
+
+bool ListView::OnPaint(PaintEvent *ev)
+{
+    RectF rcSprite = this->GetRect();
+    if (m_scroll.UpdateScroll(this->GetTotalHeight() - rcSprite.Height)) {
+        this->EndAnimation();
+    }
+    m_sb->SetPosition(m_scroll.GetScroll());
+
+    D2D1_RECT_F rcClip;
+    rcClip.left = 0;
+    rcClip.right = rcSprite.Width;
+    rcClip.top = 0;
+    rcClip.bottom = rcSprite.Height;
+    ev->target->PushAxisAlignedClip(rcClip, D2D1_ANTIALIAS_MODE_ALIASED);
+
+    rcClip.left = 0;
+    D2D1_RECT_F rcItem;
+    int i = (int)(m_scroll.GetScroll() / ItemHeight);
+    i = max(i, 0);
+    rcItem.top = -m_scroll.GetScroll() + i * ItemHeight;
+    int display_max = (int)(rcSprite.Height / ItemHeight + i + 1.5f);
+    //LTK_LOG("I: %d display_max: %d", i, display_max);
+    for (; i < (int)m_vecData.size() && i < display_max; i++) {
+        rcItem.left = 0;
+        rcItem.right = rcSprite.Width;
+        rcItem.bottom = rcItem.top + ItemHeight;
+        if (m_selectedItem == i) {
+            m_brush->SetColor(StyleManager::Instance()->GetColor(
+                StyleManager::clrListBoxSelected));
+            ev->target->FillRectangle(rcItem, m_brush);
+        }
+        else if (m_hoverItem == i) {
+            m_brush->SetColor(StyleManager::Instance()->GetColor(
+                StyleManager::clrListBoxHover));
+            ev->target->FillRectangle(rcItem, m_brush);
+        }
+        auto &line = m_vecData.at(i);
+        auto text = line.cells.at(0).data();
+        auto len = line.cells.at(0).length();
+        m_brush->SetColor(StyleManager::Instance()->GetColor(
+            StyleManager::clrTextNormal));
+        if (m_vecColumns.size() > 0) {
+            rcItem.right = m_vecColumns[0];
+        }
+        ev->target->DrawText(text, len, m_textFormat, rcItem, m_brush);
+
+        if (m_vecColumns.size() > 0) {
+            float x = 0.0f;
+            for (size_t j = 1; j < m_vecColumns.size(); j++) {
+                x += m_vecColumns.at(j - 1);
+                if (j < line.cells.size() && j < m_vecColumns.size()) {
+                    text = line.cells.at(j).data();
+                    len = line.cells.at(j).length();
+                    rcItem.left = x;
+                    rcItem.right = x + m_vecColumns.at(j);
+                    ev->target->DrawText(text, len, m_textFormat, rcItem, m_brush);
+                }
+            }
+        }
+        rcItem.top += ItemHeight;
+    }
+    ev->target->PopAxisAlignedClip();
+    return true;
+}
+
+void ListView::AddItem(LPCWSTR text)
+{
+    LineData data;
+    data.cells.push_back(std::move(std::wstring(text)));
+    m_vecData.push_back(std::move(data));
+    m_sb->SetContentSize(this->GetTotalHeight());
+    this->Invalidate();
+}
+
+bool ListView::SetSubItemText(UINT row, UINT col, LPCWSTR text)
+{
+    if (row >= m_vecData.size()) {
+        return false;
+    }
+    auto &row_data = m_vecData[row];
+    while (row_data.cells.size() - 1 < col) {
+        row_data.cells.push_back(std::wstring());
+    }
+    row_data.cells[col] = text;
+    this->Invalidate();
+
+    return true;
+}
+
+bool ListView::OnLBtnDown(MouseEvent *ev)
+{
+    m_selectedItem = (int)((m_scroll.GetScroll() + ev->y) / ItemHeight);
+    this->Invalidate();
+    return true;
+}
+
+bool ListView::OnMouseMove(MouseEvent *ev)
+{
+    this->TrackMouseLeave();
+    if (m_scroll.IsRunning()) {
+        return true;
+    }
+    m_hoverItem = (int)((m_scroll.GetScroll() + ev->y) / ItemHeight);
+    this->Invalidate();
+    return true;
+}
+
+bool ListView::OnMouseLeave(MouseEvent *ev)
+{
+    m_hoverItem = -1;
+    this->Invalidate();
+    return true;
+}
+
+bool ListView::OnEvent(Event *ev)
+{
+    switch (ev->id) {
+    case eValueChanged:
+        this->HandleScrollBar(ev->sender->As<ScrollBar>()->GetValue());
+        return true;
+    }
+    return __super::OnEvent(ev);
+}
+
+float ListView::GetTotalHeight()
+{
+    return m_vecData.size() * ItemHeight;
+}
+
+bool ListView::OnMouseWheel(MouseEvent *ev)
+{
+    m_scroll.BeginScroll(ev->delta);
+    this->BeginAnimation();
+    return true;
+}
+
+void ListView::RecreateResouce(ID2D1RenderTarget *target)
+{
+    SAFE_RELEASE(m_brush);
+    HRESULT hr = target->CreateSolidColorBrush(
+        D2D1::ColorF(D2D1::ColorF::Black), &m_brush);
+    LTK_ASSERT(SUCCEEDED(hr));
+    SAFE_RELEASE(m_textFormat);
+    hr = GetDWriteFactory()->CreateTextFormat(L"Î¢ÈíÑÅºÚ", NULL, DWRITE_FONT_WEIGHT_NORMAL,
+        DWRITE_FONT_STYLE_NORMAL, DWRITE_FONT_STRETCH_NORMAL, 12.0f, L"zh-cn",
+        &m_textFormat);
+    m_textFormat->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_CENTER);
+    LTK_ASSERT(SUCCEEDED(hr));
+}
+
+void ListView::HandleScrollBar(float pos)
+{
+    //LTK_LOG("HandleScrollBar %f", pos);
+    m_scroll.SetScroll(pos);
+    this->Invalidate();
+}
+
+bool ListView::OnSize(SizeEvent *ev)
+{
+    RectF rc = this->GetRect();
+    m_sb->SetRect(RectF(rc.Width - 6, 0, 6, rc.Height));
+    return true;
+}
+
+void ListView::RemoveItem(int row)
+{
+    if (row < 0 || row >= (int)m_vecData.size()) {
+        return;
+    }
+    m_vecData.erase(m_vecData.begin() + (size_t)row);
+    this->Invalidate();
+}
+
+LPCWSTR ListView::GetItemText(int row)
+{
+    if (row < 0 || row >= (int)m_vecData.size()) {
+        return NULL;
+    }
+    return m_vecData[row].cells.at(0).c_str();
+}
+
+void ListView::ScrollToBottom()
+{
+    RectF rcSprite = this->GetRect();
+    m_scroll.SetScroll(this->GetTotalHeight() - rcSprite.Height);
+    this->Invalidate();
+}
+
+void ListView::SetColumns(std::vector<float> &columns)
+{
+    m_vecColumns.swap(columns);
+}
+
+void ListView::SetHeaderCtrl(HeaderCtrl *head)
+{
+    if (m_header) {
+        LTK_LOG("the ListView already has a HeadCtrl");
+        return;
+    }
+    m_header = head;
+    std::vector<float> cols;
+    m_header->GetColumnWidth(cols);
+    this->SetColumns(cols);
+}
+
+//void ListView::ShowHeader(bool show)
+//{
+//    if (show) {
+//        if (!m_header) {
+//            m_header = new HeaderCtrl;
+//            m_header->SetDelegate(this);
+//            Sprite::AddChild(m_header);
+//        }
+//    } else {
+//        Sprite::RemoveChild(m_header);
+//        SAFE_RELEASE(m_header);
+//    }
+//}
+
+} // namespace ltk

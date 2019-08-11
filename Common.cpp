@@ -6,6 +6,10 @@
 #include "Common.h"
 #include "UniConversion.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW 
+#endif
+
 std::wstring Utf8ToUtf16(LPCSTR strA, int len)
 {
 	if(len < 0) {
@@ -48,6 +52,21 @@ CStringA Utf16ToGbk(LPCTSTR strW, int len)
     ::WideCharToMultiByte(936, 0, strW, len, pbuff, lenA, NULL, NULL);
     strA.ReleaseBuffer(lenA);
     return strA;
+}
+
+std::wstring WStringFormat(LPCWSTR format, ...)
+{
+#pragma warning(push)
+#pragma warning(disable:4996)
+    std::wstring str;
+    va_list arg;
+    va_start(arg, format);
+    auto len = _vscwprintf(format, arg);
+    str.resize(len);
+    vswprintf(&str[0], format, arg);
+    va_end(arg);
+    return std::move(str);
+#pragma warning(pop)
 }
 
 ///////////////////////////////////////////////////////////////////////////////

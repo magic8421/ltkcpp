@@ -51,11 +51,13 @@ namespace ltk {
         g_d2d_factory->GetDesktopDpi(&dpi_x, &dpi_y); // wtf? non-square pixel?
 
         RECT out;
+        #pragma warning(push)
+        #pragma warning(disable: 4244)
         out.left = dpi_x * rc.X / 96.0f;
         out.top = dpi_y * rc.Y / 96.0f;
         out.right = out.left + dpi_x * rc.Width / 96.0f;
         out.bottom = out.top + dpi_y * rc.Height / 96.0f;
-
+        #pragma warning(pop)
         return out;
     }
 
