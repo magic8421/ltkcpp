@@ -16,7 +16,7 @@ ScrollBar::ScrollBar(Mode mode) : m_mode(mode)
         this->OnSilderEvent(ev, bHandled);
     });
     if (m_mode == Horizontal) {
-        m_slider->SetBackgroundStyle("scrollbar_h");
+        //m_slider->SetBackgroundStyle("scrollbar_h");
     } else {
         m_slider->SetBackgroundStyle("scrollbar_v");
     }
@@ -67,6 +67,11 @@ void ScrollBar::Update()
         rc2.Y = 1;
         rc2.Width = slider_size;
         rc2.Height = rc.Height - 1;
+        /*
+        LTK_LOG("hsb: %.1f %.1f %.1f %.1f | %.1f %.1f %.1f %.1f",
+            rc2.X, rc2.Y, rc2.Width, rc2.Height,
+            rc.X, rc.Y, rc.Width, rc.Height);
+        */
     }
     else {
         rc2.X = 1;
@@ -85,7 +90,7 @@ bool ScrollBar::OnPaint(PaintEvent *ev)
     if (!m_bDrag) {
         Update();
     }
-    //DrawRectSnapped(ev->target, this->GetClientRect(), m_brush);
+    DrawRectSnapped(ev->target, this->GetClientRect(), m_brush);
     return true;
 }
 
@@ -142,18 +147,6 @@ void ScrollBar::RecreateResouce(ID2D1RenderTarget *target)
     // TODO get color from StyleManager
     hr = target->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::DarkGray), &m_brush);
     assert(SUCCEEDED(hr));
-}
-
-bool ScrollBar::OnEvent(Event *ev)
-{
-    if (ev->id == eDelegateMouseEvent) {
-        DelegateMouseEvent *dlgt = ev->As<DelegateMouseEvent>();
-        this->OnSilderEvent(dlgt->data, dlgt->bHandled);
-        if (dlgt->bHandled) {
-            return true;
-        }
-    }
-    return __super::OnEvent(ev);
 }
 
 void ScrollBar::OnSilderEvent(MouseEvent *ev, bool &bHandled)

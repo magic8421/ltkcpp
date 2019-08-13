@@ -27,7 +27,7 @@ HeaderCtrl::~HeaderCtrl()
 void HeaderCtrl::GetColumnWidth(std::vector<float> &vecColumns)
 {
     vecColumns.clear();
-    for (UINT i = 0; i < m_vecColumns.size(); i ++) {
+    for (UINT i = 0; i < m_vecColumns.size() - 1; i ++) {
         vecColumns.push_back(m_vecColumns[i].width);
     }
 }

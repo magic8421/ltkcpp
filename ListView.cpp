@@ -14,9 +14,14 @@ ListView::ListView()
 {
     m_vsb = new ScrollBar(ScrollBar::Vertical);
     m_vsb->ValueChangedEvent.Attach([this](float pos) {
-        this->HandleScrollBar(pos);
+        this->HandleVScrollBar(pos);
     });
     this->AddChild(m_vsb);
+    m_hsb = new ScrollBar(ScrollBar::Horizontal);
+    m_hsb->ValueChangedEvent.Attach([this](float pos) {
+        this->HandleHScrollBar(pos);
+    });
+    this->AddChild(m_hsb);
 }
 
 ListView::~ListView()
@@ -27,6 +32,9 @@ ListView::~ListView()
 
 bool ListView::OnPaint(PaintEvent *ev)
 {
+    // please insure no short circuit return in this function
+    ID2D1RenderTarget *target = ev->target;
+
     RectF rcSprite = this->GetRect();
     if (m_scroll.UpdateScroll(this->GetTotalHeight() - rcSprite.Height)) {
         this->EndAnimation();
@@ -38,7 +46,8 @@ bool ListView::OnPaint(PaintEvent *ev)
     rcClip.right = rcSprite.Width;
     rcClip.top = 0;
     rcClip.bottom = rcSprite.Height;
-    ev->target->PushAxisAlignedClip(rcClip, D2D1_ANTIALIAS_MODE_ALIASED);
+    target->PushAxisAlignedClip(rcClip, D2D1_ANTIALIAS_MODE_ALIASED);
+    TranslateTransform(target, -m_hscroll, 0.0f);
 
     rcClip.left = 0;
     D2D1_RECT_F rcItem;
@@ -54,12 +63,12 @@ bool ListView::OnPaint(PaintEvent *ev)
         if (m_selectedItem == i) {
             m_brush->SetColor(StyleManager::Instance()->GetColor(
                 StyleManager::clrListBoxSelected));
-            ev->target->FillRectangle(rcItem, m_brush);
+            target->FillRectangle(rcItem, m_brush);
         }
         else if (m_hoverItem == i) {
             m_brush->SetColor(StyleManager::Instance()->GetColor(
                 StyleManager::clrListBoxHover));
-            ev->target->FillRectangle(rcItem, m_brush);
+            target->FillRectangle(rcItem, m_brush);
         }
         auto &line = m_vecData.at(i);
         auto text = line.cells.at(0).data();
@@ -69,7 +78,7 @@ bool ListView::OnPaint(PaintEvent *ev)
         if (m_vecColumns.size() > 0) {
             rcItem.right = m_vecColumns[0];
         }
-        ev->target->DrawText(text, len, m_textFormat, rcItem, m_brush);
+        target->DrawText(text, len, m_textFormat, rcItem, m_brush);
 
         if (m_vecColumns.size() > 0) {
             float x = 0.0f;
@@ -80,13 +89,14 @@ bool ListView::OnPaint(PaintEvent *ev)
                     len = line.cells.at(j).length();
                     rcItem.left = x;
                     rcItem.right = x + m_vecColumns.at(j);
-                    ev->target->DrawText(text, len, m_textFormat, rcItem, m_brush);
+                    target->DrawText(text, len, m_textFormat, rcItem, m_brush);
                 }
             }
         }
         rcItem.top += ItemHeight;
     }
-    ev->target->PopAxisAlignedClip();
+    TranslateTransform(target, m_hscroll, 0.0f);
+    target->PopAxisAlignedClip();
     return true;
 }
 
@@ -165,17 +175,25 @@ void ListView::RecreateResouce(ID2D1RenderTarget *target)
     LTK_ASSERT(SUCCEEDED(hr));
 }
 
-void ListView::HandleScrollBar(float pos)
+void ListView::HandleVScrollBar(float pos)
 {
     //LTK_LOG("HandleScrollBar %f", pos);
     m_scroll.SetScroll(pos);
     this->Invalidate();
 }
 
+void ListView::HandleHScrollBar(float pos)
+{
+    m_hscroll = pos;
+    this->Invalidate();
+}
+
 bool ListView::OnSize(SizeEvent *ev)
 {
-    RectF rc = this->GetRect();
-    m_vsb->SetRect(RectF(rc.Width - 6, 0, 6, rc.Height));
+    RectF rc = this->GetClientRect();
+    const float sb_size = 6.0f; // TODO load from StyleManager
+    m_vsb->SetRect(RectF(rc.Width - sb_size, 0, sb_size, rc.Height));
+    m_hsb->SetRect(RectF(0, rc.Height - sb_size, rc.Width, sb_size + 2));
     return true;
 }
 
@@ -206,6 +224,11 @@ void ListView::ScrollToBottom()
 void ListView::SetColumns(std::vector<float> &columns)
 {
     m_vecColumns.swap(columns);
+    float sum = 0.0f;
+    for (float w : m_vecColumns) {
+        sum += w;
+    }
+    m_hsb->SetContentSize(sum);
 }
 
 void ListView::UpdateColumnWidth()

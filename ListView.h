@@ -21,7 +21,8 @@ public:
     virtual bool OnSize(SizeEvent *ev) override;
     virtual void RecreateResouce(ID2D1RenderTarget *target) override;
 
-    void HandleScrollBar(float pos);
+    void HandleVScrollBar(float pos);
+    void HandleHScrollBar(float pos);
 
     void AddItem(LPCWSTR text);
     bool SetSubItemText(UINT row, UINT col, LPCWSTR text);
@@ -54,6 +55,7 @@ private:
     int m_hoverItem = -1;
     int m_selectedItem = -1;
     std::vector<float> m_vecColumns;
+    float m_hscroll = 0.0f;
 
     const float ItemHeight = 25.0f;
 

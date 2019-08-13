@@ -10,8 +10,6 @@ class Button;
 class ScrollBar : public Sprite
 {
 public:
-    virtual bool OnEvent(Event *ev) override;
-
     enum Mode {
         Horizontal, Vertical
     };
