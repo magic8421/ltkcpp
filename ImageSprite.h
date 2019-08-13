@@ -38,7 +38,7 @@ public:
     ~ImageSprite();
 
     virtual bool OnPaint(PaintEvent *ev) override;
-    virtual void RecreateResouce(ID2D1RenderTarget *target);
+    virtual void RecreateResouce(ID2D1RenderTarget *target) override;
     bool SetImage(const wchar_t *path);
 
 private:

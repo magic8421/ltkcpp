@@ -156,7 +156,7 @@ public:
         rhs.m_d = nullptr;
     }
 
-    void PushBack(const T& v)
+    void push_back(const T& v)
     {
         if (!m_d) {
             m_d = (Data *)malloc(sizeof(Data));
@@ -171,7 +171,7 @@ public:
         }
     }
 
-    void PopBack()
+    void pop_bak()
     {
         if (!m_d || m_d->size == 0) {
             __debugbreak();
@@ -180,13 +180,13 @@ public:
         m_d->size--;
     }
 
-    void Insert(UINT idx, const T &v)
+    void insert(UINT idx, const T &v)
     {}
 
-    void Erase(UINT idx)
+    void erase(UINT idx)
     {}
 
-    void Clear()
+    void clear()
     {
         if (m_d) {
             for (size_t i = 0; i < m_d->size; i++) {
@@ -197,7 +197,7 @@ public:
         }
     }
 
-    UINT Length()
+    UINT size()
     {
         if (m_d) {
             return m_d->size;

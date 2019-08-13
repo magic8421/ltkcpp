@@ -8,8 +8,8 @@ class Label : public Sprite
 public:
     Label();
     virtual ~Label();
-    virtual bool OnPaint(PaintEvent *ev);
-    virtual void RecreateResouce(ID2D1RenderTarget *target);
+    virtual bool OnPaint(PaintEvent *ev) override;
+    virtual void RecreateResouce(ID2D1RenderTarget *target) override;
 
     LPCWSTR GetText();
     void SetText(LPCWSTR text);

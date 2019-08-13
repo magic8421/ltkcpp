@@ -43,7 +43,7 @@ private:
 class HeaderButton : public Button
 {
 public:
-    HeaderButton(HeaderCtrl *parent);
+    explicit HeaderButton(HeaderCtrl *parent);
     virtual ~HeaderButton() {}
 
     virtual bool OnMouseMove(MouseEvent *ev) override;
