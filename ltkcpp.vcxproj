@@ -162,6 +162,7 @@
     </ClCompile>
     <ClCompile Include="StyleManager.cpp" />
     <ClCompile Include="TextEdit.cpp" />
+    <ClCompile Include="ThreadHelper.cpp" />
     <ClCompile Include="UniConversion.cpp" />
     <ClCompile Include="Window.cpp" />
     <ClCompile Include="WindowLayout.cpp" />
@@ -186,6 +187,7 @@
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="StyleManager.h" />
     <ClInclude Include="TextEdit.h" />
+    <ClInclude Include="ThreadHelper.h" />
     <ClInclude Include="UniConversion.h" />
     <ClInclude Include="Window.h" />
     <ClInclude Include="WindowLayout.h" />
