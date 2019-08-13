@@ -4,6 +4,10 @@
 #include "ltk.h"
 #include "Window.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW 
+#endif
+
 namespace ltk {
 
 bool IconSprite::OnPaint(PaintEvent *ev)

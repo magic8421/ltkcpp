@@ -4,6 +4,10 @@
 #include "StyleManager.h"
 #include "Window.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW 
+#endif
+
 namespace ltk {
 
 const float ScrollBar::SLIDER_MIN = 10.0f;

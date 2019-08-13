@@ -114,7 +114,7 @@ private:
     RectF m_rect;
     Window *m_window = nullptr;
 
-    ArrayList<Sprite*> m_children;
+    std::vector<Sprite *> m_children;
     Sprite *m_parent = nullptr;
 
     const char *m_name = nullptr;

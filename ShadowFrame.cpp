@@ -2,6 +2,10 @@
 #include "ShadowFrame.h"
 #include "Common.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW 
+#endif
+
 namespace ltk {
 
 const UINT ShadowFrame::WM_RENDER_LATER = WM_USER + 1;

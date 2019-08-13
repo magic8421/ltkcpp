@@ -9,7 +9,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-
+#ifdef _DEBUG
+#define new DEBUG_NEW 
+#endif
 
 // "imm32.lib" is required by IMM32 APIs used in this file.
 // NOTE(hbono): To comply with a comment from Darin, I have added

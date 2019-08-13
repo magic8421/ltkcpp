@@ -8,6 +8,10 @@
 #include "ltk.h"
 #include <cmath>
 
+#ifdef _DEBUG
+#define new DEBUG_NEW 
+#endif
+
 namespace ltk {
 
 Sprite::Sprite(void)
@@ -26,7 +30,7 @@ Sprite::Sprite(void)
 
 Sprite::~Sprite(void)
 {
-    for (size_t i = 0; i < m_children.Length(); i++) {
+    for (size_t i = 0; i < m_children.size(); i++) {
         delete m_children[i];
 	}
     m_window = INVALID_POINTER(Window);
@@ -116,7 +120,7 @@ void Sprite::SetWindow( Window *wnd )
 
 void Sprite::SetWindowRecursive(Window *wnd)
 {
-    for (size_t i = 0; i < m_children.Length(); i++) {
+    for (size_t i = 0; i < m_children.size(); i++) {
         auto sp = m_children[i];
         sp->SetWindowRecursive(wnd);
         sp->m_window = wnd;
@@ -147,7 +151,7 @@ void Sprite::HandlePaint( ID2D1RenderTarget *target )
     ev.target = target;
     OnEvent(&ev);
 
-    for (size_t i = 0; i < m_children.Length(); i++) {
+    for (size_t i = 0; i < m_children.size(); i++) {
         auto sp = m_children[i];
 		RectF rc2 = sp->GetRect();
 
@@ -168,12 +172,12 @@ void Sprite::AddChild(Sprite *sp)
         LTK_LOG("same parent");
         return;
     }
-    for (UINT i = 0; i < m_children.Length(); i ++) {
+    for (UINT i = 0; i < m_children.size(); i ++) {
         if (m_children[i] == sp) {
             __debugbreak();
         }
     }
-    m_children.PushBack(sp);
+    m_children.push_back(sp);
 	sp->SetWindow(m_window);
     if (sp->m_parent) {
         // if sp already has a parent, remove it first.
@@ -343,7 +347,7 @@ bool Sprite::GetClipChildren()
 
 bool Sprite::DispatchMouseEvent(MouseEvent *ev)
 {
-    for (size_t i = 0; i < m_children.Length(); i++) {
+    for (size_t i = 0; i < m_children.size(); i++) {
         auto sp = m_children[i];
         RectF rc = sp->GetRect();
         if (rc.Contains(ev->x, ev->y)) {
@@ -385,14 +389,14 @@ void Sprite::TrackMouseLeave()
 void Sprite::RemoveChild( Sprite *sp )
 {
     // maybe searh from the end is better, because we always push to the end.
-    for (int i = m_children.Length() - 1; i >= 0; i--) {
+    for (int i = m_children.size() - 1; i >= 0; i--) {
         auto sp2 = m_children[i];
         if (sp2 == sp) {
             //sp2->Release();
-            for (int j = i + 1; j < (int)m_children.Length(); j++) {
+            for (int j = i + 1; j < (int)m_children.size(); j++) {
                 m_children[j - 1] = m_children[j];
             }
-            m_children.PopBack();
+            m_children.pop_back();
             i--;
         }
     }
@@ -486,7 +490,7 @@ bool Sprite::OnEvent(Event *ev)
 
 void Sprite::HandleRecreateResouce(ID2D1RenderTarget *target)
 {
-    for (size_t i = 0; i < m_children.Length(); i++) {
+    for (size_t i = 0; i < m_children.size(); i++) {
         auto sp = m_children[i];
         sp->HandleRecreateResouce(target);
     }

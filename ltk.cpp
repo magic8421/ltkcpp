@@ -12,6 +12,10 @@
 #include "RefCounted.h"
 #include "Sprite.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW 
+#endif
+
 static ID2D1Factory *g_d2d_factory = NULL;
 static IWICImagingFactory  *g_wic_factory = NULL;
 static IDWriteFactory *g_dw_factory = NULL;

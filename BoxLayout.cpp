@@ -2,6 +2,10 @@
 #include "BoxLayout.h"
 #include "Sprite.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW 
+#endif
+
 namespace ltk {
 
 BoxLayout::BoxLayout(Mode m) :  m_mode(m)

@@ -23,6 +23,7 @@ using std::wstring;
 using std::wstringstream;
 using std::stringstream;
 using std::unique_ptr;
+using std::vector;
 
 #include <stdio.h>
 #include <stdarg.h>
