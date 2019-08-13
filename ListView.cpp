@@ -57,8 +57,8 @@ bool ListView::OnPaint(PaintEvent *ev)
     int display_max = (int)(rcSprite.Height / ItemHeight + i + 1.5f);
     //LTK_LOG("I: %d display_max: %d", i, display_max);
     for (; i < (int)m_vecData.size() && i < display_max; i++) {
-        rcItem.left = 0;
-        rcItem.right = rcSprite.Width;
+        rcItem.left = m_hscroll;
+        rcItem.right = rcSprite.Width + m_hscroll;
         rcItem.bottom = rcItem.top + ItemHeight;
         if (m_selectedItem == i) {
             m_brush->SetColor(StyleManager::Instance()->GetColor(
@@ -73,11 +73,12 @@ bool ListView::OnPaint(PaintEvent *ev)
         auto &line = m_vecData.at(i);
         auto text = line.cells.at(0).data();
         auto len = line.cells.at(0).length();
+        rcItem.left = 0.0f;
         m_brush->SetColor(StyleManager::Instance()->GetColor(
             StyleManager::clrTextNormal));
-        if (m_vecColumns.size() > 0) {
+        //if (m_vecColumns.size() > 0) {
             rcItem.right = m_vecColumns[0];
-        }
+        //}
         target->DrawText(text, len, m_textFormat, rcItem, m_brush);
 
         if (m_vecColumns.size() > 0) {
@@ -185,6 +186,9 @@ void ListView::HandleVScrollBar(float pos)
 void ListView::HandleHScrollBar(float pos)
 {
     m_hscroll = pos;
+    if (m_header) {
+        m_header->SetHScroll(m_hscroll);
+    }
     this->Invalidate();
 }
 
@@ -228,6 +232,7 @@ void ListView::SetColumns(std::vector<float> &columns)
     for (float w : m_vecColumns) {
         sum += w;
     }
+    sum += 10.0f;
     m_hsb->SetContentSize(sum);
 }
 

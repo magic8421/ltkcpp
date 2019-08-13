@@ -54,8 +54,8 @@ int CALLBACK WinMain(
 
     HeaderCtrl *header = new HeaderCtrl;
     header->AddColumn(L"项目名", 100);
-    header->AddColumn(L"工程名", 100);
-    header->AddColumn(L"负责人", 100);
+    header->AddColumn(L"工程名", 400);
+    header->AddColumn(L"负责人", 600);
     vbox->AddLayoutItem(header, 30, 0.0f);
 
     ListView *listview1 = new ListView();

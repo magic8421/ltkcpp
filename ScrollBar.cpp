@@ -90,7 +90,7 @@ bool ScrollBar::OnPaint(PaintEvent *ev)
     if (!m_bDrag) {
         Update();
     }
-    DrawRectSnapped(ev->target, this->GetClientRect(), m_brush);
+    //DrawRectSnapped(ev->target, this->GetClientRect(), m_brush);
     return true;
 }
 

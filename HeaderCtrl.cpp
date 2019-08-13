@@ -45,6 +45,14 @@ void HeaderCtrl::AddColumn(LPCWSTR name, float size)
     Sprite::AddChild(btn);
 }
 
+void HeaderCtrl::SetHScroll(float pos)
+{
+    if (m_hscroll != pos) {
+        m_hscroll = pos;
+        this->DoLayout();
+    }
+}
+
 bool HeaderCtrl::OnSize(SizeEvent *ev)
 {
     this->DoLayout();
@@ -72,6 +80,7 @@ bool HeaderCtrl::OnMouseMove(MouseEvent *ev)
 {
     if (m_resizingCol >= 0) {
         auto x = ev->x;
+        x += m_hscroll;
         for (int i = 0; i < m_resizingCol; i ++) {
             x -= m_vecColumns[i].width;
         }
@@ -103,7 +112,7 @@ void HeaderCtrl::DoLayout()
     m_vecColumns[m_vecColumns.size() - 1].width = last_column_w;
     //LTK_LOG("last_column_w %f", last_column_w);
 
-    float x = 0.0f;
+    float x = -m_hscroll;
     for (UINT i = 0; i < m_vecColumns.size(); i++) {
         m_vecColumns[i].button->SetRect(
             RectF(x, 0.0f, m_vecColumns[i].width, rc.Height));

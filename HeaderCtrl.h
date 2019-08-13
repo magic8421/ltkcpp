@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Sprite.h"
 #include "Button.h"
 
 namespace ltk {
@@ -22,6 +21,7 @@ public:
 
     void GetColumnWidth(std::vector<float> &vecColumns);
     void AddColumn(LPCWSTR name, float size);
+    void SetHScroll(float pos);
     void DoLayout();
 
     void OnColumnResizeBegin(HeaderButton *btn, PointF pt);
@@ -37,6 +37,7 @@ private:
     PointF m_dragPoint;
     HeaderButton *m_draggingButton = nullptr;
     int m_resizingCol = -1;
+    float m_hscroll = 0.0f;
 };
 
 class HeaderButton : public Button
