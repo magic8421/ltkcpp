@@ -32,7 +32,6 @@ ListView::~ListView()
 
 bool ListView::OnPaint(PaintEvent *ev)
 {
-    // please insure no short circuit return in this function
     ID2D1RenderTarget *target = ev->target;
 
     RectF rcSprite = this->GetRect();
@@ -48,6 +47,10 @@ bool ListView::OnPaint(PaintEvent *ev)
     rcClip.bottom = rcSprite.Height;
     target->PushAxisAlignedClip(rcClip, D2D1_ANTIALIAS_MODE_ALIASED);
     TranslateTransform(target, -m_hscroll, 0.0f);
+    Deferred defer([&]() {
+        TranslateTransform(target, m_hscroll, 0.0f);
+        target->PopAxisAlignedClip();
+    });
 
     rcClip.left = 0;
     D2D1_RECT_F rcItem;
@@ -96,8 +99,7 @@ bool ListView::OnPaint(PaintEvent *ev)
         }
         rcItem.top += ItemHeight;
     }
-    TranslateTransform(target, m_hscroll, 0.0f);
-    target->PopAxisAlignedClip();
+
     return true;
 }
 

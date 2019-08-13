@@ -12,6 +12,21 @@ CStringA Utf16ToGbk(LPCTSTR strW, int len);
 
 std::wstring WStringFormat(LPCWSTR format, ...);
 
+class Deferred
+{
+public:
+    Deferred(const std::function<void()> &cb)
+    {
+        m_cb = cb;
+    }
+    ~Deferred()
+    {
+        m_cb();
+    }
+
+private:
+    std::function<void()> m_cb;
+};
 
 #define LOGW(msg) do\
 {\

@@ -15,6 +15,20 @@ void MyDumpMemoryLeak()
     _CrtDumpMemoryLeaks();
 }
 
+void test_deffer()
+{
+    char *p = nullptr;
+    Deferred defer([&]() { // if captured as [=], it will leak.
+        if (p) {
+            LTK_LOG("has p");
+            delete p;
+        } else {
+            LTK_LOG("no p");
+        }
+    });
+    p = new char[10];
+}
+
 int CALLBACK WinMain(
     _In_ HINSTANCE hInstance,
     _In_ HINSTANCE hPrevInstance,
@@ -22,6 +36,8 @@ int CALLBACK WinMain(
     _In_ int       nCmdShow
 )
 {
+    test_deffer();
+
     LtkLogInit();
     LtkInitialize();
     ShadowFrame::Init();
