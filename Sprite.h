@@ -56,7 +56,7 @@ public:
 
 	void BringToFront();
 
-	void SetClipChildren(bool bClip);
+	void EnableClipChildren(bool bClip);
 
 	bool GetClipChildren();
 

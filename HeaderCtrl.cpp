@@ -10,7 +10,7 @@ namespace ltk
 
 HeaderCtrl::HeaderCtrl()
 {
-    this->SetClipChildren(true);
+    this->EnableClipChildren(true);
 
     auto btn = new HeaderButton(this);
     btn->SetBackgroundStyle("header_btn");

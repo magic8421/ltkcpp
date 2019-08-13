@@ -161,6 +161,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="StyleManager.cpp" />
+    <ClCompile Include="TextEdit.cpp" />
     <ClCompile Include="UniConversion.cpp" />
     <ClCompile Include="Window.cpp" />
     <ClCompile Include="WindowLayout.cpp" />
@@ -184,6 +185,7 @@
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="StyleManager.h" />
+    <ClInclude Include="TextEdit.h" />
     <ClInclude Include="UniConversion.h" />
     <ClInclude Include="Window.h" />
     <ClInclude Include="WindowLayout.h" />

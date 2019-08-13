@@ -3,6 +3,7 @@
 #include "Window.h"
 #include "Button.h"
 #include "ListView.h"
+#include "TextEdit.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW 
@@ -49,7 +50,7 @@ int CALLBACK WinMain(
     wnd.reset(new Window);
     wnd->SetCaption(L"LTK测试窗口");
     wnd->SetBackground("window_bg");
-    wnd->Create(nullptr, RectF(0, 0, 400, 300));
+    wnd->Create(nullptr, RectF(0, 0, 600, 500));
     wnd->CloseEvent.Attach([](bool &proceed) {
         //proceed = false;
         ::PostQuitMessage(0);
@@ -61,12 +62,16 @@ int CALLBACK WinMain(
         wnd->CloseWindow(); // WTF, with [&] you can capture unique_ptr
         ::PostQuitMessage(0);
     });
+
     //btn1->SetRect(RectF(10, 50, 100, 40));
     //wnd->GetRootSprite()->AddChild(btn1);
     BoxLayout *vbox = new BoxLayout(BoxLayout::Vertical);
     vbox->SetMargin(10);
     vbox->AddLayoutItem(btn1, 40);
     wnd->SetClientSprite(vbox);
+
+    TextEdit *edit1 = new TextEdit;
+    vbox->AddLayoutItem(edit1, 200, 0.0f);
 
     HeaderCtrl *header = new HeaderCtrl;
     header->AddColumn(L"项目名", 100);

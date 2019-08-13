@@ -331,7 +331,7 @@ bool Sprite::GetVisible()
 	return m_bVisible;
 }
 
-void Sprite::SetClipChildren( bool bClip )
+void Sprite::EnableClipChildren( bool bClip )
 {
 	if (m_bClipChildren != bClip)
 	{
