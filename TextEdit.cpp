@@ -43,7 +43,6 @@ bool TextEdit::OnPaint(PaintEvent *ev)
 bool TextEdit::OnChar(KeyEvent *ev)
 {
     wchar_t ch = (wchar_t)ev->keyCode;
-    LTK_LOG("key code: 0x%04x", ch);
     if (ch == VK_BACK) {
         if (m_cursorPos > 0) {
             m_text.erase(m_text.begin() + m_cursorPos - 1);
@@ -53,7 +52,9 @@ bool TextEdit::OnChar(KeyEvent *ev)
         m_text.insert(m_text.begin() + m_cursorPos, ch);
         m_cursorPos++;
     }
+    LTK_LOG("key code: 0x%04x m_cursorPos: %d", ch, m_cursorPos);
     this->RecreateLayout();
+    this->UpdateCursor();
     return true;
 }
 
@@ -62,6 +63,7 @@ bool TextEdit::OnImeInput(ImeEvent *ev)
     m_text.insert(m_cursorPos, ev->text);
     m_cursorPos += wcslen(ev->text);
     this->RecreateLayout();
+    this->UpdateCursor();
     return true;
 }
 
@@ -77,16 +79,33 @@ void TextEdit::RecreateLayout()
     this->Invalidate();
 }
 
+void TextEdit::UpdateCursor()
+{
+    HRESULT hr = S_OK;
+    float x = 0.0f;
+    float y = 0.0f;
+    DWRITE_HIT_TEST_METRICS dhtm = { 0 };
+    hr = m_layout->HitTestTextPosition(m_cursorPos, FALSE, &x, &y, &dhtm);
+    LTK_ASSERT(SUCCEEDED(hr));
+    RectF rc(x, y, 1, dhtm.height);
+    this->SetCaretPos(rc);
+}
+
 bool TextEdit::OnLBtnDown(MouseEvent *ev)
 {
     BOOL isTrailingHit = FALSE;
     BOOL isInside = FALSE;
-    DWRITE_HIT_TEST_METRICS htm = { 0 };
+    DWRITE_HIT_TEST_METRICS dhtm = { 0 };
     HRESULT hr = m_layout->HitTestPoint(
-        ev->x, ev->y, &isTrailingHit, &isInside, &htm);
+        ev->x, ev->y, &isTrailingHit, &isInside, &dhtm);
     LTK_ASSERT(SUCCEEDED(hr));
 
-    m_cursorPos = htm.textPosition;
+    if (ev->x < dhtm.left + dhtm.width * 0.5f) {
+        m_cursorPos = dhtm.textPosition;
+    } else {
+        m_cursorPos = dhtm.textPosition + 1;
+    }
+    this->UpdateCursor();
     return false;
 }
 

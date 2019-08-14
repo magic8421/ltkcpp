@@ -410,15 +410,20 @@ void Sprite::ShowCaret()
 
 void Sprite::SetCaretPos(RectF rc)
 {
-    RectF arc = Sprite::GetAbsRect();
-    GetWindow()->SetImePosition(rc.X + arc.X, rc.Y + arc.Y);
+    RECT rc2 = DipRectToScreen(rc);
+    RECT arc = DipRectToScreen(Sprite::GetAbsRect());
+    rc2.left += arc.left;
+    rc2.top += arc.top;
+    rc2.right += arc.left;
+    rc2.bottom += arc.top;
+    GetWindow()->SetImePosition((float)rc2.left, (float)rc2.top);
     HWND hwnd = GetWindow()->Handle();
     ::DestroyCaret(); // 这里销毁重新建立 才能改变高度
     ::CreateCaret(hwnd, NULL, (int)rc.Width, (int)rc.Height); // 可以加个参数制定虚线光标(HBITMAP)1
     BOOL ret = ::ShowCaret(hwnd); // TODO 这里太脏了 可能显示出来就隐藏不掉 应该一对一绑定
     assert(ret);
     GetWindow()->SetCaretHeight(rc.Height);
-    ::SetCaretPos((int)(rc.X + arc.X), (int)(rc.Y + arc.Y));
+    ::SetCaretPos(rc2.left, rc2.top);
 }
 
 void Sprite::HideCaret()

@@ -18,7 +18,7 @@ public:
     virtual void RecreateResouce(ID2D1RenderTarget *target) override;
 
     void RecreateLayout();
-
+    void UpdateCursor();
 
 
 private:
