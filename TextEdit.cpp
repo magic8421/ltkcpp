@@ -85,8 +85,15 @@ void TextEdit::UpdateCursor()
     float x = 0.0f;
     float y = 0.0f;
     DWRITE_HIT_TEST_METRICS dhtm = { 0 };
-    hr = m_layout->HitTestTextPosition(m_cursorPos, FALSE, &x, &y, &dhtm);
-    LTK_ASSERT(SUCCEEDED(hr));
+    if (m_text[m_cursorPos] == 0x0d) {
+        hr = m_layout->HitTestTextPosition(m_cursorPos - 1, FALSE, &x, &y, &dhtm);
+        LTK_ASSERT(SUCCEEDED(hr));
+        x += dhtm.width;
+    } else {
+        hr = m_layout->HitTestTextPosition(m_cursorPos, FALSE, &x, &y, &dhtm);
+        LTK_ASSERT(SUCCEEDED(hr));
+    }
+    //LTK_LOG("char at caret: 0x%04x", m_text[m_cursorPos]);
     RectF rc(x, y, 1, dhtm.height);
     this->SetCaretPos(rc);
 }
@@ -100,10 +107,16 @@ bool TextEdit::OnLBtnDown(MouseEvent *ev)
         ev->x, ev->y, &isTrailingHit, &isInside, &dhtm);
     LTK_ASSERT(SUCCEEDED(hr));
 
-    if (ev->x < dhtm.left + dhtm.width * 0.5f) {
+    if (dhtm.width == 0.0f) {
+        m_cursorPos = dhtm.textPosition;
+    }
+    else if (ev->x <= dhtm.left + dhtm.width * 0.5f) {
         m_cursorPos = dhtm.textPosition;
     } else {
         m_cursorPos = dhtm.textPosition + 1;
+    }
+    if (m_cursorPos > m_text.size()) {
+        __debugbreak();
     }
     this->UpdateCursor();
     return false;
