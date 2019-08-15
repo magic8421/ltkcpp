@@ -47,7 +47,7 @@ bool ListView::OnPaint(PaintEvent *ev)
     rcClip.bottom = rcSprite.Height;
     target->PushAxisAlignedClip(rcClip, D2D1_ANTIALIAS_MODE_ALIASED);
     TranslateTransform(target, -m_hscroll, 0.0f);
-    Deferred defer([&]() {
+    auto guard = LtkScopeGuard([&]() {
         TranslateTransform(target, m_hscroll, 0.0f);
         target->PopAxisAlignedClip();
     });

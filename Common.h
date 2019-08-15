@@ -1,6 +1,6 @@
 #pragma once
 #include "ltk.h"
-
+#include "ScopeGuard.h"
 /*
 ** Copyright (C) 2015-2016 Chen Shi. See Copyright Notice in ltk.h
 */
@@ -9,22 +9,10 @@ std::wstring Utf8ToUtf16(LPCSTR strA, int len = -1);
 CStringA Utf16ToUtf8(LPCTSTR strW, int len);
 CStringA Utf16ToGbk(LPCTSTR strW, int len);
 
-
 std::wstring WStringFormat(LPCWSTR format, ...);
 
-class Deferred
-{
-public:
-    explicit Deferred(const std::function<void()> &cb) : m_cb(cb)
-    {}
-    ~Deferred()
-    {
-        m_cb();
-    }
-
-private:
-    std::function<void()> m_cb;
-};
+#define DEFER_BEGIN() auto __deferred__ = LtkScopeGuard([&]() {
+#define DEFER_END() });
 
 #define LOGW(msg) do\
 {\
@@ -34,8 +22,8 @@ private:
 } while (0)
 
 #define DISALLOW_COPY_AND_ASSIGN(TypeName) \
-	TypeName(const TypeName&);             \
-	void operator=(const TypeName&)
+	TypeName(const TypeName&) = delete;             \
+	void operator=(const TypeName&) = delete;
 
 // https://stackoverflow.com/questions/3060006/is-it-worth-setting-pointers-to-null-in-a-destructor
 #ifndef INVALID_POINTER

@@ -19,14 +19,14 @@ void MyDumpMemoryLeak()
 void test_deffer()
 {
     char *p = nullptr;
-    Deferred defer([&]() { // if captured as [=], it will leak.
+    DEFER_BEGIN()
         if (p) {
             LTK_LOG("has p");
             delete p;
         } else {
             LTK_LOG("no p");
         }
-    });
+    DEFER_END()
     p = new char[10];
 }
 
