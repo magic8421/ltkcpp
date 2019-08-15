@@ -34,13 +34,28 @@ bool TextEdit::OnPaint(PaintEvent *ev)
 {
     auto target = ev->target;
     auto rc = this->GetClientRect();
+
+    HRESULT hr = S_OK;
+    DWRITE_TEXT_METRICS textMetrics;
+    hr = m_layout->GetMetrics(&textMetrics);
+    LTK_ASSERT(SUCCEEDED(hr));
+    if (m_scrollAni.UpdateScroll(textMetrics.height - rc.Height)) {
+        this->EndAnimation();
+    }
+    m_vsb->SetPosition(m_scrollAni.GetScroll());
+    //LTK_LOG("scroll: %f", m_scrollAni.GetScroll());
+
     rc.X = 0.5f;
     rc.Y = 0.5f;
     rc.Width -= 0.5f;
     rc.Height -= 0.5f;
     target->DrawRectangle(D2D1RectF(rc), m_brush);
 
-    target->DrawTextLayout(D2D_POINT_2F{ 0.0f, 0.0f }, m_layout, m_brush);
+    D2D_POINT_2F pt;
+    pt.x = 0.0f;
+    pt.y = -m_scrollAni.GetScroll();
+    target->DrawTextLayout(pt, m_layout, m_brush);
+
     return false;
 }
 
@@ -109,12 +124,21 @@ void TextEdit::UpdateCursor()
         LTK_ASSERT(SUCCEEDED(hr));
     }
     //LTK_LOG("char at caret: 0x%04x", m_text[m_cursorPos]);
+    y -= m_scrollAni.GetScroll();
     RectF rc(x, y, 1, dhtm.height);
     this->SetCaretPos(rc);
 }
 
+bool TextEdit::OnMouseWheel(MouseEvent *ev)
+{
+    m_scrollAni.BeginScroll(ev->delta);
+    this->BeginAnimation();
+    return true;
+}
+
 bool TextEdit::OnLBtnDown(MouseEvent *ev)
 {
+    ev->y += m_scrollAni.GetScroll();
     BOOL isTrailingHit = FALSE;
     BOOL isInside = FALSE;
     DWRITE_HIT_TEST_METRICS dhtm = { 0 };

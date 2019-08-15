@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Sprite.h"
+#include "Animation.h"
 
 namespace ltk {
 
@@ -23,6 +24,9 @@ public:
     void UpdateCursor();
 
 
+
+    virtual bool OnMouseWheel(MouseEvent *ev) override;
+
 private:
     int m_cursorPos = 0;
     wstring m_text;
@@ -31,6 +35,7 @@ private:
     ID2D1SolidColorBrush *m_brush = nullptr;
 
     ScrollBar *m_vsb = nullptr;
+    ScrollAnimation m_scrollAni;
 };
 
 } // namespace ltk

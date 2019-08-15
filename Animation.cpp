@@ -29,6 +29,9 @@ void ScrollAnimation::BeginScroll(float delta)
 
 bool ScrollAnimation::UpdateScroll(float height)
 {
+    if (height < 0.0f) {
+        return false;
+    }
     DWORD now = ::GetTickCount();
     if (m_state == stScrollUp) {
         m_scroll -= m_velocity * (now - m_lastTick);

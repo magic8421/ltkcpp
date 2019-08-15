@@ -152,7 +152,7 @@ void LtkLogImpl(const char *source, int line, const char *format, ...)
     ::StringCbVPrintfA(buffer, SIZE, format, varg);
     va_end(varg);
     char buffer2[SIZE];
-    ::StringCbPrintfA(buffer2, SIZE, "%s(%d)|\t%s\r\n", source, line, buffer);
+    ::StringCbPrintfA(buffer2, SIZE, "%s\t%s(%d)\r\n", buffer, source, line);
 
     if (g_ltk_log_to_ods) {
         ::OutputDebugStringA(buffer2);
