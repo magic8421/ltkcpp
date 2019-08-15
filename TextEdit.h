@@ -4,6 +4,8 @@
 
 namespace ltk {
 
+class ScrollBar;
+
 class TextEdit : public Sprite
 {
 public:
@@ -27,6 +29,8 @@ private:
     IDWriteTextFormat *m_format = nullptr;
     IDWriteTextLayout *m_layout = nullptr;
     ID2D1SolidColorBrush *m_brush = nullptr;
+
+    ScrollBar *m_vsb = nullptr;
 };
 
 } // namespace ltk

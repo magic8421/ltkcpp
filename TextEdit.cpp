@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "TextEdit.h"
 #include "StyleManager.h"
+#include "ScrollBar.h"
 
 namespace ltk {
 
@@ -17,6 +18,9 @@ TextEdit::TextEdit()
 
     this->EnableFocus(true);
     this->EnableClipChildren(true);
+
+    m_vsb = new ScrollBar(ScrollBar::Vertical);
+    this->AddChild(m_vsb);
 }
 
 TextEdit::~TextEdit()
@@ -73,9 +77,20 @@ void TextEdit::RecreateLayout()
     auto rc = this->GetClientRect();
     HRESULT hr = GetDWriteFactory()->CreateTextLayout(
         m_text.c_str(), m_text.size(), m_format,
-        rc.Width, rc.Height, &m_layout);
+        rc.Width, 0.0f, &m_layout);
     LTK_ASSERT(SUCCEEDED(hr));
 
+    DWRITE_TEXT_METRICS textMetrics;
+    hr = m_layout->GetMetrics(&textMetrics);
+    LTK_ASSERT(SUCCEEDED(hr));
+    float layout_h = textMetrics.height;
+    LTK_LOG("layout_h:%f", layout_h);
+    if (layout_h > rc.Height) {
+        m_vsb->SetVisible(true);
+        m_vsb->SetContentSize(layout_h);
+    } else {
+        m_vsb->SetVisible(false);
+    }
     this->Invalidate();
 }
 
@@ -115,7 +130,7 @@ bool TextEdit::OnLBtnDown(MouseEvent *ev)
     } else {
         m_cursorPos = dhtm.textPosition + 1;
     }
-    if (m_cursorPos > m_text.size()) {
+    if (m_cursorPos > (int)m_text.size()) {
         __debugbreak();
     }
     this->UpdateCursor();
@@ -125,6 +140,9 @@ bool TextEdit::OnLBtnDown(MouseEvent *ev)
 bool TextEdit::OnSize(SizeEvent *ev)
 {
     this->RecreateLayout();
+
+    m_vsb->SetRect(RectF(ev->width - 6, 0, 6, ev->height));
+    
     return false;
 }
 
