@@ -27,6 +27,12 @@ void ScrollAnimation::BeginScroll(float delta)
     m_lastTick = ::GetTickCount();
 }
 
+void ScrollAnimation::Stop()
+{
+    m_velocity = 0.0f;
+    m_state = stStop;
+}
+
 bool ScrollAnimation::UpdateScroll(float height)
 {
     if (height < 0.0f) {

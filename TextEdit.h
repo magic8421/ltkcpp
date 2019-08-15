@@ -33,6 +33,7 @@ private:
 
     ScrollBar *m_vsb = nullptr;
     ScrollAnimation m_scrollAni;
+    bool m_isInside = true;
 };
 
 } // namespace ltk

@@ -129,6 +129,9 @@ bool ListView::SetSubItemText(UINT row, UINT col, LPCWSTR text)
 
 bool ListView::OnLBtnDown(MouseEvent *ev)
 {
+    m_scroll.Stop();
+    this->EndAnimation();
+
     m_selectedItem = (int)((m_scroll.GetScroll() + ev->y) / ItemHeight);
     this->Invalidate();
     return true;

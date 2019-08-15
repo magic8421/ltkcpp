@@ -41,7 +41,7 @@ bool TextEdit::OnPaint(PaintEvent *ev)
     LTK_ASSERT(SUCCEEDED(hr));
     if (m_scrollAni.UpdateScroll(textMetrics.height - rc.Height)) {
         this->EndAnimation();
-        this->UpdateCursor(false);
+        //this->UpdateCursor(false);
     }
     m_vsb->SetPosition(m_scrollAni.GetScroll());
     //LTK_LOG("scroll: %f", m_scrollAni.GetScroll());
@@ -116,11 +116,11 @@ void TextEdit::UpdateCursor(bool bEnsureVisible)
     float x = 0.0f;
     float y = 0.0f;
     DWRITE_HIT_TEST_METRICS dhtm = { 0 };
-    if (m_text[m_cursorPos] == 0x0d) {
+    /*if (!m_isInside) {
         hr = m_layout->HitTestTextPosition(m_cursorPos - 1, FALSE, &x, &y, &dhtm);
         LTK_ASSERT(SUCCEEDED(hr));
         x += dhtm.width;
-    } else {
+    } else*/ {
         hr = m_layout->HitTestTextPosition(m_cursorPos, FALSE, &x, &y, &dhtm);
         LTK_ASSERT(SUCCEEDED(hr));
     }
@@ -151,6 +151,9 @@ bool TextEdit::OnMouseWheel(MouseEvent *ev)
 
 bool TextEdit::OnLBtnDown(MouseEvent *ev)
 {
+    m_scrollAni.Stop();
+    this->EndAnimation();
+
     ev->y += m_scrollAni.GetScroll();
     BOOL isTrailingHit = FALSE;
     BOOL isInside = FALSE;
@@ -158,11 +161,13 @@ bool TextEdit::OnLBtnDown(MouseEvent *ev)
     HRESULT hr = m_layout->HitTestPoint(
         ev->x, ev->y, &isTrailingHit, &isInside, &dhtm);
     LTK_ASSERT(SUCCEEDED(hr));
+    LTK_LOG("isTrailingHit: %d, isInside: %d", isTrailingHit, isInside);
+    m_isInside = isInside;
 
-    if (dhtm.width == 0.0f) {
+    if (!isInside) {
         m_cursorPos = dhtm.textPosition;
     }
-    else if (ev->x <= dhtm.left + dhtm.width * 0.5f) {
+    else if (!isTrailingHit) {
         m_cursorPos = dhtm.textPosition;
     } else {
         m_cursorPos = dhtm.textPosition + 1;
