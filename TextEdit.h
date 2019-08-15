@@ -18,14 +18,11 @@ public:
     virtual bool OnSize(SizeEvent *ev) override;
     virtual bool OnImeInput(ImeEvent *ev) override;
     virtual bool OnLBtnDown(MouseEvent *ev) override;
+    virtual bool OnMouseWheel(MouseEvent *ev) override;
     virtual void RecreateResouce(ID2D1RenderTarget *target) override;
 
     void RecreateLayout();
-    void UpdateCursor();
-
-
-
-    virtual bool OnMouseWheel(MouseEvent *ev) override;
+    void UpdateCursor(bool bEnsureVisible);
 
 private:
     int m_cursorPos = 0;

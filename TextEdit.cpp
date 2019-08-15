@@ -8,7 +8,7 @@ namespace ltk {
 
 TextEdit::TextEdit()
 {
-    m_text = L"test... test ...";
+    //m_text = L"test... test ...";
     m_cursorPos = m_text.size();
 
     HRESULT hr = GetDWriteFactory()->CreateTextFormat(L"Î¢ÈíÑÅºÚ", NULL, DWRITE_FONT_WEIGHT_REGULAR,
@@ -41,6 +41,7 @@ bool TextEdit::OnPaint(PaintEvent *ev)
     LTK_ASSERT(SUCCEEDED(hr));
     if (m_scrollAni.UpdateScroll(textMetrics.height - rc.Height)) {
         this->EndAnimation();
+        this->UpdateCursor(false);
     }
     m_vsb->SetPosition(m_scrollAni.GetScroll());
     //LTK_LOG("scroll: %f", m_scrollAni.GetScroll());
@@ -73,7 +74,7 @@ bool TextEdit::OnChar(KeyEvent *ev)
     }
     LTK_LOG("key code: 0x%04x m_cursorPos: %d", ch, m_cursorPos);
     this->RecreateLayout();
-    this->UpdateCursor();
+    this->UpdateCursor(true);
     return true;
 }
 
@@ -82,7 +83,7 @@ bool TextEdit::OnImeInput(ImeEvent *ev)
     m_text.insert(m_cursorPos, ev->text);
     m_cursorPos += wcslen(ev->text);
     this->RecreateLayout();
-    this->UpdateCursor();
+    this->UpdateCursor(true);
     return true;
 }
 
@@ -109,7 +110,7 @@ void TextEdit::RecreateLayout()
     this->Invalidate();
 }
 
-void TextEdit::UpdateCursor()
+void TextEdit::UpdateCursor(bool bEnsureVisible)
 {
     HRESULT hr = S_OK;
     float x = 0.0f;
@@ -125,13 +126,25 @@ void TextEdit::UpdateCursor()
     }
     //LTK_LOG("char at caret: 0x%04x", m_text[m_cursorPos]);
     y -= m_scrollAni.GetScroll();
-    RectF rc(x, y, 1, dhtm.height);
-    this->SetCaretPos(rc);
+    if (bEnsureVisible) {
+        auto rc = this->GetClientRect();
+        float delta = y + dhtm.height - rc.Height;
+        if (delta > 0.01f) {
+            m_scrollAni.SetScroll(m_scrollAni.GetScroll() + delta);
+        }
+        if (y < -0.01f) {
+            m_scrollAni.SetScroll(m_scrollAni.GetScroll() + y);
+        }
+        LTK_LOG("delta: %.1f y: %.1f", delta, y);
+    }
+    RectF rcCursor(x, y, 1, dhtm.height);
+    this->SetCaretPos(rcCursor);
 }
 
 bool TextEdit::OnMouseWheel(MouseEvent *ev)
 {
     m_scrollAni.BeginScroll(ev->delta);
+    this->HideCaret();
     this->BeginAnimation();
     return true;
 }
@@ -157,7 +170,7 @@ bool TextEdit::OnLBtnDown(MouseEvent *ev)
     if (m_cursorPos > (int)m_text.size()) {
         __debugbreak();
     }
-    this->UpdateCursor();
+    this->UpdateCursor(false);
     return false;
 }
 

@@ -109,7 +109,6 @@ private:
 	bool m_bMouseIn;
 	bool m_enableFocus;
 	bool m_bClipChildren;
-    bool m_bShowCaret;
 
     RectF m_rect;
     Window *m_window = nullptr;

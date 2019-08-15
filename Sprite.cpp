@@ -25,7 +25,6 @@ Sprite::Sprite(void)
 	m_enableFocus = false;
 	m_bMouseIn = false;
 	m_bClipChildren = false;
-    m_bShowCaret = false;
 }
 
 Sprite::~Sprite(void)
@@ -405,7 +404,6 @@ void Sprite::RemoveChild( Sprite *sp )
 void Sprite::ShowCaret()
 {
     GetWindow()->ShowCaret();
-    m_bShowCaret = true;
 }
 
 void Sprite::SetCaretPos(RectF rc)
@@ -428,8 +426,7 @@ void Sprite::SetCaretPos(RectF rc)
 
 void Sprite::HideCaret()
 {
-    GetWindow()->HideCaret();
-    m_bShowCaret = false;
+    ::DestroyCaret();
 }
 
 bool Sprite::OnEvent(Event *ev)
