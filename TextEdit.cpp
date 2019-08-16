@@ -60,9 +60,37 @@ bool TextEdit::OnPaint(PaintEvent *ev)
     rc.Height -= 0.5f;
     target->DrawRectangle(D2D1RectF(rc), m_brush);
 
+    if (m_selection > 0) {
+        UINT32 begin = m_cursorPos;
+        UINT32 end = m_selection;
+        if (begin > end) {
+            std::swap(begin, end);
+        }
+        UINT32 len = 0;
+        std::vector<DWRITE_HIT_TEST_METRICS> vecMetrics;
+        m_layout->HitTestTextRange(begin, end - begin, 0.0f, 0.0f,
+            NULL, 0, &len);
+        LTK_ASSERT(SUCCEEDED(hr));
+        LTK_LOG("HitTestTextRange: %d metrics", len);
+        vecMetrics.resize(len);
+        m_layout->HitTestTextRange(begin, end - begin, 0.0f, 0.0f,
+            &vecMetrics[0], len, &len);
+        LTK_ASSERT(SUCCEEDED(hr));
+        m_brush->SetColor(StyleManager::ColorFromString("#0000ff"));
+        for (auto &m : vecMetrics) {
+            D2D1_RECT_F rc;
+            rc.left = m.left;
+            rc.right = rc.left + m.width;
+            rc.top = m.top - m_scrollAni.GetScroll();
+            rc.bottom = rc.top + m.height;
+            target->FillRectangle(rc, m_brush);
+        }
+    }
+
     D2D_POINT_2F pt;
     pt.x = 0.0f;
     pt.y = -m_scrollAni.GetScroll();
+    m_brush->SetColor(StyleManager::ColorFromString("#000000"));
     target->DrawTextLayout(pt, m_layout, m_brush);
 
     return false;
@@ -202,7 +230,7 @@ int TextEdit::HitTest(float x, float y)
     HRESULT hr = m_layout->HitTestPoint(
         x, y, &isTrailingHit, &isInside, &dhtm);
     LTK_ASSERT(SUCCEEDED(hr));
-    LTK_LOG("isTrailingHit: %d, isInside: %d", isTrailingHit, isInside);
+    //LTK_LOG("isTrailingHit: %d, isInside: %d", isTrailingHit, isInside);
     m_isInside = isInside ? true : false;
 
     if (!isTrailingHit) {
@@ -242,7 +270,7 @@ bool TextEdit::OnMouseMove(MouseEvent *ev)
         return false;
     }
     m_selection = HitTest(ev->x, ev->y);
-    LTK_LOG("m_selection:%d", m_selection);
+    //LTK_LOG("m_selection:%d", m_selection);
     if (m_selection != m_prevSelection) {
         m_prevSelection = m_selection;
         this->RecreateLayout();
@@ -267,7 +295,7 @@ void TextEdit::RecreateResouce(ID2D1RenderTarget *target)
     LTK_ASSERT(SUCCEEDED(hr));
 
     SAFE_RELEASE(m_brushSelectedText);
-    textColor = StyleManager::ColorFromString("#cc0000");
+    textColor = StyleManager::ColorFromString("#ffffff");
     hr = target->CreateSolidColorBrush(textColor, &m_brushSelectedText);
     LTK_ASSERT(SUCCEEDED(hr));
 }
