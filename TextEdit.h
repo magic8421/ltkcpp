@@ -20,9 +20,10 @@ public:
     TextEdit();
     ~TextEdit();
 
-    virtual bool OnPaint(PaintEvent *ev) override;
     virtual bool OnChar(KeyEvent *ev) override;
     virtual bool OnSize(SizeEvent *ev) override;
+    virtual bool OnPaint(PaintEvent *ev) override;
+    virtual bool OnKeyDown(KeyEvent *ev) override;
     virtual bool OnImeInput(ImeEvent *ev) override;
     virtual bool OnLBtnDown(MouseEvent *ev) override;
     virtual bool OnMouseWheel(MouseEvent *ev) override;
@@ -30,6 +31,8 @@ public:
 
     void RecreateLayout();
     void UpdateCursor(bool bEnsureVisible);
+
+
 
 private:
     int m_cursorPos = 0;

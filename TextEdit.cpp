@@ -74,12 +74,37 @@ bool TextEdit::OnChar(KeyEvent *ev)
         if (m_cursorPos > 0) {
             m_text.erase(m_text.begin() + m_cursorPos - 1);
             m_cursorPos--;
+        } else {
+            return true;
         }
     } else {
         m_text.insert(m_text.begin() + m_cursorPos, ch);
         m_cursorPos++;
     }
-    LTK_LOG("key code: 0x%04x m_cursorPos: %d", ch, m_cursorPos);
+    //LTK_LOG("key code: 0x%04x m_cursorPos: %d", ch, m_cursorPos);
+    this->RecreateLayout();
+    this->UpdateCursor(true);
+    return true;
+}
+
+bool TextEdit::OnKeyDown(KeyEvent *ev)
+{
+    wchar_t ch = (wchar_t)ev->keyCode;
+    if (ch == VK_DELETE) { // TODO not here to handle.. maybe OnKeyDown
+        if (m_cursorPos < (int)m_text.size()) {
+            m_text.erase(m_text.begin() + m_cursorPos);
+        } else {
+            return true;
+        }
+    } else if (ch == VK_LEFT) {
+        if (m_cursorPos > 0) {
+            m_cursorPos--;
+            this->UpdateCursor(true);
+            return true;
+        }
+    } else if (ch == VK_RIGHT) {
+
+    }
     this->RecreateLayout();
     this->UpdateCursor(true);
     return true;
@@ -169,12 +194,12 @@ bool TextEdit::OnLBtnDown(MouseEvent *ev)
         ev->x, ev->y, &isTrailingHit, &isInside, &dhtm);
     LTK_ASSERT(SUCCEEDED(hr));
     LTK_LOG("isTrailingHit: %d, isInside: %d", isTrailingHit, isInside);
-    m_isInside = isInside;
+    m_isInside = isInside ? true: false;
 
-    if (!isInside) {
+   /* if (!isInside) {
         m_cursorPos = dhtm.textPosition;
     }
-    else if (!isTrailingHit) {
+    else */if (!isTrailingHit) {
         m_cursorPos = dhtm.textPosition;
     } else {
         m_cursorPos = dhtm.textPosition + 1;
