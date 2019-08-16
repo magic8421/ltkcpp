@@ -57,6 +57,8 @@ private:
     ScrollAnimation m_scrollAni;
     bool m_isInside = true;
     bool m_bCapture = false;
+
+    float m_padding = 10.0f;
 };
 
 } // namespace ltk

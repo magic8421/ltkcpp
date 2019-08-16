@@ -73,7 +73,7 @@ bool TextEdit::OnPaint(PaintEvent *ev)
         LTK_ASSERT(SUCCEEDED(hr));
         LTK_LOG("HitTestTextRange: %d metrics", len);
         vecMetrics.resize(len);
-        m_layout->HitTestTextRange(begin, end - begin, 0.0f, 0.0f,
+        m_layout->HitTestTextRange(begin, end - begin, m_padding, 0.0f,
             &vecMetrics[0], len, &len);
         LTK_ASSERT(SUCCEEDED(hr));
         m_brush->SetColor(StyleManager::ColorFromString("#0000ff"));
@@ -88,7 +88,7 @@ bool TextEdit::OnPaint(PaintEvent *ev)
     }
 
     D2D_POINT_2F pt;
-    pt.x = 0.0f;
+    pt.x = m_padding;
     pt.y = -m_scrollAni.GetScroll();
     m_brush->SetColor(StyleManager::ColorFromString("#000000"));
     target->DrawTextLayout(pt, m_layout, m_brush);
@@ -181,7 +181,7 @@ void TextEdit::RecreateLayout()
     auto rc = this->GetClientRect();
     HRESULT hr = GetDWriteFactory()->CreateTextLayout(
         m_text.c_str(), m_text.size(), m_format,
-        rc.Width, 0.0f, &m_layout);
+        rc.Width - m_padding * 2, 0.0f, &m_layout);
     LTK_ASSERT(SUCCEEDED(hr));
 
     if (m_selection > 0) {
@@ -235,7 +235,7 @@ void TextEdit::UpdateCursor(bool bEnsureVisible)
         }
         LTK_LOG("delta: %.1f y: %.1f", delta, y);
     }
-    RectF rcCursor(x, y, 1, dhtm.height);
+    RectF rcCursor(x + m_padding, y, 1, dhtm.height);
     this->SetCaretPos(rcCursor);
 }
 
@@ -273,6 +273,7 @@ int TextEdit::HitTest(float x, float y)
 
 bool TextEdit::OnLBtnDown(MouseEvent *ev)
 {
+    ev->x -= m_padding;
     m_scrollAni.Stop();
     this->EndAnimation();
     m_cursorPos = HitTest(ev->x, ev->y);
