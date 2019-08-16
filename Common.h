@@ -41,9 +41,11 @@ std::wstring WStringFormat(LPCWSTR format, ...);
 EXTERN_C IMAGE_DOS_HEADER __ImageBase;
 #define HINST_THISCOMPONENT ((HINSTANCE)&__ImageBase)
 
-#define LTK_ASSERT(expr) if (!(expr)) {\
-    CStringW msg; msg.Format(L"Assertion Failed: %s\r\n%s(%d)", L#expr, __FILEW__, __LINE__);\
-    ::OutputDebugStringW(msg);__debugbreak();}
+//#define LTK_ASSERT(expr) if (!(expr)) {\
+//    CStringW msg; msg.Format(L"Assertion Failed: %s\r\n%s(%d)", L#expr, __FILEW__, __LINE__);\
+//    ::OutputDebugStringW(msg);__debugbreak();}
+
+#define LTK_ASSERT(expr) if (!(expr)) {__debugbreak();} // super KISS
 
 #define  LTK_LOG(...) LtkLogImpl(__FILE__, __LINE__, __VA_ARGS__)
 

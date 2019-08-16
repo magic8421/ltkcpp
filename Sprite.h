@@ -20,6 +20,9 @@ public:
     Sprite(void);
     virtual ~Sprite(void);
 
+    void SetName(const char *name);
+    const char *GetName();
+
 	RectF GetRect();
 
 	RectF GetClientRect();
@@ -84,6 +87,7 @@ public:
 
     virtual bool OnEvent(Event *ev);
 
+protected:
     virtual bool OnPaint            (PaintEvent *ev) { return false; }
     virtual bool OnLBtnDown         (MouseEvent *ev) { return false; }
     virtual bool OnLBtnUp           (MouseEvent *ev) { return false; }
@@ -104,9 +108,6 @@ public:
 
     virtual void RecreateResouce(ID2D1RenderTarget *target){}
     virtual void OnParentChanged(Sprite *old, Sprite *new_){}
-
-    void SetName(const char *name);
-    const char *GetName();
 
 private:
 	bool m_bVisible; // 编译器会自动优化成1字节

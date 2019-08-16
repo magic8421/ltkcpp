@@ -35,6 +35,7 @@ TextEdit::~TextEdit()
     SAFE_RELEASE(m_format);
     SAFE_RELEASE(m_layout);
     SAFE_RELEASE(m_brush);
+    SAFE_RELEASE(m_brushSelectedText);
 }
 
 bool TextEdit::OnPaint(PaintEvent *ev)
@@ -128,6 +129,16 @@ void TextEdit::RecreateLayout()
         rc.Width, 0.0f, &m_layout);
     LTK_ASSERT(SUCCEEDED(hr));
 
+    if (m_selection > 0) {
+        UINT32 begin = m_cursorPos;
+        UINT32 end = m_selection;
+        if (begin > end) {
+            std::swap(begin, end);
+        }
+        m_layout->SetDrawingEffect(
+            m_brushSelectedText, DWRITE_TEXT_RANGE{ begin, end - begin });
+    }
+
     DWRITE_TEXT_METRICS textMetrics;
     hr = m_layout->GetMetrics(&textMetrics);
     LTK_ASSERT(SUCCEEDED(hr));
@@ -181,33 +192,61 @@ bool TextEdit::OnMouseWheel(MouseEvent *ev)
     return true;
 }
 
-bool TextEdit::OnLBtnDown(MouseEvent *ev)
+int TextEdit::HitTest(float x, float y)
 {
-    m_scrollAni.Stop();
-    this->EndAnimation();
-
-    ev->y += m_scrollAni.GetScroll();
+    int pos = -1;
+    y += m_scrollAni.GetScroll();
     BOOL isTrailingHit = FALSE;
     BOOL isInside = FALSE;
     DWRITE_HIT_TEST_METRICS dhtm = { 0 };
     HRESULT hr = m_layout->HitTestPoint(
-        ev->x, ev->y, &isTrailingHit, &isInside, &dhtm);
+        x, y, &isTrailingHit, &isInside, &dhtm);
     LTK_ASSERT(SUCCEEDED(hr));
     LTK_LOG("isTrailingHit: %d, isInside: %d", isTrailingHit, isInside);
-    m_isInside = isInside ? true: false;
+    m_isInside = isInside ? true : false;
 
-   /* if (!isInside) {
-        m_cursorPos = dhtm.textPosition;
-    }
-    else */if (!isTrailingHit) {
-        m_cursorPos = dhtm.textPosition;
+    if (!isTrailingHit) {
+        pos = dhtm.textPosition;
     } else {
-        m_cursorPos = dhtm.textPosition + 1;
+        pos = dhtm.textPosition + 1;
     }
-    if (m_cursorPos > (int)m_text.size()) {
+    if (pos > (int)m_text.size()) {
         __debugbreak();
     }
+    return pos;
+}
+
+bool TextEdit::OnLBtnDown(MouseEvent *ev)
+{
+    m_scrollAni.Stop();
+    this->EndAnimation();
+    m_cursorPos = HitTest(ev->x, ev->y);
+    m_selection = -1;
+    m_prevSelection = -1;
     this->UpdateCursor(false);
+    this->SetCapture();
+    m_bCapture = true;
+    return false;
+}
+
+bool TextEdit::OnLBtnUp(MouseEvent *ev)
+{
+    m_bCapture = false;
+    this->ReleaseCapture();
+    return false;
+}
+
+bool TextEdit::OnMouseMove(MouseEvent *ev)
+{
+    if (!m_bCapture) {
+        return false;
+    }
+    m_selection = HitTest(ev->x, ev->y);
+    LTK_LOG("m_selection:%d", m_selection);
+    if (m_selection != m_prevSelection) {
+        m_prevSelection = m_selection;
+        this->RecreateLayout();
+    }
     return false;
 }
 
@@ -225,6 +264,11 @@ void TextEdit::RecreateResouce(ID2D1RenderTarget *target)
     SAFE_RELEASE(m_brush);
     auto textColor = StyleManager::Instance()->GetColor(StyleManager::clrTextNormal);
     HRESULT hr = target->CreateSolidColorBrush(textColor, &m_brush);
+    LTK_ASSERT(SUCCEEDED(hr));
+
+    SAFE_RELEASE(m_brushSelectedText);
+    textColor = StyleManager::ColorFromString("#cc0000");
+    hr = target->CreateSolidColorBrush(textColor, &m_brushSelectedText);
     LTK_ASSERT(SUCCEEDED(hr));
 }
 

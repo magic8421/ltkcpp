@@ -20,30 +20,39 @@ public:
     TextEdit();
     ~TextEdit();
 
+protected:
     virtual bool OnChar(KeyEvent *ev) override;
     virtual bool OnSize(SizeEvent *ev) override;
     virtual bool OnPaint(PaintEvent *ev) override;
     virtual bool OnKeyDown(KeyEvent *ev) override;
+    virtual bool OnLBtnUp(MouseEvent *ev) override;
     virtual bool OnImeInput(ImeEvent *ev) override;
     virtual bool OnLBtnDown(MouseEvent *ev) override;
+    virtual bool OnMouseMove(MouseEvent *ev) override;
     virtual bool OnMouseWheel(MouseEvent *ev) override;
     virtual void RecreateResouce(ID2D1RenderTarget *target) override;
 
     void RecreateLayout();
     void UpdateCursor(bool bEnsureVisible);
 
-
+private:
+    int HitTest(float x, float y);
 
 private:
     int m_cursorPos = 0;
+    int m_selection = -1;
+    int m_prevSelection = -1;
+
     wstring m_text;
     IDWriteTextFormat *m_format = nullptr;
     IDWriteTextLayout *m_layout = nullptr;
     ID2D1SolidColorBrush *m_brush = nullptr;
+    ID2D1SolidColorBrush *m_brushSelectedText = nullptr;
 
     ScrollBar *m_vsb = nullptr;
     ScrollAnimation m_scrollAni;
     bool m_isInside = true;
+    bool m_bCapture = false;
 };
 
 } // namespace ltk
