@@ -20,6 +20,9 @@ public:
     TextEdit();
     ~TextEdit();
 
+    void SetText(LPCWSTR);
+    LPCWSTR GetText();
+
 protected:
     virtual bool OnChar(KeyEvent *ev) override;
     virtual bool OnSize(SizeEvent *ev) override;
@@ -36,6 +39,7 @@ protected:
     void UpdateCursor(bool bEnsureVisible);
 
 private:
+    void DeleteSelected();
     int HitTest(float x, float y);
 
 private:

@@ -96,17 +96,39 @@ bool TextEdit::OnPaint(PaintEvent *ev)
     return false;
 }
 
+void TextEdit::DeleteSelected()
+{
+    if (m_selection < 0) {
+        return;
+    }
+    UINT begin = m_cursorPos;
+    UINT end = m_selection;
+    if (begin > end) {
+        std::swap(begin, end);
+    }
+    m_text.erase(m_text.begin() + begin, m_text.begin() + end);
+    m_cursorPos = min(m_cursorPos, m_selection); // TODO FIXME
+    m_cursorPos = max(0, m_cursorPos);
+    m_cursorPos = min(m_cursorPos, m_text.size() - 1);
+    m_selection = -1;
+}
+
 bool TextEdit::OnChar(KeyEvent *ev)
 {
     wchar_t ch = (wchar_t)ev->keyCode;
     if (ch == VK_BACK) {
-        if (m_cursorPos > 0) {
+        if (m_selection >= 0) {
+            this->DeleteSelected();
+        } else if (m_cursorPos > 0) {
             m_text.erase(m_text.begin() + m_cursorPos - 1);
             m_cursorPos--;
         } else {
             return true;
         }
     } else {
+        if (m_selection >= 0) {
+            this->DeleteSelected();
+        }
         m_text.insert(m_text.begin() + m_cursorPos, ch);
         m_cursorPos++;
     }
@@ -120,7 +142,9 @@ bool TextEdit::OnKeyDown(KeyEvent *ev)
 {
     wchar_t ch = (wchar_t)ev->keyCode;
     if (ch == VK_DELETE) { // TODO not here to handle.. maybe OnKeyDown
-        if (m_cursorPos < (int)m_text.size()) {
+        if (m_selection >= 0) {
+            this->DeleteSelected();
+        } else if (m_cursorPos < (int)m_text.size()) {
             m_text.erase(m_text.begin() + m_cursorPos);
         } else {
             return true;
@@ -141,6 +165,9 @@ bool TextEdit::OnKeyDown(KeyEvent *ev)
 
 bool TextEdit::OnImeInput(ImeEvent *ev)
 {
+    if (m_selection >= 0) {
+        this->DeleteSelected();
+    }
     m_text.insert(m_cursorPos, ev->text);
     m_cursorPos += wcslen(ev->text);
     this->RecreateLayout();
@@ -249,8 +276,12 @@ bool TextEdit::OnLBtnDown(MouseEvent *ev)
     m_scrollAni.Stop();
     this->EndAnimation();
     m_cursorPos = HitTest(ev->x, ev->y);
-    m_selection = -1;
-    m_prevSelection = -1;
+
+    if (m_selection >= 0) {
+        m_selection = -1;
+        m_prevSelection = -1;
+        this->RecreateLayout();
+    }
     this->UpdateCursor(false);
     this->SetCapture();
     m_bCapture = true;
