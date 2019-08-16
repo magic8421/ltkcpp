@@ -1,6 +1,9 @@
-/*
-** Copyright (C) 2015-2016 Chen Shi. See Copyright Notice in ltk.h
-*/
+//////////////////////////////////////////////////////////////////////////
+// Author:    Sara Chen
+// Email:     6659907@163.com
+// QQ:        314266265
+// License:   MIT license
+//////////////////////////////////////////////////////////////////////////
 
 #include "StdAfx.h"
 #include "Window.h"

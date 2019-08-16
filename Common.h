@@ -1,9 +1,13 @@
+//////////////////////////////////////////////////////////////////////////
+// Author:    Sara Chen
+// Email:     6659907@163.com
+// QQ:        314266265
+// License:   MIT license
+//////////////////////////////////////////////////////////////////////////
+
 #pragma once
 #include "ltk.h"
 #include "ScopeGuard.h"
-/*
-** Copyright (C) 2015-2016 Chen Shi. See Copyright Notice in ltk.h
-*/
 
 std::wstring Utf8ToUtf16(LPCSTR strA, int len = -1);
 CStringA Utf16ToUtf8(LPCTSTR strW, int len);

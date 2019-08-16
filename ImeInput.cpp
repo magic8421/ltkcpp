@@ -1,7 +1,3 @@
-/*
-** Copyright (C) 2015-2016 Chen Shi. See Copyright Notice in ltk.h
-*/
-
 #include "StdAfx.h"
 #include "ImeInput.h"
 
