@@ -36,6 +36,7 @@ public:
     bool IsExpand();
 
     virtual void OnPaint(ID2D1RenderTarget *target);
+    virtual void OnLBtnDown(PointF pt);
 
 private:
     bool m_bExpand = true;
@@ -46,7 +47,11 @@ private:
     TreeNode *m_parent = nullptr;
     std::vector<TreeNode *> m_children;
     RectF m_rect;
+    RectF m_rcExpandBtn;
     std::wstring m_text;
+
+    static const float m_padding;
+    static const float m_btn_size;
 
     DISALLOW_COPY_AND_ASSIGN(TreeNode)
 };
@@ -69,14 +74,17 @@ public:
 protected:
     virtual bool OnPaint(PaintEvent *ev) override;
     virtual bool OnSize(SizeEvent *ev) override;
+    virtual bool OnLBtnDown(MouseEvent *ev) override;
     virtual void RecreateResouce(ID2D1RenderTarget *target) override;
+
+
 
 private:
     ScrollBar *m_vsb = nullptr;
     TreeNode m_root;
 
-    float m_itemHeight = 30;
-    float m_indent = 10;
+    static const float m_itemHeight;
+    static const float m_indent;
 
     ID2D1SolidColorBrush *m_brush = nullptr;
     IDWriteTextFormat *m_format = nullptr;

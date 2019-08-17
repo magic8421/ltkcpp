@@ -45,6 +45,8 @@ TreeNode * TreeNode::GetNthChild(UINT i)
 void TreeNode::SetRect(const RectF &rc)
 {
     m_rect = rc;
+    m_rcExpandBtn = RectF(rc.X + m_padding, rc.Y + (rc.Height - m_btn_size) / 2.0f,
+        m_btn_size, m_btn_size);
 }
 
 RectF TreeNode::GetRect()
@@ -73,16 +75,33 @@ void TreeNode::OnPaint(ID2D1RenderTarget *target)
     brush->SetColor(StyleManager::ColorFromString("#cccccc"));
     target->DrawRectangle(D2D1RectF(m_rect), brush);
 
+    brush->SetColor(StyleManager::ColorFromString("#aaaaaa"));
+    target->DrawRectangle(D2D1RectF(m_rcExpandBtn), brush);
+
     auto format = m_treeView->GetTextFormat();
     brush->SetColor(StyleManager::ColorFromString("#000000"));
+    float space = m_padding * 2.0f + m_btn_size;
     target->DrawText(
-        m_text.c_str(), m_text.size(), format, D2D1RectF(m_rect), brush);
+        m_text.c_str(), m_text.size(), format, D2D1RectF(RectF(
+            space + m_rect.X, m_rect.Y, m_rect.Width - space, m_rect.Height
+        )), brush);
 }
+
+void TreeNode::OnLBtnDown(PointF pt)
+{
+    if (m_rcExpandBtn.Contains(pt)) {
+        m_bExpand = !m_bExpand;
+    }
+}
+
+const float TreeNode::m_padding = 5;
+const float TreeNode::m_btn_size = 15;
 
 //////////////////////////////////////////////////////////////////////////
 
 TreeView::TreeView()
 {
+    this->EnableClipChildren(true);
     m_root.SetTreeView(this);
 }
 
@@ -170,10 +189,25 @@ void TreeView::RecreateResouce(ID2D1RenderTarget *target)
     LTK_ASSERT(SUCCEEDED(hr));
 }
 
+bool TreeView::OnLBtnDown(MouseEvent *ev)
+{
+    TraverseTree(&m_root, 0, [ev](TreeNode *node, int) {
+        node->OnLBtnDown(PointF(ev->x, ev->y));
+    });
+    this->DoLayout(); // TODO change callback to return bool, early abort.
+    this->Invalidate();
+    return true;
+}
+
 bool TreeView::OnSize(SizeEvent *ev)
 {
     this->DoLayout();
     return false;
 }
+
+const float TreeView::m_itemHeight = 30.0f;
+const float TreeView::m_indent = 10.0f;
+
+
 
 } // namespace ltk
