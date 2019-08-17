@@ -69,21 +69,29 @@ bool TreeNode::IsExpand()
     return m_bExpand;
 }
 
-void TreeNode::OnPaint(ID2D1RenderTarget *target)
+void TreeNode::OnPaint(ID2D1RenderTarget *target, float scroll)
 {
+    auto rcItem = m_rect;
+    rcItem.Y -= scroll;
+    auto rcExpandBtn = m_rcExpandBtn;
+    rcExpandBtn.Y -= scroll;
+
     auto brush = m_treeView->GetBrush();
     brush->SetColor(StyleManager::ColorFromString("#cccccc"));
-    target->DrawRectangle(D2D1RectF(m_rect), brush);
+    target->DrawRectangle(D2D1RectF(rcItem), brush);
 
     brush->SetColor(StyleManager::ColorFromString("#aaaaaa"));
-    target->DrawRectangle(D2D1RectF(m_rcExpandBtn), brush);
-
+    if (m_children.size() > 0) {
+        target->FillRectangle(D2D1RectF(rcExpandBtn), brush);
+    } else {
+        target->DrawRectangle(D2D1RectF(rcExpandBtn), brush);
+    }
     auto format = m_treeView->GetTextFormat();
     brush->SetColor(StyleManager::ColorFromString("#000000"));
     float space = m_padding * 2.0f + m_btn_size;
     target->DrawText(
         m_text.c_str(), m_text.size(), format, D2D1RectF(RectF(
-            space + m_rect.X, m_rect.Y, m_rect.Width - space, m_rect.Height
+            space + rcItem.X, rcItem.Y, rcItem.Width - space, rcItem.Height
         )), brush);
 }
 
@@ -103,11 +111,12 @@ TreeView::TreeView()
 {
     this->EnableClipChildren(true);
     m_root.SetTreeView(this);
+    m_vsb = new ScrollBar(ScrollBar::Vertical);
+    this->AddChild(m_vsb);
 }
 
 TreeView::~TreeView()
 {
-    delete m_vsb;
     SAFE_RELEASE(m_brush);
     SAFE_RELEASE(m_format);
 }
@@ -118,7 +127,7 @@ void TreeView::DoLayout()
     float y = 0.0f;
     RectF rcSprite = GetClientRect();
 
-    TraverseTree(&m_root, 0, [&](TreeNode *node, int depth) {
+    TraverseTree(&m_root, 0, [&, this](TreeNode *node, int depth) {
         RectF rc;
         rc.X = (depth - 1) * m_indent;
         rc.Y = y;
@@ -126,7 +135,14 @@ void TreeView::DoLayout()
         rc.Height = m_itemHeight;
         node->SetRect(rc);
         y += m_itemHeight;
+        m_maxHeight = y;
     });
+    if (m_maxHeight > rcSprite.Height) {
+        m_vsb->SetContentSize(m_maxHeight);
+        m_vsb->SetVisible(true);
+    } else {
+        m_vsb->SetVisible(false);
+    }
 }
 
 void TreeView::TraverseTree(TreeNode *node, int depth, 
@@ -159,8 +175,14 @@ TreeNode * TreeView::GetRootNode()
 
 bool TreeView::OnPaint(PaintEvent *ev)
 {
-    TraverseTree(&m_root, 0, [&](TreeNode *node, int) {
-        node->OnPaint(ev->target);
+    auto rc = this->GetClientRect();
+    if (m_scrollAni.UpdateScroll(m_maxHeight - rc.Height)) {
+        this->EndAnimation();
+    }
+    m_vsb->SetPosition(m_scrollAni.GetScroll());
+
+    TraverseTree(&m_root, 0, [&, this](TreeNode *node, int) {
+        node->OnPaint(ev->target, m_scrollAni.GetScroll());
     });
     return true;
 }
@@ -182,6 +204,7 @@ void TreeView::RecreateResouce(ID2D1RenderTarget *target)
     );
     LTK_ASSERT(SUCCEEDED(hr));
     m_format->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_CENTER);
+    m_format->SetWordWrapping(DWRITE_WORD_WRAPPING_NO_WRAP);
 
     SAFE_RELEASE(m_brush);
     auto textColor = StyleManager::ColorFromString("#000000");
@@ -189,10 +212,18 @@ void TreeView::RecreateResouce(ID2D1RenderTarget *target)
     LTK_ASSERT(SUCCEEDED(hr));
 }
 
+bool TreeView::OnMouseWheel(MouseEvent *ev)
+{
+    m_scrollAni.BeginScroll(ev->delta);
+    this->BeginAnimation();
+    return true;
+}
+
 bool TreeView::OnLBtnDown(MouseEvent *ev)
 {
-    TraverseTree(&m_root, 0, [ev](TreeNode *node, int) {
-        node->OnLBtnDown(PointF(ev->x, ev->y));
+    TraverseTree(&m_root, 0, 
+        [ev, scroll = m_scrollAni.GetScroll()](TreeNode *node, int) {
+            node->OnLBtnDown(PointF(ev->x, ev->y + scroll));
     });
     this->DoLayout(); // TODO change callback to return bool, early abort.
     this->Invalidate();
@@ -202,6 +233,7 @@ bool TreeView::OnLBtnDown(MouseEvent *ev)
 bool TreeView::OnSize(SizeEvent *ev)
 {
     this->DoLayout();
+    m_vsb->SetRect(RectF(ev->width - 8, 0, 6, ev->height));
     return false;
 }
 

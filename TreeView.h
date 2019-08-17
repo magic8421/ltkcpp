@@ -8,6 +8,7 @@
 #pragma once
 
 #include "Sprite.h"
+#include "Animation.h"
 
 namespace ltk {
 
@@ -35,7 +36,7 @@ public:
 
     bool IsExpand();
 
-    virtual void OnPaint(ID2D1RenderTarget *target);
+    virtual void OnPaint(ID2D1RenderTarget *target, float scroll);
     virtual void OnLBtnDown(PointF pt);
 
 private:
@@ -75,9 +76,8 @@ protected:
     virtual bool OnPaint(PaintEvent *ev) override;
     virtual bool OnSize(SizeEvent *ev) override;
     virtual bool OnLBtnDown(MouseEvent *ev) override;
+    virtual bool OnMouseWheel(MouseEvent *ev) override;
     virtual void RecreateResouce(ID2D1RenderTarget *target) override;
-
-
 
 private:
     ScrollBar *m_vsb = nullptr;
@@ -88,6 +88,9 @@ private:
 
     ID2D1SolidColorBrush *m_brush = nullptr;
     IDWriteTextFormat *m_format = nullptr;
+
+    ScrollAnimation m_scrollAni;
+    float m_maxHeight = 0.0f;
 
     DISALLOW_COPY_AND_ASSIGN(TreeView)
 };

@@ -80,6 +80,16 @@ RectF Sprite::GetAbsRect()
 	return rcSelf;
 }
 
+float Sprite::GetWidth()
+{
+    return m_rect.Width;
+}
+
+float Sprite::GetHeight()
+{
+    return m_rect.Height;
+}
+
 void Sprite::SetRect( RectF rect )
 {
 	// 检查下宽高是否小于0 是则设为0 然后0宽或0高要在OnDraw这些里面特殊处理一下

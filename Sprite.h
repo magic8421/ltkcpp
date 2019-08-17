@@ -24,12 +24,12 @@ public:
     const char *GetName();
 
 	RectF GetRect();
-
 	RectF GetClientRect();
-
 	void SetRect( RectF rect );
-
 	RectF GetAbsRect();
+
+    float GetWidth();
+    float GetHeight();
 
 	void Invalidate();
 
@@ -38,7 +38,6 @@ public:
 	Window *GetWindow();
 
 	void SetVisible( bool );
-
 	bool GetVisible();
 
 	void AddChild( Sprite *sp );
@@ -58,13 +57,11 @@ public:
 	void EnableFocus(bool enable);
 
 	void SetCapture();
-
 	void ReleaseCapture();
 
 	void BringToFront();
 
 	void EnableClipChildren(bool bClip);
-
 	bool GetClipChildren();
 
 	void TrackMouseLeave();
