@@ -71,7 +71,7 @@ bool TextEdit::OnPaint(PaintEvent *ev)
         m_layout->HitTestTextRange(begin, end - begin, 0.0f, 0.0f,
             NULL, 0, &len);
         LTK_ASSERT(SUCCEEDED(hr));
-        LTK_LOG("HitTestTextRange: %d metrics", len);
+        //LTK_LOG("HitTestTextRange: %d metrics", len);
         vecMetrics.resize(len);
         m_layout->HitTestTextRange(begin, end - begin, m_padding, 0.0f,
             &vecMetrics[0], len, &len);
@@ -107,9 +107,12 @@ void TextEdit::DeleteSelected()
         std::swap(begin, end);
     }
     m_text.erase(m_text.begin() + begin, m_text.begin() + end);
+#pragma warning(push)
+#pragma warning(disable:4018)
     m_cursorPos = min(m_cursorPos, m_selection); // TODO FIXME
     m_cursorPos = max(0, m_cursorPos);
     m_cursorPos = min(m_cursorPos, m_text.size() - 1);
+#pragma warning(pop)
     m_selection = -1;
 }
 
@@ -141,6 +144,11 @@ bool TextEdit::OnChar(KeyEvent *ev)
 bool TextEdit::OnKeyDown(KeyEvent *ev)
 {
     wchar_t ch = (wchar_t)ev->keyCode;
+    HRESULT hr = S_OK;
+    float x = 0.0f;
+    float y = 0.0f;
+    DWRITE_HIT_TEST_METRICS dhtm = { 0 };
+
     if (ch == VK_DELETE) { // TODO not here to handle.. maybe OnKeyDown
         if (m_selection >= 0) {
             this->DeleteSelected();
@@ -150,15 +158,27 @@ bool TextEdit::OnKeyDown(KeyEvent *ev)
             return true;
         }
     } else if (ch == VK_LEFT) {
+        m_selection = -1;
         if (m_cursorPos > 0) {
             m_cursorPos--;
-            this->UpdateCursor(true);
-            return true;
         }
     } else if (ch == VK_RIGHT) {
-
+        m_selection = -1;
+        if (m_cursorPos < (int)m_text.size()) {
+            m_cursorPos++;
+        }
+    } else if (ch == VK_UP) {
+        m_selection = -1;
+        hr = m_layout->HitTestTextPosition(m_cursorPos, FALSE, &x, &y, &dhtm);
+        LTK_ASSERT(SUCCEEDED(hr));
+        m_cursorPos = this->HitTest(x, y - 1.0f - m_scrollAni.GetScroll());
+    } else if (ch == VK_DOWN) {
+        m_selection = -1;
+        hr = m_layout->HitTestTextPosition(m_cursorPos, FALSE, &x, &y, &dhtm);
+        LTK_ASSERT(SUCCEEDED(hr));
+        m_cursorPos = this->HitTest(x, y + dhtm.height + 1.0f - m_scrollAni.GetScroll());
     }
-    this->RecreateLayout();
+    this->RecreateLayout(); // TODO move to VK_DELETE branch
     this->UpdateCursor(true);
     return true;
 }
@@ -198,7 +218,7 @@ void TextEdit::RecreateLayout()
     hr = m_layout->GetMetrics(&textMetrics);
     LTK_ASSERT(SUCCEEDED(hr));
     float layout_h = textMetrics.height;
-    LTK_LOG("layout_h:%f", layout_h);
+    LTK_LOG("RecreateLayout layout_h:%f", layout_h);
     if (layout_h > rc.Height) {
         m_vsb->SetVisible(true);
         m_vsb->SetContentSize(layout_h);
@@ -229,9 +249,11 @@ void TextEdit::UpdateCursor(bool bEnsureVisible)
         float delta = y + dhtm.height - rc.Height;
         if (delta > 0.01f) {
             m_scrollAni.SetScroll(m_scrollAni.GetScroll() + delta);
+            y -= delta;
         }
         if (y < -0.01f) {
             m_scrollAni.SetScroll(m_scrollAni.GetScroll() + y);
+            // y = 0.0f;
         }
         LTK_LOG("delta: %.1f y: %.1f", delta, y);
     }
@@ -314,7 +336,7 @@ bool TextEdit::OnSize(SizeEvent *ev)
 {
     this->RecreateLayout();
 
-    m_vsb->SetRect(RectF(ev->width - 6, 0, 6, ev->height));
+    m_vsb->SetRect(RectF(ev->width - 8, 0, 6, ev->height));
     
     return false;
 }
