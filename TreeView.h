@@ -18,7 +18,9 @@ class TreeNode
 {
 public:
     TreeNode() {}
-    virtual ~TreeNode() {}
+    virtual ~TreeNode();
+
+    void SetTreeView(TreeView *tree);
 
     void AddChild(TreeNode *);
     void InsertChild(TreeNode *);
@@ -36,7 +38,7 @@ public:
     virtual void OnPaint(ID2D1RenderTarget *target);
 
 private:
-    bool m_bExpand = false;
+    bool m_bExpand = true;
     bool m_bMouseHover = false;
     bool m_bChecked = false;
 
@@ -52,7 +54,7 @@ private:
 class TreeView : public Sprite
 {
 public:
-    TreeView() {}
+    TreeView();
     virtual ~TreeView();
 
     void DoLayout();
@@ -66,13 +68,14 @@ public:
 
 protected:
     virtual bool OnPaint(PaintEvent *ev) override;
+    virtual bool OnSize(SizeEvent *ev) override;
     virtual void RecreateResouce(ID2D1RenderTarget *target) override;
 
 private:
     ScrollBar *m_vsb = nullptr;
     TreeNode m_root;
 
-    float m_itemHeight = 40;
+    float m_itemHeight = 30;
     float m_indent = 10;
 
     ID2D1SolidColorBrush *m_brush = nullptr;

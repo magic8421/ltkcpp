@@ -11,6 +11,7 @@
 #include "Button.h"
 #include "ListView.h"
 #include "TextEdit.h"
+#include "TreeView.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW 
@@ -23,20 +24,6 @@ void MyDumpMemoryLeak()
     _CrtDumpMemoryLeaks();
 }
 
-void test_deffer()
-{
-    char *p = nullptr;
-    DEFER_BEGIN()
-        if (p) {
-            LTK_LOG("has p");
-            delete p;
-        } else {
-            LTK_LOG("no p");
-        }
-    DEFER_END()
-    p = new char[10];
-}
-
 int CALLBACK WinMain(
     _In_ HINSTANCE hInstance,
     _In_ HINSTANCE hPrevInstance,
@@ -44,8 +31,6 @@ int CALLBACK WinMain(
     _In_ int       nCmdShow
 )
 {
-    test_deffer();
-
     LtkLogInit();
     LtkInitialize();
     ShadowFrame::Init();
@@ -63,27 +48,52 @@ int CALLBACK WinMain(
         ::PostQuitMessage(0);
     });
 
-    Button *btn1 = new Button;
-    btn1->SetText(L"大家好");
-    btn1->ClickedEvent.Attach([&]() {
-        wnd->CloseWindow(); // WTF, with [&] you can capture unique_ptr
-        ::PostQuitMessage(0);
-    });
+    BoxLayout *hbox = new BoxLayout(BoxLayout::Horizontal);
+    wnd->SetClientSprite(hbox);
 
-    //btn1->SetRect(RectF(10, 50, 100, 40));
-    //wnd->GetRootSprite()->AddChild(btn1);
+    TreeView *tree = new TreeView;
+    hbox->AddLayoutItem(tree, 100, 0.3f);
+    TreeNode *node1 = new TreeNode;
+    node1->SetText(L"第一项");
+    tree->GetRootNode()->AddChild(node1);
+
+    TreeNode *node2 = new TreeNode;
+    node2->SetText(L"子项目1");
+    node1->AddChild(node2);
+
+    node2 = new TreeNode;
+    node2->SetText(L"子项目2");
+    node1->AddChild(node2);
+
+    node2 = new TreeNode;
+    node2->SetText(L"子项目3");
+    node1->AddChild(node2);
+
+    TreeNode *node3 = new TreeNode;
+    node3->SetText(L"子子项目1");
+    node2->AddChild(node3);
+
+    node2 = new TreeNode;
+    node2->SetText(L"子项目4");
+    node1->AddChild(node2);
+
+    node1 = new TreeNode;
+    node1->SetText(L"第二项");
+    tree->GetRootNode()->AddChild(node1);
+
+    node1 = new TreeNode;
+    node1->SetText(L"第三项");
+    tree->GetRootNode()->AddChild(node1);
+
+
     BoxLayout *vbox = new BoxLayout(BoxLayout::Vertical);
     vbox->SetMargin(10);
-    vbox->AddLayoutItem(btn1, 40);
-    wnd->SetClientSprite(vbox);
-
-    TextEdit *edit1 = new TextEdit;
-    vbox->AddLayoutItem(edit1, 200, 0.0f);
+    hbox->AddLayoutItem(vbox, 100, 0.7f);
 
     HeaderCtrl *header = new HeaderCtrl;
     header->AddColumn(L"项目名", 100);
-    header->AddColumn(L"工程名", 400);
-    header->AddColumn(L"负责人", 600);
+    header->AddColumn(L"工程名", 200);
+    header->AddColumn(L"负责人", 200);
     vbox->AddLayoutItem(header, 30, 0.0f);
 
     ListView *listview1 = new ListView();
@@ -99,7 +109,20 @@ int CALLBACK WinMain(
         listview1->SetSubItemText(i, 2, text.c_str());
     }
 
-    vbox->DoLayout();
+    TextEdit *edit1 = new TextEdit;
+    vbox->AddLayoutItem(edit1, 100, 0.0f);
+
+    Button *btn1 = new Button;
+    btn1->SetText(L"退出");
+    btn1->ClickedEvent.Attach([&]() {
+        wnd->CloseWindow(); // WTF, with [&] you can capture unique_ptr
+        ::PostQuitMessage(0);
+    });
+    vbox->AddLayoutItem(btn1, 40);
+
+
+    hbox->DoLayout();
+
 
     MSG msg;
     BOOL bRet;

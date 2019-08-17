@@ -15,9 +15,6 @@ CStringA Utf16ToGbk(LPCTSTR strW, int len);
 
 std::wstring WStringFormat(LPCWSTR format, ...);
 
-#define DEFER_BEGIN() auto __deferred__ = LtkScopeGuard([&]() {
-#define DEFER_END() });
-
 #define LOGW(msg) do\
 {\
 	std::wstringstream ss;\

@@ -3,13 +3,30 @@
 #include "ScrollBar.h"
 #include "StyleManager.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW 
+#endif
+
 namespace ltk
 {
+
+TreeNode::~TreeNode()
+{
+    for (auto node : m_children) {
+        delete node;
+    }
+}
+
+void TreeNode::SetTreeView(TreeView *tree)
+{
+    m_treeView = tree;
+}
 
 void TreeNode::AddChild(TreeNode *node)
 {
     LTK_ASSERT(node->m_parent == nullptr);
     node->m_parent = this;
+    node->m_treeView = m_treeView;
     m_children.push_back(node);
 }
 
@@ -60,6 +77,12 @@ void TreeNode::OnPaint(ID2D1RenderTarget *target)
         m_text.c_str(), m_text.size(), format, D2D1RectF(m_rect), brush);
 }
 
+//////////////////////////////////////////////////////////////////////////
+
+TreeView::TreeView()
+{
+    m_root.SetTreeView(this);
+}
 
 TreeView::~TreeView()
 {
@@ -118,7 +141,12 @@ TreeNode * TreeView::GetRootNode()
 
 bool TreeView::OnPaint(PaintEvent *ev)
 {
-    TraverseTree(&m_root, 0, [ev](TreeNode *node, int) {
+    bool bRoot = true;
+    TraverseTree(&m_root, 0, [&](TreeNode *node, int) {
+        if (bRoot) {
+            bRoot = false;
+            return;
+        }
         node->OnPaint(ev->target);
     });
     return true;
@@ -145,6 +173,12 @@ void TreeView::RecreateResouce(ID2D1RenderTarget *target)
     auto textColor = StyleManager::ColorFromString("#000000");
     hr = target->CreateSolidColorBrush(textColor, &m_brush);
     LTK_ASSERT(SUCCEEDED(hr));
+}
+
+bool TreeView::OnSize(SizeEvent *ev)
+{
+    this->DoLayout();
+    return false;
 }
 
 } // namespace ltk
