@@ -25,6 +25,8 @@ void TreeNode::SetTreeView(TreeView *tree)
 void TreeNode::AddChild(TreeNode *node)
 {
     LTK_ASSERT(node->m_parent == nullptr);
+    LTK_ASSERT(node != this);
+
     node->m_parent = this;
     node->m_treeView = m_treeView;
     m_children.push_back(node);
@@ -94,15 +96,10 @@ TreeView::~TreeView()
 
 void TreeView::DoLayout()
 {
-    bool bRoot = true;
     float y = 0.0f;
     RectF rcSprite = GetClientRect();
 
     TraverseTree(&m_root, 0, [&](TreeNode *node, int depth) {
-        if (bRoot) {
-            bRoot = false;
-            return;
-        }
         RectF rc;
         rc.X = (depth - 1) * m_indent;
         rc.Y = y;
@@ -116,7 +113,9 @@ void TreeView::DoLayout()
 void TreeView::TraverseTree(TreeNode *node, int depth, 
     const std::function<void(TreeNode *, int)> &cb)
 {
-    cb(node, depth);
+    if (node != &m_root) {
+        cb(node, depth);
+    }
     if (node->IsExpand()) {
         for (UINT i = 0; i < node->GetChildCount(); i++) {
             TraverseTree(node->GetNthChild(i), depth + 1, cb);
@@ -141,12 +140,7 @@ TreeNode * TreeView::GetRootNode()
 
 bool TreeView::OnPaint(PaintEvent *ev)
 {
-    bool bRoot = true;
     TraverseTree(&m_root, 0, [&](TreeNode *node, int) {
-        if (bRoot) {
-            bRoot = false;
-            return;
-        }
         node->OnPaint(ev->target);
     });
     return true;
@@ -168,6 +162,7 @@ void TreeView::RecreateResouce(ID2D1RenderTarget *target)
         &m_format
     );
     LTK_ASSERT(SUCCEEDED(hr));
+    m_format->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_CENTER);
 
     SAFE_RELEASE(m_brush);
     auto textColor = StyleManager::ColorFromString("#000000");

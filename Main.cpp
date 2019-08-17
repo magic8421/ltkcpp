@@ -24,6 +24,23 @@ void MyDumpMemoryLeak()
     _CrtDumpMemoryLeaks();
 }
 
+static void RecBuildNodes(TreeNode *parent, int depth)
+{
+    if (depth > 4) {
+        return;
+    }
+    int num = rand() % 15 + 1;
+    for (int i = 0; i < num; i++) {
+        TreeNode *node = new TreeNode;
+        wstring text = WStringFormat(L"%d", rand());
+        node->SetText(text.c_str());
+        parent->AddChild(node);
+        if (rand() % 100 < 25) {
+            RecBuildNodes(node, depth + 1);
+        }
+    }
+}
+
 int CALLBACK WinMain(
     _In_ HINSTANCE hInstance,
     _In_ HINSTANCE hPrevInstance,
@@ -53,37 +70,9 @@ int CALLBACK WinMain(
 
     TreeView *tree = new TreeView;
     hbox->AddLayoutItem(tree, 100, 0.3f);
-    TreeNode *node1 = new TreeNode;
-    node1->SetText(L"第一项");
-    tree->GetRootNode()->AddChild(node1);
-
-    TreeNode *node2 = new TreeNode;
-    node2->SetText(L"子项目1");
-    node1->AddChild(node2);
-
-    node2 = new TreeNode;
-    node2->SetText(L"子项目2");
-    node1->AddChild(node2);
-
-    node2 = new TreeNode;
-    node2->SetText(L"子项目3");
-    node1->AddChild(node2);
-
-    TreeNode *node3 = new TreeNode;
-    node3->SetText(L"子子项目1");
-    node2->AddChild(node3);
-
-    node2 = new TreeNode;
-    node2->SetText(L"子项目4");
-    node1->AddChild(node2);
-
-    node1 = new TreeNode;
-    node1->SetText(L"第二项");
-    tree->GetRootNode()->AddChild(node1);
-
-    node1 = new TreeNode;
-    node1->SetText(L"第三项");
-    tree->GetRootNode()->AddChild(node1);
+    
+    ::srand(::GetTickCount());
+    RecBuildNodes(tree->GetRootNode(), 0);
 
 
     BoxLayout *vbox = new BoxLayout(BoxLayout::Vertical);
