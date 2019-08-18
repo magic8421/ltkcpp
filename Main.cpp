@@ -89,7 +89,8 @@ int CALLBACK WinMain(
     vbox->AddLayoutItem(listview1, 0.0f, 1.0f);
     listview1->SetHeaderCtrl(header);
     std::wstring text;
-    for (UINT i = 0; i < 200; i++) {
+    UINT num = rand() % 200;
+    for (UINT i = 0; i < num; i++) {
         text = WStringFormat(L"item:%d", i);
         listview1->AddItem(text.c_str());
         text = WStringFormat(L"subitem1:%d", i);

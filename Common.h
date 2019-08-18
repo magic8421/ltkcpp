@@ -42,7 +42,11 @@ EXTERN_C IMAGE_DOS_HEADER __ImageBase;
 //    CStringW msg; msg.Format(L"Assertion Failed: %s\r\n%s(%d)", L#expr, __FILEW__, __LINE__);\
 //    ::OutputDebugStringW(msg);__debugbreak();}
 
+#ifdef _DEBUG
 #define LTK_ASSERT(expr) if (!(expr)) {__debugbreak();} // super KISS
+#else
+#define LTK_ASSERT(expr) (void)(expr)
+#endif
 
 #define  LTK_LOG(...) LtkLogImpl(__FILE__, __LINE__, __VA_ARGS__)
 

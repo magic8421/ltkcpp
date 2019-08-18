@@ -185,6 +185,7 @@ void ListView::RecreateResouce(ID2D1RenderTarget *target)
         DWRITE_FONT_STYLE_NORMAL, DWRITE_FONT_STRETCH_NORMAL, 12.0f, L"zh-cn",
         &m_textFormat);
     m_textFormat->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_CENTER);
+    m_textFormat->SetWordWrapping(DWRITE_WORD_WRAPPING_NO_WRAP);
     LTK_ASSERT(SUCCEEDED(hr));
 }
 

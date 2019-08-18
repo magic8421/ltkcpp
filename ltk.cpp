@@ -14,6 +14,7 @@
 #include "StyleManager.h"
 #include "RefCounted.h"
 #include "Sprite.h"
+#include "TimerManager.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW 
@@ -311,6 +312,7 @@ namespace ltk {
     {
         ShadowFrame::Free();
         StyleManager::Free();
+        TimerManager::Free();
 
         g_dw_factory->Release();
         g_wic_factory->Release();

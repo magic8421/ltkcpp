@@ -110,8 +110,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
-      <PrecompiledHeader>
-      </PrecompiledHeader>
+      <PrecompiledHeader>Use</PrecompiledHeader>
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -122,6 +121,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>D2d1.lib;Windowscodecs.lib;Dwrite.lib;gdiplus.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -159,10 +159,12 @@
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="StyleManager.cpp" />
     <ClCompile Include="TextEdit.cpp" />
     <ClCompile Include="ThreadHelper.cpp" />
+    <ClCompile Include="TimerManager.cpp" />
     <ClCompile Include="TreeView.cpp" />
     <ClCompile Include="UniConversion.cpp" />
     <ClCompile Include="Window.cpp" />
@@ -189,6 +191,7 @@
     <ClInclude Include="StyleManager.h" />
     <ClInclude Include="TextEdit.h" />
     <ClInclude Include="ThreadHelper.h" />
+    <ClInclude Include="TimerManager.h" />
     <ClInclude Include="TreeView.h" />
     <ClInclude Include="UniConversion.h" />
     <ClInclude Include="Window.h" />
