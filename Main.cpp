@@ -12,6 +12,7 @@
 #include "ListView.h"
 #include "TextEdit.h"
 #include "TreeView.h"
+#include "TimerManager.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW 
@@ -48,10 +49,7 @@ int CALLBACK WinMain(
     _In_ int       nCmdShow
 )
 {
-    LtkLogInit();
     LtkInitialize();
-    ShadowFrame::Init();
-    Window::RegisterWndClass();
 
     StyleManager::Instance()->LoadFromXml("res\\style.xml");
 
@@ -105,8 +103,11 @@ int CALLBACK WinMain(
     Button *btn1 = new Button;
     btn1->SetText(L"ÍË³ö");
     btn1->ClickedEvent.Attach([&]() {
-        wnd->CloseWindow(); // WTF, with [&] you can capture unique_ptr
-        ::PostQuitMessage(0);
+        ltk::SetTimer([]() {
+            LTK_LOG("hi..");
+        }, 1000);
+        //wnd->CloseWindow(); // WTF, with [&] you can capture unique_ptr
+        //::PostQuitMessage(0);
     });
     vbox->AddLayoutItem(btn1, 40);
 

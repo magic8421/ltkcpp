@@ -32,9 +32,8 @@ void TimerManager::Free()
 
 TimerManager::TimerManager()
 {
-    WNDCLASS wc;
-    ::ZeroMemory(&wc, sizeof(wc));
-    wc.hInstance = ::GetModuleHandle(NULL);
+    WNDCLASS wc = { 0 };
+    wc.hInstance = HINST_THISCOMPONENT;
     wc.lpszClassName = L"LtkTimerManager";
     wc.lpfnWndProc = MyWndProc;
     ::RegisterClass(&wc);
@@ -65,10 +64,14 @@ LRESULT CALLBACK TimerManager::MyWndProc(
         thiz->OnTimer((UINT)wparam);
         break;
     case WM_NCDESTROY:
-        thiz->m_hwnd = 0;
+        if (thiz) {
+            thiz->m_hwnd = 0;
+        } else {
+            LTK_LOG("this is null");
+        }
         break;
     }
-    return 0;
+    return ::DefWindowProc(hwnd, message, wparam, lparam);
 }
 
 void TimerManager::OnTimer(UINT id)

@@ -142,6 +142,7 @@ void TreeView::DoLayout()
         m_vsb->SetVisible(true);
     } else {
         m_vsb->SetVisible(false);
+        m_scrollAni.SetScroll(0);
     }
 }
 
