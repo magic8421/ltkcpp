@@ -105,7 +105,7 @@ int CALLBACK WinMain(
 
     Button *btn1 = new Button;
     UINT cookie1 = 0;
-    btn1->SetText(L"定时器1");
+    btn1->SetText(L"循环定时器");
     btn1->ClickedEvent.Attach([&]() {
         cookie1 = ltk::SetTimer(1000, cookie1,[&]() {
             LTK_LOG("tick: %d", cookie1);
@@ -123,7 +123,28 @@ int CALLBACK WinMain(
     });
     hbox_btns->AddLayoutItem(btn2, 0, 1);
 
+    Button *btn3 = new Button;
+    UINT cookie2 = 0;
+    btn3->SetText(L"单次定时器");
+    btn3->ClickedEvent.Attach([&]() {
+        cookie2 = ltk::SetOnceTimer(1000, cookie2, [&]() {
+            LTK_LOG("tick: %d", cookie2);
+            cookie2 = 0;
+        });
+        //wnd->CloseWindow(); // WTF, with [&] you can capture unique_ptr
+        //::PostQuitMessage(0);
+    });
+    hbox_btns->AddLayoutItem(btn3, 0, 1);
 
+    Button *btn4 = new Button;
+    btn4->SetText(L"停止");
+    btn4->ClickedEvent.Attach([&]() {
+        ltk::KillTimer(cookie2);
+        cookie2 = 0;
+    });
+    hbox_btns->AddLayoutItem(btn4, 0, 1);
+
+    vbox->AddSpaceItem(5, 0);
     hbox->DoLayout();
 
 
