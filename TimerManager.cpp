@@ -90,30 +90,52 @@ void TimerManager::OnTimer(UINT id)
     }
 }
 
-UINT TimerManager::SetTimer(const std::function<void()>&cb, UINT elapse, bool bOnce)
+UINT TimerManager::SetTimer(UINT id, const std::function<void()>&cb, UINT elapse, bool bOnce)
 {
-    UINT id = 0;
-    auto iter = m_mapCallback.end();
-    do {
-        id = (UINT)rand() + USER_TIMER_MINIMUM;
-        iter = m_mapCallback.find(id);
-    } while (iter != m_mapCallback.end());
-    auto node = new TimerNode;
-    node->callback = cb;
-    node->isOnceTimer = bOnce;
-    m_mapCallback[id] = node;
-    ::SetTimer(m_hwnd, id, elapse, NULL);
+    if (id == 0) {
+        auto iter = m_mapCallback.end();
+        do {
+            id = (UINT)rand() + USER_TIMER_MINIMUM;
+            iter = m_mapCallback.find(id);
+        } while (iter != m_mapCallback.end());
+        auto node = new TimerNode;
+        node->callback = cb;
+        node->isOnceTimer = bOnce;
+        m_mapCallback[id] = node;
+        ::SetTimer(m_hwnd, id, elapse, NULL);
+    } else {
+        auto iter = m_mapCallback.find(id);
+        if (iter != m_mapCallback.end()) {
+            iter->second->isOnceTimer = bOnce;
+            ::SetTimer(m_hwnd, id, elapse, NULL); // refresh the timer.
+        }
+    }
     return id;
 }
 
-UINT SetTimer(const std::function<void()>&cb, UINT elapse)
+void TimerManager::KillTimer(UINT id)
 {
-    return TimerManager::Instance()->SetTimer(cb, elapse, false);
+    auto iter = m_mapCallback.find(id);
+    if (iter != m_mapCallback.end()) {
+        delete iter->second;
+        ::KillTimer(m_hwnd, id);
+        m_mapCallback.erase(iter);
+    }
 }
 
-UINT SetOnceTimer(const std::function<void()>&cb, UINT elapse)
+UINT SetTimer(UINT elapse, UINT id, const std::function<void()>&cb)
 {
-    return TimerManager::Instance()->SetTimer(cb, elapse, true);
+    return TimerManager::Instance()->SetTimer(id, cb, elapse, false);
+}
+
+UINT SetOnceTimer(UINT elapse, UINT id, const std::function<void()>&cb)
+{
+    return TimerManager::Instance()->SetTimer(id, cb, elapse, true);
+}
+
+void KillTimer(UINT id)
+{
+    TimerManager::Instance()->KillTimer(id);
 }
 
 } // namespace ltk

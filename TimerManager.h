@@ -20,7 +20,8 @@ public:
     static TimerManager *Instance();
     static void Free();
 
-    UINT SetTimer(const std::function<void()>&cb, UINT elapse, bool bOnce);
+    UINT SetTimer(UINT id, const std::function<void()>&cb, UINT elapse, bool bOnce);
+    void KillTimer(UINT id);
 
 private:
     TimerManager();
@@ -34,7 +35,8 @@ private:
     std::unordered_map<UINT, TimerNode *> m_mapCallback;
 };
 
-UINT SetTimer(const std::function<void()>&cb, UINT elapse);
-UINT SetOnceTimer(const std::function<void()>&cb, UINT elapse);
+UINT SetTimer(UINT elapse, UINT id, const std::function<void()>&cb);
+UINT SetOnceTimer(UINT elapse, UINT id, const std::function<void()>&cb);
+void KillTimer(UINT id);
 
 } // namespace ltk

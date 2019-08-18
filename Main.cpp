@@ -74,7 +74,7 @@ int CALLBACK WinMain(
 
 
     BoxLayout *vbox = new BoxLayout(BoxLayout::Vertical);
-    vbox->SetMargin(10);
+    //vbox->SetSpacing(10);
     hbox->AddLayoutItem(vbox, 100, 0.7f);
 
     HeaderCtrl *header = new HeaderCtrl;
@@ -100,16 +100,28 @@ int CALLBACK WinMain(
     TextEdit *edit1 = new TextEdit;
     vbox->AddLayoutItem(edit1, 100, 0.0f);
 
+    auto hbox_btns = new BoxLayout(BoxLayout::Horizontal);
+    vbox->AddLayoutItem(hbox_btns, 30, 0.0f);
+
     Button *btn1 = new Button;
-    btn1->SetText(L"ÍË³ö");
+    UINT cookie1 = 0;
+    btn1->SetText(L"¶¨Ê±Æ÷1");
     btn1->ClickedEvent.Attach([&]() {
-        ltk::SetTimer([]() {
-            LTK_LOG("hi..");
-        }, 1000);
+        cookie1 = ltk::SetTimer(1000, cookie1,[&]() {
+            LTK_LOG("tick: %d", cookie1);
+        });
         //wnd->CloseWindow(); // WTF, with [&] you can capture unique_ptr
         //::PostQuitMessage(0);
     });
-    vbox->AddLayoutItem(btn1, 40);
+    hbox_btns->AddLayoutItem(btn1, 0, 1);
+
+    Button *btn2 = new Button;
+    btn2->SetText(L"Í£Ö¹");
+    btn2->ClickedEvent.Attach([&]() {
+        ltk::KillTimer(cookie1);
+        cookie1 = 0;
+    });
+    hbox_btns->AddLayoutItem(btn2, 0, 1);
 
 
     hbox->DoLayout();

@@ -37,6 +37,7 @@ void BoxLayout::AddLayoutItem(Sprite *item, float preferedSize, float growFactor
     param.item = item;
     param.size = preferedSize;
     param.growFactor = growFactor;
+    // TODO check if duplicate.
     m_params.push_back(param);
 }
 void BoxLayout::InsertLayoutItem(UINT before, Sprite *item, float preferedSize, float growFactor)
@@ -47,6 +48,7 @@ void BoxLayout::InsertLayoutItem(UINT before, Sprite *item, float preferedSize, 
     param.item = item;
     param.size = preferedSize;
     param.growFactor = growFactor;
+    // TODO check if duplicate.
     m_params.insert(m_params.begin() + before, param);
 }
 
@@ -67,12 +69,12 @@ bool BoxLayout::OnSize(SizeEvent *ev)
         sum_size += m_params[i].size;
         sum_factor += m_params[i].growFactor;
     }
-    if (m_mode == Horizontal) {
-        sum_size += m_marginLeft + m_marginRight;
-    }
-    else {
-        sum_size += m_marginTop + m_marginBottom;
-    }
+    //if (m_mode == Horizontal) {
+    //    sum_size += m_marginLeft + m_marginRight;
+    //}
+    //else {
+    //    sum_size += m_marginTop + m_marginBottom;
+    //}
     sum_size += m_spacing * (m_params.size() - 1);
 
     float remain;
@@ -84,8 +86,8 @@ bool BoxLayout::OnSize(SizeEvent *ev)
     }
     remain = max(0.0f, remain);
 
-    float x = m_marginLeft;
-    float y = m_marginTop;
+    float x = 0; //m_marginLeft;
+    float y = 0; //m_marginTop;
     for (size_t i = 0; i < m_params.size(); i++) {
         RectF rc2;
         float size;
@@ -99,13 +101,13 @@ bool BoxLayout::OnSize(SizeEvent *ev)
             rc2.X = x;
             rc2.Y = y;
             rc2.Width = size;
-            rc2.Height = ev->height - m_marginTop - m_marginBottom;
+            rc2.Height = ev->height;// -m_marginTop - m_marginBottom;
             x += size + m_spacing;
         }
         else {
             rc2.X = x;
             rc2.Y = y;
-            rc2.Width = ev->width - m_marginLeft - m_marginRight;
+            rc2.Width = ev->width;// -m_marginLeft - m_marginRight;
             rc2.Height = size;
             y += size + m_spacing;
         }
@@ -120,6 +122,7 @@ bool BoxLayout::OnSize(SizeEvent *ev)
     return true;
 }
 
+/*
 void BoxLayout::SetMargin(float margin)
 {
     margin = max(0.0f, margin);
@@ -152,6 +155,7 @@ void BoxLayout::SetBottomMargin(float m)
     m = max(0.0f, m);
     m_marginBottom = m;
 }
+*/
 
 void BoxLayout::SetSpacing(float spacing)
 {
