@@ -102,6 +102,48 @@ void StyleManager::AddBackgroundStyle(const char *name, AbstractBackground *bg)
     m_mapBackgroundStyle[strName] = bg;
 }
 
+IDWriteTextFormat * StyleManager::GetTextFormat(LPCSTR name)
+{
+    auto format = m_mapTextFormat[name];
+    LTK_ASSERT(format);
+    return format;
+}
+
+void StyleManager::AddTextFormat(LPCSTR name, IDWriteTextFormat *format)
+{
+    LTK_ASSERT(m_mapTextFormat[name] == nullptr);
+    m_mapTextFormat[name] = format;
+    format->AddRef();
+}
+
+void StyleManager::AddTextFormat2(LPCSTR name, LPCWSTR font_family,
+    DWRITE_FONT_WEIGHT weight, DWRITE_FONT_STYLE style, float size,
+    DWRITE_TEXT_ALIGNMENT hAlign, DWRITE_PARAGRAPH_ALIGNMENT vAlign)
+{
+    HRESULT hr = E_FAIL;
+    IDWriteTextFormat *format = nullptr;
+    hr = GetDWriteFactory()->CreateTextFormat(
+        font_family,
+        NULL,
+        weight,
+        style,
+        DWRITE_FONT_STRETCH_NORMAL,
+        size,
+        L"zh-cn",
+        &format
+    );
+    LTK_ASSERT(SUCCEEDED(hr));
+    
+    hr = format->SetTextAlignment(hAlign);
+    LTK_ASSERT(SUCCEEDED(hr));
+
+    hr = format->SetParagraphAlignment(vAlign);
+    LTK_ASSERT(SUCCEEDED(hr));
+
+    this->AddTextFormat(name, format);
+    format->Release();
+}
+
 RectF StyleManager::RectFromXml(tinyxml2::XMLElement *elm)
 {
     RectF rc;

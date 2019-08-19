@@ -22,12 +22,12 @@ public:
     void SetBackgroundStyle(LPCSTR style);
     void SetText(LPCWSTR text);
 
-
     virtual bool OnPaint(PaintEvent *ev) override;
 
 private:
     std::wstring m_text;
     AbstractBackground *m_background = nullptr;
+    IDWriteTextFormat *m_format = nullptr;
 };
 
 } // namespace

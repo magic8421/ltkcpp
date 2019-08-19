@@ -44,8 +44,14 @@ public:
 
     static D2D1_COLOR_F ColorFromString(const char *psz);
 
-    AbstractBackground *GetBackground(const char *name) const;
-    void AddBackgroundStyle(const char *name, AbstractBackground *bg);
+    AbstractBackground *GetBackground(LPCSTR name) const;
+    void AddBackgroundStyle(LPCSTR name, AbstractBackground *bg);
+
+    IDWriteTextFormat *GetTextFormat(LPCSTR name);
+    void AddTextFormat(LPCSTR name, IDWriteTextFormat *format);
+    void AddTextFormat2(LPCSTR name, LPCWSTR font_family, DWRITE_FONT_WEIGHT weight,
+        DWRITE_FONT_STYLE style, float size, DWRITE_TEXT_ALIGNMENT hAlign,
+        DWRITE_PARAGRAPH_ALIGNMENT vAlign);
 
     static RectF RectFromXml(tinyxml2::XMLElement *elm);
     static Margin MarginFromXml(tinyxml2::XMLElement *elm);
@@ -65,6 +71,7 @@ private:
     std::vector<D2D1_COLOR_F> m_colors;
     std::vector<float> m_measurements;
     std::unordered_map<std::string, AbstractBackground*> m_mapBackgroundStyle;
+    std::unordered_map<std::string, IDWriteTextFormat*> m_mapTextFormat;
 };
 
 class AbstractBackground

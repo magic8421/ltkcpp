@@ -51,6 +51,9 @@ bool Button::OnPaint(PaintEvent *ev)
         }
         m_background->Draw(wnd, ev->target, rc, GetState(), blend);
     }
+
+
+
     return true;
 }
 
