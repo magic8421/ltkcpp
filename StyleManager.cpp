@@ -88,21 +88,17 @@ AbstractBackground *StyleManager::GetBackground(const char *name) const
         return iter->second;
     }
     else {
-        return nullptr;
+        LTK_ASSERT(false);
     }
 }
 
-bool StyleManager::AddBackgroundStyle(const char *name, AbstractBackground *bg)
+void StyleManager::AddBackgroundStyle(const char *name, AbstractBackground *bg)
 {
     std::string strName(name);
-    auto iter = m_mapBackgroundStyle.find(strName);
-    if (iter == m_mapBackgroundStyle.end()) {
-        m_mapBackgroundStyle[strName] = bg;
-        return true;
+    if (m_mapBackgroundStyle[strName]) {
+        LTK_ASSERT(false);
     }
-    else {
-        return false;
-    }
+    m_mapBackgroundStyle[strName] = bg;
 }
 
 RectF StyleManager::RectFromXml(tinyxml2::XMLElement *elm)

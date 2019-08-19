@@ -155,6 +155,7 @@
     <ClCompile Include="ltk.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="ScrollBar.cpp" />
+    <ClCompile Include="SetupStyles.cpp" />
     <ClCompile Include="ShadowFrame.cpp" />
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="stdafx.cpp">
@@ -185,6 +186,7 @@
     <ClInclude Include="ListView.h" />
     <ClInclude Include="ltk.h" />
     <ClInclude Include="ScrollBar.h" />
+    <ClInclude Include="SetupStyles.h" />
     <ClInclude Include="ShadowFrame.h" />
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="stdafx.h" />

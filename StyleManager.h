@@ -45,7 +45,7 @@ public:
     static D2D1_COLOR_F ColorFromString(const char *psz);
 
     AbstractBackground *GetBackground(const char *name) const;
-    bool AddBackgroundStyle(const char *name, AbstractBackground *bg);
+    void AddBackgroundStyle(const char *name, AbstractBackground *bg);
 
     static RectF RectFromXml(tinyxml2::XMLElement *elm);
     static Margin MarginFromXml(tinyxml2::XMLElement *elm);
@@ -82,10 +82,10 @@ public:
     virtual void Draw(Window *wnd, ID2D1RenderTarget *targe, const RectF &rc,
         State state, float blend) override;
 
-    NinePatchBackground& Normal();
-    NinePatchBackground& Hover();
-    NinePatchBackground& Pressed();
-    NinePatchBackground& Disable();
+    TextureInfo& Normal() { return texNormal; }
+    TextureInfo& Hover() { return texHover; }
+    TextureInfo& Pressed() { return texPressed; }
+    TextureInfo& Disable() { return texDisable; }
 
     TextureInfo texNormal;
     TextureInfo texHover;

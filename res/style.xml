@@ -1,4 +1,5 @@
 <Style name="default">
+<!--
     <NinePatch name="default_button">
         <Normal>
             <Atlas x="4" y="3" w="21" h="67" />
@@ -66,7 +67,7 @@
         <Hover   x="147" y="23" w="22" h="20" />
         <Pressed x="147" y="43" w="22" h="20" />
     </OnePatch>
-    
+-->
     <Color name="TextNormal"        value="#000000" />
     <Color name="TextHover"         value="#766200" />
     <Color name="TextCaption"       value="#eae4c9" />
