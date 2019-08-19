@@ -20,7 +20,7 @@ HeaderCtrl::HeaderCtrl()
     this->EnableClipChildren(true);
 
     auto btn = new HeaderButton(this);
-    btn->SetBackgroundStyle("header_btn");
+    btn->SetStyle("header_button");
     ColumnData data;
     data.button = btn;
     m_vecColumns.push_back(data);
@@ -42,7 +42,7 @@ void HeaderCtrl::GetColumnWidth(std::vector<float> &vecColumns)
 void HeaderCtrl::AddColumn(LPCWSTR name, float size)
 {
     auto btn = new HeaderButton(this);
-    btn->SetBackgroundStyle("header_btn");
+    btn->SetStyle("header_button");
     btn->SetText(name);
     ColumnData data;
     data.name = name;

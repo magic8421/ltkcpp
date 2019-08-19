@@ -89,33 +89,27 @@ void SetupVectorStyle1()
 
     NinePatchBackground *nine_in_one = nullptr;
 
-    nine_in_one = new NinePatchBackground;
-    nine_in_one->Normal().SetAtals(142, 68, 6, 15).SetMargin(2, 3, 2, 3);
-    nine_in_one->Hover() .SetAtals(125, 68, 6, 15).SetMargin(2, 3, 2, 3);
-    nine_in_one->Pressed() = nine_in_one->Normal();
-    nine_in_one->Disable() = nine_in_one->Normal();
-    sm->AddBackgroundStyle("scrollbar_v", nine_in_one);
+    rect_bg = new RectangleBackground;
+    rect_bg->BorderColor().SetColor("#00cc00", "#00ff00", "#00aa00", "#cccccc");
+    rect_bg->InnerColor().SetColor("#000000", "#003300", "#000000", "#cccccc");
+    sm->AddBackgroundStyle("scrollbar_h", rect_bg);
 
-    nine_in_one = new NinePatchBackground;
-    nine_in_one->Normal().SetAtals(138, 86, 15, 6).SetMargin(3, 2, 3, 2);
-    nine_in_one->Hover() .SetAtals(121, 86, 15, 6).SetMargin(3, 2, 3, 2);
-    nine_in_one->Pressed() = nine_in_one->Normal();
-    nine_in_one->Disable() = nine_in_one->Normal();
-    sm->AddBackgroundStyle("scrollbar_h", nine_in_one);
 
-    nine_in_one = new NinePatchBackground;
-    nine_in_one->Normal() .SetAtals(177, 10, 8, 23).SetMargin(3, 3, 3, 3);
-    nine_in_one->Hover()  .SetAtals(189, 10, 8, 23).SetMargin(3, 3, 3, 3);
-    nine_in_one->Pressed().SetAtals(201, 10, 8, 23).SetMargin(3, 3, 3, 3);
-    nine_in_one->Disable() = nine_in_one->Normal();
-    sm->AddBackgroundStyle("header_btn", nine_in_one);
+    rect_bg = new RectangleBackground;
+    rect_bg->BorderColor().SetColor("#00cc00", "#00ff00", "#00aa00", "#cccccc");
+    rect_bg->InnerColor().SetColor("#000000", "#003300", "#000000", "#cccccc");
+    sm->AddBackgroundStyle("scrollbar_v", rect_bg);
 
-    nine_in_one = new NinePatchBackground;
-    nine_in_one->Normal().SetAtals(2, 98, 152, 167).SetMargin(40, 68, 40, 40);
-    nine_in_one->Hover() = nine_in_one->Normal();
-    nine_in_one->Pressed() = nine_in_one->Normal();
-    nine_in_one->Disable() = nine_in_one->Normal();
-    sm->AddBackgroundStyle("window_bg", nine_in_one);
+    rect_bg = new RectangleBackground;
+    rect_bg->BorderColor().SetColor("#00cc00", "#00ff00", "#00aa00", "#cccccc");
+    rect_bg->InnerColor().SetColor("#000000", "#003300", "#000000", "#cccccc");
+    sm->AddBackgroundStyle("header_btn", rect_bg);
+
+    rect_bg = new RectangleBackground;
+    rect_bg->BorderColor().SetColor("#00cc00", "#00ff00", "#00aa00", "#cccccc");
+    rect_bg->InnerColor().SetColor("#000000", "#003300", "#000000", "#cccccc");
+    sm->AddBackgroundStyle("window_bg", rect_bg);
+
 
     OnePatchBackground *one_patch = new OnePatchBackground;
     one_patch->Normal() .SetAtlas(103, 3, 22, 20);
@@ -138,11 +132,15 @@ void SetupVectorStyle1()
     one_patch->Disable() = one_patch->Normal();
     sm->AddBackgroundStyle("close_button", one_patch);
 
-    sm->AddTextFormat2("default_button", L"Î¢ÈíÑÅºÚ", DWRITE_FONT_WEIGHT_NORMAL,
+    sm->AddTextFormat2("default_button", L"ËÎÌå", DWRITE_FONT_WEIGHT_NORMAL,
         DWRITE_FONT_STYLE_NORMAL, 14, DWRITE_TEXT_ALIGNMENT_CENTER,
         DWRITE_PARAGRAPH_ALIGNMENT_CENTER);
 
     ButtonStyle *btn_style = new ButtonStyle;
-    btn_style->SetStyle("default_button", "default_button", "#ffffff");
+    btn_style->SetStyle("default_button", "default_button", "#00ff00");
     sm->AddButtonStyle("default_button", btn_style);
+
+    btn_style = new ButtonStyle;
+    btn_style->SetStyle("header_btn", "default_button", "#00ff00");
+    sm->AddButtonStyle("header_button", btn_style);
 }

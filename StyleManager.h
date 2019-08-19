@@ -183,4 +183,11 @@ struct ButtonStyle
     D2D1_COLOR_F TextColor;
 };
 
+struct ListViewStyle
+{
+    D2D1_COLOR_F TextColor;
+    D2D1_COLOR_F HoverColor;
+    D2D1_COLOR_F SelectedColor;
+};
+
 }
