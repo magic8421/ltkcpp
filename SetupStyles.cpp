@@ -9,6 +9,11 @@
 #include "SetupStyles.h"
 #include "StyleManager.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW 
+#endif
+
+
 using namespace ltk;
 
 void SetupPixelStyle1()
@@ -132,4 +137,12 @@ void SetupVectorStyle1()
     one_patch->Pressed().SetAtlas(147, 43, 22, 20);
     one_patch->Disable() = one_patch->Normal();
     sm->AddBackgroundStyle("close_button", one_patch);
+
+    sm->AddTextFormat2("default_button", L"Î¢ÈíÑÅºÚ", DWRITE_FONT_WEIGHT_NORMAL,
+        DWRITE_FONT_STYLE_NORMAL, 14, DWRITE_TEXT_ALIGNMENT_CENTER,
+        DWRITE_PARAGRAPH_ALIGNMENT_CENTER);
+
+    ButtonStyle *btn_style = new ButtonStyle;
+    btn_style->SetStyle("default_button", "default_button", "#ffffff");
+    sm->AddButtonStyle("default_button", btn_style);
 }

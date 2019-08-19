@@ -6,11 +6,10 @@
 //////////////////////////////////////////////////////////////////////////
 
 #include "stdafx.h"
-#include "Button.h"
-#include "Label.h"
 #include "ltk.h"
 #include "StyleManager.h"
-#include "ImageSprite.h"
+#include "Button.h"
+#include "Window.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW 
@@ -20,16 +19,28 @@ namespace ltk {
 
 Button::Button()
 {
-    m_background = StyleManager::Instance()->GetBackground("default_button");
+    this->SetStyle("default_button");
 }
 
 Button::~Button()
 {
 }
 
+void Button::SetStyle(LPCSTR name)
+{
+    m_style = StyleManager::Instance()->GetButtonStyle(name);
+    m_background = StyleManager::Instance()->GetBackground(m_style->BackgroundStyle.c_str());
+    m_format = StyleManager::Instance()->GetTextFormat(m_style->TextFormat.c_str());
+}
+
 void Button::SetBackgroundStyle(LPCSTR style)
 {
     m_background = StyleManager::Instance()->GetBackground(style);
+}
+
+void Button::SetTextFormat(LPCSTR name)
+{
+    m_format = StyleManager::Instance()->GetTextFormat(name);
 }
 
 bool Button::OnPaint(PaintEvent *ev)
@@ -51,8 +62,10 @@ bool Button::OnPaint(PaintEvent *ev)
         }
         m_background->Draw(wnd, ev->target, rc, GetState(), blend);
     }
-
-
+    auto brush = wnd->GetStockBrush();
+    brush->SetColor(m_style->TextColor);
+    ev->target->DrawText(m_text.c_str(), m_text.size(), m_format, ltk::D2D1RectF(rc),
+        brush);
 
     return true;
 }

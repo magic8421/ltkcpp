@@ -19,7 +19,9 @@ public:
     Button();
     virtual ~Button();
 
-    void SetBackgroundStyle(LPCSTR style);
+    void SetStyle(LPCSTR name);
+    void SetBackgroundStyle(LPCSTR name);
+    void SetTextFormat(LPCSTR name);
     void SetText(LPCWSTR text);
 
     virtual bool OnPaint(PaintEvent *ev) override;
@@ -28,6 +30,7 @@ private:
     std::wstring m_text;
     AbstractBackground *m_background = nullptr;
     IDWriteTextFormat *m_format = nullptr;
+    ButtonStyle *m_style = nullptr;
 };
 
 } // namespace

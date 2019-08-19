@@ -35,6 +35,14 @@ StyleManager::~StyleManager()
         iter != m_mapBackgroundStyle.end(); iter++) {
         delete iter->second;
     }
+    for (auto iter = m_mapTextFormat.begin();
+        iter != m_mapTextFormat.end(); iter++) {
+        iter->second->Release();
+    }
+    for (auto iter = m_mapButtonStyle.begin();
+        iter != m_mapButtonStyle.end(); iter++) {
+        delete iter->second;
+    }
 }
 
 StyleManager * StyleManager::Instance()
@@ -63,9 +71,11 @@ float StyleManager::GetMeasurement(Measurement m)
 D2D1_COLOR_F StyleManager::ColorFromString(const char *psz)
 {
     if (strlen(psz) != 7) {
+        LTK_ASSERT(false);
         return D2D1::ColorF(D2D1::ColorF::Cyan);
     }
     if (psz[0] != '#') {
+        LTK_ASSERT(false);
         return D2D1::ColorF(D2D1::ColorF::Cyan);
     }
     long bin = strtol(psz + 1, NULL, 16);
@@ -142,6 +152,19 @@ void StyleManager::AddTextFormat2(LPCSTR name, LPCWSTR font_family,
 
     this->AddTextFormat(name, format);
     format->Release();
+}
+
+ButtonStyle * StyleManager::GetButtonStyle(LPCSTR name)
+{
+    auto style = m_mapButtonStyle[name];
+    LTK_ASSERT(style);
+    return style;
+}
+
+void StyleManager::AddButtonStyle(LPCSTR name, ButtonStyle *style)
+{
+    LTK_ASSERT(m_mapButtonStyle[name] == nullptr);
+    m_mapButtonStyle[name] = style;
 }
 
 RectF StyleManager::RectFromXml(tinyxml2::XMLElement *elm)
@@ -430,6 +453,13 @@ void FourStateColor::SetColor(LPCSTR normal, LPCSTR hover, LPCSTR pressed, LPCST
     this->clrHover = StyleManager::ColorFromString(hover);
     this->clrPressed = StyleManager::ColorFromString(pressed);
     this->clrDisable = StyleManager::ColorFromString(disable);
+}
+
+void ButtonStyle::SetStyle(LPCSTR background, LPCSTR text_format, LPCSTR text_color)
+{
+    this->BackgroundStyle = background;
+    this->TextFormat = text_format;
+    this->TextColor = StyleManager::ColorFromString(text_color);
 }
 
 }

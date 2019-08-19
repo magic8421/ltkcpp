@@ -95,7 +95,7 @@ bool AbstractButton::OnLBtnDown(MouseEvent *ev)
 
 bool AbstractButton::OnLBtnUp(MouseEvent *ev)
 {
-    m_state = State::Normal;
+    m_state = State::Hover;
     if (m_bCaptureMouse) {
         this->ReleaseCapture();
     }

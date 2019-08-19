@@ -14,6 +14,7 @@ namespace ltk {
 
 class Window;
 class AbstractBackground;
+struct ButtonStyle;
 
 class StyleManager
 {
@@ -53,6 +54,9 @@ public:
         DWRITE_FONT_STYLE style, float size, DWRITE_TEXT_ALIGNMENT hAlign,
         DWRITE_PARAGRAPH_ALIGNMENT vAlign);
 
+    ButtonStyle *GetButtonStyle(LPCSTR name);
+    void AddButtonStyle(LPCSTR name, ButtonStyle *style);
+
     static RectF RectFromXml(tinyxml2::XMLElement *elm);
     static Margin MarginFromXml(tinyxml2::XMLElement *elm);
     static bool TextureFromXml(tinyxml2::XMLElement *elm, TextureInfo *tex);
@@ -72,6 +76,7 @@ private:
     std::vector<float> m_measurements;
     std::unordered_map<std::string, AbstractBackground*> m_mapBackgroundStyle;
     std::unordered_map<std::string, IDWriteTextFormat*> m_mapTextFormat;
+    std::unordered_map<std::string, ButtonStyle*> m_mapButtonStyle;
 };
 
 class AbstractBackground
@@ -167,6 +172,15 @@ struct WindowStyle
 
 private:
     DISALLOW_COPY_AND_ASSIGN(WindowStyle);
+};
+
+struct ButtonStyle
+{
+    void SetStyle(LPCSTR background, LPCSTR text_format, LPCSTR text_color);
+
+    std::string BackgroundStyle;
+    std::string TextFormat;
+    D2D1_COLOR_F TextColor;
 };
 
 }
