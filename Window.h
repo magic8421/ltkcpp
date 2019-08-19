@@ -75,6 +75,7 @@ public:
     virtual bool OnDestroy() { return false; }
 
     ID2D1Bitmap *GetAtlasBitmap();
+    ID2D1SolidColorBrush *GetStockBrush();
     void SetBackground(LPCSTR style);
 
 public:

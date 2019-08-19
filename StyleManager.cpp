@@ -266,193 +266,28 @@ void StyleManager::SetDebuggingLayout(bool b)
     m_bDebugLayout = b;
 }
 
-/*
-TextureInfo StyleManager::CheckTextureInfo(lua_State *L, int idx)
-{
-    TextureInfo info;
-
-    if (!lua_istable(L, idx)) goto Error;
-    lua_getfield(L, -1, "atlas"); // [...][atlas]
-    if (!lua_istable(L, -1)) goto Error;
-    info.atlas = LuaCheckRectF(L, -1);
-    lua_pop(L, 1); // [...]
-
-    lua_getfield(L, -1, "margin"); // [...][margin]
-    if (!lua_istable(L, -1)) goto Error;
-    info.margin = LuaCheckMargin(L, -1);
-    lua_pop(L, 1); // [...]
-
-    LuaGetField(L, idx, "scale", info.scale);
-    return info;
-Error:
-    luaL_error(L, "TextureInfo format error.");
-    return info;
-}
-
-int StyleManager::RegisterNinePatchStyle(lua_State *L)
-{
-    LuaStackCheck chk(L);
-    StyleManager *thiz = Instance();
-    auto name = luaL_checkstring(L, 2);
-    luaL_checktype(L, 3, LUA_TTABLE);
-
-    auto bg = new NinePatchBackground();
-
-    lua_getfield(L, 3, "normal"); // [][][style][normal]
-    bg->texNormal = CheckTextureInfo(L, -1);
-    lua_pop(L, 1); // [][][style]
-
-    lua_getfield(L, 3, "hover"); // [][][style][hover]
-    if (!lua_istable(L, -1)) {
-        bg->texHover = bg->texNormal;
-    }
-    else {
-        bg->texHover = CheckTextureInfo(L, -1);
-    }
-    lua_pop(L, 1); // [][][style]
-
-    lua_getfield(L, 3, "pressed"); // [][][style][pressed]
-    if (!lua_istable(L, -1)) {
-        bg->texPressed = bg->texNormal;
-    }
-    else {
-        bg->texPressed = CheckTextureInfo(L, -1);
-    }
-    lua_pop(L, 1); // [][][style]
-
-    lua_getfield(L, 3, "disable"); // [][][style][disable]
-    if (!lua_istable(L, -1)) {
-        bg->texDisable = bg->texNormal;
-    }
-    else {
-        bg->texDisable = CheckTextureInfo(L, -1);
-    }
-    lua_pop(L, 1); // [][][style]
-
-    thiz->AddBackgroundStyle(name, bg);
-    bg->Release();
-    return 0;
-}
-
-int StyleManager::RegisterOnePatchStyle(lua_State *L)
-{
-    LuaStackCheck chk(L);
-    StyleManager *thiz = Instance();
-    const char *name = luaL_checkstring(L, 2);
-    luaL_checktype(L, 3, LUA_TTABLE);
-
-    IconInfo normal;
-    IconInfo hover;
-    IconInfo pressed;
-    IconInfo disable;
-
-    lua_getfield(L, 3, "normal"); // [][][style][normal]
-    normal.atlas = LuaCheckRectF(L, -1);
-    lua_pop(L, 1); // [][][style]
-
-    lua_getfield(L, 3, "hover"); // [][][style][hover]
-    if (!lua_istable(L, -1)) {
-        hover = normal;
-    }
-    else {
-        hover.atlas = LuaCheckRectF(L, -1);
-    }
-    lua_pop(L, 1); // [][][style]
-
-    lua_getfield(L, 3, "pressed"); // [][][style][pressed]
-    if (!lua_istable(L, -1)) {
-        pressed = normal;
-    }
-    else {
-        pressed.atlas = LuaCheckRectF(L, -1);
-    }
-    lua_pop(L, 1); // [][][style]
-
-    lua_getfield(L, 3, "disable"); // [][][style][disable]
-    if (!lua_istable(L, -1)) {
-        disable = normal;
-    }
-    else {
-        disable.atlas = LuaCheckRectF(L, -1);
-    }
-    lua_pop(L, 1); // [][][style]
-
-    auto bg = new OnePatchBackground();
-    bg->iconNormal = normal;
-    bg->iconHover = hover;
-    bg->iconPressed = pressed;
-    bg->iconDisable = disable;
-    thiz->AddBackgroundStyle(name, bg);
-    bg->Release();
-
-    return 0;
-}
-
-int StyleManager::LuaConstructor(lua_State *L)
-{
-    luaL_error(L, "StyleManager is singleton.");
-    return 0;
-}
-
-int StyleManager::SetColorScheme(lua_State *L)
-{
-    StyleManager *thiz = Instance();
-    luaL_checktype(L, 2, LUA_TTABLE);
-    size_t size = LuaObjLen(L, 2);
-    if (size < clrLast) {
-        luaL_error(L, "not enough colors");
-    }
-    thiz->m_colors.clear();
-    int i = 1;
-    LuaGetI(L, 2, i);
-    while (lua_isstring(L, -1)) {
-        const char *psz = lua_tostring(L, -1);
-        thiz->m_colors.push_back(ColorFromString(psz));
-        i++;
-        lua_pop(L, 1); // for the color string
-        LuaGetI(L, 2, i);
-    }
-    lua_pop(L, 1); // for nil
-    return 0;
-}
-
-int StyleManager::SetMeasurements(lua_State *L)
-{
-    StyleManager *thiz = Instance();
-    luaL_checktype(L, 2, LUA_TTABLE);
-    size_t size = LuaObjLen(L, 2);
-    for (size_t i = 1; i <= size && (i - 1) < thiz->m_measurements.size(); i++) {
-        lua_rawgeti(L, 2, i);
-        float value = (float)lua_tonumber(L, -1);
-        thiz->m_measurements.at(i - 1) = value;
-        lua_pop(L, 1);
-    }
-    return 0;
-}
-*/
-
 void NinePatchBackground::Draw(Window *wnd, ID2D1RenderTarget *targe, const RectF &rc, State state, float blend)
 {
     auto bmp = wnd->GetAtlasBitmap();
     TextureInfo *tex = nullptr;
 
     switch (state) {
-    case Normal:
+    case State::Normal:
         tex = &texNormal;
         break;;
-    case Hover:
+    case State::Hover:
         tex = &texHover;
         break;
-    case Normal2Hover:
-    case Hover2Normal:
+    case State::Normal2Hover:
+    case State::Hover2Normal:
         //LTK_LOG("blend: %f", blend);
         DrawTextureNineInOne(targe, bmp, texNormal.atlas, texNormal.margin, rc, 1.0f - blend, texNormal.scale);
         DrawTextureNineInOne(targe, bmp, texHover.atlas, texHover.margin, rc, blend, texHover.scale);
         return;
-    case Pressed:
+    case State::Pressed:
         tex = &texPressed;
         break;
-    case Disable:
+    case State::Disable:
         tex = &texDisable;
         break;
     }
@@ -466,14 +301,14 @@ void OnePatchBackground::Draw(Window *wnd, ID2D1RenderTarget *targe, const RectF
     D2D1_BITMAP_INTERPOLATION_MODE interp_mode = D2D1_BITMAP_INTERPOLATION_MODE_LINEAR;
 
     switch (state) {
-    case Normal:
+    case State::Normal:
         icon = &iconNormal;
         break;
-    case Hover:
+    case State::Hover:
         icon = &iconHover;
         break;
-    case Normal2Hover:
-    case Hover2Normal:
+    case State::Normal2Hover:
+    case State::Hover2Normal:
         targe->DrawBitmap(bmp, D2D1RectF(rc), 1.0f - blend,
             interp_mode,
             D2D1RectF(iconNormal.atlas));
@@ -481,16 +316,81 @@ void OnePatchBackground::Draw(Window *wnd, ID2D1RenderTarget *targe, const RectF
             interp_mode,
             D2D1RectF(iconHover.atlas));
         return;
-    case Pressed:
+    case State::Pressed:
         icon = &iconPressed;
         break;
-    case Disable:
+    case State::Disable:
         icon = &iconDisable;
         break;
     }
     targe->DrawBitmap(bmp, D2D1RectF(rc), 1.0f,
         interp_mode,
         D2D1RectF(icon->atlas));
+}
+
+static D2D1_COLOR_F operator*(const D2D1_COLOR_F&lhs, float ratio)
+{
+    D2D1_COLOR_F ret;
+    ret.a = lhs.a * ratio;
+    ret.r = lhs.r * ratio;
+    ret.g = lhs.g * ratio;
+    ret.b = lhs.b * ratio;
+    return ret;
+}
+
+static D2D1_COLOR_F operator+(const D2D1_COLOR_F&lhs, const D2D1_COLOR_F&rhs)
+{
+    D2D1_COLOR_F ret;
+    ret.a = lhs.a + rhs.a;
+    ret.r = lhs.r + rhs.r;
+    ret.g = lhs.g + rhs.g;
+    ret.b = lhs.b + rhs.b;
+    return ret;
+}
+
+void RectangleBackground::Draw(Window *wnd, ID2D1RenderTarget *targe, const RectF &rc, State state, float blend)
+{
+    auto brush = wnd->GetStockBrush();
+    D2D1_COLOR_F clrInner;
+    D2D1_COLOR_F clrBorder;
+
+    switch (state) {
+    case Normal:
+        clrInner = innerColors.clrNormal;
+        clrBorder = borderColors.clrNormal;
+        break;
+    case Hover:
+        clrInner = innerColors.clrHover;
+        clrBorder = borderColors.clrHover;
+        break;
+    case Normal2Hover:
+    case Hover2Normal:
+        clrInner = innerColors.clrNormal * (1.0f - blend) + innerColors.clrHover * blend;
+        clrBorder = borderColors.clrNormal * (1.0f - blend) + borderColors.clrHover * blend;
+        return;
+    case Pressed:
+        clrInner = innerColors.clrPressed;
+        clrBorder = borderColors.clrPressed;
+        break;
+    case Disable:
+        clrInner = innerColors.clrDisable;
+        clrBorder = borderColors.clrDisable;
+        break;
+    }
+    brush->SetColor(clrInner);
+    targe->FillRectangle(D2D1RectF(rc), brush);
+    if (this->hasBorder) {
+        brush->SetColor(clrBorder);
+        targe->FillRectangle(D2D1RectF(rc), brush);
+    }
+}
+
+void FourStateColor::SetColor(LPCSTR normal, LPCSTR hover, LPCSTR pressed, LPCSTR disable)
+{
+    this->clrNormal = StyleManager::ColorFromString(normal);
+    this->clrHover = StyleManager::ColorFromString(hover);
+    this->clrPressed = StyleManager::ColorFromString(pressed);
+    this->clrDisable = StyleManager::ColorFromString(disable);
 }
 
 }

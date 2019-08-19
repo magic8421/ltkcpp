@@ -82,6 +82,11 @@ public:
     virtual void Draw(Window *wnd, ID2D1RenderTarget *targe, const RectF &rc,
         State state, float blend) override;
 
+    NinePatchBackground& Normal();
+    NinePatchBackground& Hover();
+    NinePatchBackground& Pressed();
+    NinePatchBackground& Disable();
+
     TextureInfo texNormal;
     TextureInfo texHover;
     TextureInfo texPressed;
@@ -94,6 +99,11 @@ public:
     virtual void Draw(Window *wnd, ID2D1RenderTarget *targe, const RectF &rc,
         State state, float blend) override;
     
+    IconInfo &Normal() { return iconNormal; }
+    IconInfo &Hover() { return iconHover; }
+    IconInfo &Pressed() { return iconPressed; }
+    IconInfo &Disable() { return iconDisable; }
+
     IconInfo iconNormal;
     IconInfo iconHover;
     IconInfo iconPressed;
@@ -102,23 +112,30 @@ public:
 
 
 struct FourStateColor {
+    void SetColor(LPCSTR normal, LPCSTR hover, LPCSTR pressed, LPCSTR disable);
+
     D2D1_COLOR_F clrNormal;
     D2D1_COLOR_F clrHover;
     D2D1_COLOR_F clrPressed;
     D2D1_COLOR_F clrDisable;
 };
 
-class VectorBackground : public AbstractBackground
+class RectangleBackground : public AbstractBackground
 {
 public:
-    virtual void Draw(Window *wnd, ID2D1RenderTarget *targe, const RectF &rc,
+    virtual void Draw(
+        Window *wnd, ID2D1RenderTarget *targe, const RectF &rc,
         State state, float blend) override;
 
+    FourStateColor &BorderColor() { return borderColors; }
+    FourStateColor &InnerColor() { return innerColors; }
+
+private:
     FourStateColor borderColors;
-    FourStateColor backgroundColors;
+    FourStateColor innerColors;
     // TODO add Gradient
     bool hasBorder = true;
-    float roundCorner = 0.0f;
+    float roundCorner = -1.0f;
 };
 
 struct WindowStyle

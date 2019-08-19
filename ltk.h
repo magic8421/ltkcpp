@@ -39,6 +39,9 @@ namespace ltk {
     RECT DipRectToScreen(const RectF &rc);
 
     struct TextureInfo {
+        TextureInfo& SetAtals(float x, float y, float w, float h);
+        TextureInfo& SetMargin(float left, float top, float right, float bottom);
+
         UINT idx = 0;
         RectF atlas;
         Margin margin;
@@ -46,6 +49,9 @@ namespace ltk {
     };
 
     struct IconInfo {
+        IconInfo& SetAtlas(float x, float y, float w, float h);
+        IconInfo& SetScale(float s);
+
         UINT idx = 0;
         RectF atlas;
         bool bIconOnTop = false;

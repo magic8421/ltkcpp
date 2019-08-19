@@ -329,6 +329,34 @@ namespace ltk {
 
         ::CoUninitialize();
     }
+
+    IconInfo& IconInfo::SetAtlas(float x, float y, float w, float h)
+    {
+        this->atlas = RectF(x, y, w, h);
+        return *this;
+    }
+
+    IconInfo& IconInfo::SetScale(float s)
+    {
+        this->scale = s;
+        return *this;
+    }
+
+    TextureInfo& TextureInfo::SetAtals(float x, float y, float w, float h)
+    {
+        this->atlas = RectF(x, y, w, h);
+        return *this;
+    }
+
+    TextureInfo& TextureInfo::SetMargin(float left, float top, float right, float bottom)
+    {
+        this->margin.left = left;
+        this->margin.top = top;
+        this->margin.right = right;
+        this->margin.bottom = bottom;
+        return *this;
+    }
+
 }
 
 using namespace ltk;

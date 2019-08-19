@@ -530,6 +530,11 @@ void Window::DrawNonClient()
     //    m_background.scale);
 }
 
+ID2D1SolidColorBrush *Window::GetStockBrush()
+{
+    return m_brush;
+}
+
 void Window::RecreateResouce()
 {
     HRESULT hr = E_FAIL;
