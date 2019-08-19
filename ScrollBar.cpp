@@ -27,7 +27,7 @@ ScrollBar::ScrollBar(Mode mode) : m_mode(mode)
         this->OnSilderEvent(ev, bHandled);
     });
     if (m_mode == Horizontal) {
-        //m_slider->SetBackgroundStyle("scrollbar_h");
+        m_slider->SetBackgroundStyle("scrollbar_h");
     } else {
         m_slider->SetBackgroundStyle("scrollbar_v");
     }

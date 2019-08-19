@@ -89,6 +89,7 @@ AbstractBackground *StyleManager::GetBackground(const char *name) const
     }
     else {
         LTK_ASSERT(false);
+        return m_mapBackgroundStyle.begin()->second;
     }
 }
 
@@ -363,7 +364,7 @@ void RectangleBackground::Draw(Window *wnd, ID2D1RenderTarget *targe, const Rect
     case Hover2Normal:
         clrInner = innerColors.clrNormal * (1.0f - blend) + innerColors.clrHover * blend;
         clrBorder = borderColors.clrNormal * (1.0f - blend) + borderColors.clrHover * blend;
-        return;
+        break;;
     case Pressed:
         clrInner = innerColors.clrPressed;
         clrBorder = borderColors.clrPressed;
@@ -377,7 +378,7 @@ void RectangleBackground::Draw(Window *wnd, ID2D1RenderTarget *targe, const Rect
     targe->FillRectangle(D2D1RectF(rc), brush);
     if (this->hasBorder) {
         brush->SetColor(clrBorder);
-        targe->FillRectangle(D2D1RectF(rc), brush);
+        targe->DrawRectangle(D2D1RectF(rc), brush);
     }
 }
 
