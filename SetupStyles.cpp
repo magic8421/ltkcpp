@@ -86,6 +86,14 @@ void SetupPixelStyle1()
     sm->AddButtonStyle("default_button", btn_style);
 
     btn_style = new ButtonStyle;
+    btn_style->SetStyle("scrollbar_h", "default_button", "#000000");
+    sm->AddButtonStyle("scrollbar_h", btn_style);
+
+    btn_style = new ButtonStyle;
+    btn_style->SetStyle("scrollbar_v", "default_button", "#000000");
+    sm->AddButtonStyle("scrollbar_v", btn_style);
+
+    btn_style = new ButtonStyle;
     btn_style->SetStyle("header_btn", "default_button", "#000000");
     sm->AddButtonStyle("header_button", btn_style);
 
@@ -159,6 +167,14 @@ void SetupVectorStyle1()
     btn_style = new ButtonStyle;
     btn_style->SetStyle("header_btn", "default_button", "#00ff00");
     sm->AddButtonStyle("header_button", btn_style);
+
+    btn_style = new ButtonStyle;
+    btn_style->SetStyle("scrollbar_h", "default_button", "#000000");
+    sm->AddButtonStyle("scrollbar_h", btn_style);
+
+    btn_style = new ButtonStyle;
+    btn_style->SetStyle("scrollbar_v", "default_button", "#000000");
+    sm->AddButtonStyle("scrollbar_v", btn_style);
 
     ListViewStyle *list_view_style = new ListViewStyle;
     list_view_style->SetColors("#00ff00", "#003300", "#00ff00", "#000000");

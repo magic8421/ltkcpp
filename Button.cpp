@@ -68,11 +68,12 @@ bool Button::OnPaint(PaintEvent *ev)
         }
         m_background->Draw(wnd, ev->target, rc, GetState(), blend);
     }
-    auto brush = wnd->GetStockBrush();
-    brush->SetColor(m_style->TextColor);
-    ev->target->DrawText(m_text.c_str(), m_text.size(), m_format, ltk::D2D1RectF(rc),
-        brush);
-
+    if (m_text.size() > 0) {
+        auto brush = wnd->GetStockBrush();
+        brush->SetColor(m_style->TextColor);
+        ev->target->DrawText(m_text.c_str(), m_text.size(), m_format, ltk::D2D1RectF(rc),
+            brush);
+    }
     return true;
 }
 

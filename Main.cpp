@@ -154,21 +154,24 @@ int CALLBACK WinMain(
     Button *btnPixelTheme = new Button;
     hbox_btns2->AddLayoutItem(btnPixelTheme, 100);
     btnPixelTheme->SetText(L"位图资源");
-    btnPixelTheme->ClickedEvent.Attach([]() {
+    btnPixelTheme->ClickedEvent.Attach([wnd = wnd.get()]() {
         StyleManager::Instance()->Clear();
         SetupPixelStyle1();
+        wnd->HandleThemeChange();
     });
 
     Button *btnRectTheme = new Button;
     hbox_btns2->AddLayoutItem(btnRectTheme, 100);
     btnRectTheme->SetText(L"纯色1");
-    btnRectTheme->ClickedEvent.Attach([]() {
+    btnRectTheme->ClickedEvent.Attach([wnd = wnd.get()]() {
         StyleManager::Instance()->Clear();
         SetupVectorStyle1();
+        wnd->HandleThemeChange();
     });
 
     vbox->AddSpaceItem(5, 0);
     hbox->DoLayout();
+    wnd->HandleThemeChange();
 
 
     MSG msg;
