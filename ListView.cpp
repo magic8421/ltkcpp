@@ -9,6 +9,8 @@
 #include "ListView.h"
 #include "Animation.h"
 #include "StyleManager.h"
+#include "ScrollBar.h"
+#include "HeaderCtrl.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW 
@@ -29,10 +31,16 @@ ListView::ListView()
         this->HandleHScrollBar(pos);
     });
     this->AddChild(m_hsb);
+
+    m_style = StyleManager::Instance()->GetListViewStyle("default");
 }
 
 ListView::~ListView()
 {
+    if (m_header) {
+        m_header->ColumnResizeEvent.Remove(m_columnResizeTracker);
+        m_header->DeleteEvent.Remove(m_headerDeletedTracker);
+    }
     RELEASE_AND_INVALIDATE(ID2D1SolidColorBrush, m_brush);
     RELEASE_AND_INVALIDATE(IDWriteTextFormat, m_textFormat);
 }
@@ -71,21 +79,28 @@ bool ListView::OnPaint(PaintEvent *ev)
         rcItem.right = rcSprite.Width + m_hscroll;
         rcItem.bottom = rcItem.top + ItemHeight;
         if (m_selectedItem == i) {
-            m_brush->SetColor(StyleManager::Instance()->GetColor(
-                StyleManager::clrListBoxSelected));
+            m_brush->SetColor(m_style->SelectedColor);
+            //m_brush->SetColor(StyleManager::Instance()->GetColor(
+            //    StyleManager::clrListBoxSelected));
             target->FillRectangle(rcItem, m_brush);
         }
         else if (m_hoverItem == i) {
-            m_brush->SetColor(StyleManager::Instance()->GetColor(
-                StyleManager::clrListBoxHover));
+            m_brush->SetColor(m_style->HoverColor);
+            //m_brush->SetColor(StyleManager::Instance()->GetColor(
+            //    StyleManager::clrListBoxHover));
             target->FillRectangle(rcItem, m_brush);
         }
         auto &line = m_vecData.at(i);
         auto text = line.cells.at(0).data();
         auto len = line.cells.at(0).length();
         rcItem.left = 0.0f;
-        m_brush->SetColor(StyleManager::Instance()->GetColor(
-            StyleManager::clrTextNormal));
+        if (m_selectedItem == i) {
+            m_brush->SetColor(m_style->SelectedTextColor);
+        } else {
+            m_brush->SetColor(m_style->TextColor);
+        }
+        //m_brush->SetColor(StyleManager::Instance()->GetColor(
+        //    StyleManager::clrTextNormal));
         //if (m_vecColumns.size() > 0) {
             rcItem.right = m_vecColumns[0];
         //}
@@ -251,6 +266,7 @@ void ListView::SetColumns(std::vector<float> &columns)
 
 void ListView::UpdateColumnWidth()
 {
+    LTK_ASSERT(m_header);
     std::vector<float> cols;
     m_header->GetColumnWidth(cols);
     this->SetColumns(cols);
@@ -265,6 +281,9 @@ void ListView::SetHeaderCtrl(HeaderCtrl *head)
     m_header = head;
     m_columnResizeTracker = m_header->ColumnResizeEvent.Attach([this]() {
         this->UpdateColumnWidth();
+    });
+    m_headerDeletedTracker = m_header->DeleteEvent.Attach([this]() {
+        m_header = nullptr;
     });
     this->UpdateColumnWidth();
 }

@@ -29,6 +29,7 @@ HeaderCtrl::HeaderCtrl()
 
 HeaderCtrl::~HeaderCtrl()
 {
+    this->DeleteEvent.Invoke();
 }
 
 void HeaderCtrl::GetColumnWidth(std::vector<float> &vecColumns)

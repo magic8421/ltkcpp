@@ -76,6 +76,22 @@ void SetupPixelStyle1()
     one_patch->Pressed().SetAtlas(147, 43, 22, 20);
     one_patch->Disable() = one_patch->Normal();
     sm->AddBackgroundStyle("close_button", one_patch);
+
+    sm->AddTextFormat2("default_button", L"яе╨з", DWRITE_FONT_WEIGHT_NORMAL,
+        DWRITE_FONT_STYLE_NORMAL, 14, DWRITE_TEXT_ALIGNMENT_CENTER,
+        DWRITE_PARAGRAPH_ALIGNMENT_CENTER);
+
+    ButtonStyle *btn_style = new ButtonStyle;
+    btn_style->SetStyle("default_button", "default_button", "#000000");
+    sm->AddButtonStyle("default_button", btn_style);
+
+    btn_style = new ButtonStyle;
+    btn_style->SetStyle("header_btn", "default_button", "#000000");
+    sm->AddButtonStyle("header_button", btn_style);
+
+    ListViewStyle *list_view_style = new ListViewStyle;
+    list_view_style->SetColors("#000000", "#fafad2", "#bbb073", "#000000");
+    sm->AddListViewStyle("default", list_view_style);
 }
 
 void SetupVectorStyle1()
@@ -143,4 +159,8 @@ void SetupVectorStyle1()
     btn_style = new ButtonStyle;
     btn_style->SetStyle("header_btn", "default_button", "#00ff00");
     sm->AddButtonStyle("header_button", btn_style);
+
+    ListViewStyle *list_view_style = new ListViewStyle;
+    list_view_style->SetColors("#00ff00", "#003300", "#00ff00", "#000000");
+    sm->AddListViewStyle("default", list_view_style);
 }

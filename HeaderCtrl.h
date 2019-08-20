@@ -34,6 +34,7 @@ public:
     void OnColumnResizeBegin(HeaderButton *btn, PointF pt);
 
     Delegate<void()> ColumnResizeEvent;
+    Delegate<void()> DeleteEvent;
 
     virtual bool OnSize(SizeEvent *ev) override;
     virtual bool OnMouseMove(MouseEvent *ev) override;

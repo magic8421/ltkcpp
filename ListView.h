@@ -9,10 +9,14 @@
 
 #include "Sprite.h"
 #include "Animation.h"
-#include "ScrollBar.h"
-#include "HeaderCtrl.h"
+#include "Delegate.h"
+
 
 namespace ltk {
+
+class ScrollBar;
+class HeaderCtrl;
+struct ListViewStyle;
 
 class ListView : public Sprite
 {
@@ -67,6 +71,9 @@ private:
     const float ItemHeight = 25.0f;
 
     Cookie m_columnResizeTracker = 0;
+    Cookie m_headerDeletedTracker = 0;
+
+    ListViewStyle *m_style = nullptr;
 };
 
 } // namespace ltk

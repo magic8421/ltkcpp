@@ -43,6 +43,10 @@ StyleManager::~StyleManager()
         iter != m_mapButtonStyle.end(); iter++) {
         delete iter->second;
     }
+    for (auto iter = m_mapListViewStyle.begin();
+        iter != m_mapListViewStyle.end(); iter++) {
+        delete iter->second;
+    }
 }
 
 StyleManager * StyleManager::Instance()
@@ -165,6 +169,19 @@ void StyleManager::AddButtonStyle(LPCSTR name, ButtonStyle *style)
 {
     LTK_ASSERT(m_mapButtonStyle[name] == nullptr);
     m_mapButtonStyle[name] = style;
+}
+
+ListViewStyle *StyleManager::GetListViewStyle(LPCSTR name)
+{
+    auto style = m_mapListViewStyle[name];
+    LTK_ASSERT(style);
+    return style;
+}
+
+void StyleManager::AddListViewStyle(LPCSTR name, ListViewStyle *style)
+{
+    LTK_ASSERT(m_mapListViewStyle[name] == nullptr);
+    m_mapListViewStyle[name] = style;
 }
 
 RectF StyleManager::RectFromXml(tinyxml2::XMLElement *elm)
@@ -440,10 +457,15 @@ void RectangleBackground::Draw(Window *wnd, ID2D1RenderTarget *targe, const Rect
         break;
     }
     brush->SetColor(clrInner);
-    targe->FillRectangle(D2D1RectF(rc), brush);
+    RectF rc2 = rc;
+    rc2.X += 0.5f;
+    rc2.Y += 0.5f;
+    rc2.Width -= 1.0f;
+    rc2.Height -= 1.0f;
+    targe->FillRectangle(D2D1RectF(rc2), brush);
     if (this->hasBorder) {
         brush->SetColor(clrBorder);
-        targe->DrawRectangle(D2D1RectF(rc), brush);
+        targe->DrawRectangle(D2D1RectF(rc2), brush);
     }
 }
 
@@ -460,6 +482,14 @@ void ButtonStyle::SetStyle(LPCSTR background, LPCSTR text_format, LPCSTR text_co
     this->BackgroundStyle = background;
     this->TextFormat = text_format;
     this->TextColor = StyleManager::ColorFromString(text_color);
+}
+
+void ListViewStyle::SetColors(LPCSTR textColor, LPCSTR hoverColor, LPCSTR selectedColor, LPCSTR selectedTextColor)
+{
+    this->TextColor = StyleManager::ColorFromString(textColor);
+    this->HoverColor = StyleManager::ColorFromString(hoverColor);
+    this->SelectedColor = StyleManager::ColorFromString(selectedColor);
+    this->SelectedTextColor = StyleManager::ColorFromString(selectedTextColor);
 }
 
 }

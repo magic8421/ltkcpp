@@ -15,6 +15,7 @@
 #include "TimerManager.h"
 #include "SetupStyles.h"
 #include "BoxLayout.h"
+#include "HeaderCtrl.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW 
@@ -54,7 +55,7 @@ int CALLBACK WinMain(
     LtkInitialize();
 
     StyleManager::Instance()->LoadFromXml("res\\style.xml");
-    SetupVectorStyle1();
+    SetupPixelStyle1();
 
     unique_ptr<Window> wnd;
     wnd.reset(new Window);
