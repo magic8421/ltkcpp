@@ -16,7 +16,7 @@
 
 namespace ltk {
 
-StyleManager * StyleManager::m_instance = nullptr;
+ThemeData * StyleManager::m_sThemeData;
 
 StyleManager::StyleManager()
 {
@@ -61,17 +61,27 @@ void StyleManager::Clear()
     m_mapListViewStyle.clear();
 }
 
+void StyleManager::NewTheme(LPCSTR name)
+{
+    if (! m_sThemeData) {
+        m_sThemeData = new ThemeData;
+    }
+    m_sThemeData->MapTheme[name] = new StyleManager;
+    m_sThemeData->CurrentTheme = name;
+}
+
 StyleManager * StyleManager::Instance()
 {
-    if (!m_instance) {
-        m_instance = new StyleManager;
-    }
-    return m_instance;
+    return m_sThemeData->MapTheme[m_sThemeData->CurrentTheme];
 }
 
 void StyleManager::Free()
 {
-    delete m_instance;
+    auto &map = m_sThemeData->MapTheme;
+    for (auto &pair : map) {
+        delete pair.second;
+    }
+    delete m_sThemeData;
 }
 
 D2D1_COLOR_F StyleManager::GetColor(Colors clr)

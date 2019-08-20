@@ -54,6 +54,7 @@ int CALLBACK WinMain(
 {
     LtkInitialize();
 
+    StyleManager::NewTheme("pixel");
     StyleManager::Instance()->LoadFromXml("res\\style.xml");
     SetupPixelStyle1();
 

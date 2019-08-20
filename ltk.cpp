@@ -309,7 +309,6 @@ namespace ltk {
 
         LtkLogInit();
         TimerManager::Instance();
-        StyleManager::Instance();
         ShadowFrame::Init();
         Window::RegisterWndClass();
 

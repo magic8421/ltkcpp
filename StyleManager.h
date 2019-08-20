@@ -16,10 +16,18 @@ class Window;
 class AbstractBackground;
 struct ButtonStyle;
 struct ListViewStyle;
+class StyleManager;
+
+struct ThemeData
+{
+    std::unordered_map<std::string, StyleManager *> MapTheme;
+    std::string CurrentTheme;
+};
 
 class StyleManager
 {
 public:
+    static void NewTheme(LPCSTR name);
     static StyleManager *Instance();
     static void Free();
 
@@ -75,7 +83,7 @@ public:
 private:
     StyleManager();
     ~StyleManager();
-    static StyleManager *m_instance;
+    static ThemeData *m_sThemeData;
 
     bool m_bDebugLayout = false;
     std::vector<D2D1_COLOR_F> m_colors;
