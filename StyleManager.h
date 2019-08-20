@@ -14,9 +14,11 @@ namespace ltk {
 
 class Window;
 class AbstractBackground;
+class StyleManager;
+
 struct ButtonStyle;
 struct ListViewStyle;
-class StyleManager;
+struct LabelStyle;
 
 struct ThemeData
 {
@@ -70,6 +72,9 @@ public:
     ListViewStyle *GetListViewStyle(LPCSTR name);
     void AddListViewStyle(LPCSTR name, ListViewStyle *style);
 
+    LabelStyle *GetLabelStyle(LPCSTR name);
+    void AddLabelStyle(LPCSTR name, LabelStyle *style);
+
     static RectF RectFromXml(tinyxml2::XMLElement *elm);
     static Margin MarginFromXml(tinyxml2::XMLElement *elm);
     static bool TextureFromXml(tinyxml2::XMLElement *elm, TextureInfo *tex);
@@ -91,6 +96,7 @@ private:
     std::unordered_map<std::string, IDWriteTextFormat*> m_mapTextFormat;
     std::unordered_map<std::string, ButtonStyle*> m_mapButtonStyle;
     std::unordered_map<std::string, ListViewStyle*> m_mapListViewStyle;
+    std::unordered_map<std::string, LabelStyle*> m_mapLabelStyle;
 };
 
 class AbstractBackground
@@ -208,7 +214,7 @@ struct ListViewStyle
     D2D1_COLOR_F SelectedTextColor;
 };
 
-struct LableStyle
+struct LabelStyle
 {
     D2D1_COLOR_F TextColor;
     std::string TextFormat;

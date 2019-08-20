@@ -31,10 +31,7 @@ WindowLayout::WindowLayout()
     m_closeBtn->SetBackgroundStyle("close_button");
     this->AddChild(m_closeBtn);
     m_caption = new Label;
-    m_caption->SetTextAlign(DWRITE_TEXT_ALIGNMENT_LEADING);
-    m_caption->SetParagraphAlign(DWRITE_PARAGRAPH_ALIGNMENT_NEAR);
-    m_caption->SetTextColor(
-        StyleManager::Instance()->GetColor(StyleManager::clrTextCaption));
+    m_caption->SetStyleName("default");
     this->AddChild(m_caption);
 }
 

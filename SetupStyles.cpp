@@ -77,7 +77,7 @@ void SetupPixelStyle1()
     one_patch->Disable() = one_patch->Normal();
     sm->AddBackgroundStyle("close_button", one_patch);
 
-    sm->AddTextFormat2("default_button", L"ÑÅºÚ", DWRITE_FONT_WEIGHT_NORMAL,
+    sm->AddTextFormat2("default_button", L"Î¢ÈíÑÅºÚ", DWRITE_FONT_WEIGHT_NORMAL,
         DWRITE_FONT_STYLE_NORMAL, 14, DWRITE_TEXT_ALIGNMENT_CENTER,
         DWRITE_PARAGRAPH_ALIGNMENT_CENTER);
 
@@ -100,6 +100,15 @@ void SetupPixelStyle1()
     ListViewStyle *list_view_style = new ListViewStyle;
     list_view_style->SetColors("#000000", "#fafad2", "#bbb073", "#000000");
     sm->AddListViewStyle("default", list_view_style);
+
+    sm->AddTextFormat2("caption", L"Î¢ÈíÑÅºÚ", DWRITE_FONT_WEIGHT_NORMAL,
+        DWRITE_FONT_STYLE_NORMAL, 12, DWRITE_TEXT_ALIGNMENT_LEADING,
+        DWRITE_PARAGRAPH_ALIGNMENT_NEAR);
+
+    LabelStyle *label_style = new LabelStyle;
+    label_style->TextColor = StyleManager::ColorFromString("#ffffff");
+    label_style->TextFormat = "caption";
+    sm->AddLabelStyle("default", label_style);
 }
 
 void SetupVectorStyle1()
@@ -179,4 +188,14 @@ void SetupVectorStyle1()
     ListViewStyle *list_view_style = new ListViewStyle;
     list_view_style->SetColors("#00ff00", "#003300", "#00ff00", "#000000");
     sm->AddListViewStyle("default", list_view_style);
+
+    sm->AddTextFormat2("caption", L"ËÎÌå", DWRITE_FONT_WEIGHT_NORMAL,
+        DWRITE_FONT_STYLE_NORMAL, 12, DWRITE_TEXT_ALIGNMENT_LEADING,
+        DWRITE_PARAGRAPH_ALIGNMENT_NEAR);
+
+    LabelStyle *label_style = new LabelStyle;
+    label_style->TextColor = StyleManager::ColorFromString("#ffffff");
+    label_style->TextFormat = "caption";
+    sm->AddLabelStyle("default", label_style);
+
 }

@@ -31,8 +31,7 @@ ListView::ListView()
         this->HandleHScrollBar(pos);
     });
     this->AddChild(m_hsb);
-
-    m_style = StyleManager::Instance()->GetListViewStyle("default");
+    this->SetStyleName("default");
 }
 
 ListView::~ListView()
@@ -43,6 +42,11 @@ ListView::~ListView()
     }
     RELEASE_AND_INVALIDATE(ID2D1SolidColorBrush, m_brush);
     RELEASE_AND_INVALIDATE(IDWriteTextFormat, m_textFormat);
+}
+
+void ListView::OnThemeChanged()
+{
+    m_style = StyleManager::Instance()->GetListViewStyle(this->GetStyleName());
 }
 
 bool ListView::OnPaint(PaintEvent *ev)
@@ -287,6 +291,8 @@ void ListView::SetHeaderCtrl(HeaderCtrl *head)
     });
     this->UpdateColumnWidth();
 }
+
+
 
 
 } // namespace ltk

@@ -31,6 +31,7 @@ public:
     virtual bool OnMouseLeave(MouseEvent *ev) override;
     virtual bool OnSize(SizeEvent *ev) override;
     virtual void RecreateResouce(ID2D1RenderTarget *target) override;
+    virtual void OnThemeChanged() override;
 
     void HandleVScrollBar(float pos);
     void HandleHScrollBar(float pos);
@@ -74,6 +75,7 @@ private:
     Cookie m_headerDeletedTracker = 0;
 
     ListViewStyle *m_style = nullptr;
+
 };
 
 } // namespace ltk
