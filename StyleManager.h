@@ -28,10 +28,9 @@ class StyleManager
 {
 public:
     static void NewTheme(LPCSTR name);
+    static void SetCurrentTheme(LPCSTR name);
     static StyleManager *Instance();
     static void Free();
-
-    void Clear();
 
     enum Colors {
         clrTextNormal,

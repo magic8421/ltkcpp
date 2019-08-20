@@ -54,6 +54,9 @@ int CALLBACK WinMain(
 {
     LtkInitialize();
 
+    StyleManager::NewTheme("rect");
+    SetupVectorStyle1();
+
     StyleManager::NewTheme("pixel");
     StyleManager::Instance()->LoadFromXml("res\\style.xml");
     SetupPixelStyle1();
@@ -156,8 +159,7 @@ int CALLBACK WinMain(
     hbox_btns2->AddLayoutItem(btnPixelTheme, 100);
     btnPixelTheme->SetText(L"位图资源");
     btnPixelTheme->ClickedEvent.Attach([wnd = wnd.get()]() {
-        StyleManager::Instance()->Clear();
-        SetupPixelStyle1();
+        StyleManager::SetCurrentTheme("pixel");
         wnd->HandleThemeChange();
     });
 
@@ -165,8 +167,7 @@ int CALLBACK WinMain(
     hbox_btns2->AddLayoutItem(btnRectTheme, 100);
     btnRectTheme->SetText(L"纯色1");
     btnRectTheme->ClickedEvent.Attach([wnd = wnd.get()]() {
-        StyleManager::Instance()->Clear();
-        SetupVectorStyle1();
+        StyleManager::SetCurrentTheme("rect");
         wnd->HandleThemeChange();
     });
 
