@@ -51,6 +51,10 @@ StyleManager::~StyleManager()
         iter != m_mapLabelStyle.end(); iter++) {
         delete iter->second;
     }
+    for (auto iter = m_mapTreeViewStyle.begin();
+        iter != m_mapTreeViewStyle.end(); iter++) {
+        delete iter->second;
+    }
 }
 
 void StyleManager::NewTheme(LPCSTR name)
@@ -214,6 +218,19 @@ void StyleManager::AddLabelStyle(LPCSTR name, LabelStyle *style)
 {
     LTK_ASSERT(m_mapLabelStyle[name] == nullptr);
     m_mapLabelStyle[name] = style;
+}
+
+TreeViewStyle * StyleManager::GetTreeViewStyle(LPCSTR name)
+{
+    auto style = m_mapTreeViewStyle[name];
+    LTK_ASSERT(style);
+    return style;
+}
+
+void StyleManager::AddTreeViewStyle(LPCSTR name, TreeViewStyle *style)
+{
+    LTK_ASSERT(m_mapTreeViewStyle[name] == nullptr);
+    m_mapTreeViewStyle[name] = style;
 }
 
 RectF StyleManager::RectFromXml(tinyxml2::XMLElement *elm)

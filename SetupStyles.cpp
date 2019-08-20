@@ -109,6 +109,13 @@ void SetupPixelStyle1()
     label_style->TextColor = StyleManager::ColorFromString("#ffffff");
     label_style->TextFormat = "caption";
     sm->AddLabelStyle("default", label_style);
+
+    auto CFS = StyleManager::ColorFromString;
+    TreeViewStyle *tree_view_style = new TreeViewStyle;
+    tree_view_style->TextColor = CFS("#000000");
+    tree_view_style->HoverColor = CFS("#00ff00");
+    tree_view_style->TextColor = CFS("#00ff00");
+    tree_view_style->TextColor = CFS("#00ff00");
 }
 
 void SetupVectorStyle1()

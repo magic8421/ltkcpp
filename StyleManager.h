@@ -19,11 +19,39 @@ class StyleManager;
 struct ButtonStyle;
 struct ListViewStyle;
 struct LabelStyle;
+struct TreeViewStyle;
 
 struct ThemeData
 {
     std::unordered_map<std::string, StyleManager *> MapTheme;
     std::string CurrentTheme;
+};
+
+template<typename T>
+class StyleMap
+{
+public:
+    void Add(LPCSTR name, T *style)
+    {
+        std::string strName(name);
+        LTK_ASSERT(m_map[strName] == nullptr);
+        m_map[strName] = style;
+    }
+    T *Get(LPCSTR name)
+    {
+        T *style = m_map[name];
+        LTK_ASSERT(style);
+        return style;
+    }
+    ~StyleMap()
+    {
+        for (auto &pair : m_map) {
+            delete pair.second;
+        }
+    }
+
+private:
+    std::unordered_map<std::string, T*> m_map;
 };
 
 class StyleManager
@@ -75,6 +103,9 @@ public:
     LabelStyle *GetLabelStyle(LPCSTR name);
     void AddLabelStyle(LPCSTR name, LabelStyle *style);
 
+    TreeViewStyle *GetTreeViewStyle(LPCSTR name);
+    void AddTreeViewStyle(LPCSTR name, TreeViewStyle *style);
+
     static RectF RectFromXml(tinyxml2::XMLElement *elm);
     static Margin MarginFromXml(tinyxml2::XMLElement *elm);
     static bool TextureFromXml(tinyxml2::XMLElement *elm, TextureInfo *tex);
@@ -97,6 +128,7 @@ private:
     std::unordered_map<std::string, ButtonStyle*> m_mapButtonStyle;
     std::unordered_map<std::string, ListViewStyle*> m_mapListViewStyle;
     std::unordered_map<std::string, LabelStyle*> m_mapLabelStyle;
+    std::unordered_map<std::string, TreeViewStyle*> m_mapTreeViewStyle;
 };
 
 class AbstractBackground
@@ -218,6 +250,13 @@ struct LabelStyle
 {
     D2D1_COLOR_F TextColor;
     std::string TextFormat;
+};
+
+struct TreeViewStyle {
+    D2D1_COLOR_F TextColor;
+    D2D1_COLOR_F HoverColor;
+    D2D1_COLOR_F SelectedColor;
+    D2D1_COLOR_F SelectedTextColor;
 };
 
 }
