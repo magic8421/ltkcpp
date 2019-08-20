@@ -840,6 +840,14 @@ ID2D1Bitmap *Window::GetAtlasBitmap()
 void Window::SetBackground(LPCSTR style)
 {
     m_background = StyleManager::Instance()->GetBackground(style);
+    m_styleName = style;
+}
+
+void Window::HandleThemeChange()
+{
+    m_background = StyleManager::Instance()->GetBackground(m_styleName.c_str());
+    this->OnThemeChanged();
+    m_sprite->HandleThemeChange();
 }
 
 void Window::UpdateShadowFrame(bool bRedraw)

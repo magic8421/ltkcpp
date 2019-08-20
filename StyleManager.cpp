@@ -31,22 +31,34 @@ StyleManager::StyleManager()
 
 StyleManager::~StyleManager()
 {
+    Clear();
+}
+
+void StyleManager::Clear()
+{
     for (auto iter = m_mapBackgroundStyle.begin();
         iter != m_mapBackgroundStyle.end(); iter++) {
         delete iter->second;
     }
+    m_mapBackgroundStyle.clear();
+
     for (auto iter = m_mapTextFormat.begin();
         iter != m_mapTextFormat.end(); iter++) {
         iter->second->Release();
     }
+    m_mapTextFormat.clear();
+
     for (auto iter = m_mapButtonStyle.begin();
         iter != m_mapButtonStyle.end(); iter++) {
         delete iter->second;
     }
+    m_mapButtonStyle.clear();
+
     for (auto iter = m_mapListViewStyle.begin();
         iter != m_mapListViewStyle.end(); iter++) {
         delete iter->second;
     }
+    m_mapListViewStyle.clear();
 }
 
 StyleManager * StyleManager::Instance()

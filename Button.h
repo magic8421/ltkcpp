@@ -25,12 +25,15 @@ public:
     void SetText(LPCWSTR text);
 
     virtual bool OnPaint(PaintEvent *ev) override;
+    virtual void OnThemeChanged() override;
 
 private:
     std::wstring m_text;
     AbstractBackground *m_background = nullptr;
     IDWriteTextFormat *m_format = nullptr;
     ButtonStyle *m_style = nullptr;
+protected:
+
 };
 
 } // namespace

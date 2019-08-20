@@ -23,7 +23,10 @@ public:
     void SetName(const char *name);
     const char *GetName();
 
-	RectF GetRect();
+    void SetStyleName(const char *name);
+    const char * GetStyleName();
+
+    RectF GetRect();
 	RectF GetClientRect();
 	void SetRect( RectF rect );
 	RectF GetAbsRect();
@@ -53,6 +56,8 @@ public:
 	void HandleImeInput( LPCTSTR text );
 
     void HandleRecreateResouce( ID2D1RenderTarget *target );
+
+    void HandleThemeChange();
 
 	void EnableFocus(bool enable);
 
@@ -105,6 +110,7 @@ protected:
 
     virtual void RecreateResouce(ID2D1RenderTarget *target){}
     virtual void OnParentChanged(Sprite *old, Sprite *new_){}
+    virtual void OnThemeChanged() {}
 
 private:
 	bool m_bVisible; // 编译器会自动优化成1字节
@@ -118,7 +124,8 @@ private:
     std::vector<Sprite *> m_children;
     Sprite *m_parent = nullptr;
 
-    const char *m_name = nullptr;
+    char *m_name = nullptr;
+    char *m_styleName = nullptr;
 
 	DISALLOW_COPY_AND_ASSIGN(Sprite);
 };

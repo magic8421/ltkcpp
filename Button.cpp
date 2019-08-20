@@ -28,9 +28,15 @@ Button::~Button()
 
 void Button::SetStyle(LPCSTR name)
 {
-    m_style = StyleManager::Instance()->GetButtonStyle(name);
+    SetStyleName(name);
+    OnThemeChanged();
+}
+
+void Button::OnThemeChanged()
+{
+    m_style = StyleManager::Instance()->GetButtonStyle(GetStyleName());
     m_background = StyleManager::Instance()->GetBackground(m_style->BackgroundStyle.c_str());
-    m_format = StyleManager::Instance()->GetTextFormat(m_style->TextFormat.c_str());
+    m_format = StyleManager::Instance()->GetTextFormat(m_style->TextFormat.c_str());    
 }
 
 void Button::SetBackgroundStyle(LPCSTR style)

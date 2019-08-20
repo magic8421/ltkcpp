@@ -23,6 +23,8 @@ public:
     static StyleManager *Instance();
     static void Free();
 
+    void Clear();
+
     enum Colors {
         clrTextNormal,
         clrTextHover,
@@ -197,6 +199,12 @@ struct ListViewStyle
     D2D1_COLOR_F HoverColor;
     D2D1_COLOR_F SelectedColor;
     D2D1_COLOR_F SelectedTextColor;
+};
+
+struct LableStyle
+{
+    D2D1_COLOR_F TextColor;
+    std::string TextFormat;
 };
 
 }

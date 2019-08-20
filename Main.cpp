@@ -148,6 +148,25 @@ int CALLBACK WinMain(
     });
     hbox_btns->AddLayoutItem(btn4, 0, 1);
 
+    auto hbox_btns2 = new BoxLayout(BoxLayout::Horizontal);
+    vbox->AddLayoutItem(hbox_btns2, 30, 0.0f);
+
+    Button *btnPixelTheme = new Button;
+    hbox_btns2->AddLayoutItem(btnPixelTheme, 100);
+    btnPixelTheme->SetText(L"位图资源");
+    btnPixelTheme->ClickedEvent.Attach([]() {
+        StyleManager::Instance()->Clear();
+        SetupPixelStyle1();
+    });
+
+    Button *btnRectTheme = new Button;
+    hbox_btns2->AddLayoutItem(btnRectTheme, 100);
+    btnRectTheme->SetText(L"纯色1");
+    btnRectTheme->ClickedEvent.Attach([]() {
+        StyleManager::Instance()->Clear();
+        SetupVectorStyle1();
+    });
+
     vbox->AddSpaceItem(5, 0);
     hbox->DoLayout();
 

@@ -35,11 +35,8 @@ Sprite::~Sprite(void)
     for (size_t i = 0; i < m_children.size(); i++) {
         delete m_children[i];
 	}
-    m_window = INVALID_POINTER(Window);
-    m_parent = INVALID_POINTER(Sprite);
-
-    delete m_name;
-    m_name = INVALID_POINTER(const char);
+    free(m_name);
+    free(m_styleName);
 }
 
 RectF Sprite::GetRect()
@@ -49,13 +46,24 @@ RectF Sprite::GetRect()
 
 void Sprite::SetName(const char *name)
 {
-    delete m_name;
+    free(m_name);
     m_name = _strdup(name);
 }
 
 const char * Sprite::GetName()
 {
     return m_name;
+}
+
+void Sprite::SetStyleName(const char *name)
+{
+    free(m_styleName);
+    m_styleName = _strdup(name);
+}
+
+const char * Sprite::GetStyleName()
+{
+    return m_styleName;
 }
 
 RectF Sprite::GetClientRect()
@@ -308,7 +316,7 @@ Window * Sprite::GetWindow()
 void Sprite::SetCapture()
 {
     auto wnd = GetWindow();
-    assert(wnd); // 这个在lua包装函数里检查 报成lua错误
+    LTK_ASSERT(wnd);
 	if (wnd)
 	{
 		wnd->SetCapture(this);
@@ -317,7 +325,7 @@ void Sprite::SetCapture()
 
 void Sprite::ReleaseCapture()
 {
-	assert(GetWindow()); // 这个在lua包装函数里检查 报成lua错误
+    LTK_ASSERT(GetWindow());
 	if (GetWindow())
 	{
 		GetWindow()->ReleaseCapture();
@@ -432,7 +440,7 @@ void Sprite::SetCaretPos(RectF rc)
     ::DestroyCaret(); // 这里销毁重新建立 才能改变高度
     ::CreateCaret(hwnd, NULL, (int)rc.Width, (int)rc.Height); // 可以加个参数制定虚线光标(HBITMAP)1
     BOOL ret = ::ShowCaret(hwnd); // TODO 这里太脏了 可能显示出来就隐藏不掉 应该一对一绑定
-    assert(ret);
+    LTK_ASSERT(ret);
     GetWindow()->SetCaretHeight(rc.Height);
     ::SetCaretPos(rc2.left, rc2.top);
 }
@@ -510,6 +518,14 @@ void Sprite::HandleRecreateResouce(ID2D1RenderTarget *target)
         sp->HandleRecreateResouce(target);
     }
     this->RecreateResouce(target);
+}
+
+void Sprite::HandleThemeChange()
+{
+    this->OnThemeChanged();
+    for (auto sp : m_children) {
+        sp->HandleThemeChange();
+    }
 }
 
 void Sprite::BeginAnimation()

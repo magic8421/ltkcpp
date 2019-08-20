@@ -68,7 +68,7 @@
         <Pressed x="147" y="43" w="22" h="20" />
     </OnePatch>
 -->
-    <Color name="TextNormal"        value="#000000" />
+    <Color name="TextNormal"        value="#00ff00" />
     <Color name="TextHover"         value="#766200" />
     <Color name="TextCaption"       value="#eae4c9" />
     <Color name="ListBoxHover"      value="#fafad2" />

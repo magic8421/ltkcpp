@@ -77,6 +77,9 @@ public:
     ID2D1Bitmap *GetAtlasBitmap();
     ID2D1SolidColorBrush *GetStockBrush();
     void SetBackground(LPCSTR style);
+    
+    void HandleThemeChange();
+    virtual void OnThemeChanged() {}
 
 public:
     Delegate<void(bool &)> CloseEvent;
@@ -117,6 +120,7 @@ private:
 
     ID2D1Bitmap *m_atlas = nullptr; // owner TODO share across multiple Window
     AbstractBackground *m_background = nullptr;
+    std::string m_styleName;
 };
 
 } // namespace ltk
