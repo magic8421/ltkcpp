@@ -97,15 +97,6 @@ public:
     ButtonStyle *GetButtonStyle(LPCSTR name);
     void AddButtonStyle(LPCSTR name, ButtonStyle *style);
 
-    ListViewStyle *GetListViewStyle(LPCSTR name);
-    void AddListViewStyle(LPCSTR name, ListViewStyle *style);
-
-    LabelStyle *GetLabelStyle(LPCSTR name);
-    void AddLabelStyle(LPCSTR name, LabelStyle *style);
-
-    TreeViewStyle *GetTreeViewStyle(LPCSTR name);
-    void AddTreeViewStyle(LPCSTR name, TreeViewStyle *style);
-
     static RectF RectFromXml(tinyxml2::XMLElement *elm);
     static Margin MarginFromXml(tinyxml2::XMLElement *elm);
     static bool TextureFromXml(tinyxml2::XMLElement *elm, TextureInfo *tex);
@@ -115,6 +106,9 @@ public:
     bool IsDebuggingLayout();
     void SetDebuggingLayout(bool);
 
+    StyleMap<LabelStyle> LabelStyleMap;
+    StyleMap<TreeViewStyle> TreeViewStyleMap;
+    StyleMap<ListViewStyle> ListViewStyleMap;
 private:
     StyleManager();
     ~StyleManager();
@@ -123,12 +117,9 @@ private:
     bool m_bDebugLayout = false;
     std::vector<D2D1_COLOR_F> m_colors;
     std::vector<float> m_measurements;
-    std::unordered_map<std::string, AbstractBackground*> m_mapBackgroundStyle;
     std::unordered_map<std::string, IDWriteTextFormat*> m_mapTextFormat;
+    std::unordered_map<std::string, AbstractBackground*> m_mapBackgroundStyle;
     std::unordered_map<std::string, ButtonStyle*> m_mapButtonStyle;
-    std::unordered_map<std::string, ListViewStyle*> m_mapListViewStyle;
-    std::unordered_map<std::string, LabelStyle*> m_mapLabelStyle;
-    std::unordered_map<std::string, TreeViewStyle*> m_mapTreeViewStyle;
 };
 
 class AbstractBackground

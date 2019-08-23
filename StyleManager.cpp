@@ -43,18 +43,6 @@ StyleManager::~StyleManager()
         iter != m_mapButtonStyle.end(); iter++) {
         delete iter->second;
     }
-    for (auto iter = m_mapListViewStyle.begin();
-        iter != m_mapListViewStyle.end(); iter++) {
-        delete iter->second;
-    }
-    for (auto iter = m_mapLabelStyle.begin();
-        iter != m_mapLabelStyle.end(); iter++) {
-        delete iter->second;
-    }
-    for (auto iter = m_mapTreeViewStyle.begin();
-        iter != m_mapTreeViewStyle.end(); iter++) {
-        delete iter->second;
-    }
 }
 
 void StyleManager::NewTheme(LPCSTR name)
@@ -192,45 +180,6 @@ void StyleManager::AddButtonStyle(LPCSTR name, ButtonStyle *style)
 {
     LTK_ASSERT(m_mapButtonStyle[name] == nullptr);
     m_mapButtonStyle[name] = style;
-}
-
-ListViewStyle *StyleManager::GetListViewStyle(LPCSTR name)
-{
-    auto style = m_mapListViewStyle[name];
-    LTK_ASSERT(style);
-    return style;
-}
-
-void StyleManager::AddListViewStyle(LPCSTR name, ListViewStyle *style)
-{
-    LTK_ASSERT(m_mapListViewStyle[name] == nullptr);
-    m_mapListViewStyle[name] = style;
-}
-
-LabelStyle * StyleManager::GetLabelStyle(LPCSTR name)
-{
-    auto style = m_mapLabelStyle[name];
-    LTK_ASSERT(style);
-    return style;
-}
-
-void StyleManager::AddLabelStyle(LPCSTR name, LabelStyle *style)
-{
-    LTK_ASSERT(m_mapLabelStyle[name] == nullptr);
-    m_mapLabelStyle[name] = style;
-}
-
-TreeViewStyle * StyleManager::GetTreeViewStyle(LPCSTR name)
-{
-    auto style = m_mapTreeViewStyle[name];
-    LTK_ASSERT(style);
-    return style;
-}
-
-void StyleManager::AddTreeViewStyle(LPCSTR name, TreeViewStyle *style)
-{
-    LTK_ASSERT(m_mapTreeViewStyle[name] == nullptr);
-    m_mapTreeViewStyle[name] = style;
 }
 
 RectF StyleManager::RectFromXml(tinyxml2::XMLElement *elm)

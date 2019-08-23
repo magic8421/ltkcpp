@@ -60,8 +60,9 @@ public:
 
 	void SetCapture(Sprite *sp);
 	void ReleaseCapture();
+    bool IsCapturing(Sprite *sp);
 
-	void TrackMouseLeave(Sprite *sp);
+    void TrackMouseLeave(Sprite *sp);
 
     void BeginAnimation(Sprite *sp);
     void EndAnimation(Sprite *sp);

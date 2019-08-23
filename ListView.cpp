@@ -46,7 +46,7 @@ ListView::~ListView()
 
 void ListView::OnThemeChanged()
 {
-    m_style = StyleManager::Instance()->GetListViewStyle(this->GetStyleName());
+    m_style = StyleManager::Instance()->ListViewStyleMap.Get(this->GetStyleName());
 }
 
 bool ListView::OnPaint(PaintEvent *ev)

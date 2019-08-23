@@ -19,7 +19,7 @@ namespace ltk {
 
 Label::Label()
 {
-    m_style = StyleManager::Instance()->GetLabelStyle("default");
+    m_style = StyleManager::Instance()->LabelStyleMap.Get("default");
 }
 
 Label::~Label()
@@ -54,7 +54,7 @@ void Label::SetText(LPCWSTR t)
 
 void Label::OnThemeChanged()
 {
-    m_style = StyleManager::Instance()->GetLabelStyle(this->GetStyleName());
+    m_style = StyleManager::Instance()->LabelStyleMap.Get(this->GetStyleName());
     m_textFormat = StyleManager::Instance()->GetTextFormat(m_style->TextFormat.c_str());
 }
 

@@ -325,11 +325,22 @@ void Sprite::SetCapture()
 
 void Sprite::ReleaseCapture()
 {
-    LTK_ASSERT(GetWindow());
-	if (GetWindow())
+    auto wnd = GetWindow();
+    LTK_ASSERT(wnd);
+	if (wnd)
 	{
-		GetWindow()->ReleaseCapture();
+		wnd->ReleaseCapture();
 	}
+}
+
+bool Sprite::IsCapturing()
+{
+    Window *wnd = GetWindow();
+    if (wnd) {
+        return wnd->IsCapturing(this);
+    } else {
+        return false;
+    }
 }
 
 void Sprite::BringToFront()
@@ -367,6 +378,9 @@ bool Sprite::GetClipChildren()
 
 bool Sprite::DispatchMouseEvent(MouseEvent *ev)
 {
+	if (!m_bVisible) {
+		return false;
+	}
     for (size_t i = 0; i < m_children.size(); i++) {
         auto sp = m_children[i];
         RectF rc = sp->GetRect();

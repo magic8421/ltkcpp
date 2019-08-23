@@ -63,8 +63,9 @@ public:
 
 	void SetCapture();
 	void ReleaseCapture();
+    bool IsCapturing();
 
-	void BringToFront();
+    void BringToFront();
 
 	void EnableClipChildren(bool bClip);
 	bool GetClipChildren();

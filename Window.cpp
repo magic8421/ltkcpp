@@ -776,6 +776,11 @@ void Window::ReleaseCapture()
     //LTK_LOG("ReleaseCapture");
 }
 
+bool Window::IsCapturing(Sprite *sp)
+{
+    return m_spCapture == sp;
+}
+
 void Window::ShowCaret()
 {
 	LTK_LOG("ShowCaret");
