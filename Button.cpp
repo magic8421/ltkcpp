@@ -30,6 +30,9 @@ Button::~Button()
 
 void Button::OnThemeChanged()
 {
+	//if (GetName() && strcmp(GetName(), "min_btn") == 0) {
+	//	__debugbreak();
+	//}
 	auto sm = StyleManager::Instance();
 
 	m_background = sm->GetBackground(Background);

@@ -23,6 +23,7 @@ WindowLayout::WindowLayout()
 {
     m_minBtn = new Button;
     m_minBtn->Background = "min_btn_bg";
+	m_minBtn->SetName("min_btn");
     this->AddChild(m_minBtn);
     m_maxBtn = new Button;
     m_maxBtn->Background = "max_btn_bg";
@@ -79,11 +80,15 @@ void WindowLayout::DoLayout()
 	float btn_h = 20;
 	float caption_h = 35;
     float margin = 5;
+	float sys_btn_margin = 3;
 
     RectF rc = this->GetClientRect();
-    m_closeBtn->SetRect(RectF(rc.Width - btn_w, 0, btn_w, btn_h));
-    m_maxBtn->SetRect(RectF(rc.Width - btn_w * 2, 0, btn_w, btn_h));
-    m_minBtn->SetRect(RectF(rc.Width - btn_w * 3, 0, btn_w, btn_h));
+    m_closeBtn->SetRect(RectF(
+		rc.Width - btn_w - sys_btn_margin, sys_btn_margin, btn_w, btn_h));
+    m_maxBtn->SetRect(RectF(
+		rc.Width - btn_w * 2 - sys_btn_margin, sys_btn_margin, btn_w, btn_h));
+    m_minBtn->SetRect(RectF(
+		rc.Width - btn_w * 3 - sys_btn_margin, sys_btn_margin, btn_w, btn_h));
 
     m_caption->SetRect(RectF(margin, margin, 
         rc.Width - btn_w * 3 - margin * 3, caption_h));

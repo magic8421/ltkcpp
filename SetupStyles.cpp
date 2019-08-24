@@ -141,23 +141,23 @@ void SetupVectorStyle1()
 
 
     OnePatchBackground *one_patch = new OnePatchBackground;
-    one_patch->Normal() .SetAtlas(103, 3, 22, 20);
-    one_patch->Hover()  .SetAtlas(103, 23, 22, 20);
-    one_patch->Pressed().SetAtlas(103, 43, 22, 20);
+    one_patch->Normal() .SetAtlas(215, 4, 22, 18);
+    one_patch->Hover()  .SetAtlas(215, 24, 22, 18);
+    one_patch->Pressed().SetAtlas(215, 44, 22, 18);
     one_patch->Disable() = one_patch->Normal();
     sm->AddBackgroundStyle("min_btn_bg", one_patch);
 
     one_patch = new OnePatchBackground;
-    one_patch->Normal() .SetAtlas(125, 3, 22, 20);
-    one_patch->Hover()  .SetAtlas(125, 23, 22, 20);
-    one_patch->Pressed().SetAtlas(125, 43, 22, 20);
+    one_patch->Normal() .SetAtlas(237, 4, 21, 18);
+    one_patch->Hover()  .SetAtlas(237, 24, 21, 18);
+    one_patch->Pressed().SetAtlas(237, 44, 21, 18);
     one_patch->Disable() = one_patch->Normal();
     sm->AddBackgroundStyle("max_btn_bg", one_patch);
 
     one_patch = new OnePatchBackground;
-    one_patch->Normal() .SetAtlas(147, 3, 22, 20);
-    one_patch->Hover()  .SetAtlas(147, 23, 22, 20);
-    one_patch->Pressed().SetAtlas(147, 43, 22, 20);
+    one_patch->Normal() .SetAtlas(258, 4, 21, 18);
+    one_patch->Hover()  .SetAtlas(258, 24, 21, 18);
+    one_patch->Pressed().SetAtlas(258, 44, 21, 18);
     one_patch->Disable() = one_patch->Normal();
     sm->AddBackgroundStyle("close_btn_bg", one_patch);
 
@@ -165,8 +165,28 @@ void SetupVectorStyle1()
         DWRITE_FONT_STYLE_NORMAL, 14, DWRITE_TEXT_ALIGNMENT_CENTER,
         DWRITE_PARAGRAPH_ALIGNMENT_CENTER);
 
-    sm->AddTextFormat2("caption", L"宋体", DWRITE_FONT_WEIGHT_NORMAL,
+	sm->AddTextFormat2("default_label_fmt", L"宋体", DWRITE_FONT_WEIGHT_NORMAL,
+		DWRITE_FONT_STYLE_NORMAL, 14, DWRITE_TEXT_ALIGNMENT_CENTER,
+		DWRITE_PARAGRAPH_ALIGNMENT_CENTER);
+
+	sm->AddTextFormat2("item_text_fmt", L"宋体", DWRITE_FONT_WEIGHT_NORMAL,
+		DWRITE_FONT_STYLE_NORMAL, 12, DWRITE_TEXT_ALIGNMENT_CENTER,
+		DWRITE_PARAGRAPH_ALIGNMENT_CENTER);
+
+    sm->AddTextFormat2("caption_fmt", L"宋体", DWRITE_FONT_WEIGHT_NORMAL,
         DWRITE_FONT_STYLE_NORMAL, 12, DWRITE_TEXT_ALIGNMENT_LEADING,
         DWRITE_PARAGRAPH_ALIGNMENT_NEAR);
 
+	const ColorDesc colors[] = {
+		{ "default_btn_clr", "#00ff00" },
+		{ "default_label_clr", "#00ff00" },
+		{ "item_text_clr", "#00ff00" },
+		{ "item_hover_clr", "#004400" },
+		{ "item_selected_clr", "#00ff00" },
+		{ "item_selected_text_clr", "#000000" },
+		{ "caption_clr", "#00ff00" },
+		//{ "", "" },
+		{ NULL, NULL }
+	};
+	sm->RegisterColorBulk(colors);
 }
