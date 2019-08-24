@@ -50,7 +50,7 @@ void SetupPixelStyle1()
     sm->AddBackgroundStyle("header_btn_bg", nine_in_one);
 
     nine_in_one = new NinePatchBackground;
-    nine_in_one->Normal().SetAtals(2, 98, 152, 167).SetMargin(40, 68, 40, 40);
+    nine_in_one->Normal().SetAtals(2, 98, 39, 66).SetMargin(17, 45, 17, 17);
     nine_in_one->Hover() = nine_in_one->Normal();
     nine_in_one->Pressed() = nine_in_one->Normal();
     nine_in_one->Disable() = nine_in_one->Normal();
