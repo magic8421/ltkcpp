@@ -17,8 +17,6 @@ class AbstractBackground;
 class StyleManager;
 
 struct ButtonStyle;
-struct ListViewStyle;
-struct LabelStyle;
 struct TreeViewStyle;
 
 struct ThemeData
@@ -27,31 +25,10 @@ struct ThemeData
     std::string CurrentTheme;
 };
 
-template<typename T>
-class StyleMap
+struct ColorDesc
 {
-public:
-    void Add(LPCSTR name, T *style)
-    {
-        std::string strName(name);
-        LTK_ASSERT(m_map[strName] == nullptr);
-        m_map[strName] = style;
-    }
-    T *Get(LPCSTR name)
-    {
-        T *style = m_map[name];
-        LTK_ASSERT(style);
-        return style;
-    }
-    ~StyleMap()
-    {
-        for (auto &pair : m_map) {
-            delete pair.second;
-        }
-    }
-
-private:
-    std::unordered_map<std::string, T*> m_map;
+	LPCSTR name;
+	LPCSTR color;
 };
 
 class StyleManager
@@ -62,40 +39,20 @@ public:
     static StyleManager *Instance();
     static void Free();
 
-    enum Colors {
-        clrTextNormal,
-        clrTextHover,
-        clrTextCaption,
-        clrListBoxHover,
-        clrListBoxSelected,
-        clrLast
-    };
-    D2D1_COLOR_F GetColor(Colors clr);
-
-    enum Measurement {
-        mSysButtonWidth,
-        mSysButtonHeight,
-        mCaptionHeight,
-        mWindowBorder, // TODO
-        mWindowMaxBorder,
-        mListHeaderHeight,
-        mLast
-    };
-    float GetMeasurement(Measurement m);
-
     static D2D1_COLOR_F ColorFromString(const char *psz);
 
     AbstractBackground *GetBackground(LPCSTR name) const;
     void AddBackgroundStyle(LPCSTR name, AbstractBackground *bg);
 
-    IDWriteTextFormat *GetTextFormat(LPCSTR name);
+	void RegisterColor(LPCSTR name, D2D1_COLOR_F color);
+	void RegisterColorBulk(const ColorDesc *colors);
+	D2D1_COLOR_F GetColor(LPCSTR name);
+
+	IDWriteTextFormat *GetTextFormat(LPCSTR name);
     void AddTextFormat(LPCSTR name, IDWriteTextFormat *format);
     void AddTextFormat2(LPCSTR name, LPCWSTR font_family, DWRITE_FONT_WEIGHT weight,
         DWRITE_FONT_STYLE style, float size, DWRITE_TEXT_ALIGNMENT hAlign,
         DWRITE_PARAGRAPH_ALIGNMENT vAlign);
-
-    ButtonStyle *GetButtonStyle(LPCSTR name);
-    void AddButtonStyle(LPCSTR name, ButtonStyle *style);
 
     static RectF RectFromXml(tinyxml2::XMLElement *elm);
     static Margin MarginFromXml(tinyxml2::XMLElement *elm);
@@ -106,20 +63,16 @@ public:
     bool IsDebuggingLayout();
     void SetDebuggingLayout(bool);
 
-    StyleMap<LabelStyle> LabelStyleMap;
-    StyleMap<TreeViewStyle> TreeViewStyleMap;
-    StyleMap<ListViewStyle> ListViewStyleMap;
 private:
     StyleManager();
     ~StyleManager();
     static ThemeData *m_sThemeData;
 
     bool m_bDebugLayout = false;
-    std::vector<D2D1_COLOR_F> m_colors;
-    std::vector<float> m_measurements;
-    std::unordered_map<std::string, IDWriteTextFormat*> m_mapTextFormat;
+
     std::unordered_map<std::string, AbstractBackground*> m_mapBackgroundStyle;
-    std::unordered_map<std::string, ButtonStyle*> m_mapButtonStyle;
+	std::unordered_map<std::string, D2D1_COLOR_F> m_mapColor;
+	std::unordered_map<std::string, IDWriteTextFormat*> m_mapTextFormat;
 };
 
 class AbstractBackground
@@ -217,31 +170,6 @@ private:
     DISALLOW_COPY_AND_ASSIGN(WindowStyle);
 };
 
-struct ButtonStyle
-{
-    void SetStyle(LPCSTR background, LPCSTR text_format, LPCSTR text_color);
-
-    std::string BackgroundStyle;
-    std::string TextFormat;
-    D2D1_COLOR_F TextColor;
-};
-
-struct ListViewStyle
-{
-    void SetColors(LPCSTR textColor, LPCSTR hoverColor, LPCSTR selectedColor,
-        LPCSTR selectedTextColor);
-
-    D2D1_COLOR_F TextColor;
-    D2D1_COLOR_F HoverColor;
-    D2D1_COLOR_F SelectedColor;
-    D2D1_COLOR_F SelectedTextColor;
-};
-
-struct LabelStyle
-{
-    D2D1_COLOR_F TextColor;
-    std::string TextFormat;
-};
 
 struct TreeViewStyle {
     D2D1_COLOR_F TextColor;

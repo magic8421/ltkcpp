@@ -47,10 +47,6 @@ Window::~Window(void)
     if (m_sprite) {
         delete m_sprite;
     }
-    //if (m_hboxCaption) {
-    //    m_hboxCaption->Release();
-    //}
-    //m_hboxCaption = INVALID_POINTER(BoxLayout);
 
     m_spFocus = INVALID_POINTER(Sprite);
     m_spCapture = INVALID_POINTER(Sprite);
@@ -86,37 +82,6 @@ void Window::Create(Window *parent, RectF rc)
     DWORD style = WS_VISIBLE;
     
     style |= WS_OVERLAPPEDWINDOW;
-
-    /*
-    m_hboxCaption = new BoxLayout(BoxLayout::Horizontal);
-    m_hboxCaption->SetMargin(0.0f);
-    m_hboxCaption->SetTopMargin(3.0f);
-    m_hboxCaption->SetRightMargin(1.0f);
-    m_hboxCaption->SetSpacing(1.0f);
-    m_hboxCaption->AddSpaceItem(7.0f, 0.0f);
-
-    m_labelTitle = new Label;
-    m_labelTitle->SetTextAlign(DWRITE_TEXT_ALIGNMENT_LEADING);
-    m_labelTitle->SetTextColor(
-        StyleManager::Instance()->GetColor(StyleManager::clrTextCaption));
-    m_hboxCaption->AddLayoutItem(m_labelTitle, 0.0f, 1.0f);
-
-    float sysbtn_w = StyleManager::Instance()->GetMeasurement(StyleManager::mSysButtonWidth);
-    m_btnMinimize = new Button;
-    m_btnMinimize->SetBackgroundStyle("min_button");
-    m_hboxCaption->AddLayoutItem(m_btnMinimize, (float)sysbtn_w);
-
-    m_btnMaximize = new Button;
-    m_btnMaximize->SetBackgroundStyle("max_button");
-    m_hboxCaption->AddLayoutItem(m_btnMaximize, (float)sysbtn_w);
-
-    m_btnClose = new Button();
-    m_btnClose->SetBackgroundStyle("close_button");
-    m_hboxCaption->AddLayoutItem(m_btnClose, (float)sysbtn_w);
-
-    m_sprite->AddLayoutItem(m_hboxCaption, 
-        StyleManager::Instance()->GetMeasurement(StyleManager::mSysButtonHeight));
-    */
 
     m_shadowLeft.Create();
     m_shadowTop.Create();
@@ -163,9 +128,6 @@ SizeF Window::GetClientSize()
     ScreenCoordToDip(sf.Width, sf.Height);
     return sf;
 }
-
-// TODO 记得窗口过程 里面一定要先push HWND message wparam lparam 到lua堆栈里
-// 然后再 pcall 一个cfunction 再去解析参数 不然一旦lua报错 就找不到错误在哪 而且程序会挂掉
 
 void Window::RegisterWndClass()
 {
@@ -283,7 +245,7 @@ LRESULT Window::HandleNcHitTest(const POINT &pt)
     const long height = rcWnd.bottom - rcWnd.top;
     auto rcCaption = DipRectToScreen(m_sprite->GetCaptionRect());
     
-    long caption_h = (long)StyleManager::Instance()->GetMeasurement(StyleManager::mCaptionHeight);
+	long caption_h = 35;
 
     if (pt.x < margin && pt.y < margin) {
         return HTTOPLEFT;
@@ -853,6 +815,19 @@ void Window::HandleThemeChange()
     m_background = StyleManager::Instance()->GetBackground(m_styleName.c_str());
     this->OnThemeChanged();
     m_sprite->HandleThemeChange();
+	// TODO send a eSizeChanged to the Sprite tree.
+	// let the controls use the new style measure.
+	float cx, cy;
+	RECT rc;
+	::GetClientRect(m_hwnd, &rc);
+	cx = (float)rc.right;
+	cy = (float)rc.bottom;
+	ltk::ScreenCoordToDip(cx, cy);
+	SizeEvent ev;
+	ev.id = eSizeChanged;
+	ev.width = cx;
+	ev.height = cy;
+	m_sprite->OnEvent(&ev);
 }
 
 void Window::UpdateShadowFrame(bool bRedraw)

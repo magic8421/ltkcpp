@@ -11,6 +11,7 @@
 #include "StyleManager.h"
 #include "ScrollBar.h"
 #include "HeaderCtrl.h"
+#include "Window.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW 
@@ -19,7 +20,12 @@
 namespace ltk
 {
 
-ListView::ListView()
+ListView::ListView() :
+	TextColor("item_text_clr"),
+	HoverColor("item_hover_clr"),
+	SelectedColor("item_selected_clr"),
+	SelectedTextColor("item_selected_text_clr"),
+	TextFormat("item_text_fmt")
 {
     m_vsb = new ScrollBar(ScrollBar::Vertical);
     m_vsb->ValueChangedEvent.Attach([this](float pos) {
@@ -31,7 +37,6 @@ ListView::ListView()
         this->HandleHScrollBar(pos);
     });
     this->AddChild(m_hsb);
-    this->SetStyleName("default");
 }
 
 ListView::~ListView()
@@ -40,13 +45,17 @@ ListView::~ListView()
         m_header->ColumnResizeEvent.Remove(m_columnResizeTracker);
         m_header->DeleteEvent.Remove(m_headerDeletedTracker);
     }
-    RELEASE_AND_INVALIDATE(ID2D1SolidColorBrush, m_brush);
-    RELEASE_AND_INVALIDATE(IDWriteTextFormat, m_textFormat);
 }
 
 void ListView::OnThemeChanged()
 {
-    m_style = StyleManager::Instance()->ListViewStyleMap.Get(this->GetStyleName());
+	auto sm = StyleManager::Instance();
+	m_textColor = sm->GetColor(TextColor);
+	m_hoverColor = sm->GetColor(HoverColor);
+	m_selectedColor = sm->GetColor(SelectedColor);
+	m_selectedTextColor = sm->GetColor(SelectedTextColor);
+
+	m_textFormat = sm->GetTextFormat(TextFormat);
 }
 
 bool ListView::OnPaint(PaintEvent *ev)
@@ -71,6 +80,7 @@ bool ListView::OnPaint(PaintEvent *ev)
         target->PopAxisAlignedClip();
     });
 
+	auto brush = GetWindow()->GetStockBrush();
     rcClip.left = 0;
     D2D1_RECT_F rcItem;
     int i = (int)(m_scroll.GetScroll() / ItemHeight);
@@ -83,32 +93,26 @@ bool ListView::OnPaint(PaintEvent *ev)
         rcItem.right = rcSprite.Width + m_hscroll;
         rcItem.bottom = rcItem.top + ItemHeight;
         if (m_selectedItem == i) {
-            m_brush->SetColor(m_style->SelectedColor);
-            //m_brush->SetColor(StyleManager::Instance()->GetColor(
-            //    StyleManager::clrListBoxSelected));
-            target->FillRectangle(rcItem, m_brush);
+			brush->SetColor(m_selectedColor);
+            target->FillRectangle(rcItem, brush);
         }
         else if (m_hoverItem == i) {
-            m_brush->SetColor(m_style->HoverColor);
-            //m_brush->SetColor(StyleManager::Instance()->GetColor(
-            //    StyleManager::clrListBoxHover));
-            target->FillRectangle(rcItem, m_brush);
+			brush->SetColor(m_hoverColor);
+            target->FillRectangle(rcItem, brush);
         }
         auto &line = m_vecData.at(i);
         auto text = line.cells.at(0).data();
         auto len = line.cells.at(0).length();
         rcItem.left = 0.0f;
         if (m_selectedItem == i) {
-            m_brush->SetColor(m_style->SelectedTextColor);
+			brush->SetColor(m_selectedTextColor);
         } else {
-            m_brush->SetColor(m_style->TextColor);
+			brush->SetColor(m_textColor);
         }
-        //m_brush->SetColor(StyleManager::Instance()->GetColor(
-        //    StyleManager::clrTextNormal));
         //if (m_vecColumns.size() > 0) {
             rcItem.right = m_vecColumns[0];
         //}
-        target->DrawText(text, len, m_textFormat, rcItem, m_brush);
+        target->DrawText(text, len, m_textFormat, rcItem, brush);
 
         if (m_vecColumns.size() > 0) {
             float x = 0.0f;
@@ -119,7 +123,7 @@ bool ListView::OnPaint(PaintEvent *ev)
                     len = line.cells.at(j).length();
                     rcItem.left = x;
                     rcItem.right = x + m_vecColumns.at(j);
-                    target->DrawText(text, len, m_textFormat, rcItem, m_brush);
+                    target->DrawText(text, len, m_textFormat, rcItem, brush);
                 }
             }
         }
@@ -195,17 +199,6 @@ bool ListView::OnMouseWheel(MouseEvent *ev)
 
 void ListView::RecreateResouce(ID2D1RenderTarget *target)
 {
-    SAFE_RELEASE(m_brush);
-    HRESULT hr = target->CreateSolidColorBrush(
-        D2D1::ColorF(D2D1::ColorF::Black), &m_brush);
-    LTK_ASSERT(SUCCEEDED(hr));
-    SAFE_RELEASE(m_textFormat);
-    hr = GetDWriteFactory()->CreateTextFormat(L"Î¢ÈíÑÅºÚ", NULL, DWRITE_FONT_WEIGHT_NORMAL,
-        DWRITE_FONT_STYLE_NORMAL, DWRITE_FONT_STRETCH_NORMAL, 12.0f, L"zh-cn",
-        &m_textFormat);
-    m_textFormat->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_CENTER);
-    m_textFormat->SetWordWrapping(DWRITE_WORD_WRAPPING_NO_WRAP);
-    LTK_ASSERT(SUCCEEDED(hr));
 }
 
 void ListView::HandleVScrollBar(float pos)

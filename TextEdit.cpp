@@ -9,6 +9,7 @@
 #include "TextEdit.h"
 #include "StyleManager.h"
 #include "ScrollBar.h"
+#include "Window.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW 
@@ -38,7 +39,6 @@ TextEdit::~TextEdit()
 {
     SAFE_RELEASE(m_format);
     SAFE_RELEASE(m_layout);
-    SAFE_RELEASE(m_brush);
     SAFE_RELEASE(m_brushSelectedText);
 }
 
@@ -62,7 +62,9 @@ bool TextEdit::OnPaint(PaintEvent *ev)
     rc.Y = 0.5f;
     rc.Width -= 0.5f;
     rc.Height -= 0.5f;
-    target->DrawRectangle(D2D1RectF(rc), m_brush);
+	auto brush = GetWindow()->GetStockBrush();
+	brush->SetColor(StyleManager::ColorFromString("#000000"));
+    target->DrawRectangle(D2D1RectF(rc), brush);
 
     if (m_selection > 0) {
         UINT32 begin = m_cursorPos;
@@ -80,22 +82,22 @@ bool TextEdit::OnPaint(PaintEvent *ev)
         m_layout->HitTestTextRange(begin, end - begin, m_padding, 0.0f,
             &vecMetrics[0], len, &len);
         LTK_ASSERT(SUCCEEDED(hr));
-        m_brush->SetColor(StyleManager::ColorFromString("#0000ff"));
+		brush->SetColor(StyleManager::ColorFromString("#0000ff"));
         for (auto &m : vecMetrics) {
             D2D1_RECT_F rc;
             rc.left = m.left;
             rc.right = rc.left + m.width;
             rc.top = m.top - m_scrollAni.GetScroll();
             rc.bottom = rc.top + m.height;
-            target->FillRectangle(rc, m_brush);
+            target->FillRectangle(rc, brush);
         }
     }
 
     D2D_POINT_2F pt;
     pt.x = m_padding;
     pt.y = -m_scrollAni.GetScroll();
-    m_brush->SetColor(StyleManager::ColorFromString("#000000"));
-    target->DrawTextLayout(pt, m_layout, m_brush);
+	brush->SetColor(StyleManager::ColorFromString("#000000"));
+    target->DrawTextLayout(pt, m_layout, brush);
 
     return false;
 }
@@ -222,7 +224,7 @@ void TextEdit::RecreateLayout()
     hr = m_layout->GetMetrics(&textMetrics);
     LTK_ASSERT(SUCCEEDED(hr));
     float layout_h = textMetrics.height;
-    LTK_LOG("RecreateLayout layout_h:%f", layout_h);
+    //LTK_LOG("RecreateLayout layout_h:%f", layout_h);
     if (layout_h > rc.Height) {
         m_vsb->SetVisible(true);
         m_vsb->SetContentSize(layout_h);
@@ -347,14 +349,9 @@ bool TextEdit::OnSize(SizeEvent *ev)
 
 void TextEdit::RecreateResouce(ID2D1RenderTarget *target)
 {
-    SAFE_RELEASE(m_brush);
-    auto textColor = StyleManager::Instance()->GetColor(StyleManager::clrTextNormal);
-    HRESULT hr = target->CreateSolidColorBrush(textColor, &m_brush);
-    LTK_ASSERT(SUCCEEDED(hr));
-
     SAFE_RELEASE(m_brushSelectedText);
-    textColor = StyleManager::ColorFromString("#ffffff");
-    hr = target->CreateSolidColorBrush(textColor, &m_brushSelectedText);
+    auto textColor = StyleManager::ColorFromString("#ffffff");
+    auto hr = target->CreateSolidColorBrush(textColor, &m_brushSelectedText);
     LTK_ASSERT(SUCCEEDED(hr));
 }
 

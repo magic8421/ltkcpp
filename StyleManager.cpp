@@ -20,12 +20,6 @@ ThemeData * StyleManager::m_sThemeData;
 
 StyleManager::StyleManager()
 {
-    for (int i = 0; i < clrLast; i ++) {
-        m_colors.push_back(D2D1::ColorF(D2D1::ColorF::Cyan));
-    }
-    for (int i = 0; i < mLast; i++) {
-        m_measurements.push_back(10.0f);
-    }
 }
 
 
@@ -38,10 +32,6 @@ StyleManager::~StyleManager()
     for (auto iter = m_mapTextFormat.begin();
         iter != m_mapTextFormat.end(); iter++) {
         iter->second->Release();
-    }
-    for (auto iter = m_mapButtonStyle.begin();
-        iter != m_mapButtonStyle.end(); iter++) {
-        delete iter->second;
     }
 }
 
@@ -71,16 +61,6 @@ void StyleManager::Free()
         delete pair.second;
     }
     delete m_sThemeData;
-}
-
-D2D1_COLOR_F StyleManager::GetColor(Colors clr)
-{
-    return m_colors.at((size_t)clr);
-}
-
-float StyleManager::GetMeasurement(Measurement m)
-{
-    return m_measurements.at((size_t)m);
 }
 
 D2D1_COLOR_F StyleManager::ColorFromString(const char *psz)
@@ -127,6 +107,30 @@ void StyleManager::AddBackgroundStyle(const char *name, AbstractBackground *bg)
     m_mapBackgroundStyle[strName] = bg;
 }
 
+void StyleManager::RegisterColor(LPCSTR name, D2D1_COLOR_F color)
+{
+	std::string strName(name);
+	auto iter = m_mapColor.find(strName);
+	if (iter != m_mapColor.end()) {
+		LTK_ASSERT(false);
+		LTK_LOG("StyleManager::RegisterColor() [%s] already exists.", name);
+	}
+	m_mapColor[strName] = color;
+}
+
+D2D1_COLOR_F StyleManager::GetColor(LPCSTR name)
+{
+	std::string strName(name);
+	auto iter = m_mapColor.find(strName);
+	if (iter == m_mapColor.end()) {
+		LTK_ASSERT(false);
+		LTK_LOG("StyleManager::GetColor() [%s] does not exist.", name);
+		return D2D1::ColorF(D2D1::ColorF::Cyan);
+	}
+	return iter->second;
+}
+
+// TODO change to ** idom
 IDWriteTextFormat * StyleManager::GetTextFormat(LPCSTR name)
 {
     auto format = m_mapTextFormat[name];
@@ -167,19 +171,6 @@ void StyleManager::AddTextFormat2(LPCSTR name, LPCWSTR font_family,
 
     this->AddTextFormat(name, format);
     format->Release();
-}
-
-ButtonStyle * StyleManager::GetButtonStyle(LPCSTR name)
-{
-    auto style = m_mapButtonStyle[name];
-    LTK_ASSERT(style);
-    return style;
-}
-
-void StyleManager::AddButtonStyle(LPCSTR name, ButtonStyle *style)
-{
-    LTK_ASSERT(m_mapButtonStyle[name] == nullptr);
-    m_mapButtonStyle[name] = style;
 }
 
 RectF StyleManager::RectFromXml(tinyxml2::XMLElement *elm)
@@ -291,6 +282,7 @@ bool StyleManager::LoadFromXml(LPCSTR file_name)
         one_path_elm = one_path_elm->NextSiblingElement("OnePatch");
     }
 
+	/*
     auto color_elm = style_elm->FirstChildElement("Color");
     while (color_elm) {
         auto name = color_elm->Attribute("name");
@@ -329,7 +321,7 @@ bool StyleManager::LoadFromXml(LPCSTR file_name)
         } 
         meauare_elm = meauare_elm->NextSiblingElement("Measurement");
     }
-
+	*/
     return true;
 }
 
@@ -341,6 +333,13 @@ bool StyleManager::IsDebuggingLayout()
 void StyleManager::SetDebuggingLayout(bool b)
 {
     m_bDebugLayout = b;
+}
+
+void StyleManager::RegisterColorBulk(const ColorDesc *colors)
+{
+	for (UINT i = 0; colors[i].name; i++) {
+		RegisterColor(colors[i].name, ColorFromString(colors[i].color));
+	}
 }
 
 void NinePatchBackground::Draw(Window *wnd, ID2D1RenderTarget *targe, const RectF &rc, State state, float blend)
@@ -473,21 +472,6 @@ void FourStateColor::SetColor(LPCSTR normal, LPCSTR hover, LPCSTR pressed, LPCST
     this->clrHover = StyleManager::ColorFromString(hover);
     this->clrPressed = StyleManager::ColorFromString(pressed);
     this->clrDisable = StyleManager::ColorFromString(disable);
-}
-
-void ButtonStyle::SetStyle(LPCSTR background, LPCSTR text_format, LPCSTR text_color)
-{
-    this->BackgroundStyle = background;
-    this->TextFormat = text_format;
-    this->TextColor = StyleManager::ColorFromString(text_color);
-}
-
-void ListViewStyle::SetColors(LPCSTR textColor, LPCSTR hoverColor, LPCSTR selectedColor, LPCSTR selectedTextColor)
-{
-    this->TextColor = StyleManager::ColorFromString(textColor);
-    this->HoverColor = StyleManager::ColorFromString(hoverColor);
-    this->SelectedColor = StyleManager::ColorFromString(selectedColor);
-    this->SelectedTextColor = StyleManager::ColorFromString(selectedTextColor);
 }
 
 }

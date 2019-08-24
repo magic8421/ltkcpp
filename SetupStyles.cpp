@@ -26,7 +26,7 @@ void SetupPixelStyle1()
     nine_in_one->Hover()  .SetAtals(54, 3, 21, 67).SetMargin(8, 8, 8, 9);
     nine_in_one->Pressed().SetAtals(79, 3, 21, 67).SetMargin(8, 8, 8, 9);
     nine_in_one->Disable().SetAtals(29, 3, 21, 67).SetMargin(8, 8, 8, 9);
-    sm->AddBackgroundStyle("default_button", nine_in_one);
+    sm->AddBackgroundStyle("default_btn_bg", nine_in_one);
 
     nine_in_one = new NinePatchBackground;
     nine_in_one->Normal().SetAtals(142, 68, 6, 15).SetMargin(2, 3, 2, 3);
@@ -47,7 +47,7 @@ void SetupPixelStyle1()
     nine_in_one->Hover()  .SetAtals(189, 10, 8, 23).SetMargin(3, 3, 3, 3);
     nine_in_one->Pressed().SetAtals(201, 10, 8, 23).SetMargin(3, 3, 3, 3);
     nine_in_one->Disable() = nine_in_one->Normal();
-    sm->AddBackgroundStyle("header_btn", nine_in_one);
+    sm->AddBackgroundStyle("header_btn_bg", nine_in_one);
 
     nine_in_one = new NinePatchBackground;
     nine_in_one->Normal().SetAtals(2, 98, 152, 167).SetMargin(40, 68, 40, 40);
@@ -61,62 +61,50 @@ void SetupPixelStyle1()
     one_patch->Hover()  .SetAtlas(103, 23, 22, 20);
     one_patch->Pressed().SetAtlas(103, 43, 22, 20);
     one_patch->Disable() = one_patch->Normal();
-    sm->AddBackgroundStyle("min_button", one_patch);
+    sm->AddBackgroundStyle("min_btn_bg", one_patch);
 
     one_patch = new OnePatchBackground;
     one_patch->Normal() .SetAtlas(125, 3, 22, 20);
     one_patch->Hover()  .SetAtlas(125, 23, 22, 20);
     one_patch->Pressed().SetAtlas(125, 43, 22, 20);
     one_patch->Disable() = one_patch->Normal();
-    sm->AddBackgroundStyle("max_button", one_patch);
+    sm->AddBackgroundStyle("max_btn_bg", one_patch);
 
     one_patch = new OnePatchBackground;
     one_patch->Normal() .SetAtlas(147, 3, 22, 20);
     one_patch->Hover()  .SetAtlas(147, 23, 22, 20);
     one_patch->Pressed().SetAtlas(147, 43, 22, 20);
     one_patch->Disable() = one_patch->Normal();
-    sm->AddBackgroundStyle("close_button", one_patch);
+    sm->AddBackgroundStyle("close_btn_bg", one_patch);
 
-    sm->AddTextFormat2("default_button", L"Î¢ÈíÑÅºÚ", DWRITE_FONT_WEIGHT_NORMAL,
+    sm->AddTextFormat2("default_btn_fmt", L"Î¢ÈíÑÅºÚ", DWRITE_FONT_WEIGHT_NORMAL,
         DWRITE_FONT_STYLE_NORMAL, 14, DWRITE_TEXT_ALIGNMENT_CENTER,
         DWRITE_PARAGRAPH_ALIGNMENT_CENTER);
 
-    ButtonStyle *btn_style = new ButtonStyle;
-    btn_style->SetStyle("default_button", "default_button", "#000000");
-    sm->AddButtonStyle("default_button", btn_style);
+	sm->AddTextFormat2("default_label_fmt", L"Î¢ÈíÑÅºÚ", DWRITE_FONT_WEIGHT_NORMAL,
+		DWRITE_FONT_STYLE_NORMAL, 14, DWRITE_TEXT_ALIGNMENT_CENTER,
+		DWRITE_PARAGRAPH_ALIGNMENT_CENTER);
 
-    btn_style = new ButtonStyle;
-    btn_style->SetStyle("scrollbar_h", "default_button", "#000000");
-    sm->AddButtonStyle("scrollbar_h", btn_style);
+	sm->AddTextFormat2("item_text_fmt", L"Î¢ÈíÑÅºÚ", DWRITE_FONT_WEIGHT_NORMAL,
+		DWRITE_FONT_STYLE_NORMAL, 14, DWRITE_TEXT_ALIGNMENT_CENTER,
+		DWRITE_PARAGRAPH_ALIGNMENT_CENTER);
 
-    btn_style = new ButtonStyle;
-    btn_style->SetStyle("scrollbar_v", "default_button", "#000000");
-    sm->AddButtonStyle("scrollbar_v", btn_style);
-
-    btn_style = new ButtonStyle;
-    btn_style->SetStyle("header_btn", "default_button", "#000000");
-    sm->AddButtonStyle("header_button", btn_style);
-
-    ListViewStyle *list_view_style = new ListViewStyle;
-    list_view_style->SetColors("#000000", "#fafad2", "#bbb073", "#000000");
-    sm->ListViewStyleMap.Add("default", list_view_style);
-
-    sm->AddTextFormat2("caption", L"Î¢ÈíÑÅºÚ", DWRITE_FONT_WEIGHT_NORMAL,
+    sm->AddTextFormat2("caption_fmt", L"Î¢ÈíÑÅºÚ", DWRITE_FONT_WEIGHT_NORMAL,
         DWRITE_FONT_STYLE_NORMAL, 12, DWRITE_TEXT_ALIGNMENT_LEADING,
         DWRITE_PARAGRAPH_ALIGNMENT_NEAR);
 
-    LabelStyle *label_style = new LabelStyle;
-    label_style->TextColor = StyleManager::ColorFromString("#ffffff");
-    label_style->TextFormat = "caption";
-    sm->LabelStyleMap.Add("default", label_style);
-
-    auto CFS = StyleManager::ColorFromString;
-    TreeViewStyle *tree_view_style = new TreeViewStyle;
-    tree_view_style->TextColor = CFS("#000000");
-    tree_view_style->HoverColor = CFS("#00ff00");
-    tree_view_style->TextColor = CFS("#00ff00");
-    tree_view_style->TextColor = CFS("#00ff00");
-    sm->TreeViewStyleMap.Add("default", tree_view_style);
+	const ColorDesc colors[] = {
+		{ "default_btn_clr", "#362d01" },
+		{ "default_label_clr", "#362d01" },
+		{ "item_text_clr", "#362d01" },
+		{ "item_hover_clr", "#fafad2" },
+		{ "item_selected_clr", "#bbb073" },
+		{ "item_selected_text_clr", "#eae9ce" },
+		{ "caption_clr", "#fbfbf6" },
+		//{ "", "" },
+		{NULL, NULL}
+	};
+	sm->RegisterColorBulk(colors);
 }
 
 void SetupVectorStyle1()
@@ -126,7 +114,7 @@ void SetupVectorStyle1()
     RectangleBackground *rect_bg = new RectangleBackground;
     rect_bg->BorderColor().SetColor("#00cc00", "#00ff00", "#00aa00", "#cccccc");
     rect_bg->InnerColor().SetColor("#000000", "#003300", "#000000", "#cccccc");
-    sm->AddBackgroundStyle("default_button", rect_bg);
+    sm->AddBackgroundStyle("default_btn_bg", rect_bg);
 
     NinePatchBackground *nine_in_one = nullptr;
 
@@ -144,7 +132,7 @@ void SetupVectorStyle1()
     rect_bg = new RectangleBackground;
     rect_bg->BorderColor().SetColor("#00cc00", "#00ff00", "#00aa00", "#cccccc");
     rect_bg->InnerColor().SetColor("#000000", "#003300", "#000000", "#cccccc");
-    sm->AddBackgroundStyle("header_btn", rect_bg);
+    sm->AddBackgroundStyle("header_btn_bg", rect_bg);
 
     rect_bg = new RectangleBackground;
     rect_bg->BorderColor().SetColor("#00cc00", "#00ff00", "#00aa00", "#cccccc");
@@ -157,53 +145,28 @@ void SetupVectorStyle1()
     one_patch->Hover()  .SetAtlas(103, 23, 22, 20);
     one_patch->Pressed().SetAtlas(103, 43, 22, 20);
     one_patch->Disable() = one_patch->Normal();
-    sm->AddBackgroundStyle("min_button", one_patch);
+    sm->AddBackgroundStyle("min_btn_bg", one_patch);
 
     one_patch = new OnePatchBackground;
     one_patch->Normal() .SetAtlas(125, 3, 22, 20);
     one_patch->Hover()  .SetAtlas(125, 23, 22, 20);
     one_patch->Pressed().SetAtlas(125, 43, 22, 20);
     one_patch->Disable() = one_patch->Normal();
-    sm->AddBackgroundStyle("max_button", one_patch);
+    sm->AddBackgroundStyle("max_btn_bg", one_patch);
 
     one_patch = new OnePatchBackground;
     one_patch->Normal() .SetAtlas(147, 3, 22, 20);
     one_patch->Hover()  .SetAtlas(147, 23, 22, 20);
     one_patch->Pressed().SetAtlas(147, 43, 22, 20);
     one_patch->Disable() = one_patch->Normal();
-    sm->AddBackgroundStyle("close_button", one_patch);
+    sm->AddBackgroundStyle("close_btn_bg", one_patch);
 
-    sm->AddTextFormat2("default_button", L"ËÎÌå", DWRITE_FONT_WEIGHT_NORMAL,
+    sm->AddTextFormat2("default_btn_fmt", L"ËÎÌå", DWRITE_FONT_WEIGHT_NORMAL,
         DWRITE_FONT_STYLE_NORMAL, 14, DWRITE_TEXT_ALIGNMENT_CENTER,
         DWRITE_PARAGRAPH_ALIGNMENT_CENTER);
-
-    ButtonStyle *btn_style = new ButtonStyle;
-    btn_style->SetStyle("default_button", "default_button", "#00ff00");
-    sm->AddButtonStyle("default_button", btn_style);
-
-    btn_style = new ButtonStyle;
-    btn_style->SetStyle("header_btn", "default_button", "#00ff00");
-    sm->AddButtonStyle("header_button", btn_style);
-
-    btn_style = new ButtonStyle;
-    btn_style->SetStyle("scrollbar_h", "default_button", "#000000");
-    sm->AddButtonStyle("scrollbar_h", btn_style);
-
-    btn_style = new ButtonStyle;
-    btn_style->SetStyle("scrollbar_v", "default_button", "#000000");
-    sm->AddButtonStyle("scrollbar_v", btn_style);
-
-    ListViewStyle *list_view_style = new ListViewStyle;
-    list_view_style->SetColors("#00ff00", "#003300", "#00ff00", "#000000");
-    sm->ListViewStyleMap.Add("default", list_view_style);
 
     sm->AddTextFormat2("caption", L"ËÎÌå", DWRITE_FONT_WEIGHT_NORMAL,
         DWRITE_FONT_STYLE_NORMAL, 12, DWRITE_TEXT_ALIGNMENT_LEADING,
         DWRITE_PARAGRAPH_ALIGNMENT_NEAR);
-
-    LabelStyle *label_style = new LabelStyle;
-    label_style->TextColor = StyleManager::ColorFromString("#ffffff");
-    label_style->TextFormat = "caption";
-    sm->LabelStyleMap.Add("default", label_style);
 
 }

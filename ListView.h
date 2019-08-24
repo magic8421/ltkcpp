@@ -16,22 +16,12 @@ namespace ltk {
 
 class ScrollBar;
 class HeaderCtrl;
-struct ListViewStyle;
 
 class ListView : public Sprite
 {
 public:
     ListView();
     virtual ~ListView();
-
-    virtual bool OnPaint(PaintEvent *ev) override;
-    virtual bool OnLBtnDown(MouseEvent *ev) override;
-    virtual bool OnMouseWheel(MouseEvent *ev) override;
-    virtual bool OnMouseMove(MouseEvent *ev) override;
-    virtual bool OnMouseLeave(MouseEvent *ev) override;
-    virtual bool OnSize(SizeEvent *ev) override;
-    virtual void RecreateResouce(ID2D1RenderTarget *target) override;
-    virtual void OnThemeChanged() override;
 
     void HandleVScrollBar(float pos);
     void HandleHScrollBar(float pos);
@@ -47,6 +37,21 @@ public:
     void UpdateColumnWidth();
     //void ShowHeader(bool show);
     void SetHeaderCtrl(HeaderCtrl *head);
+
+	ImmutableString TextColor;
+	ImmutableString HoverColor;
+	ImmutableString SelectedColor;
+	ImmutableString SelectedTextColor;
+	ImmutableString TextFormat;
+
+	virtual bool OnPaint(PaintEvent *ev) override;
+	virtual bool OnLBtnDown(MouseEvent *ev) override;
+	virtual bool OnMouseWheel(MouseEvent *ev) override;
+	virtual bool OnMouseMove(MouseEvent *ev) override;
+	virtual bool OnMouseLeave(MouseEvent *ev) override;
+	virtual bool OnSize(SizeEvent *ev) override;
+	virtual void RecreateResouce(ID2D1RenderTarget *target) override;
+	virtual void OnThemeChanged() override;
 
 private:
     struct LineData
@@ -74,8 +79,11 @@ private:
     Cookie m_columnResizeTracker = 0;
     Cookie m_headerDeletedTracker = 0;
 
-    ListViewStyle *m_style = nullptr;
-
+protected:
+	D2D1_COLOR_F m_textColor;
+	D2D1_COLOR_F m_hoverColor;
+	D2D1_COLOR_F m_selectedColor;
+	D2D1_COLOR_F m_selectedTextColor;
 };
 
 } // namespace ltk

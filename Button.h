@@ -19,18 +19,20 @@ public:
     Button();
     virtual ~Button();
 
-    void SetStyle(LPCSTR name);
-    void SetBackgroundStyle(LPCSTR name);
-    void SetTextFormat(LPCSTR name);
     void SetText(LPCWSTR text);
 
     virtual bool OnPaint(PaintEvent *ev) override;
     virtual void OnThemeChanged() override;
 
+	ImmutableString Background;
+	ImmutableString TextFormat;
+	ImmutableString TextColor;
+
 private:
     std::wstring m_text;
     AbstractBackground *m_background = nullptr;
     IDWriteTextFormat *m_format = nullptr;
+	D2D1_COLOR_F m_textColor;
     ButtonStyle *m_style = nullptr;
 protected:
 

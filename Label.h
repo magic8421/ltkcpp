@@ -7,10 +7,9 @@
 
 #pragma once
 #include "Sprite.h"
+#include "Common.h"
 
 namespace ltk {
-
-struct LabelStyle;
 
 class Label : public Sprite
 {
@@ -24,11 +23,13 @@ public:
     LPCWSTR GetText();
     void SetText(LPCWSTR text);
     
+	ImmutableString TextFormat;
+	ImmutableString TextColor;
 
 private:
-    IDWriteTextFormat *m_textFormat = nullptr;
-    std::wstring m_text;
-    LabelStyle *m_style = nullptr;
+	std::wstring m_text;
+	IDWriteTextFormat *m_textFormat = nullptr;
+	D2D1_COLOR_F m_color;
 };
 
 } // namespace ltk

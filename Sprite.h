@@ -23,9 +23,6 @@ public:
     void SetName(const char *name);
     const char *GetName();
 
-    void SetStyleName(const char *name);
-    const char * GetStyleName();
-
     RectF GetRect();
 	RectF GetClientRect();
 	void SetRect( RectF rect );
@@ -126,7 +123,6 @@ private:
     Sprite *m_parent = nullptr;
 
     char *m_name = nullptr;
-    char *m_styleName = nullptr;
 
 	DISALLOW_COPY_AND_ASSIGN(Sprite);
 };

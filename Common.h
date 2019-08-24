@@ -15,6 +15,62 @@ CStringA Utf16ToGbk(LPCTSTR strW, int len);
 
 std::wstring WStringFormat(LPCWSTR format, ...);
 
+class ImmutableString
+{
+public:
+	ImmutableString() {}
+	ImmutableString(LPCSTR str)
+	{
+		m_ptr = _strdup(str);
+	}
+	~ImmutableString()
+	{
+		free((void *)m_ptr);
+	}
+	bool operator==(LPCSTR rhs)
+	{
+		return strcmp(m_ptr, rhs) == 0;
+	}
+	void operator=(LPCSTR str)
+	{
+		free((void *)m_ptr);
+		m_ptr = _strdup(str);
+	}
+	operator LPCSTR()
+	{
+		return m_ptr;
+	}
+
+private:
+	const char *m_ptr = nullptr;
+};
+
+class ImmutableWString
+{
+public:
+	ImmutableWString() {}
+	ImmutableWString(LPCWSTR str)
+	{
+		m_ptr = _wcsdup(str);
+	}
+	~ImmutableWString()
+	{
+		free((void *)m_ptr);
+	}
+	bool operator==(LPCWSTR rhs)
+	{
+		return wcscmp(m_ptr, rhs) == 0;
+	}
+	operator LPCWSTR()
+	{
+		return m_ptr;
+	}
+
+private:
+	const wchar_t *m_ptr = nullptr;
+};
+
+
 #define LOGW(msg) do\
 {\
 	std::wstringstream ss;\

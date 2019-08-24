@@ -22,16 +22,17 @@ namespace ltk
 WindowLayout::WindowLayout()
 {
     m_minBtn = new Button;
-    m_minBtn->SetBackgroundStyle("min_button");
+    m_minBtn->Background = "min_btn_bg";
     this->AddChild(m_minBtn);
     m_maxBtn = new Button;
-    m_maxBtn->SetBackgroundStyle("max_button");
+    m_maxBtn->Background = "max_btn_bg";
     this->AddChild(m_maxBtn);
     m_closeBtn = new Button;
-    m_closeBtn->SetBackgroundStyle("close_button");
+    m_closeBtn->Background = "close_btn_bg";
     this->AddChild(m_closeBtn);
     m_caption = new Label;
-    m_caption->SetStyleName("default");
+	m_caption->TextFormat = "caption_fmt";
+	m_caption->TextColor = "caption_clr";
     this->AddChild(m_caption);
 }
 
@@ -74,9 +75,9 @@ void WindowLayout::SetCaptionText(LPCWSTR text)
 void WindowLayout::DoLayout()
 {
     auto sm = StyleManager::Instance();
-    float btn_w = sm->GetMeasurement(StyleManager::mSysButtonWidth);
-    float btn_h = sm->GetMeasurement(StyleManager::mSysButtonHeight);
-    float caption_h = sm->GetMeasurement(StyleManager::mCaptionHeight);
+	float btn_w = 22;
+	float btn_h = 20;
+	float caption_h = 35;
     float margin = 5;
 
     RectF rc = this->GetClientRect();

@@ -50,7 +50,6 @@ private:
     wstring m_text;
     IDWriteTextFormat *m_format = nullptr;
     IDWriteTextLayout *m_layout = nullptr;
-    ID2D1SolidColorBrush *m_brush = nullptr;
     ID2D1SolidColorBrush *m_brushSelectedText = nullptr;
 
     ScrollBar *m_vsb = nullptr;

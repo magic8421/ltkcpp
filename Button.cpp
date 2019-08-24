@@ -17,36 +17,24 @@
 
 namespace ltk {
 
-Button::Button()
+Button::Button() : 
+	Background("default_btn_bg"),
+	TextFormat("default_btn_fmt"),
+	TextColor("default_btn_clr")
 {
-    this->SetStyle("default_button");
 }
 
 Button::~Button()
 {
 }
 
-void Button::SetStyle(LPCSTR name)
-{
-    SetStyleName(name);
-    OnThemeChanged();
-}
-
 void Button::OnThemeChanged()
 {
-    m_style = StyleManager::Instance()->GetButtonStyle(GetStyleName());
-    m_background = StyleManager::Instance()->GetBackground(m_style->BackgroundStyle.c_str());
-    m_format = StyleManager::Instance()->GetTextFormat(m_style->TextFormat.c_str());    
-}
+	auto sm = StyleManager::Instance();
 
-void Button::SetBackgroundStyle(LPCSTR style)
-{
-    m_background = StyleManager::Instance()->GetBackground(style);
-}
-
-void Button::SetTextFormat(LPCSTR name)
-{
-    m_format = StyleManager::Instance()->GetTextFormat(name);
+	m_background = sm->GetBackground(Background);
+	m_format = sm->GetTextFormat(TextFormat);
+	m_textColor = sm->GetColor(TextColor);
 }
 
 bool Button::OnPaint(PaintEvent *ev)
@@ -70,7 +58,7 @@ bool Button::OnPaint(PaintEvent *ev)
     }
     if (m_text.size() > 0) {
         auto brush = wnd->GetStockBrush();
-        brush->SetColor(m_style->TextColor);
+        brush->SetColor(m_textColor);
         ev->target->DrawText(m_text.c_str(), m_text.size(), m_format, ltk::D2D1RectF(rc),
             brush);
     }

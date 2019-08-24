@@ -36,7 +36,6 @@ Sprite::~Sprite(void)
         delete m_children[i];
 	}
     free(m_name);
-    free(m_styleName);
 }
 
 RectF Sprite::GetRect()
@@ -53,17 +52,6 @@ void Sprite::SetName(const char *name)
 const char * Sprite::GetName()
 {
     return m_name;
-}
-
-void Sprite::SetStyleName(const char *name)
-{
-    free(m_styleName);
-    m_styleName = _strdup(name);
-}
-
-const char * Sprite::GetStyleName()
-{
-    return m_styleName;
 }
 
 RectF Sprite::GetClientRect()

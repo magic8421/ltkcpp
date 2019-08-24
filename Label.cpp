@@ -17,10 +17,10 @@
 
 namespace ltk {
 
-Label::Label()
-{
-    m_style = StyleManager::Instance()->LabelStyleMap.Get("default");
-}
+Label::Label() :
+	TextColor("default_label_clr"),
+	TextFormat("default_label_fmt")
+{}
 
 Label::~Label()
 {
@@ -35,7 +35,7 @@ bool Label::OnPaint(PaintEvent *ev)
     RectF rc = this->GetClientRect();
 
     auto brush = this->GetWindow()->GetStockBrush();
-    brush->SetColor(m_style->TextColor);
+    brush->SetColor(m_color);
     ev->target->DrawText(m_text.c_str(), (UINT32)m_text.length(), m_textFormat,
         ltk::D2D1RectF(rc), brush);
     return true;
@@ -54,8 +54,9 @@ void Label::SetText(LPCWSTR t)
 
 void Label::OnThemeChanged()
 {
-    m_style = StyleManager::Instance()->LabelStyleMap.Get(this->GetStyleName());
-    m_textFormat = StyleManager::Instance()->GetTextFormat(m_style->TextFormat.c_str());
+	auto sm = StyleManager::Instance();
+    m_textFormat = sm->GetTextFormat(TextFormat);
+	m_color = sm->GetColor(TextColor);
 }
 
 } // namespace ltk
