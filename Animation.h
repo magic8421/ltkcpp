@@ -44,8 +44,11 @@ private:
     DWORD m_lastTick = 0;
     State m_state = stStop;
 
-    const float ItemHeight = 25.0f;
+    const float ItemHeight = 35.0f;
     const float ScrollVelocity = ItemHeight * 3 / 500.0f;
+
+	UINT m_timerId = 0;
+	bool m_bInput = false;
 };
 
 } // namespace ltk

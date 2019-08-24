@@ -7,6 +7,7 @@
 
 #include "stdafx.h"
 #include "Animation.h"
+#include "TimerManager.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW 
@@ -17,6 +18,11 @@ namespace ltk
 
 void ScrollAnimation::BeginScroll(float delta)
 {
+	m_bInput = true;
+	m_timerId = ltk::SetOnceTimer(350, m_timerId, [this]() {
+		m_bInput = false;
+		m_timerId = 0;
+	});
     State new_state = stStop;
     if (delta > 0.0f) {
         new_state = stScrollUp;
@@ -24,8 +30,8 @@ void ScrollAnimation::BeginScroll(float delta)
         new_state = stScrollDown;
     }
     m_velocity += ScrollVelocity;
-    if (m_velocity > ScrollVelocity * 5) {
-        m_velocity = ScrollVelocity * 5;
+    if (m_velocity > ScrollVelocity * 6) {
+        m_velocity = ScrollVelocity * 6;
     }
     if (m_state != stStop && new_state != m_state) {
         m_velocity = 0.0f;
@@ -51,7 +57,14 @@ bool ScrollAnimation::UpdateScroll(float height)
     } else if (m_state == stScrollDown) {
         m_scroll += m_velocity * (now - m_lastTick);
     }
-    m_velocity -= ScrollVelocity / 500.0f * (now - m_lastTick);
+	if (m_bInput) {
+		m_velocity -= ScrollVelocity / 500.0f * (now - m_lastTick);
+	} else {
+		if (m_velocity > ScrollVelocity * 3) {
+			m_velocity = ScrollVelocity * 3;
+		}
+		m_velocity -= ScrollVelocity / 100.0f * (now - m_lastTick);
+	}
     m_lastTick = now;
     if (m_scroll < 0.0f) {
         m_scroll = 0.0f;
