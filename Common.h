@@ -29,12 +29,20 @@ public:
 	}
 	bool operator==(LPCSTR rhs)
 	{
-		return strcmp(m_ptr, rhs) == 0;
+		if (rhs) {
+			return strcmp(m_ptr, rhs) == 0;
+		} else {
+			return false;
+		}
 	}
 	void operator=(LPCSTR str)
 	{
 		free((void *)m_ptr);
-		m_ptr = _strdup(str);
+		if (str) {
+			m_ptr = _strdup(str);
+		} else {
+			m_ptr = nullptr;
+		}
 	}
 	operator LPCSTR()
 	{
@@ -43,31 +51,6 @@ public:
 
 private:
 	const char *m_ptr = nullptr;
-};
-
-class ImmutableWString
-{
-public:
-	ImmutableWString() {}
-	ImmutableWString(LPCWSTR str)
-	{
-		m_ptr = _wcsdup(str);
-	}
-	~ImmutableWString()
-	{
-		free((void *)m_ptr);
-	}
-	bool operator==(LPCWSTR rhs)
-	{
-		return wcscmp(m_ptr, rhs) == 0;
-	}
-	operator LPCWSTR()
-	{
-		return m_ptr;
-	}
-
-private:
-	const wchar_t *m_ptr = nullptr;
 };
 
 

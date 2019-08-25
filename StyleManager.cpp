@@ -37,7 +37,8 @@ StyleManager::~StyleManager()
 
 void StyleManager::NewTheme(LPCSTR name)
 {
-    if (! m_sThemeData) {
+	LTK_ASSERT(name);
+	if (!m_sThemeData) {
         m_sThemeData = new ThemeData;
     }
     m_sThemeData->MapTheme[name] = new StyleManager;
@@ -46,7 +47,8 @@ void StyleManager::NewTheme(LPCSTR name)
 
 void StyleManager::SetCurrentTheme(LPCSTR name)
 {
-    m_sThemeData->CurrentTheme = name;
+	LTK_ASSERT(name);
+	m_sThemeData->CurrentTheme = name;
 }
 
 StyleManager * StyleManager::Instance()
@@ -87,7 +89,8 @@ D2D1_COLOR_F StyleManager::ColorFromString(const char *psz)
 
 AbstractBackground *StyleManager::GetBackground(const char *name) const
 {
-    std::string strName(name);
+	LTK_ASSERT(name);
+	std::string strName(name);
     auto iter = m_mapBackgroundStyle.find(strName);
     if (iter != m_mapBackgroundStyle.end()) {
         return iter->second;
@@ -100,7 +103,8 @@ AbstractBackground *StyleManager::GetBackground(const char *name) const
 
 void StyleManager::AddBackgroundStyle(const char *name, AbstractBackground *bg)
 {
-    std::string strName(name);
+	LTK_ASSERT(name);
+	std::string strName(name);
     if (m_mapBackgroundStyle[strName]) {
         LTK_ASSERT(false);
     }
@@ -109,6 +113,7 @@ void StyleManager::AddBackgroundStyle(const char *name, AbstractBackground *bg)
 
 void StyleManager::RegisterColor(LPCSTR name, D2D1_COLOR_F color)
 {
+	LTK_ASSERT(name);
 	std::string strName(name);
 	auto iter = m_mapColor.find(strName);
 	if (iter != m_mapColor.end()) {
@@ -120,6 +125,7 @@ void StyleManager::RegisterColor(LPCSTR name, D2D1_COLOR_F color)
 
 D2D1_COLOR_F StyleManager::GetColor(LPCSTR name)
 {
+	LTK_ASSERT(name);
 	std::string strName(name);
 	auto iter = m_mapColor.find(strName);
 	if (iter == m_mapColor.end()) {
@@ -133,14 +139,16 @@ D2D1_COLOR_F StyleManager::GetColor(LPCSTR name)
 // TODO change to ** idom
 IDWriteTextFormat * StyleManager::GetTextFormat(LPCSTR name)
 {
-    auto format = m_mapTextFormat[name];
+	LTK_ASSERT(name);
+	auto format = m_mapTextFormat[name];
     LTK_ASSERT(format);
     return format;
 }
 
 void StyleManager::AddTextFormat(LPCSTR name, IDWriteTextFormat *format)
 {
-    LTK_ASSERT(m_mapTextFormat[name] == nullptr);
+	LTK_ASSERT(name);
+	LTK_ASSERT(m_mapTextFormat[name] == nullptr);
     m_mapTextFormat[name] = format;
     format->AddRef();
 }
@@ -338,6 +346,7 @@ void StyleManager::SetDebuggingLayout(bool b)
 void StyleManager::RegisterColorBulk(const ColorDesc *colors)
 {
 	for (UINT i = 0; colors[i].name; i++) {
+		LTK_ASSERT(i < 999);
 		RegisterColor(colors[i].name, ColorFromString(colors[i].color));
 	}
 }

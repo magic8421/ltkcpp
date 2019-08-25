@@ -20,8 +20,7 @@ public:
     Sprite(void);
     virtual ~Sprite(void);
 
-    void SetName(const char *name);
-    const char *GetName();
+	ImmutableString ObjectName;
 
     RectF GetRect();
 	RectF GetClientRect();
@@ -121,8 +120,6 @@ private:
 
     std::vector<Sprite *> m_children;
     Sprite *m_parent = nullptr;
-
-    char *m_name = nullptr;
 
 	DISALLOW_COPY_AND_ASSIGN(Sprite);
 };

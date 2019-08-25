@@ -23,7 +23,6 @@ WindowLayout::WindowLayout()
 {
     m_minBtn = new Button;
     m_minBtn->Background = "min_btn_bg";
-	m_minBtn->SetName("min_btn");
     this->AddChild(m_minBtn);
     m_maxBtn = new Button;
     m_maxBtn->Background = "max_btn_bg";

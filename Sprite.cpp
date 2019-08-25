@@ -35,23 +35,11 @@ Sprite::~Sprite(void)
     for (size_t i = 0; i < m_children.size(); i++) {
         delete m_children[i];
 	}
-    free(m_name);
 }
 
 RectF Sprite::GetRect()
 {
 	return m_rect;
-}
-
-void Sprite::SetName(const char *name)
-{
-    free(m_name);
-    m_name = _strdup(name);
-}
-
-const char * Sprite::GetName()
-{
-    return m_name;
 }
 
 RectF Sprite::GetClientRect()

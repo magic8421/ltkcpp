@@ -29,15 +29,15 @@ void SetupPixelStyle1()
     sm->AddBackgroundStyle("default_btn_bg", nine_in_one);
 
     nine_in_one = new NinePatchBackground;
-    nine_in_one->Normal().SetAtals(142, 68, 6, 15).SetMargin(2, 3, 2, 3);
-    nine_in_one->Hover() .SetAtals(125, 68, 6, 15).SetMargin(2, 3, 2, 3);
+    nine_in_one->Normal().SetAtals(125, 68, 6, 15).SetMargin(2, 3, 2, 3);
+    nine_in_one->Hover() .SetAtals(142, 68, 6, 15).SetMargin(2, 3, 2, 3);
     nine_in_one->Pressed() = nine_in_one->Normal();
     nine_in_one->Disable() = nine_in_one->Normal();
     sm->AddBackgroundStyle("scrollbar_v", nine_in_one);
 
     nine_in_one = new NinePatchBackground;
-    nine_in_one->Normal().SetAtals(138, 86, 15, 6).SetMargin(3, 2, 3, 2);
-    nine_in_one->Hover() .SetAtals(121, 86, 15, 6).SetMargin(3, 2, 3, 2);
+    nine_in_one->Normal().SetAtals(121, 86, 15, 6).SetMargin(3, 2, 3, 2);
+    nine_in_one->Hover() .SetAtals(138, 86, 15, 6).SetMargin(3, 2, 3, 2);
     nine_in_one->Pressed() = nine_in_one->Normal();
     nine_in_one->Disable() = nine_in_one->Normal();
     sm->AddBackgroundStyle("scrollbar_h", nine_in_one);
@@ -89,7 +89,12 @@ void SetupPixelStyle1()
 		DWRITE_FONT_STYLE_NORMAL, 14, DWRITE_TEXT_ALIGNMENT_CENTER,
 		DWRITE_PARAGRAPH_ALIGNMENT_CENTER);
 
-    sm->AddTextFormat2("caption_fmt", L"微软雅黑", DWRITE_FONT_WEIGHT_NORMAL,
+
+	sm->AddTextFormat2("tree_item_text_fmt", L"微软雅黑", DWRITE_FONT_WEIGHT_NORMAL,
+		DWRITE_FONT_STYLE_NORMAL, 14, DWRITE_TEXT_ALIGNMENT_LEADING,
+		DWRITE_PARAGRAPH_ALIGNMENT_CENTER);
+
+    sm->AddTextFormat2("caption_fmt", L"宋体", DWRITE_FONT_WEIGHT_NORMAL,
         DWRITE_FONT_STYLE_NORMAL, 12, DWRITE_TEXT_ALIGNMENT_LEADING,
         DWRITE_PARAGRAPH_ALIGNMENT_NEAR);
 
@@ -171,6 +176,10 @@ void SetupVectorStyle1()
 
 	sm->AddTextFormat2("item_text_fmt", L"宋体", DWRITE_FONT_WEIGHT_NORMAL,
 		DWRITE_FONT_STYLE_NORMAL, 12, DWRITE_TEXT_ALIGNMENT_CENTER,
+		DWRITE_PARAGRAPH_ALIGNMENT_CENTER);
+
+	sm->AddTextFormat2("tree_item_text_fmt", L"宋体", DWRITE_FONT_WEIGHT_NORMAL,
+		DWRITE_FONT_STYLE_NORMAL, 12, DWRITE_TEXT_ALIGNMENT_LEADING,
 		DWRITE_PARAGRAPH_ALIGNMENT_CENTER);
 
     sm->AddTextFormat2("caption_fmt", L"宋体", DWRITE_FONT_WEIGHT_NORMAL,

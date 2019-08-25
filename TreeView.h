@@ -15,6 +15,14 @@ namespace ltk {
 class ScrollBar;
 class TreeView;
 
+struct TreeViewColors
+{
+	D2D1_COLOR_F TextColor;
+	D2D1_COLOR_F HoverColor;
+	D2D1_COLOR_F SelectedColor;
+	D2D1_COLOR_F SelectedTextColor;
+};
+
 class TreeNode
 {
 public:
@@ -70,7 +78,14 @@ public:
 
     ID2D1SolidColorBrush *GetBrush();
     IDWriteTextFormat *GetTextFormat();
+	TreeViewColors *GetColorScheme();
     TreeNode *GetRootNode();
+
+	ImmutableString TextColor;
+	ImmutableString HoverColor;
+	ImmutableString SelectedColor;
+	ImmutableString SelectedTextColor;
+	ImmutableString TextFormat;
 
 protected:
     virtual bool OnPaint(PaintEvent *ev) override;
@@ -79,6 +94,9 @@ protected:
     virtual bool OnMouseWheel(MouseEvent *ev) override;
     virtual void RecreateResouce(ID2D1RenderTarget *target) override;
 
+
+	virtual void OnThemeChanged() override;
+
 private:
     ScrollBar *m_vsb = nullptr;
     TreeNode m_root;
@@ -86,11 +104,12 @@ private:
     static const float m_itemHeight;
     static const float m_indent;
 
-    ID2D1SolidColorBrush *m_brush = nullptr;
     IDWriteTextFormat *m_format = nullptr;
 
     ScrollAnimation m_scrollAni;
     float m_maxHeight = 0.0f;
+
+	TreeViewColors m_colors;
 
     DISALLOW_COPY_AND_ASSIGN(TreeView)
 };

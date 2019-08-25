@@ -2,6 +2,7 @@
 #include "TreeView.h"
 #include "ScrollBar.h"
 #include "StyleManager.h"
+#include "Window.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW 
@@ -75,10 +76,11 @@ void TreeNode::OnPaint(ID2D1RenderTarget *target, float scroll)
     rcItem.Y -= scroll;
     auto rcExpandBtn = m_rcExpandBtn;
     rcExpandBtn.Y -= scroll;
+	auto colors = m_treeView->GetColorScheme();
 
     auto brush = m_treeView->GetBrush();
-    brush->SetColor(StyleManager::ColorFromString("#cccccc"));
-    target->DrawRectangle(D2D1RectF(rcItem), brush);
+    //brush->SetColor(StyleManager::ColorFromString("#cccccc"));
+    //target->DrawRectangle(D2D1RectF(rcItem), brush);
 
     brush->SetColor(StyleManager::ColorFromString("#aaaaaa"));
     if (m_children.size() > 0) {
@@ -87,7 +89,7 @@ void TreeNode::OnPaint(ID2D1RenderTarget *target, float scroll)
         target->DrawRectangle(D2D1RectF(rcExpandBtn), brush);
     }
     auto format = m_treeView->GetTextFormat();
-    brush->SetColor(StyleManager::ColorFromString("#000000"));
+    brush->SetColor(colors->TextColor);
     float space = m_padding * 2.0f + m_btn_size;
     target->DrawText(
         m_text.c_str(), m_text.size(), format, D2D1RectF(RectF(
@@ -107,7 +109,12 @@ const float TreeNode::m_btn_size = 15;
 
 //////////////////////////////////////////////////////////////////////////
 
-TreeView::TreeView()
+TreeView::TreeView() :
+	TextColor("item_text_clr"),
+	HoverColor("item_hover_clr"),
+	SelectedColor("item_selected_clr"),
+	SelectedTextColor("item_selected_text_clr"),
+	TextFormat("tree_item_text_fmt")
 {
     this->EnableClipChildren(true);
     m_root.SetTreeView(this);
@@ -117,8 +124,6 @@ TreeView::TreeView()
 
 TreeView::~TreeView()
 {
-    SAFE_RELEASE(m_brush);
-    SAFE_RELEASE(m_format);
 }
 
 
@@ -161,12 +166,17 @@ void TreeView::TraverseTree(TreeNode *node, int depth,
 
 ID2D1SolidColorBrush * TreeView::GetBrush()
 {
-    return m_brush;
+    return GetWindow()->GetStockBrush();
 }
 
 IDWriteTextFormat * TreeView::GetTextFormat()
 {
     return m_format;
+}
+
+TreeViewColors * TreeView::GetColorScheme()
+{
+	return &m_colors;
 }
 
 TreeNode * TreeView::GetRootNode()
@@ -190,27 +200,17 @@ bool TreeView::OnPaint(PaintEvent *ev)
 
 void TreeView::RecreateResouce(ID2D1RenderTarget *target)
 {
-    HRESULT hr = E_FAIL;
+}
 
-    SAFE_RELEASE(m_format);
-    hr = GetDWriteFactory()->CreateTextFormat(
-        L"Î¢ÈíÑÅºÚ",
-        NULL,
-        DWRITE_FONT_WEIGHT_NORMAL,
-        DWRITE_FONT_STYLE_NORMAL,
-        DWRITE_FONT_STRETCH_NORMAL,
-        16,
-        L"zh-cn",
-        &m_format
-    );
-    LTK_ASSERT(SUCCEEDED(hr));
-    m_format->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_CENTER);
-    m_format->SetWordWrapping(DWRITE_WORD_WRAPPING_NO_WRAP);
+void TreeView::OnThemeChanged()
+{
+	auto sm = StyleManager::Instance();
+	m_colors.TextColor = sm->GetColor(TextColor);
+	m_colors.HoverColor = sm->GetColor(HoverColor);
+	m_colors.SelectedColor = sm->GetColor(SelectedColor);
+	m_colors.SelectedTextColor = sm->GetColor(SelectedTextColor);
 
-    SAFE_RELEASE(m_brush);
-    auto textColor = StyleManager::ColorFromString("#000000");
-    hr = target->CreateSolidColorBrush(textColor, &m_brush);
-    LTK_ASSERT(SUCCEEDED(hr));
+	m_format = sm->GetTextFormat(TextFormat);
 }
 
 bool TreeView::OnMouseWheel(MouseEvent *ev)
