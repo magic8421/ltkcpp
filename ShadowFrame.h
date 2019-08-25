@@ -28,15 +28,10 @@ public:
 
     static void RegisterWndClass();
     static LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam);
-    static const UINT WM_RENDER_LATER;
 
 private:
     HWND m_hwnd = 0;
     Mode m_mode = eLeft;
-    static const long m_sizeLeft = 27;
-    static const long m_sizeTop = 26;
-    static const long m_sizeRight = 25;
-    static const long m_sizeBottom = 26;
     static Gdiplus::Bitmap *m_bitmap;
 };
 

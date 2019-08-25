@@ -15,7 +15,12 @@
 
 namespace ltk {
 
-const UINT ShadowFrame::WM_RENDER_LATER = WM_USER + 1;
+static const UINT WM_RENDER_LATER = WM_USER + 1;
+static const LPCWSTR PNG_PATH = L"res\\trans-border.png";
+static const long m_sizeLeft = 29;
+static const long m_sizeTop = 50;
+static const long m_sizeRight = 31;
+static const long m_sizeBottom = 31;
 
 ShadowFrame::ShadowFrame(Mode m) : m_mode(m)
 {
@@ -92,7 +97,7 @@ void ShadowFrame::Destroy()
 
 void ShadowFrame::Init()
 {
-    m_bitmap = Gdiplus::Bitmap::FromFile(L"res\\round_wnd.png");
+    m_bitmap = Gdiplus::Bitmap::FromFile(PNG_PATH);
     LTK_ASSERT(m_bitmap && m_bitmap->GetLastStatus() == Gdiplus::Ok);
     RegisterWndClass();
 }
