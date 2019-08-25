@@ -33,10 +33,10 @@ public:
 private:
     HWND m_hwnd = 0;
     Mode m_mode = eLeft;
-    static const long m_sizeLeft = 12;
-    static const long m_sizeTop = 8;
-    static const long m_sizeRight = 15;
-    static const long m_sizeBottom = 22;
+    static const long m_sizeLeft = 27;
+    static const long m_sizeTop = 26;
+    static const long m_sizeRight = 25;
+    static const long m_sizeBottom = 26;
     static Gdiplus::Bitmap *m_bitmap;
 };
 

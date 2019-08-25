@@ -68,6 +68,9 @@ LRESULT CALLBACK ShadowFrame::WndProc(HWND hwnd, UINT message, WPARAM wparam, LP
             thiz->OnDraw(rc);
         } while (0);
         break;
+	case WM_LBUTTONDOWN:
+		__debugbreak();
+		break;
     case WM_NCDESTROY:
         thiz->m_hwnd = 0;
         break;
@@ -77,7 +80,7 @@ LRESULT CALLBACK ShadowFrame::WndProc(HWND hwnd, UINT message, WPARAM wparam, LP
 
 void ShadowFrame::Create()
 {
-     HWND hwnd = ::CreateWindowEx(WS_EX_LAYERED | WS_EX_TRANSPARENT | WS_EX_TOOLWINDOW, L"ltk_ShadowFrame",
+     HWND hwnd = ::CreateWindowEx(WS_EX_LAYERED | WS_EX_TOOLWINDOW, L"ltk_ShadowFrame",
         L"", WS_POPUPWINDOW | WS_VISIBLE, 0, 0, 100, 100, NULL, NULL, HINST_THISCOMPONENT, this);
      LTK_ASSERT(hwnd != NULL);
 }
@@ -89,7 +92,7 @@ void ShadowFrame::Destroy()
 
 void ShadowFrame::Init()
 {
-    m_bitmap = Gdiplus::Bitmap::FromFile(L"res\\shadow.png");
+    m_bitmap = Gdiplus::Bitmap::FromFile(L"res\\round_wnd.png");
     LTK_ASSERT(m_bitmap && m_bitmap->GetLastStatus() == Gdiplus::Ok);
     RegisterWndClass();
 }
@@ -108,26 +111,26 @@ void ShadowFrame::Update(HWND hParent, HDWP &hdwp, bool bRedraw)
     switch (m_mode) {
     case eLeft:
         rc2.left = rc.left - m_sizeLeft;
-        rc2.top = rc.top - m_sizeTop;
+        rc2.top = rc.top;
         rc2.right = rc.left;
-        rc2.bottom = rc.bottom + m_sizeBottom;
+        rc2.bottom = rc.bottom;
         break;
     case eTop:
-        rc2.left = rc.left;
+        rc2.left = rc.left - m_sizeLeft;
         rc2.top = rc.top - m_sizeTop;
-        rc2.right = rc.right;
+        rc2.right = rc.right + m_sizeRight;
         rc2.bottom = rc.top;
         break;
     case eRight:
         rc2.left = rc.right;
-        rc2.top = rc.top - m_sizeTop;
+        rc2.top = rc.top;
         rc2.right = rc.right + m_sizeRight;
-        rc2.bottom = rc.bottom + m_sizeBottom;
+        rc2.bottom = rc.bottom;
         break;
     case eBottom:
-        rc2.left = rc.left;
+        rc2.left = rc.left - m_sizeLeft;
         rc2.top = rc.bottom;
-        rc2.right = rc.right;
+        rc2.right = rc.right + m_sizeRight;
         rc2.bottom = rc.bottom + m_sizeBottom;
         break;
     default:
@@ -176,53 +179,56 @@ void ShadowFrame::OnDraw(const RECT &rc)
 
 void ShadowFrame::DrawShadow(Gdiplus::Graphics &g, Gdiplus::Rect rc)
 {
-    Gdiplus::Rect rc2;
+	// rc is the destination rect.
     int width = rc.Width;
     int height = rc.Height;
     
     switch (m_mode) {
     case eLeft:
-        rc.Y = m_sizeTop;
-        rc.Height = height - m_sizeTop - m_sizeBottom;
-        g.DrawImage(m_bitmap, rc, 0, m_sizeTop, m_sizeLeft, m_bitmap->GetHeight() - m_sizeTop - m_sizeBottom,
-            Gdiplus::UnitPixel, NULL, NULL, NULL);
-        rc.X = 0;
-        rc.Y = 0;
-        rc.Width = m_sizeLeft;
-        rc.Height = m_sizeTop;
-        g.DrawImage(m_bitmap, rc, 0, 0, m_sizeLeft, m_sizeTop,
-            Gdiplus::UnitPixel, NULL, NULL, NULL);
-        rc.Y = height - m_sizeBottom;
-        rc.Height = m_sizeBottom;
-        g.DrawImage(m_bitmap, rc, 0, m_bitmap->GetHeight() - m_sizeBottom, m_sizeLeft, m_sizeBottom,
+        g.DrawImage(m_bitmap, rc, 
+			0, m_sizeTop, 
+			m_sizeLeft, m_bitmap->GetHeight() - m_sizeTop - m_sizeBottom,
             Gdiplus::UnitPixel, NULL, NULL, NULL);
         break;
     case eTop:
+		rc.X = m_sizeLeft;
+		rc.Y = 0;
+		rc.Width = rc.Width - m_sizeLeft - m_sizeRight;
+		//rc.Height = m_sizeTop;
+		//g.DrawImage(m_bitmap, rc, 0, 0, m_sizeLeft, m_sizeTop,
+		//	Gdiplus::UnitPixel, NULL, NULL, NULL);
         g.DrawImage(m_bitmap, rc, m_sizeLeft, 0, m_bitmap->GetWidth() - m_sizeLeft - m_sizeRight,
             m_sizeTop, Gdiplus::UnitPixel, NULL, NULL, NULL);
         break;
     case eRight:
-        rc.X = width - m_sizeRight;
-        rc.Y = m_sizeTop;
-        rc.Width = m_sizeRight;
-        rc.Height = height - m_sizeTop - m_sizeBottom;
-        g.DrawImage(m_bitmap, rc, m_bitmap->GetWidth() - m_sizeRight, m_sizeTop, m_sizeRight, m_bitmap->GetHeight() - m_sizeTop - m_sizeBottom,
+        g.DrawImage(m_bitmap, rc,
+			m_bitmap->GetWidth() - m_sizeRight, m_sizeTop,
+			m_sizeRight, m_bitmap->GetHeight() - m_sizeTop - m_sizeBottom,
             Gdiplus::UnitPixel, NULL, NULL, NULL);
-        rc.X = 0;
-        rc.Y = 0;
-        rc.Width = m_sizeRight;
-        rc.Height = m_sizeTop;
-        g.DrawImage(m_bitmap, rc, m_bitmap->GetWidth() - m_sizeRight, 0, m_sizeRight, m_sizeTop,
-            Gdiplus::UnitPixel, NULL, NULL, NULL);
-        rc.X = width - m_sizeRight;
-        rc.Y = height - m_sizeBottom;
-        rc.Height = m_sizeBottom;
-        g.DrawImage(m_bitmap, rc, m_bitmap->GetWidth() - m_sizeRight, m_bitmap->GetHeight() - m_sizeBottom,
-            m_sizeRight, m_sizeBottom,
-            Gdiplus::UnitPixel, NULL, NULL, NULL);
+        //rc.X = 0;
+        //rc.Y = 0;
+        //rc.Width = m_sizeRight;
+        //rc.Height = m_sizeTop;
+        //g.DrawImage(m_bitmap, rc, m_bitmap->GetWidth() - m_sizeRight, 0, m_sizeRight, m_sizeTop,
+        //    Gdiplus::UnitPixel, NULL, NULL, NULL);
+        //rc.X = width - m_sizeRight;
+        //rc.Y = height - m_sizeBottom;
+        //rc.Height = m_sizeBottom;
+        //g.DrawImage(m_bitmap, rc, m_bitmap->GetWidth() - m_sizeRight, m_bitmap->GetHeight() - m_sizeBottom,
+        //    m_sizeRight, m_sizeBottom,
+        //    Gdiplus::UnitPixel, NULL, NULL, NULL);
         break;
     case eBottom:
-        g.DrawImage(m_bitmap, rc, m_sizeLeft, m_bitmap->GetHeight() - m_sizeBottom,
+
+		//rc.Y = height - m_sizeBottom;
+		//rc.Height = m_sizeBottom;
+		//g.DrawImage(m_bitmap, rc, 0, m_bitmap->GetHeight() - m_sizeBottom, m_sizeLeft, m_sizeBottom,
+		//	Gdiplus::UnitPixel, NULL, NULL, NULL);
+
+		rc.X = m_sizeLeft;
+		rc.Width = rc.Width - m_sizeLeft - m_sizeRight;
+        g.DrawImage(m_bitmap, rc,
+			m_sizeLeft, m_bitmap->GetHeight() - m_sizeBottom,
             m_bitmap->GetWidth() - m_sizeLeft - m_sizeRight, m_sizeBottom,
             Gdiplus::UnitPixel, NULL, NULL, NULL);
         break;

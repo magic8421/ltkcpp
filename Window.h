@@ -118,6 +118,7 @@ private:
     ShadowFrame m_shadowTop;
     ShadowFrame m_shadowRight;
     ShadowFrame m_shadowBottom;
+	bool m_bNcResize = false;
 
     ID2D1Bitmap *m_atlas = nullptr; // owner TODO share across multiple Window
     AbstractBackground *m_background = nullptr;

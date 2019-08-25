@@ -238,6 +238,9 @@ void Window::HandleMouseLeave()
 LRESULT Window::HandleNcHitTest(const POINT &pt)
 {
     //LTK_LOG("WM_NCHITTEST %d %d", pt.x, pt.y);
+	if (!m_bNcResize) {
+		//return HTCLIENT;
+	}
     const long margin = 7;
     RECT rcWnd;
     ::GetClientRect(m_hwnd, &rcWnd);
@@ -480,7 +483,7 @@ LRESULT CALLBACK Window::WndProcStatic(HWND hwnd, UINT message, WPARAM wparam, L
 void Window::DrawNonClient()
 {
     SizeF size = this->GetClientSize();
-    RectF rc(0, 0, size.Width, size.Height);
+    RectF rc(0, 0, size.Width + 1.f, size.Height + 1.f);
     m_background->Draw(this, m_target, rc, AbstractBackground::Normal, 1.0f);
     //DrawTextureNineInOne(
     //    m_target,
