@@ -80,21 +80,24 @@ void Window::Create(Window *parent, RectF rc)
         hParent = parent->m_hwnd;
     }
     DWORD style = WS_VISIBLE;
-    
     style |= WS_OVERLAPPEDWINDOW;
-
-    m_shadowLeft.Create();
-    m_shadowTop.Create();
-    m_shadowRight.Create();
-    m_shadowBottom.Create();
-
     style |=  WS_SYSMENU | WS_MINIMIZEBOX | WS_MAXIMIZEBOX;
+
+	m_shadowLeft.Create();
+	m_shadowTop.Create();
+	m_shadowRight.Create();
+	m_shadowBottom.Create();
 
     DipCoordToScreen(rc.X, rc.Y);
     DipCoordToScreen(rc.Width, rc.Height);
-    ::CreateWindowEx(0, ClsName, L"", style,
+    HWND hwnd = ::CreateWindowEx(0, ClsName, L"", style,
         (int)rc.X, (int)rc.Y, (int)rc.Width, (int)rc.Height,
         hParent, NULL, HINST_THISCOMPONENT, this);
+
+	m_shadowLeft.SetParent(hwnd);
+	m_shadowTop.SetParent(hwnd);
+	m_shadowRight.SetParent(hwnd);
+	m_shadowBottom.SetParent(hwnd);
 }
 
 RectF Window::GetRect()
@@ -239,7 +242,7 @@ LRESULT Window::HandleNcHitTest(const POINT &pt)
 {
     //LTK_LOG("WM_NCHITTEST %d %d", pt.x, pt.y);
 	if (!m_bNcResize) {
-		//return HTCLIENT;
+		return HTCLIENT;
 	}
     const long margin = 7;
     RECT rcWnd;

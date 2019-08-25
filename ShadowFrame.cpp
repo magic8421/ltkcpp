@@ -9,21 +9,24 @@
 #include "ShadowFrame.h"
 #include "Common.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW 
-#endif
+//#ifdef _DEBUG
+//#define new DEBUG_NEW 
+//#endif
 
 namespace ltk {
 
 static const UINT WM_RENDER_LATER = WM_USER + 1;
-static const LPCWSTR PNG_PATH = L"res\\trans-border.png";
-static const long m_sizeLeft = 29;
-static const long m_sizeTop = 50;
-static const long m_sizeRight = 31;
-static const long m_sizeBottom = 31;
+static const LPCWSTR PNG_PATH = L"res\\round_wnd.png";
+static const long m_sizeLeft = 27;
+static const long m_sizeTop = 36;
+static const long m_sizeRight = 25;
+static const long m_sizeBottom = 26;
 
 ShadowFrame::ShadowFrame(Mode m) : m_mode(m)
 {
+	m_font = new Gdiplus::Font(L"Î¢ÈíÑÅºÚ", 16.f, Gdiplus::FontStyleRegular,
+		Gdiplus::UnitPixel, NULL);
+	LTK_ASSERT(m_font->GetLastStatus() == Gdiplus::Ok);
 }
 
 
@@ -66,16 +69,17 @@ LRESULT CALLBACK ShadowFrame::WndProc(HWND hwnd, UINT message, WPARAM wparam, LP
     }
     switch (message) {
     case WM_RENDER_LATER:
-        do 
         {
             RECT rc;
             ::GetWindowRect(hwnd, &rc);
             thiz->OnDraw(rc);
-        } while (0);
+        }
         break;
 	case WM_LBUTTONDOWN:
-		__debugbreak();
-		break;
+	case WM_LBUTTONUP:
+	case WM_MOUSEMOVE:
+	case WM_LBUTTONDBLCLK:
+		return thiz->HandleMouseMessage(hwnd, message, wparam, lparam);
     case WM_NCDESTROY:
         thiz->m_hwnd = 0;
         break;
@@ -93,6 +97,11 @@ void ShadowFrame::Create()
 void ShadowFrame::Destroy()
 {
     ::DestroyWindow(m_hwnd);
+}
+
+void ShadowFrame::SetParent(HWND hParent)
+{
+	m_hParent = hParent;
 }
 
 void ShadowFrame::Init()
@@ -251,6 +260,80 @@ void ShadowFrame::DrawShadow(Gdiplus::Graphics &g, Gdiplus::Rect rc)
             g.FillRectangle(&brush, rc);
         } while (0);
     }
+}
+
+LRESULT ShadowFrame::HandleMouseMessage(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
+{
+	const long margin = 18;
+	long xPos = (short)LOWORD(lparam);
+	long yPos = (short)HIWORD(lparam);
+	switch (msg) {
+	case WM_MOUSEMOVE:
+		switch (m_mode) {
+		case eTop:
+			if (yPos < margin) {
+				::SetCursor(::LoadCursor(NULL, IDC_SIZENS));
+			} 
+			break;
+		case eLeft:
+			if (xPos < margin) {
+				::SetCursor(::LoadCursor(NULL, IDC_SIZEWE));
+			}
+			break;
+		}
+		if (m_bCapture) {
+			HandleMouseMove(xPos, yPos);
+		}
+		break;
+	case WM_LBUTTONDOWN:
+		::GetCursorPos(&m_ptClick);
+		::GetWindowRect(m_hParent, &m_oldRc);
+		switch (m_mode) {
+		case eTop:
+			if (yPos > margin) {
+				m_bCapture = true;
+				::SetCapture(hwnd);
+				m_action = aCaption;
+			}
+			break;
+		}
+		break;
+	case WM_LBUTTONUP:
+		if (m_bCapture) {
+			::ReleaseCapture();
+			m_bCapture = false;
+		}
+		break;
+	}
+	return 0;
+}
+
+void ShadowFrame::HandleMouseMove(long x, long y)
+{
+	POINT pt;
+	::GetCursorPos(&pt);
+	long delta_x = pt.x - m_ptClick.x;
+	long delta_y = pt.y - m_ptClick.y;
+	RECT rc;
+
+
+	switch (m_action) {
+	case aCaption:
+		rc.left = m_oldRc.left + delta_x;
+		rc.top = m_oldRc.top + delta_y;
+		rc.right = m_oldRc.right + delta_x;
+		rc.bottom = m_oldRc.bottom + delta_y;
+		::MoveWindow(m_hParent,
+			rc.left, rc.top,
+			rc.right - rc.left, rc.bottom - rc.top,
+			FALSE);
+		break;
+	}
+}
+
+void ShadowFrame::SetCaption(LPCWSTR t)
+{
+	m_caption = t;
 }
 
 Gdiplus::Bitmap * ShadowFrame::m_bitmap = nullptr;

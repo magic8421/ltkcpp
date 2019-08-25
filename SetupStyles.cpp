@@ -150,6 +150,11 @@ void SetupVectorStyle1()
     rect_bg->InnerColor().SetColor("#000000", "#003300", "#000000", "#cccccc");
     sm->AddBackgroundStyle("window_bg", rect_bg);
 
+	rect_bg = new RectangleBackground;
+	rect_bg->hasBorder = true;
+	rect_bg->innerColors.SetColor("#000000", "#000000", "#000000", "#000000");
+	rect_bg->borderColors.SetColor("#00ff00", "#00ff00", "#00ff00", "#00ff00");
+	sm->AddBackgroundStyle("pure_bg", rect_bg);
 
     OnePatchBackground *one_patch = new OnePatchBackground;
     one_patch->Normal() .SetAtlas(215, 4, 22, 18);
