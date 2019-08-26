@@ -36,8 +36,8 @@ m_shadowBottom(ShadowFrame::eBottom)
 	m_rectComposition.right = 5;
 	m_rectComposition.bottom = 20;
 
-    m_sprite = new WindowLayout;
-    m_sprite->SetWindow(this);
+    //m_sprite = new WindowLayout;
+    //m_sprite->SetWindow(this);
     
 	m_caretHeight = 20;
 }
@@ -120,7 +120,8 @@ void Window::SetRect(RectF rc)
 void Window::SetCaption(LPCWSTR text)
 {
     ::SetWindowText(m_hwnd, text);
-    m_sprite->SetCaptionText(text);
+	this->CaptionChangedEvent.Invoke(text);
+    //m_sprite->SetCaptionText(text);
 }
 
 SizeF Window::GetClientSize()
@@ -249,7 +250,7 @@ LRESULT Window::HandleNcHitTest(const POINT &pt)
     ::GetClientRect(m_hwnd, &rcWnd);
     const long width = rcWnd.right - rcWnd.left;
     const long height = rcWnd.bottom - rcWnd.top;
-    auto rcCaption = DipRectToScreen(m_sprite->GetCaptionRect());
+    //auto rcCaption = DipRectToScreen(m_sprite->GetCaptionRect());
     
 	long caption_h = 35;
 
@@ -280,9 +281,10 @@ LRESULT Window::HandleNcHitTest(const POINT &pt)
     //if (pt.y < caption_h && pt.x < 30) {
     //    return HTSYSMENU;
     //}
-    if (::PtInRect(&rcCaption, pt)) {
-        return HTCAPTION;
-    }
+	// TODO dispatch the nc hit test message to all children sprite
+    //if (::PtInRect(&rcCaption, pt)) {
+    //    return HTCAPTION;
+    //}
     return HTCLIENT;
 }
 
@@ -340,10 +342,10 @@ LRESULT Window::WndProc(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam)
 
             //LTK_LOG("WM_SIZE %d", wparam);
             if (wparam == SIZE_MAXIMIZED) {
-                m_sprite->DoLayout();
+                //m_sprite->DoLayout();
             }
             else if (wparam == SIZE_RESTORED){
-                m_sprite->DoLayout();
+                //m_sprite->DoLayout();
             }
             else if (wparam == SIZE_MINIMIZED) {
                 m_setAnimation.clear();
@@ -569,8 +571,10 @@ void Window::OnPaint(HWND hwnd )
 
 bool Window::OnSize(float cx, float cy, DWORD flag)
 {
-    ScreenCoordToDip(cx, cy);
-    m_sprite->SetRect(RectF(1.0f, 1.0f, (float)(cx - 2.0f), (float)(cy - 1.0f)));
+	if (m_sprite) {
+		ScreenCoordToDip(cx, cy);
+		m_sprite->SetRect(RectF(1.0f, 1.0f, (float)(cx - 2.0f), (float)(cy - 1.0f)));
+	}
     return false;
 }
 
@@ -685,7 +689,11 @@ Sprite *Window::GetRootSprite()
 
 Sprite *Window::SetClientSprite(Sprite *sp)
 {
-    return m_sprite->SetClientSprite(sp);
+    //return m_sprite->SetClientSprite(sp);
+	Sprite *spOld = m_sprite;
+	m_sprite = sp;
+	m_sprite->SetWindow(this);
+	return spOld;
 }
 
 void Window::SetFocusSprite( Sprite *sp )
@@ -820,20 +828,22 @@ void Window::HandleThemeChange()
 {
     m_background = StyleManager::Instance()->GetBackground(m_styleName.c_str());
     this->OnThemeChanged();
-    m_sprite->HandleThemeChange();
-	// TODO send a eSizeChanged to the Sprite tree.
-	// let the controls use the new style measure.
-	float cx, cy;
-	RECT rc;
-	::GetClientRect(m_hwnd, &rc);
-	cx = (float)rc.right;
-	cy = (float)rc.bottom;
-	ltk::ScreenCoordToDip(cx, cy);
-	SizeEvent ev;
-	ev.id = eSizeChanged;
-	ev.width = cx;
-	ev.height = cy;
-	m_sprite->OnEvent(&ev);
+	if (m_sprite) {
+		m_sprite->HandleThemeChange();
+		// TODO send a eSizeChanged to the Sprite tree.
+		// let the controls use the new style measure.
+		float cx, cy;
+		RECT rc;
+		::GetClientRect(m_hwnd, &rc);
+		cx = (float)rc.right;
+		cy = (float)rc.bottom;
+		ltk::ScreenCoordToDip(cx, cy);
+		SizeEvent ev;
+		ev.id = eSizeChanged;
+		ev.width = cx;
+		ev.height = cy;
+		m_sprite->OnEvent(&ev);
+	}
 }
 
 void Window::UpdateShadowFrame(bool bRedraw)

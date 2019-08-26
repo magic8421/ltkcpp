@@ -199,6 +199,7 @@ bool TreeView::OnPaint(PaintEvent *ev)
 	rrc.radiusX = 5.0f;
 	rrc.radiusY = 5.0f;
 	rrc.rect = ltk::D2D1RectF(rc);
+	// TODO change to pixel background (9 patch) to improve perfermance.
 	ev->target->SetAntialiasMode(D2D1_ANTIALIAS_MODE_PER_PRIMITIVE);
 	ev->target->DrawRoundedRectangle(rrc, brush);
 	ev->target->SetAntialiasMode(D2D1_ANTIALIAS_MODE_ALIASED);

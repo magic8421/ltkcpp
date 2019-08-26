@@ -43,10 +43,11 @@ private:
 	bool m_bCapture = false;
 	POINT m_ptClick;
 	RECT m_oldRc;
+	HWND m_oldFocus = 0;
 
 	enum Action
 	{
-		aNone, aCaption, aLeft, aLeftTop, aRightTop
+		aNone, aCaption, aLeft, aLeftTop, aRightTop, aTop
 	};
 	Action m_action = aNone;
 };

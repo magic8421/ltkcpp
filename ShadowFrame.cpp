@@ -18,7 +18,7 @@ namespace ltk {
 static const UINT WM_RENDER_LATER = WM_USER + 1;
 static const LPCWSTR PNG_PATH = L"res\\round_wnd.png";
 static const long m_sizeLeft = 27;
-static const long m_sizeTop = 36;
+static const long m_sizeTop = 46;
 static const long m_sizeRight = 25;
 static const long m_sizeBottom = 26;
 
@@ -80,6 +80,9 @@ LRESULT CALLBACK ShadowFrame::WndProc(HWND hwnd, UINT message, WPARAM wparam, LP
 	case WM_MOUSEMOVE:
 	case WM_LBUTTONDBLCLK:
 		return thiz->HandleMouseMessage(hwnd, message, wparam, lparam);
+	case WM_SETFOCUS:
+		thiz->m_oldFocus = (HWND)wparam;
+		break;
     case WM_NCDESTROY:
         thiz->m_hwnd = 0;
         break;
@@ -294,6 +297,10 @@ LRESULT ShadowFrame::HandleMouseMessage(HWND hwnd, UINT msg, WPARAM wparam, LPAR
 				m_bCapture = true;
 				::SetCapture(hwnd);
 				m_action = aCaption;
+			} else {
+				m_bCapture = true;
+				::SetCapture(hwnd);
+				m_action = aTop;
 			}
 			break;
 		}
@@ -302,10 +309,19 @@ LRESULT ShadowFrame::HandleMouseMessage(HWND hwnd, UINT msg, WPARAM wparam, LPAR
 		if (m_bCapture) {
 			::ReleaseCapture();
 			m_bCapture = false;
+			if (m_oldFocus) {
+				::SetFocus(m_oldFocus);
+			}
 		}
 		break;
 	}
 	return 0;
+}
+
+static void SetWindowRect(HWND hwnd, const RECT &rc)
+{
+	::MoveWindow(hwnd, rc.left, rc.top,
+		rc.right - rc.left, rc.bottom - rc.top, FALSE);
 }
 
 void ShadowFrame::HandleMouseMove(long x, long y)
@@ -314,7 +330,7 @@ void ShadowFrame::HandleMouseMove(long x, long y)
 	::GetCursorPos(&pt);
 	long delta_x = pt.x - m_ptClick.x;
 	long delta_y = pt.y - m_ptClick.y;
-	RECT rc;
+	RECT rc = m_oldRc;
 
 
 	switch (m_action) {
@@ -323,10 +339,11 @@ void ShadowFrame::HandleMouseMove(long x, long y)
 		rc.top = m_oldRc.top + delta_y;
 		rc.right = m_oldRc.right + delta_x;
 		rc.bottom = m_oldRc.bottom + delta_y;
-		::MoveWindow(m_hParent,
-			rc.left, rc.top,
-			rc.right - rc.left, rc.bottom - rc.top,
-			FALSE);
+		SetWindowRect(m_hParent, rc);
+		break;
+	case aTop:
+		rc.top = m_oldRc.top + delta_y;
+		SetWindowRect(m_hParent, rc);
 		break;
 	}
 }

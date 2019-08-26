@@ -48,6 +48,7 @@ public:
 	void SetImePosition( float x, float y );
 
     Sprite *GetRootSprite();
+	void SetRootSprite();
     Sprite *SetClientSprite(Sprite *sp);
 
 	void SetFocusSprite(Sprite *sp);
@@ -84,6 +85,7 @@ public:
 
 public:
     Delegate<void(bool &)> CloseEvent;
+	Delegate<void(LPCWSTR)> CaptionChangedEvent;
 
 private:
 	void HandleMouseMessage(UINT message, WPARAM wparam, LPARAM lparam);
@@ -104,7 +106,7 @@ private:
 	RECT m_rectComposition;
 	int m_caretHeight;
 
-	WindowLayout *m_sprite = nullptr; // owner
+	Sprite *m_sprite = nullptr; // owner
     Sprite *m_spFocus = nullptr;
     Sprite *m_spCapture = nullptr;
     Sprite *m_spHover = nullptr;
