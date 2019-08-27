@@ -29,15 +29,15 @@ void SetupPixelStyle1()
     sm->AddBackgroundStyle("default_btn_bg", nine_in_one);
 
     nine_in_one = new NinePatchBackground;
-    nine_in_one->Normal().SetAtals(125, 68, 6, 15).SetMargin(2, 3, 2, 3);
-    nine_in_one->Hover() .SetAtals(142, 68, 6, 15).SetMargin(2, 3, 2, 3);
+    nine_in_one->Normal().SetAtals(142, 68, 6, 15).SetMargin(2, 3, 2, 3);
+    nine_in_one->Hover() .SetAtals(125, 68, 6, 15).SetMargin(2, 3, 2, 3);
     nine_in_one->Pressed() = nine_in_one->Normal();
     nine_in_one->Disable() = nine_in_one->Normal();
     sm->AddBackgroundStyle("scrollbar_v", nine_in_one);
 
     nine_in_one = new NinePatchBackground;
-    nine_in_one->Normal().SetAtals(121, 86, 15, 6).SetMargin(3, 2, 3, 2);
-    nine_in_one->Hover() .SetAtals(138, 86, 15, 6).SetMargin(3, 2, 3, 2);
+    nine_in_one->Normal().SetAtals(138, 86, 15, 6).SetMargin(3, 2, 3, 2);
+    nine_in_one->Hover() .SetAtals(121, 86, 15, 6).SetMargin(3, 2, 3, 2);
     nine_in_one->Pressed() = nine_in_one->Normal();
     nine_in_one->Disable() = nine_in_one->Normal();
     sm->AddBackgroundStyle("scrollbar_h", nine_in_one);
@@ -55,12 +55,6 @@ void SetupPixelStyle1()
     nine_in_one->Pressed() = nine_in_one->Normal();
     nine_in_one->Disable() = nine_in_one->Normal();
     sm->AddBackgroundStyle("window_bg", nine_in_one);
-
-	auto rect_bg = new RectangleBackground;
-	rect_bg->hasBorder = false;
-	rect_bg->innerColors.SetColor("#eae9ce", "#eae9ce", "#eae9ce", "#eae9ce");
-	rect_bg->borderColors.SetColor("#000000", "#000000", "#000000", "#000000");
-	sm->AddBackgroundStyle("pure_bg", rect_bg);
 
     OnePatchBackground *one_patch = new OnePatchBackground;
     one_patch->Normal() .SetAtlas(103, 3, 22, 20);
@@ -111,7 +105,7 @@ void SetupPixelStyle1()
 		{ "item_hover_clr", "#fafad2" },
 		{ "item_selected_clr", "#bbb073" },
 		{ "item_selected_text_clr", "#eae9ce" },
-		{ "caption_clr", "#000000" },
+		{ "caption_clr", "#fbfbf6" },
 		//{ "", "" },
 		{NULL, NULL}
 	};
@@ -150,11 +144,6 @@ void SetupVectorStyle1()
     rect_bg->InnerColor().SetColor("#000000", "#003300", "#000000", "#cccccc");
     sm->AddBackgroundStyle("window_bg", rect_bg);
 
-	rect_bg = new RectangleBackground;
-	rect_bg->hasBorder = true;
-	rect_bg->innerColors.SetColor("#000000", "#000000", "#000000", "#000000");
-	rect_bg->borderColors.SetColor("#00ff00", "#00ff00", "#00ff00", "#00ff00");
-	sm->AddBackgroundStyle("pure_bg", rect_bg);
 
     OnePatchBackground *one_patch = new OnePatchBackground;
     one_patch->Normal() .SetAtlas(215, 4, 22, 18);

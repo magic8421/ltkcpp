@@ -9,24 +9,16 @@
 #include "ShadowFrame.h"
 #include "Common.h"
 
-//#ifdef _DEBUG
-//#define new DEBUG_NEW 
-//#endif
+#ifdef _DEBUG
+#define new DEBUG_NEW 
+#endif
 
 namespace ltk {
 
-static const UINT WM_RENDER_LATER = WM_USER + 1;
-static const LPCWSTR PNG_PATH = L"res\\round_wnd.png";
-static const long m_sizeLeft = 27;
-static const long m_sizeTop = 46;
-static const long m_sizeRight = 25;
-static const long m_sizeBottom = 26;
+const UINT ShadowFrame::WM_RENDER_LATER = WM_USER + 1;
 
 ShadowFrame::ShadowFrame(Mode m) : m_mode(m)
 {
-	m_font = new Gdiplus::Font(L"Î¢ÈíÑÅºÚ", 16.f, Gdiplus::FontStyleRegular,
-		Gdiplus::UnitPixel, NULL);
-	LTK_ASSERT(m_font->GetLastStatus() == Gdiplus::Ok);
 }
 
 
@@ -69,20 +61,13 @@ LRESULT CALLBACK ShadowFrame::WndProc(HWND hwnd, UINT message, WPARAM wparam, LP
     }
     switch (message) {
     case WM_RENDER_LATER:
+        do 
         {
             RECT rc;
             ::GetWindowRect(hwnd, &rc);
             thiz->OnDraw(rc);
-        }
+        } while (0);
         break;
-	case WM_LBUTTONDOWN:
-	case WM_LBUTTONUP:
-	case WM_MOUSEMOVE:
-	case WM_LBUTTONDBLCLK:
-		return thiz->HandleMouseMessage(hwnd, message, wparam, lparam);
-	case WM_SETFOCUS:
-		thiz->m_oldFocus = (HWND)wparam;
-		break;
     case WM_NCDESTROY:
         thiz->m_hwnd = 0;
         break;
@@ -92,7 +77,7 @@ LRESULT CALLBACK ShadowFrame::WndProc(HWND hwnd, UINT message, WPARAM wparam, LP
 
 void ShadowFrame::Create()
 {
-     HWND hwnd = ::CreateWindowEx(WS_EX_LAYERED | WS_EX_TOOLWINDOW, L"ltk_ShadowFrame",
+     HWND hwnd = ::CreateWindowEx(WS_EX_LAYERED | WS_EX_TRANSPARENT | WS_EX_TOOLWINDOW, L"ltk_ShadowFrame",
         L"", WS_POPUPWINDOW | WS_VISIBLE, 0, 0, 100, 100, NULL, NULL, HINST_THISCOMPONENT, this);
      LTK_ASSERT(hwnd != NULL);
 }
@@ -102,14 +87,9 @@ void ShadowFrame::Destroy()
     ::DestroyWindow(m_hwnd);
 }
 
-void ShadowFrame::SetParent(HWND hParent)
-{
-	m_hParent = hParent;
-}
-
 void ShadowFrame::Init()
 {
-    m_bitmap = Gdiplus::Bitmap::FromFile(PNG_PATH);
+    m_bitmap = Gdiplus::Bitmap::FromFile(L"res\\shadow.png");
     LTK_ASSERT(m_bitmap && m_bitmap->GetLastStatus() == Gdiplus::Ok);
     RegisterWndClass();
 }
@@ -128,26 +108,26 @@ void ShadowFrame::Update(HWND hParent, HDWP &hdwp, bool bRedraw)
     switch (m_mode) {
     case eLeft:
         rc2.left = rc.left - m_sizeLeft;
-        rc2.top = rc.top;
+        rc2.top = rc.top - m_sizeTop;
         rc2.right = rc.left;
-        rc2.bottom = rc.bottom;
+        rc2.bottom = rc.bottom + m_sizeBottom;
         break;
     case eTop:
-        rc2.left = rc.left - m_sizeLeft;
+        rc2.left = rc.left;
         rc2.top = rc.top - m_sizeTop;
-        rc2.right = rc.right + m_sizeRight;
+        rc2.right = rc.right;
         rc2.bottom = rc.top;
         break;
     case eRight:
         rc2.left = rc.right;
-        rc2.top = rc.top;
+        rc2.top = rc.top - m_sizeTop;
         rc2.right = rc.right + m_sizeRight;
-        rc2.bottom = rc.bottom;
+        rc2.bottom = rc.bottom + m_sizeBottom;
         break;
     case eBottom:
-        rc2.left = rc.left - m_sizeLeft;
+        rc2.left = rc.left;
         rc2.top = rc.bottom;
-        rc2.right = rc.right + m_sizeRight;
+        rc2.right = rc.right;
         rc2.bottom = rc.bottom + m_sizeBottom;
         break;
     default:
@@ -196,63 +176,53 @@ void ShadowFrame::OnDraw(const RECT &rc)
 
 void ShadowFrame::DrawShadow(Gdiplus::Graphics &g, Gdiplus::Rect rc)
 {
-	// rc is the destination rect.
+    Gdiplus::Rect rc2;
     int width = rc.Width;
     int height = rc.Height;
     
     switch (m_mode) {
     case eLeft:
-        g.DrawImage(m_bitmap, rc, 
-			0, m_sizeTop, 
-			m_sizeLeft, m_bitmap->GetHeight() - m_sizeTop - m_sizeBottom,
+        rc.Y = m_sizeTop;
+        rc.Height = height - m_sizeTop - m_sizeBottom;
+        g.DrawImage(m_bitmap, rc, 0, m_sizeTop, m_sizeLeft, m_bitmap->GetHeight() - m_sizeTop - m_sizeBottom,
+            Gdiplus::UnitPixel, NULL, NULL, NULL);
+        rc.X = 0;
+        rc.Y = 0;
+        rc.Width = m_sizeLeft;
+        rc.Height = m_sizeTop;
+        g.DrawImage(m_bitmap, rc, 0, 0, m_sizeLeft, m_sizeTop,
+            Gdiplus::UnitPixel, NULL, NULL, NULL);
+        rc.Y = height - m_sizeBottom;
+        rc.Height = m_sizeBottom;
+        g.DrawImage(m_bitmap, rc, 0, m_bitmap->GetHeight() - m_sizeBottom, m_sizeLeft, m_sizeBottom,
             Gdiplus::UnitPixel, NULL, NULL, NULL);
         break;
     case eTop:
-		rc.X = m_sizeLeft;
-		rc.Y = 0;
-		rc.Width = width - m_sizeLeft - m_sizeRight;
         g.DrawImage(m_bitmap, rc, m_sizeLeft, 0, m_bitmap->GetWidth() - m_sizeLeft - m_sizeRight,
             m_sizeTop, Gdiplus::UnitPixel, NULL, NULL, NULL);
-		rc.X = 0;
-		rc.Y = 0;
-		rc.Width = m_sizeLeft;
-		g.DrawImage(m_bitmap, rc,
-			0, 0,
-			m_sizeLeft, m_sizeTop,
-			Gdiplus::UnitPixel, NULL, NULL, NULL);
-		rc.X = width - m_sizeRight;
-		rc.Width = m_sizeRight;
-		rc.Height = m_sizeTop;
-		g.DrawImage(m_bitmap, rc,
-			m_bitmap->GetWidth() - m_sizeRight, 0,
-			m_sizeRight, m_sizeTop,
-			Gdiplus::UnitPixel, NULL, NULL, NULL);
         break;
     case eRight:
-        g.DrawImage(m_bitmap, rc,
-			m_bitmap->GetWidth() - m_sizeRight, m_sizeTop,
-			m_sizeRight, m_bitmap->GetHeight() - m_sizeTop - m_sizeBottom,
+        rc.X = width - m_sizeRight;
+        rc.Y = m_sizeTop;
+        rc.Width = m_sizeRight;
+        rc.Height = height - m_sizeTop - m_sizeBottom;
+        g.DrawImage(m_bitmap, rc, m_bitmap->GetWidth() - m_sizeRight, m_sizeTop, m_sizeRight, m_bitmap->GetHeight() - m_sizeTop - m_sizeBottom,
+            Gdiplus::UnitPixel, NULL, NULL, NULL);
+        rc.X = 0;
+        rc.Y = 0;
+        rc.Width = m_sizeRight;
+        rc.Height = m_sizeTop;
+        g.DrawImage(m_bitmap, rc, m_bitmap->GetWidth() - m_sizeRight, 0, m_sizeRight, m_sizeTop,
+            Gdiplus::UnitPixel, NULL, NULL, NULL);
+        rc.X = width - m_sizeRight;
+        rc.Y = height - m_sizeBottom;
+        rc.Height = m_sizeBottom;
+        g.DrawImage(m_bitmap, rc, m_bitmap->GetWidth() - m_sizeRight, m_bitmap->GetHeight() - m_sizeBottom,
+            m_sizeRight, m_sizeBottom,
             Gdiplus::UnitPixel, NULL, NULL, NULL);
         break;
     case eBottom:
-		rc.X = 0;
-		rc.Width = m_sizeLeft;
-		g.DrawImage(m_bitmap, rc,
-			0, m_bitmap->GetHeight() - m_sizeBottom,
-			m_sizeLeft, m_sizeBottom,
-			Gdiplus::UnitPixel, NULL, NULL, NULL);
-		
-		rc.X = width - m_sizeRight;
-		rc.Width = m_sizeRight;
-		g.DrawImage(m_bitmap, rc,
-			m_bitmap->GetWidth() - m_sizeRight, m_bitmap->GetHeight() - m_sizeBottom,
-			m_sizeRight, m_sizeBottom,
-			Gdiplus::UnitPixel, NULL, NULL, NULL);
-
-		rc.X = m_sizeLeft;
-		rc.Width = width - m_sizeLeft - m_sizeRight;
-        g.DrawImage(m_bitmap, rc,
-			m_sizeLeft, m_bitmap->GetHeight() - m_sizeBottom,
+        g.DrawImage(m_bitmap, rc, m_sizeLeft, m_bitmap->GetHeight() - m_sizeBottom,
             m_bitmap->GetWidth() - m_sizeLeft - m_sizeRight, m_sizeBottom,
             Gdiplus::UnitPixel, NULL, NULL, NULL);
         break;
@@ -263,94 +233,6 @@ void ShadowFrame::DrawShadow(Gdiplus::Graphics &g, Gdiplus::Rect rc)
             g.FillRectangle(&brush, rc);
         } while (0);
     }
-}
-
-LRESULT ShadowFrame::HandleMouseMessage(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
-{
-	const long margin = 18;
-	long xPos = (short)LOWORD(lparam);
-	long yPos = (short)HIWORD(lparam);
-	switch (msg) {
-	case WM_MOUSEMOVE:
-		switch (m_mode) {
-		case eTop:
-			if (yPos < margin) {
-				::SetCursor(::LoadCursor(NULL, IDC_SIZENS));
-			} 
-			break;
-		case eLeft:
-			if (xPos < margin) {
-				::SetCursor(::LoadCursor(NULL, IDC_SIZEWE));
-			}
-			break;
-		}
-		if (m_bCapture) {
-			HandleMouseMove(xPos, yPos);
-		}
-		break;
-	case WM_LBUTTONDOWN:
-		::GetCursorPos(&m_ptClick);
-		::GetWindowRect(m_hParent, &m_oldRc);
-		switch (m_mode) {
-		case eTop:
-			if (yPos > margin) {
-				m_bCapture = true;
-				::SetCapture(hwnd);
-				m_action = aCaption;
-			} else {
-				m_bCapture = true;
-				::SetCapture(hwnd);
-				m_action = aTop;
-			}
-			break;
-		}
-		break;
-	case WM_LBUTTONUP:
-		if (m_bCapture) {
-			::ReleaseCapture();
-			m_bCapture = false;
-			if (m_oldFocus) {
-				::SetFocus(m_oldFocus);
-			}
-		}
-		break;
-	}
-	return 0;
-}
-
-static void SetWindowRect(HWND hwnd, const RECT &rc)
-{
-	::MoveWindow(hwnd, rc.left, rc.top,
-		rc.right - rc.left, rc.bottom - rc.top, FALSE);
-}
-
-void ShadowFrame::HandleMouseMove(long x, long y)
-{
-	POINT pt;
-	::GetCursorPos(&pt);
-	long delta_x = pt.x - m_ptClick.x;
-	long delta_y = pt.y - m_ptClick.y;
-	RECT rc = m_oldRc;
-
-
-	switch (m_action) {
-	case aCaption:
-		rc.left = m_oldRc.left + delta_x;
-		rc.top = m_oldRc.top + delta_y;
-		rc.right = m_oldRc.right + delta_x;
-		rc.bottom = m_oldRc.bottom + delta_y;
-		SetWindowRect(m_hParent, rc);
-		break;
-	case aTop:
-		rc.top = m_oldRc.top + delta_y;
-		SetWindowRect(m_hParent, rc);
-		break;
-	}
-}
-
-void ShadowFrame::SetCaption(LPCWSTR t)
-{
-	m_caption = t;
 }
 
 Gdiplus::Bitmap * ShadowFrame::m_bitmap = nullptr;

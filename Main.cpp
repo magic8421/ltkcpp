@@ -64,8 +64,8 @@ int CALLBACK WinMain(
     unique_ptr<Window> wnd;
     wnd.reset(new Window);
     wnd->SetCaption(L"LTK²âÊÔ´°¿Ú");
-    wnd->SetBackground("pure_bg");
-    wnd->Create(nullptr, RectF(300, 100, 600, 500));
+    wnd->SetBackground("window_bg");
+    wnd->Create(nullptr, RectF(0, 0, 600, 500));
     wnd->CloseEvent.Attach([](bool &proceed) {
         //proceed = false;
         ::PostQuitMessage(0);

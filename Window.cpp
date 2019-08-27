@@ -36,8 +36,8 @@ m_shadowBottom(ShadowFrame::eBottom)
 	m_rectComposition.right = 5;
 	m_rectComposition.bottom = 20;
 
-    //m_sprite = new WindowLayout;
-    //m_sprite->SetWindow(this);
+    m_sprite = new WindowLayout;
+    m_sprite->SetWindow(this);
     
 	m_caretHeight = 20;
 }
@@ -80,24 +80,21 @@ void Window::Create(Window *parent, RectF rc)
         hParent = parent->m_hwnd;
     }
     DWORD style = WS_VISIBLE;
+    
     style |= WS_OVERLAPPEDWINDOW;
-    style |=  WS_SYSMENU | WS_MINIMIZEBOX | WS_MAXIMIZEBOX;
 
-	m_shadowLeft.Create();
-	m_shadowTop.Create();
-	m_shadowRight.Create();
-	m_shadowBottom.Create();
+    m_shadowLeft.Create();
+    m_shadowTop.Create();
+    m_shadowRight.Create();
+    m_shadowBottom.Create();
+
+    style |=  WS_SYSMENU | WS_MINIMIZEBOX | WS_MAXIMIZEBOX;
 
     DipCoordToScreen(rc.X, rc.Y);
     DipCoordToScreen(rc.Width, rc.Height);
-    HWND hwnd = ::CreateWindowEx(0, ClsName, L"", style,
+    ::CreateWindowEx(0, ClsName, L"", style,
         (int)rc.X, (int)rc.Y, (int)rc.Width, (int)rc.Height,
         hParent, NULL, HINST_THISCOMPONENT, this);
-
-	m_shadowLeft.SetParent(hwnd);
-	m_shadowTop.SetParent(hwnd);
-	m_shadowRight.SetParent(hwnd);
-	m_shadowBottom.SetParent(hwnd);
 }
 
 RectF Window::GetRect()
@@ -120,8 +117,7 @@ void Window::SetRect(RectF rc)
 void Window::SetCaption(LPCWSTR text)
 {
     ::SetWindowText(m_hwnd, text);
-	this->CaptionChangedEvent.Invoke(text);
-    //m_sprite->SetCaptionText(text);
+    m_sprite->SetCaptionText(text);
 }
 
 SizeF Window::GetClientSize()
@@ -242,15 +238,12 @@ void Window::HandleMouseLeave()
 LRESULT Window::HandleNcHitTest(const POINT &pt)
 {
     //LTK_LOG("WM_NCHITTEST %d %d", pt.x, pt.y);
-	if (!m_bNcResize) {
-		return HTCLIENT;
-	}
     const long margin = 7;
     RECT rcWnd;
     ::GetClientRect(m_hwnd, &rcWnd);
     const long width = rcWnd.right - rcWnd.left;
     const long height = rcWnd.bottom - rcWnd.top;
-    //auto rcCaption = DipRectToScreen(m_sprite->GetCaptionRect());
+    auto rcCaption = DipRectToScreen(m_sprite->GetCaptionRect());
     
 	long caption_h = 35;
 
@@ -281,10 +274,9 @@ LRESULT Window::HandleNcHitTest(const POINT &pt)
     //if (pt.y < caption_h && pt.x < 30) {
     //    return HTSYSMENU;
     //}
-	// TODO dispatch the nc hit test message to all children sprite
-    //if (::PtInRect(&rcCaption, pt)) {
-    //    return HTCAPTION;
-    //}
+    if (::PtInRect(&rcCaption, pt)) {
+        return HTCAPTION;
+    }
     return HTCLIENT;
 }
 
@@ -342,10 +334,10 @@ LRESULT Window::WndProc(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam)
 
             //LTK_LOG("WM_SIZE %d", wparam);
             if (wparam == SIZE_MAXIMIZED) {
-                //m_sprite->DoLayout();
+                m_sprite->DoLayout();
             }
             else if (wparam == SIZE_RESTORED){
-                //m_sprite->DoLayout();
+                m_sprite->DoLayout();
             }
             else if (wparam == SIZE_MINIMIZED) {
                 m_setAnimation.clear();
@@ -488,7 +480,7 @@ LRESULT CALLBACK Window::WndProcStatic(HWND hwnd, UINT message, WPARAM wparam, L
 void Window::DrawNonClient()
 {
     SizeF size = this->GetClientSize();
-    RectF rc(0, 0, size.Width + 1.f, size.Height + 1.f);
+    RectF rc(0, 0, size.Width, size.Height);
     m_background->Draw(this, m_target, rc, AbstractBackground::Normal, 1.0f);
     //DrawTextureNineInOne(
     //    m_target,
@@ -689,11 +681,7 @@ Sprite *Window::GetRootSprite()
 
 Sprite *Window::SetClientSprite(Sprite *sp)
 {
-    //return m_sprite->SetClientSprite(sp);
-	Sprite *spOld = m_sprite;
-	m_sprite = sp;
-	m_sprite->SetWindow(this);
-	return spOld;
+    return m_sprite->SetClientSprite(sp);
 }
 
 void Window::SetFocusSprite( Sprite *sp )

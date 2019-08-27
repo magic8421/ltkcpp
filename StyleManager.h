@@ -138,6 +138,7 @@ public:
     FourStateColor &BorderColor() { return borderColors; }
     FourStateColor &InnerColor() { return innerColors; }
 
+private:
     FourStateColor borderColors;
     FourStateColor innerColors;
     // TODO add Gradient

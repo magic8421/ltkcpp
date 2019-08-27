@@ -85,7 +85,6 @@ public:
 
 public:
     Delegate<void(bool &)> CloseEvent;
-	Delegate<void(LPCWSTR)> CaptionChangedEvent;
 
 private:
 	void HandleMouseMessage(UINT message, WPARAM wparam, LPARAM lparam);
@@ -106,7 +105,7 @@ private:
 	RECT m_rectComposition;
 	int m_caretHeight;
 
-	Sprite *m_sprite = nullptr; // owner
+	WindowLayout *m_sprite = nullptr; // owner
     Sprite *m_spFocus = nullptr;
     Sprite *m_spCapture = nullptr;
     Sprite *m_spHover = nullptr;
@@ -120,7 +119,6 @@ private:
     ShadowFrame m_shadowTop;
     ShadowFrame m_shadowRight;
     ShadowFrame m_shadowBottom;
-	bool m_bNcResize = false;
 
     ID2D1Bitmap *m_atlas = nullptr; // owner TODO share across multiple Window
     AbstractBackground *m_background = nullptr;

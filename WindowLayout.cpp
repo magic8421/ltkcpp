@@ -78,8 +78,8 @@ void WindowLayout::DoLayout()
 	float btn_w = 22;
 	float btn_h = 20;
 	float caption_h = 35;
-    float margin = 0;
-	float sys_btn_margin = 0;
+    float margin = 5;
+	float sys_btn_margin = 3;
 
     RectF rc = this->GetClientRect();
     m_closeBtn->SetRect(RectF(

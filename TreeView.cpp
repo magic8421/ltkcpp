@@ -192,18 +192,6 @@ bool TreeView::OnPaint(PaintEvent *ev)
     }
     m_vsb->SetPosition(m_scrollAni.GetScroll());
 
-	auto brush = GetBrush();
-	brush->SetColor(StyleManager::ColorFromString("#8b7f3f"));
-	rc.Inflate(-0.5f, -0.5f);
-	D2D1_ROUNDED_RECT rrc;
-	rrc.radiusX = 5.0f;
-	rrc.radiusY = 5.0f;
-	rrc.rect = ltk::D2D1RectF(rc);
-	// TODO change to pixel background (9 patch) to improve perfermance.
-	ev->target->SetAntialiasMode(D2D1_ANTIALIAS_MODE_PER_PRIMITIVE);
-	ev->target->DrawRoundedRectangle(rrc, brush);
-	ev->target->SetAntialiasMode(D2D1_ANTIALIAS_MODE_ALIASED);
-
     TraverseTree(&m_root, 0, [&, this](TreeNode *node, int) {
         node->OnPaint(ev->target, m_scrollAni.GetScroll());
     });
