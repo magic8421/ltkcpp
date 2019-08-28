@@ -11,6 +11,7 @@
 #include "Window.h"
 #include "WindowLayout.h"
 #include "StyleManager.h"
+#include "MenuBar.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW 
@@ -57,6 +58,22 @@ Sprite *WindowLayout::GetClientSprite()
     return m_client;
 }
 
+MenuBar *WindowLayout::SetMenuBar(MenuBar *menu)
+{
+	auto old = m_menu;
+	if (old) {
+		this->RemoveChild(old);
+	}
+	m_menu = menu;
+	this->AddChild(m_menu);
+	return old;
+}
+
+MenuBar *WindowLayout::GetMenuBar()
+{
+	return m_menu;
+}
+
 RectF WindowLayout::GetCaptionRect()
 {
     return m_caption->GetAbsRect();
@@ -77,9 +94,10 @@ void WindowLayout::DoLayout()
     auto sm = StyleManager::Instance();
 	float btn_w = 22;
 	float btn_h = 20;
-	float caption_h = 35;
+	float caption_h = 30;
     float margin = 5;
 	float sys_btn_margin = 3;
+	float menu_h = 35;
 
     RectF rc = this->GetClientRect();
     m_closeBtn->SetRect(RectF(
@@ -92,8 +110,14 @@ void WindowLayout::DoLayout()
     m_caption->SetRect(RectF(margin, margin, 
         rc.Width - btn_w * 3 - margin * 3, caption_h));
 
+	float y = caption_h;
+	if (m_menu) {
+		m_menu->SetRect(RectF(margin, y + 2,
+			rc.Width - margin * 2, menu_h));
+		y += menu_h;
+	}
     if (m_client) {
-        m_client->SetRect(RectF(margin, caption_h + margin,
+        m_client->SetRect(RectF(margin, y + margin,
             rc.Width - margin * 2, rc.Height - margin * 2 - caption_h));
     }
 }

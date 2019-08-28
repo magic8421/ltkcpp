@@ -12,6 +12,7 @@
 #include "ltk.h"
 #include "StyleManager.h"
 #include "WindowLayout.h"
+#include "MenuBar.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW 
@@ -682,6 +683,16 @@ Sprite *Window::GetRootSprite()
 Sprite *Window::SetClientSprite(Sprite *sp)
 {
     return m_sprite->SetClientSprite(sp);
+}
+
+MenuBar *Window::SetMenu(MenuBar *m)
+{
+	return m_sprite->SetMenuBar(m);
+}
+
+MenuBar * Window::GetMenu()
+{
+	return m_sprite->GetMenuBar();
 }
 
 void Window::SetFocusSprite( Sprite *sp )

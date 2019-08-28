@@ -20,22 +20,24 @@ public:
     virtual ~Button();
 
     void SetText(LPCWSTR text);
-
-    virtual bool OnPaint(PaintEvent *ev) override;
-    virtual void OnThemeChanged() override;
+	void RecreateLayout();
+	SizeF GetPreferredSize();
 
 	ImmutableString Background;
 	ImmutableString TextFormat;
 	ImmutableString TextColor;
 
+protected:
+	virtual bool OnSize(SizeEvent *ev) override;
+	virtual bool OnPaint(PaintEvent *ev) override;
+    virtual void OnThemeChanged() override;
+
 private:
     std::wstring m_text;
     AbstractBackground *m_background = nullptr;
     IDWriteTextFormat *m_format = nullptr;
+	IDWriteTextLayout *m_layout = nullptr;
 	D2D1_COLOR_F m_textColor;
-    ButtonStyle *m_style = nullptr;
-protected:
-
 };
 
 } // namespace

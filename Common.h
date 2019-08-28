@@ -29,10 +29,10 @@ public:
 	}
 	bool operator==(LPCSTR rhs)
 	{
-		if (rhs) {
+		if (m_ptr && rhs) {
 			return strcmp(m_ptr, rhs) == 0;
 		} else {
-			return false;
+			return m_ptr == rhs;
 		}
 	}
 	void operator=(LPCSTR str)

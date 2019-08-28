@@ -14,6 +14,7 @@ namespace ltk {
 
 class Button;
 class Label;
+class MenuBar;
 
 class WindowLayout : public Sprite
 {
@@ -23,6 +24,9 @@ public:
 
     Sprite *SetClientSprite(Sprite *sp);
     Sprite *GetClientSprite();
+	
+	MenuBar *SetMenuBar(MenuBar *menu);
+	MenuBar *GetMenuBar();
 
     void DoLayout();
     void SetWindow(Window *wnd);
@@ -37,6 +41,7 @@ private:
     Button *m_minBtn = nullptr;
     Button *m_maxBtn = nullptr;
     Button *m_closeBtn = nullptr;
+	MenuBar *m_menu = nullptr;
     
     Cookie m_minTrack = 0;
     Cookie m_maxTrack = 0;

@@ -16,6 +16,7 @@
 #include "SetupStyles.h"
 #include "BoxLayout.h"
 #include "HeaderCtrl.h"
+#include "MenuBar.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW 
@@ -81,18 +82,18 @@ int CALLBACK WinMain(
     RecBuildNodes(tree->GetRootNode(), 0);
 
 
-    BoxLayout *vbox = new BoxLayout(BoxLayout::Vertical);
+    BoxLayout *vboxRightPanel = new BoxLayout(BoxLayout::Vertical);
     //vbox->SetSpacing(10);
-    hbox->AddLayoutItem(vbox, 100, 0.7f);
+    hbox->AddLayoutItem(vboxRightPanel, 100, 0.7f);
 
     HeaderCtrl *header = new HeaderCtrl;
     header->AddColumn(L"项目名", 100);
     header->AddColumn(L"工程名", 200);
     header->AddColumn(L"负责人", 200);
-    vbox->AddLayoutItem(header, 30, 0.0f);
+    vboxRightPanel->AddLayoutItem(header, 30, 0.0f);
 
     ListView *listview1 = new ListView();
-    vbox->AddLayoutItem(listview1, 0.0f, 1.0f);
+    vboxRightPanel->AddLayoutItem(listview1, 0.0f, 1.0f);
     listview1->SetHeaderCtrl(header);
     std::wstring text;
     UINT num = rand() % 200;
@@ -106,35 +107,35 @@ int CALLBACK WinMain(
     }
 
     TextEdit *edit1 = new TextEdit;
-    vbox->AddLayoutItem(edit1, 100, 0.0f);
+    vboxRightPanel->AddLayoutItem(edit1, 100, 0.0f);
 
-    auto hbox_btns = new BoxLayout(BoxLayout::Horizontal);
-    vbox->AddLayoutItem(hbox_btns, 30, 0.0f);
+    auto hboxTimerTest = new BoxLayout(BoxLayout::Horizontal);
+    vboxRightPanel->AddLayoutItem(hboxTimerTest, 30, 0.0f);
 
-    Button *btn1 = new Button;
+    Button *btnRepeatTimer = new Button;
     UINT cookie1 = 0;
-    btn1->SetText(L"循环定时器");
-    btn1->ClickedEvent.Attach([&]() {
+    btnRepeatTimer->SetText(L"循环定时器");
+    btnRepeatTimer->ClickedEvent.Attach([&]() {
         cookie1 = ltk::SetTimer(1000, cookie1,[&]() {
             LTK_LOG("tick: %d", cookie1);
         });
         //wnd->CloseWindow(); // WTF, with [&] you can capture unique_ptr
         //::PostQuitMessage(0);
     });
-    hbox_btns->AddLayoutItem(btn1, 0, 1);
+    hboxTimerTest->AddLayoutItem(btnRepeatTimer, 0, 1);
 
-    Button *btn2 = new Button;
-    btn2->SetText(L"停止");
-    btn2->ClickedEvent.Attach([&]() {
+    Button *btnStopRepeatTimer = new Button;
+    btnStopRepeatTimer->SetText(L"停止");
+    btnStopRepeatTimer->ClickedEvent.Attach([&]() {
         ltk::KillTimer(cookie1);
         cookie1 = 0;
     });
-    hbox_btns->AddLayoutItem(btn2, 0, 1);
+    hboxTimerTest->AddLayoutItem(btnStopRepeatTimer, 0, 1);
 
-    Button *btn3 = new Button;
+    Button *btnOnceTimer = new Button;
     UINT cookie2 = 0;
-    btn3->SetText(L"单次定时器");
-    btn3->ClickedEvent.Attach([&]() {
+    btnOnceTimer->SetText(L"单次定时器");
+    btnOnceTimer->ClickedEvent.Attach([&]() {
         cookie2 = ltk::SetOnceTimer(1000, cookie2, [&]() {
             LTK_LOG("tick: %d", cookie2);
             cookie2 = 0;
@@ -142,38 +143,47 @@ int CALLBACK WinMain(
         //wnd->CloseWindow(); // WTF, with [&] you can capture unique_ptr
         //::PostQuitMessage(0);
     });
-    hbox_btns->AddLayoutItem(btn3, 0, 1);
+    hboxTimerTest->AddLayoutItem(btnOnceTimer, 0, 1);
 
-    Button *btn4 = new Button;
-    btn4->SetText(L"停止");
-    btn4->ClickedEvent.Attach([&]() {
+    Button *btnStopOnceTimer = new Button;
+    btnStopOnceTimer->SetText(L"停止");
+    btnStopOnceTimer->ClickedEvent.Attach([&]() {
         ltk::KillTimer(cookie2);
         cookie2 = 0;
     });
-    hbox_btns->AddLayoutItem(btn4, 0, 1);
+    hboxTimerTest->AddLayoutItem(btnStopOnceTimer, 0, 1);
 
-    auto hbox_btns2 = new BoxLayout(BoxLayout::Horizontal);
-    vbox->AddLayoutItem(hbox_btns2, 30, 0.0f);
+    auto hboxTheme = new BoxLayout(BoxLayout::Horizontal);
+    vboxRightPanel->AddLayoutItem(hboxTheme, 30, 0.0f);
 
     Button *btnPixelTheme = new Button;
-    hbox_btns2->AddLayoutItem(btnPixelTheme, 100);
+    hboxTheme->AddLayoutItem(btnPixelTheme, 100);
     btnPixelTheme->SetText(L"位图资源");
+	btnPixelTheme->Background = "menu_bg";
     btnPixelTheme->ClickedEvent.Attach([wnd = wnd.get()]() {
         StyleManager::SetCurrentTheme("pixel");
         wnd->HandleThemeChange();
     });
 
     Button *btnRectTheme = new Button;
-    hbox_btns2->AddLayoutItem(btnRectTheme, 100);
+    hboxTheme->AddLayoutItem(btnRectTheme, 100);
     btnRectTheme->SetText(L"纯色1");
-    btnRectTheme->ClickedEvent.Attach([wnd = wnd.get()]() {
+	btnRectTheme->Background = "menu_bg";
+	btnRectTheme->ClickedEvent.Attach([wnd = wnd.get()]() {
         StyleManager::SetCurrentTheme("rect");
         wnd->HandleThemeChange();
     });
 
-    vbox->AddSpaceItem(5, 0);
-    hbox->DoLayout();
-    wnd->HandleThemeChange();
+	MenuBar *menu_bar = new MenuBar;
+	wnd->SetMenu(menu_bar);
+	menu_bar->AddItem(L"文件");
+	menu_bar->AddItem(L"编辑");
+	menu_bar->AddItem(L"工具");
+	menu_bar->AddItem(L"帮助");
+
+    vboxRightPanel->AddSpaceItem(5, 0);
+	wnd->HandleThemeChange();
+	hbox->DoLayout();
 
 
     MSG msg;

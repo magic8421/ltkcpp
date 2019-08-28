@@ -10,7 +10,6 @@
 #include "ShadowFrame.h"
 #include "Event.h"
 #include "ImeInput.h"
-#include "RefCounted.h"
 #include "Delegate.h"
 
 namespace ltk {
@@ -19,6 +18,7 @@ class Button;
 class Label;
 class WindowLayout;
 class AbstractBackground;
+class MenuBar;
 
 class Window
 {
@@ -50,6 +50,9 @@ public:
     Sprite *GetRootSprite();
 	void SetRootSprite();
     Sprite *SetClientSprite(Sprite *sp);
+
+	MenuBar *SetMenu(MenuBar *);
+	MenuBar *GetMenu();
 
 	void SetFocusSprite(Sprite *sp);
 	Sprite *GetFocusSprite();

@@ -29,15 +29,15 @@ void SetupPixelStyle1()
     sm->AddBackgroundStyle("default_btn_bg", nine_in_one);
 
     nine_in_one = new NinePatchBackground;
-    nine_in_one->Normal().SetAtals(142, 68, 6, 15).SetMargin(2, 3, 2, 3);
-    nine_in_one->Hover() .SetAtals(125, 68, 6, 15).SetMargin(2, 3, 2, 3);
+    nine_in_one->Normal().SetAtals(125, 68, 6, 15).SetMargin(2, 3, 2, 3);
+    nine_in_one->Hover() .SetAtals(142, 68, 6, 15).SetMargin(2, 3, 2, 3);
     nine_in_one->Pressed() = nine_in_one->Normal();
     nine_in_one->Disable() = nine_in_one->Normal();
     sm->AddBackgroundStyle("scrollbar_v", nine_in_one);
 
     nine_in_one = new NinePatchBackground;
-    nine_in_one->Normal().SetAtals(138, 86, 15, 6).SetMargin(3, 2, 3, 2);
-    nine_in_one->Hover() .SetAtals(121, 86, 15, 6).SetMargin(3, 2, 3, 2);
+    nine_in_one->Normal().SetAtals(121, 86, 15, 6).SetMargin(3, 2, 3, 2);
+    nine_in_one->Hover() .SetAtals(138, 86, 15, 6).SetMargin(3, 2, 3, 2);
     nine_in_one->Pressed() = nine_in_one->Normal();
     nine_in_one->Disable() = nine_in_one->Normal();
     sm->AddBackgroundStyle("scrollbar_h", nine_in_one);
@@ -77,8 +77,15 @@ void SetupPixelStyle1()
     one_patch->Disable() = one_patch->Normal();
     sm->AddBackgroundStyle("close_btn_bg", one_patch);
 
+	nine_in_one = new NinePatchBackground;
+    nine_in_one->Normal().SetAtals(100, 70, 12, 12).SetMargin(2, 2, 2, 2); // TODO try zero size
+    nine_in_one->Hover()  .SetAtals(171, 36, 18, 29).SetMargin(6, 6, 6, 6);
+    nine_in_one->Pressed().SetAtals(193, 36, 18, 29).SetMargin(6, 6, 6, 6);
+    nine_in_one->Disable() = nine_in_one->Normal();
+    sm->AddBackgroundStyle("menu_bg", nine_in_one);
+
     sm->AddTextFormat2("default_btn_fmt", L"Î¢ÈíÑÅºÚ", DWRITE_FONT_WEIGHT_NORMAL,
-        DWRITE_FONT_STYLE_NORMAL, 14, DWRITE_TEXT_ALIGNMENT_CENTER,
+        DWRITE_FONT_STYLE_NORMAL, 14, DWRITE_TEXT_ALIGNMENT_LEADING,
         DWRITE_PARAGRAPH_ALIGNMENT_CENTER);
 
 	sm->AddTextFormat2("default_label_fmt", L"Î¢ÈíÑÅºÚ", DWRITE_FONT_WEIGHT_NORMAL,
@@ -165,6 +172,11 @@ void SetupVectorStyle1()
     one_patch->Pressed().SetAtlas(258, 44, 21, 18);
     one_patch->Disable() = one_patch->Normal();
     sm->AddBackgroundStyle("close_btn_bg", one_patch);
+
+	rect_bg = new RectangleBackground;
+	rect_bg->BorderColor().SetColor("#000000", "#00ff00", "#00aa00", "#cccccc");
+	rect_bg->InnerColor().SetColor("#000000", "#003300", "#000000", "#cccccc");
+	sm->AddBackgroundStyle("menu_bg", rect_bg);
 
     sm->AddTextFormat2("default_btn_fmt", L"ËÎÌå", DWRITE_FONT_WEIGHT_NORMAL,
         DWRITE_FONT_STYLE_NORMAL, 14, DWRITE_TEXT_ALIGNMENT_CENTER,
