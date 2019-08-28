@@ -30,14 +30,9 @@ Button::~Button()
 
 void Button::OnThemeChanged()
 {
-	//if (GetName() && strcmp(GetName(), "min_btn") == 0) {
-	//	LTK_ASSERT(false);
-	//}
+	SAFE_RELEASE(m_layout);
 	auto sm = StyleManager::Instance();
 
-	//if (this->ObjectName == "menu_btn") {
-	//	LTK_ASSERT(false);
-	//}
 	m_background = sm->GetBackground(Background);
 	m_format = sm->GetTextFormat(TextFormat);
 	m_textColor = sm->GetColor(TextColor);
@@ -73,7 +68,8 @@ bool Button::OnPaint(PaintEvent *ev)
 		DWRITE_TEXT_METRICS dtm = { 0 };
 		m_layout->GetMetrics(&dtm);
 		ev->target->DrawTextLayout(D2D1::Point2F(
-			(this->GetWidth() - dtm.width) / 2, 0.f), m_layout, brush);
+			(GetWidth() - dtm.width) / 2.f, (GetHeight() - dtm.height) / 2.f),
+			m_layout, brush);
 
 		// test
 		GetPreferredSize();
@@ -90,15 +86,19 @@ void Button::SetText(LPCWSTR text)
 
 void Button::RecreateLayout()
 {
+	static int cnt = 0;
+	LTK_LOG("Button::RecreateLayout() %d", cnt++);
+
 	SAFE_RELEASE(m_layout);
 	auto rc = this->GetClientRect();
 	if (!m_format) {
 		this->OnThemeChanged();
 	}
 	LTK_ASSERT(m_format->GetTextAlignment() == DWRITE_TEXT_ALIGNMENT_LEADING);
+	LTK_ASSERT(m_format->GetParagraphAlignment() == DWRITE_PARAGRAPH_ALIGNMENT_NEAR);
 	HRESULT hr = GetDWriteFactory()->CreateTextLayout(
 		m_text.c_str(), m_text.size(), m_format,
-		999, rc.Height, &m_layout);
+		999, 999, &m_layout);
 	LTK_ASSERT(SUCCEEDED(hr));
 }
 
@@ -116,7 +116,7 @@ SizeF Button::GetPreferredSize()
 
 bool Button::OnSize(SizeEvent *ev)
 {
-	SAFE_RELEASE(m_layout);
+	//SAFE_RELEASE(m_layout);
 	return false;
 }
 
