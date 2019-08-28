@@ -97,7 +97,7 @@ void WindowLayout::DoLayout()
 	float caption_h = 30;
     float margin = 5;
 	float sys_btn_margin = 3;
-	float menu_h = 35;
+	float menu_h = 30;
 
     RectF rc = this->GetClientRect();
     m_closeBtn->SetRect(RectF(
@@ -110,16 +110,20 @@ void WindowLayout::DoLayout()
     m_caption->SetRect(RectF(margin, margin, 
         rc.Width - btn_w * 3 - margin * 3, caption_h));
 
-	float y = caption_h;
 	if (m_menu) {
-		m_menu->SetRect(RectF(margin, y + 2,
+		m_menu->SetRect(RectF(margin, caption_h,
 			rc.Width - margin * 2, menu_h));
-		y += menu_h;
+		if (m_client) {
+			m_client->SetRect(RectF(margin, caption_h + menu_h + margin,
+				rc.Width - margin * 2, rc.Height - margin * 2 - caption_h - menu_h));
+		}
+	} else {
+		if (m_client) {
+			m_client->SetRect(RectF(margin, caption_h + margin,
+				rc.Width - margin * 2, rc.Height - margin * 2 - caption_h));
+		}
 	}
-    if (m_client) {
-        m_client->SetRect(RectF(margin, y + margin,
-            rc.Width - margin * 2, rc.Height - margin * 2 - caption_h));
-    }
+
 }
 
 void WindowLayout::SetWindow( Window *wnd )

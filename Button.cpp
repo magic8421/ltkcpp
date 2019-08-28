@@ -70,7 +70,10 @@ bool Button::OnPaint(PaintEvent *ev)
 		if (!m_layout) {
 			this->RecreateLayout();
 		}
-		ev->target->DrawTextLayout(D2D1::Point2F(), m_layout, brush);
+		DWRITE_TEXT_METRICS dtm = { 0 };
+		m_layout->GetMetrics(&dtm);
+		ev->target->DrawTextLayout(D2D1::Point2F(
+			(this->GetWidth() - dtm.width) / 2, 0.f), m_layout, brush);
 
 		// test
 		GetPreferredSize();
@@ -92,9 +95,10 @@ void Button::RecreateLayout()
 	if (!m_format) {
 		this->OnThemeChanged();
 	}
+	LTK_ASSERT(m_format->GetTextAlignment() == DWRITE_TEXT_ALIGNMENT_LEADING);
 	HRESULT hr = GetDWriteFactory()->CreateTextLayout(
 		m_text.c_str(), m_text.size(), m_format,
-		rc.Width, rc.Height, &m_layout);
+		999, rc.Height, &m_layout);
 	LTK_ASSERT(SUCCEEDED(hr));
 }
 
@@ -106,7 +110,7 @@ SizeF Button::GetPreferredSize()
 	DWRITE_TEXT_METRICS dtm = { 0 };
 	m_layout->GetMetrics(&dtm);
 
-	const float padding = 6;
+	const float padding = 8;
 	return SizeF(dtm.width + padding * 2, dtm.height + padding * 2);
 }
 
