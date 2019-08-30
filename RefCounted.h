@@ -13,9 +13,6 @@ public:
     {
         m_refCount = 1;
     }
-    virtual ~RefCounted()
-    {
-    }
 
     void AddRef()
     {
@@ -26,7 +23,7 @@ public:
         m_refCount--;
         if (m_refCount < 0)
         {
-            __debugbreak();
+			LTK_ASSERT(false);
         }
         if (m_refCount == 0)
         {
@@ -43,6 +40,9 @@ public:
     }
 
     RTTI_DECLARATIONS(RefCounted, RTTI);
+
+protected:
+	virtual ~RefCounted() {}
 
 private:
     DISALLOW_COPY_AND_ASSIGN(RefCounted);

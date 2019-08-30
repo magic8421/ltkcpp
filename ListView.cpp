@@ -42,7 +42,7 @@ ListView::ListView() :
 ListView::~ListView()
 {
     if (m_header) {
-        m_header->ColumnResizeEvent.Remove(m_columnResizeTracker);
+        m_header->ResizingEvent.Remove(m_columnResizeTracker);
         m_header->DeleteEvent.Remove(m_headerDeletedTracker);
     }
 }
@@ -253,12 +253,7 @@ void ListView::ScrollToBottom()
 void ListView::SetColumns(std::vector<float> &columns)
 {
     m_vecColumns.swap(columns);
-    float sum = 0.0f;
-    for (float w : m_vecColumns) {
-        sum += w;
-    }
-    sum += 10.0f;
-    m_hsb->SetContentSize(sum);
+    m_hsb->SetContentSize(m_header->GetTotalWidth());
 }
 
 void ListView::UpdateColumnWidth()
@@ -273,19 +268,29 @@ void ListView::SetHeaderCtrl(HeaderCtrl *head)
 {
     if (m_header) {
         LTK_LOG("the ListView already has a HeadCtrl");
-        m_header->ColumnResizeEvent.Remove(m_columnResizeTracker);
+        m_header->ResizingEvent.Remove(m_columnResizeTracker);
     }
     m_header = head;
-    m_columnResizeTracker = m_header->ColumnResizeEvent.Attach([this]() {
+    m_columnResizeTracker = m_header->ResizingEvent.Attach([this]() {
         this->UpdateColumnWidth();
     });
     m_headerDeletedTracker = m_header->DeleteEvent.Attach([this]() {
         m_header = nullptr;
     });
     this->UpdateColumnWidth();
+	m_header->ResizeEndEvent.Attach([this]() {
+		HandleResizeEnd();
+	});
 }
 
-
-
+void ListView::HandleResizeEnd()
+{
+	float max_hscroll = m_header->GetTotalWidth() - this->GetWidth();
+	max_hscroll = max(0.f, max_hscroll);
+	float pos = min(m_hscroll, max_hscroll);
+	m_hsb->SetPosition(pos);
+	// m_vsb->SetContentSize(m_header->GetTotalWidth()); TODO
+	HandleHScrollBar(pos);
+}
 
 } // namespace ltk

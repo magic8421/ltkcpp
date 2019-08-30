@@ -170,7 +170,7 @@ void Sprite::AddChild(Sprite *sp)
     }
     for (UINT i = 0; i < m_children.size(); i ++) {
         if (m_children[i] == sp) {
-            __debugbreak();
+			LTK_ASSERT(false);
         }
     }
     m_children.push_back(sp);
@@ -321,7 +321,7 @@ bool Sprite::IsCapturing()
 
 void Sprite::BringToFront()
 {
-    __debugbreak();
+	LTK_ASSERT(false);
 }
 
 void Sprite::SetVisible( bool v )

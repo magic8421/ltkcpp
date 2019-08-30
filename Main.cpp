@@ -24,11 +24,6 @@
 
 using namespace ltk;
 
-void MyDumpMemoryLeak()
-{
-    _CrtDumpMemoryLeaks();
-}
-
 static void RecBuildNodes(TreeNode *parent, int depth)
 {
     if (depth > 4) {
@@ -53,6 +48,8 @@ int CALLBACK WinMain(
     _In_ int       nCmdShow
 )
 {
+	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+
     LtkInitialize();
 
     StyleManager::NewTheme("rect");
@@ -200,7 +197,5 @@ int CALLBACK WinMain(
     ::Sleep(2000);
 
     LtkUninitialize();
-
-    ::atexit(MyDumpMemoryLeak);
     return 0;
 }

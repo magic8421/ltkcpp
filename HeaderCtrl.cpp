@@ -15,6 +15,8 @@
 namespace ltk
 {
 
+const float HeaderCtrl::DummyButtonWidth = 10.f;
+
 HeaderCtrl::HeaderCtrl()
 {
     this->EnableClipChildren(true);
@@ -96,7 +98,7 @@ bool HeaderCtrl::OnMouseMove(MouseEvent *ev)
         x = max(30.0f, x);
         m_vecColumns[m_resizingCol].width = x;
         this->DoLayout();
-        this->ColumnResizeEvent.Invoke();
+        this->ResizingEvent.Invoke();
     }
     return false;
 }
@@ -105,6 +107,7 @@ bool HeaderCtrl::OnLBtnUp(MouseEvent *ev)
 {
     m_resizingCol = -1;
     this->ReleaseCapture();
+	this->ResizeEndEvent.Invoke();
     return false;
 }
 
@@ -115,8 +118,8 @@ void HeaderCtrl::DoLayout()
     for (UINT i = 0; i < m_vecColumns.size() - 1; i++) {
         sum += m_vecColumns[i].width;
     }
-    float last_column_w = rc.Width - sum + 10.0f;
-    last_column_w = max(10.0f, last_column_w);
+    float last_column_w = rc.Width - sum + DummyButtonWidth;
+    last_column_w = max(DummyButtonWidth, last_column_w);
     m_vecColumns[m_vecColumns.size() - 1].width = last_column_w;
     //LTK_LOG("last_column_w %f", last_column_w);
 
@@ -126,6 +129,16 @@ void HeaderCtrl::DoLayout()
             RectF(x, 0.0f, m_vecColumns[i].width, rc.Height));
         x += m_vecColumns[i].width;
     }
+}
+
+float HeaderCtrl::GetTotalWidth()
+{
+	float sum = 0.f;
+	for (UINT i = 0; i < m_vecColumns.size() - 1; i++) {
+		sum += m_vecColumns[i].width;
+	}
+	sum += DummyButtonWidth;
+	return sum;
 }
 
 //////////////////////////////////////////////////////////////////////////

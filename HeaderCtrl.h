@@ -30,22 +30,25 @@ public:
     void AddColumn(LPCWSTR name, float size);
     void SetHScroll(float pos);
     void DoLayout();
+	float GetTotalWidth(); // including the tail dummy button
 
     void OnColumnResizeBegin(HeaderButton *btn, PointF pt);
 
-    Delegate<void()> ColumnResizeEvent;
-    Delegate<void()> DeleteEvent;
+    Delegate<void()> ResizingEvent;
+	Delegate<void()> ResizeEndEvent;
+	Delegate<void()> DeleteEvent;
 
     virtual bool OnSize(SizeEvent *ev) override;
     virtual bool OnMouseMove(MouseEvent *ev) override;
     virtual bool OnLBtnUp(MouseEvent *ev) override;
-
+	
 private:
     std::vector<ColumnData> m_vecColumns;
     PointF m_dragPoint;
     HeaderButton *m_draggingButton = nullptr;
     int m_resizingCol = -1;
     float m_hscroll = 0.0f;
+	static const float DummyButtonWidth;
 };
 
 class HeaderButton : public Button

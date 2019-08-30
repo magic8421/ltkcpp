@@ -37,6 +37,7 @@ public:
     void UpdateColumnWidth();
     //void ShowHeader(bool show);
     void SetHeaderCtrl(HeaderCtrl *head);
+	void HandleResizeEnd();
 
 	ImmutableString TextColor;
 	ImmutableString HoverColor;
