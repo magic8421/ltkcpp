@@ -82,7 +82,7 @@ void SetupPixelStyle1()
     nine_in_one->Hover()  .SetAtals(171, 36, 18, 29).SetMargin(6, 6, 6, 6);
     nine_in_one->Pressed().SetAtals(193, 36, 18, 29).SetMargin(6, 6, 6, 6);
     nine_in_one->Disable() = nine_in_one->Normal();
-    sm->AddBackgroundStyle("menu_bg", nine_in_one);
+    sm->AddBackgroundStyle("menu_bg", nine_in_one); // TODO change to menu_bar_btn_bg
 
     sm->AddTextFormat2("default_btn_fmt", L"Î¢ÈíÑÅºÚ", DWRITE_FONT_WEIGHT_NORMAL,
         DWRITE_FONT_STYLE_NORMAL, 14, DWRITE_TEXT_ALIGNMENT_LEADING,

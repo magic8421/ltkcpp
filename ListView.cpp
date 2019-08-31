@@ -219,6 +219,8 @@ void ListView::HandleHScrollBar(float pos)
 
 bool ListView::OnSize(SizeEvent *ev)
 {
+	this->HandleResizeEnd();
+
     RectF rc = this->GetClientRect();
     const float sb_size = 6.0f; // TODO load from StyleManager
     m_vsb->SetRect(RectF(rc.Width - sb_size, 0, sb_size, rc.Height));
