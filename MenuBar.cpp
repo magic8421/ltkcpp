@@ -14,12 +14,13 @@
 namespace ltk {
 
 const static float ITEM_HEIGHT = 30.f;
+const static float MENU_WIDTH = 300.f;
 
 PopupMenu::PopupMenu() :
 	TextColor("item_text_clr"),
-	TextFormat("item_text_fmt")
+	TextFormat("item_text_fmt"),
 	HoverColor("item_hover_clr"),
-	Background("menu_bg")
+	Background("popup_menu_bg")
 {
 }
 
@@ -28,6 +29,18 @@ PopupMenu::~PopupMenu()
 	for (auto item : m_vecItems) {
 		delete item;
 	}
+}
+
+void PopupMenu::AddItem(LPCWSTR text)
+{
+	auto item = new MenuItem;
+	item->text = text;
+	m_vecItems.push_back(item);
+}
+
+UINT PopupMenu::GetChildCount()
+{
+	return m_vecItems.size();
 }
 
 void PopupMenu::OnThemeChanged()
@@ -64,6 +77,9 @@ MenuBar::MenuBar()
 
 MenuBar::~MenuBar()
 {
+	for (auto &item : m_vecMenuItems) {
+		delete item.sub_menu;
+	}
 }
 
 
@@ -71,12 +87,33 @@ void MenuBar::AddItem(LPCWSTR text)
 {
 	Button *btn = new Button;
 	btn->SetText(text);
-	btn->Background = "menu_bg";
+	btn->Background = "menu_bar_btn_bg";
 	//btn->ObjectName = "menu_btn";
 	this->AddChild(btn);
 	MenuButtonParam param;
 	param.button = btn;
 	m_vecMenuItems.push_back(param);
+	UINT idx = m_vecMenuItems.size() - 1;
+	btn->ClickedEvent.Attach([this, idx]() {
+		this->OnMenuBtnClicked(idx);
+	});
+}
+
+void MenuBar::SetPopupMenu(UINT idx, PopupMenu *menu)
+{
+	LTK_ASSERT(m_vecMenuItems[idx].sub_menu == nullptr);
+	menu->OnThemeChanged();
+	m_vecMenuItems[idx].sub_menu = menu;
+}
+
+void MenuBar::OnMenuBtnClicked(UINT idx)
+{
+	LTK_ASSERT(idx < m_vecMenuItems.size());
+	auto menu = m_vecMenuItems[idx].sub_menu;
+	auto arc = m_vecMenuItems[idx].button->GetAbsRect();
+	auto root = GetWindow()->GetRootSprite();
+	root->AddChild(menu);
+	menu->SetRect(RectF(arc.X, arc.Y + arc.Height, MENU_WIDTH, menu->GetChildCount() * ITEM_HEIGHT));
 }
 
 void MenuBar::DoLayout()
@@ -100,10 +137,12 @@ bool MenuBar::OnSize(SizeEvent *ev)
 
 void MenuBar::OnThemeChanged()
 {
-	
+	for (auto &item : m_vecMenuItems) {
+		if (item.sub_menu) {
+			item.sub_menu->OnThemeChanged();
+		}
+	}
 }
-
-
 
 } // namespace
 

@@ -37,28 +37,27 @@ public:
 	PopupMenu();
 	virtual ~PopupMenu();
 
-	void AddMenu(LPCWSTR text, const std::function<void()> &cb);
+	void AddItem(LPCWSTR text);
+	UINT GetChildCount();
 
 	ImmutableString TextColor;
 	ImmutableString HoverColor;
 	ImmutableString TextFormat;
 	ImmutableString Background;
 
+	virtual bool OnPaint(PaintEvent *ev) override;
+	virtual void OnThemeChanged() override;
+
 private:
 	std::vector<MenuItem *> m_vecItems;
 	IDWriteTextFormat *m_format = nullptr;
 	D2D1_COLOR_F m_textColor;
 	AbstractBackground *m_background = nullptr;
-
-protected:
-	virtual bool OnPaint(PaintEvent *ev) override;
-	virtual void OnThemeChanged() override;
-
 };
 
 struct MenuButtonParam {
 	Button *button = nullptr;
-	void *sub_menu = nullptr;
+	PopupMenu *sub_menu = nullptr;
 };
 
 class MenuBar : public Sprite
@@ -68,12 +67,15 @@ public:
 	virtual ~MenuBar();
 
 	void AddItem(LPCWSTR text);
+	void SetPopupMenu(UINT idx, PopupMenu *menu);
 	UINT GetItemCount();
 	void DoLayout();
 
 protected:
 	virtual bool OnSize(SizeEvent *ev) override;
 	virtual void OnThemeChanged() override;
+
+	void OnMenuBtnClicked(UINT idx);
 
 private:
 	std::vector<MenuButtonParam> m_vecMenuItems;

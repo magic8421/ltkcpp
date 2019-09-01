@@ -156,7 +156,6 @@ int CALLBACK WinMain(
     Button *btnPixelTheme = new Button;
     hboxTheme->AddLayoutItem(btnPixelTheme, 100);
     btnPixelTheme->SetText(L"位图资源");
-	btnPixelTheme->Background = "menu_bg";
     btnPixelTheme->ClickedEvent.Attach([wnd = wnd.get()]() {
         StyleManager::SetCurrentTheme("pixel");
         wnd->HandleThemeChange();
@@ -165,7 +164,6 @@ int CALLBACK WinMain(
     Button *btnRectTheme = new Button;
     hboxTheme->AddLayoutItem(btnRectTheme, 100);
     btnRectTheme->SetText(L"纯色1");
-	btnRectTheme->Background = "menu_bg";
 	btnRectTheme->ClickedEvent.Attach([wnd = wnd.get()]() {
         StyleManager::SetCurrentTheme("rect");
         wnd->HandleThemeChange();
@@ -177,6 +175,14 @@ int CALLBACK WinMain(
 	menu_bar->AddItem(L"编辑");
 	menu_bar->AddItem(L"工具");
 	menu_bar->AddItem(L"帮助");
+
+	PopupMenu *popup = new PopupMenu;
+	popup->AddItem(L"新建");
+	popup->AddItem(L"打开");
+	popup->AddItem(L"保存");
+	popup->AddItem(L"另存为");
+	menu_bar->SetPopupMenu(0, popup);
+
 
     vboxRightPanel->AddSpaceItem(5, 0);
 	wnd->HandleThemeChange();

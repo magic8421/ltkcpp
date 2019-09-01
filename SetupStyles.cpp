@@ -82,7 +82,14 @@ void SetupPixelStyle1()
     nine_in_one->Hover()  .SetAtals(171, 36, 18, 29).SetMargin(6, 6, 6, 6);
     nine_in_one->Pressed().SetAtals(193, 36, 18, 29).SetMargin(6, 6, 6, 6);
     nine_in_one->Disable() = nine_in_one->Normal();
-    sm->AddBackgroundStyle("menu_bg", nine_in_one); // TODO change to menu_bar_btn_bg
+    sm->AddBackgroundStyle("menu_bar_btn_bg", nine_in_one); // TODO change to menu_bar_btn_bg
+
+	nine_in_one = new NinePatchBackground;
+	nine_in_one->Normal().SetAtals(2, 126, 39, 38).SetMargin(18, 18, 18, 18);
+	nine_in_one->Hover() = nine_in_one->Normal();
+	nine_in_one->Pressed() = nine_in_one->Normal();
+	nine_in_one->Disable() = nine_in_one->Normal();
+	sm->AddBackgroundStyle("popup_menu_bg", nine_in_one);
 
     sm->AddTextFormat2("default_btn_fmt", L"Î¢ÈíÑÅºÚ", DWRITE_FONT_WEIGHT_NORMAL,
         DWRITE_FONT_STYLE_NORMAL, 14, DWRITE_TEXT_ALIGNMENT_LEADING,
@@ -176,7 +183,7 @@ void SetupVectorStyle1()
 	rect_bg = new RectangleBackground;
 	rect_bg->BorderColor().SetColor("#000000", "#00ff00", "#00aa00", "#cccccc");
 	rect_bg->InnerColor().SetColor("#000000", "#003300", "#000000", "#cccccc");
-	sm->AddBackgroundStyle("menu_bg", rect_bg);
+	sm->AddBackgroundStyle("menu_bar_btn_bg", rect_bg);
 
     sm->AddTextFormat2("default_btn_fmt", L"ËÎÌå", DWRITE_FONT_WEIGHT_NORMAL,
         DWRITE_FONT_STYLE_NORMAL, 14, DWRITE_TEXT_ALIGNMENT_LEADING,
