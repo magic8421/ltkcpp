@@ -55,8 +55,6 @@ public:
 
     void HandleThemeChange();
 
-	void EnableFocus(bool enable);
-
 	void SetCapture();
 	void ReleaseCapture();
     bool IsCapturing();
@@ -110,10 +108,9 @@ protected:
     virtual void OnThemeChanged() {}
 
 private:
-	bool m_bVisible; // 编译器会自动优化成1字节
-	bool m_bMouseIn;
-	bool m_enableFocus;
-	bool m_bClipChildren;
+	bool m_bVisible;
+	bool m_bMouseIn; // TODO this one is useless
+	bool m_bClipChildren; // TODO this one is useless
 
     RectF m_rect;
     Window *m_window = nullptr;

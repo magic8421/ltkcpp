@@ -190,10 +190,11 @@ void Window::HandleMouseMessage(UINT message, WPARAM wparam, LPARAM lparam)
 	{
 		//if (WM_LBUTTONDOWN == message)
 		//{
+			m_bHitFoucus = false;
 			m_sprite->DispatchMouseEvent(&event);
 			
-            // TODO copy to vector first (pre-allocate)
 			std::vector<Sprite *> defer_remove;
+			defer_remove.reserve(20);
 			for (std::unordered_set<Sprite *>::iterator iter = m_setTrackMouseLeave.begin();
 				iter != m_setTrackMouseLeave.end(); ++iter)
 			{
@@ -208,11 +209,14 @@ void Window::HandleMouseMessage(UINT message, WPARAM wparam, LPARAM lparam)
 					// Fire the event and remove sp from the set;
 				}
 			}
-			for (std::vector<Sprite *>::iterator iter = defer_remove.begin();
-				iter != defer_remove.end(); ++iter)
+			for (auto sp: defer_remove)
 			{
-				Sprite *sp = *iter;
 				m_setTrackMouseLeave.erase(sp);
+			}
+			if (m_spFocus && WM_LBUTTONDOWN == message && !m_bHitFoucus) {
+				FocusEvent ev;
+				ev.id = eKillFocus;
+				m_spFocus->OnEvent(&ev);
 			}
 		//}
 	}
@@ -380,7 +384,7 @@ LRESULT Window::WndProc(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam)
         //::ShowCaret(hwnd);
         if (m_spFocus)
         {
-            Event ev;
+			FocusEvent ev;
             ev.id = eSetFocus;
             m_spFocus->OnEvent(&ev);
         }
@@ -390,7 +394,7 @@ LRESULT Window::WndProc(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam)
         ::DestroyCaret();
         if (m_spFocus)
         {
-            Event ev;
+			FocusEvent ev;
             ev.id = eKillFocus;
             m_spFocus->OnEvent(&ev);
         }
@@ -400,7 +404,7 @@ LRESULT Window::WndProc(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam)
         ::ReleaseCapture();
         return 0;
     case WM_SYSCOMMAND:
-        LTK_LOG("WM_SYSCOMMAND %08X %08X", wparam, lparam);
+        //LTK_LOG("WM_SYSCOMMAND %08X %08X", wparam, lparam);
         break;
     case WM_WINDOWPOSCHANGING:
         do
@@ -518,7 +522,10 @@ void Window::OnPaint(HWND hwnd )
 
     if (!m_target)
     {
+#pragma warning(push)
+#pragma warning(disable:28159)
         LTK_LOG("RecreateResouce %d", ::GetTickCount());
+#pragma warning(pop)
         RECT rc;
         ::GetClientRect(hwnd, &rc);
 
@@ -703,14 +710,14 @@ void Window::SetFocusSprite( Sprite *sp )
 	}
 	if (m_spFocus)
 	{
-		Event ev;
+		FocusEvent ev;
         ev.id = eKillFocus;
         m_spFocus->OnEvent(&ev);
 	}
 	m_spFocus = sp;
 	if (m_spFocus)
 	{
-		Event ev;
+		FocusEvent ev;
         ev.id = eSetFocus;
         m_spFocus->OnEvent(&ev);
 	}
@@ -843,6 +850,11 @@ void Window::HandleThemeChange()
 		ev.height = cy;
 		m_sprite->OnEvent(&ev);
 	}
+}
+
+void Window::SetHitFocus(bool b)
+{
+	m_bHitFoucus = b;
 }
 
 void Window::UpdateShadowFrame(bool bRedraw)

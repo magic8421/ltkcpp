@@ -138,7 +138,7 @@ public:
     ArrayList() : m_d(nullptr) {}
     ~ArrayList() 
     {
-        Clear();
+		clear();
     }
 
     ArrayList(const ArrayList& rhs)

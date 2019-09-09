@@ -25,7 +25,11 @@ ListView::ListView() :
 	HoverColor("item_hover_clr"),
 	SelectedColor("item_selected_clr"),
 	SelectedTextColor("item_selected_text_clr"),
-	TextFormat("item_text_fmt")
+	TextFormat("item_text_fmt"),
+	m_hoverColor(D2D1::ColorF(D2D1::ColorF::Cyan)),
+	m_selectedColor(D2D1::ColorF(D2D1::ColorF::Cyan)),
+	m_selectedTextColor(D2D1::ColorF(D2D1::ColorF::Cyan)),
+	m_textColor(D2D1::ColorF(D2D1::ColorF::Cyan))
 {
     m_vsb = new ScrollBar(ScrollBar::Vertical);
     m_vsb->ValueChangedEvent.Attach([this](float pos) {

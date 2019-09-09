@@ -28,7 +28,6 @@ TextEdit::TextEdit()
         &m_format);
     LTK_ASSERT(SUCCEEDED(hr));
 
-    this->EnableFocus(true);
     this->EnableClipChildren(true);
 
     m_vsb = new ScrollBar(ScrollBar::Vertical);

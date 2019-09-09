@@ -20,7 +20,8 @@ PopupMenu::PopupMenu() :
 	TextColor("item_text_clr"),
 	TextFormat("item_text_fmt"),
 	HoverColor("item_hover_clr"),
-	Background("popup_menu_bg")
+	Background("popup_menu_bg"),
+	m_textColor(D2D1::ColorF(D2D1::ColorF::Cyan))
 {
 }
 
@@ -63,6 +64,15 @@ bool PopupMenu::OnPaint(PaintEvent *ev)
 		ev->target->DrawText(item->text.c_str(), item->text.size(), m_format,
 			D2D1::RectF(0.f, y, this->GetWidth(), y + ITEM_HEIGHT), brush);
 		y += ITEM_HEIGHT;
+	}
+	return false;
+}
+
+bool PopupMenu::OnKillFocus(FocusEvent* ev)
+{
+	if (GetParent()) {
+		GetParent()->RemoveChild(this);
+		Invalidate();
 	}
 	return false;
 }
@@ -110,10 +120,14 @@ void MenuBar::OnMenuBtnClicked(UINT idx)
 {
 	LTK_ASSERT(idx < m_vecMenuItems.size());
 	auto menu = m_vecMenuItems[idx].sub_menu;
+	if (!menu) {
+		return;
+	}
 	auto arc = m_vecMenuItems[idx].button->GetAbsRect();
 	auto root = GetWindow()->GetRootSprite();
 	root->AddChild(menu);
 	menu->SetRect(RectF(arc.X, arc.Y + arc.Height, MENU_WIDTH, menu->GetChildCount() * ITEM_HEIGHT));
+	GetWindow()->SetFocusSprite(menu);
 }
 
 void MenuBar::DoLayout()

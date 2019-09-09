@@ -13,6 +13,7 @@ namespace ltk {
 
 class Button;
 class AbstractBackground;
+class MenuBar;
 
 struct MenuItem
 {
@@ -39,6 +40,7 @@ public:
 
 	void AddItem(LPCWSTR text);
 	UINT GetChildCount();
+	
 
 	ImmutableString TextColor;
 	ImmutableString HoverColor;
@@ -46,6 +48,7 @@ public:
 	ImmutableString Background;
 
 	virtual bool OnPaint(PaintEvent *ev) override;
+	virtual bool OnKillFocus(FocusEvent* ev) override;
 	virtual void OnThemeChanged() override;
 
 private:
@@ -53,6 +56,7 @@ private:
 	IDWriteTextFormat *m_format = nullptr;
 	D2D1_COLOR_F m_textColor;
 	AbstractBackground *m_background = nullptr;
+	PopupMenu* m_parent = nullptr;
 };
 
 struct MenuButtonParam {

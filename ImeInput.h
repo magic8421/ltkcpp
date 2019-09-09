@@ -51,6 +51,8 @@
 //      - ImeInput::SetInputLanguage().
 //      An application CAN call ::DefWindowProc().
 
+#pragma warning(push)
+#pragma warning(disable:26495)
 // This struct represents the status of an ongoing composition.
 struct ImeComposition {
 	// Represents the cursor position in the IME composition.
@@ -73,6 +75,7 @@ struct ImeComposition {
 	// Represents the string retrieved from IME (Input Method Editor)
 	std::wstring ime_string;
 };
+#pragma warning(pop)
 
 // This class controls the IMM (Input Method Manager) through IMM32 APIs and
 // enables it to retrieve the string being controled by the IMM. (I wrote

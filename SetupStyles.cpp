@@ -185,6 +185,11 @@ void SetupVectorStyle1()
 	rect_bg->InnerColor().SetColor("#000000", "#003300", "#000000", "#cccccc");
 	sm->AddBackgroundStyle("menu_bar_btn_bg", rect_bg);
 
+	rect_bg = new RectangleBackground;
+	rect_bg->BorderColor().SetColor("#00cc00", "#00ff00", "#00aa00", "#cccccc");
+	rect_bg->InnerColor().SetColor("#000000", "#003300", "#000000", "#cccccc");
+	sm->AddBackgroundStyle("popup_menu_bg", rect_bg);
+
     sm->AddTextFormat2("default_btn_fmt", L"ËÎÌו", DWRITE_FONT_WEIGHT_NORMAL,
         DWRITE_FONT_STYLE_NORMAL, 14, DWRITE_TEXT_ALIGNMENT_LEADING,
 		DWRITE_PARAGRAPH_ALIGNMENT_NEAR);

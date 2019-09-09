@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="1">
+    <builddir>cppcheck-build</builddir>
+    <platform>win32W</platform>
+    <importproject>ltkcpp.vcxproj</importproject>
+    <analyze-all-vs-configs>true</analyze-all-vs-configs>
+    <libraries>
+        <library>microsoft_sal</library>
+        <library>windows</library>
+    </libraries>
+</project>

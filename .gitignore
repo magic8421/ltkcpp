@@ -1,0 +1,6 @@
+/Debug
+*.opendb
+/cppcheck-build
+*.bak
+/Release
+/.vs/ltkcpp

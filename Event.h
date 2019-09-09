@@ -41,39 +41,39 @@ struct Event
 
 struct MouseEvent : public Event
 {
-    UINT message;
-    float x;
-    float y;
-    UINT flag; // ctrl shift atl
-    float delta; // wheel
+    UINT message = 0;
+    float x = 0.f;
+    float y = 0.f;
+    UINT flag = 0; // ctrl shift atl
+    float delta = 0.f; // wheel
 };
 
 struct DelegateMouseEvent : public Event
 {
-    MouseEvent *data;
-    bool bHandled;
+    MouseEvent *data = nullptr;
+    bool bHandled = false;
 };
 
 struct KeyEvent : public Event
 {
-    DWORD keyCode;
-    DWORD flag;
+    DWORD keyCode = 0;
+    DWORD flag = 0;
 };
 
 struct PaintEvent : public Event
 {
-    ID2D1RenderTarget *target;
+    ID2D1RenderTarget *target = nullptr;
 };
 
 struct SizeEvent : public Event
 {
-    float width;
-    float height;
+    float width = 10.f;
+    float height = 10.f;
 };
 
 struct ImeEvent : public Event
 {
-    LPCWSTR text;
+    LPCWSTR text = nullptr;
 };
 
 class Sprite;

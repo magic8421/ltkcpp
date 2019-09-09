@@ -25,7 +25,6 @@ Sprite::Sprite(void)
 	m_rect.Height = 10;
 
 	m_bVisible = true;
-	m_enableFocus = false;
 	m_bMouseIn = false;
 	m_bClipChildren = false;
 }
@@ -165,6 +164,7 @@ void Sprite::HandlePaint( ID2D1RenderTarget *target )
 void Sprite::AddChild(Sprite *sp)
 {
     if (sp->m_parent == this) {
+		LTK_ASSERT(false);
         LTK_LOG("same parent");
         return;
     }
@@ -205,10 +205,6 @@ bool Sprite::TranslateMouseEvent( MouseEvent *ev )
 	case WM_LBUTTONDOWN:
         ev->id = eLBtnDown;
         ret = OnEvent(ev);
-		if (m_enableFocus)
-		{
-			GetWindow()->SetFocusSprite(this);
-		}
 		break;
 	case WM_LBUTTONUP:
         ev->id = eLBtnUp;
@@ -271,11 +267,6 @@ void Sprite::HandleImeInput(LPCTSTR text)
     ev.id = eImeInput;
     ev.text = text;
     OnEvent(&ev);
-}
-
-void Sprite::EnableFocus( bool enable )
-{
-	m_enableFocus = enable;
 }
 
 // return weak ref
@@ -357,11 +348,15 @@ bool Sprite::DispatchMouseEvent(MouseEvent *ev)
 	if (!m_bVisible) {
 		return false;
 	}
-    for (size_t i = 0; i < m_children.size(); i++) {
+    for (auto i = 0u; i < m_children.size(); i++) {
         auto sp = m_children[i];
-        RectF rc = sp->GetRect();
+        auto rc = sp->GetRect();
         if (rc.Contains(ev->x, ev->y)) {
-            MouseEvent ev2 = *ev;
+			auto wnd = GetWindow();
+			if (sp == wnd->GetFocusSprite()) {
+				wnd->SetHitFocus(true);
+			}
+            auto ev2 = *ev;
             ev2.x -= rc.X;
             ev2.y -= rc.Y;
             if (sp->DispatchMouseEvent(&ev2)) {
@@ -403,6 +398,7 @@ void Sprite::RemoveChild( Sprite *sp )
         auto sp2 = m_children[i];
         if (sp2 == sp) {
             //sp2->Release();
+			sp2->m_parent = nullptr;
             for (int j = i + 1; j < (int)m_children.size(); j++) {
                 m_children[j - 1] = m_children[j];
             }
