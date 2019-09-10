@@ -185,6 +185,22 @@ int CALLBACK WinMain(
 	popup->AddItem(L"Áí´æÎª");
 	menu_bar->SetPopupMenu(0, popup);
 
+	PopupMenu *popup2 = new PopupMenu;
+	popup2->SetWidth(220.f);
+	popup2->AddItem(L"C:\\My Document\\file.txt");
+	popup2->AddItem(L"C:\\My Document\\file2.txt");
+	popup2->AddItem(L"C:\\My Document\\file3.txt");
+	popup->SetSubMenu(2, popup2);
+
+	popup = new PopupMenu;
+	popup->SetWidth(120.f);
+	popup->AddItem(L"³·Ïú");
+	popup->AddItem(L"ÖØ×ö");
+	popup->AddItem(L"¸´ÖÆ");
+	popup->AddItem(L"¼ôÇÐ");
+	popup->AddItem(L"Õ³Ìù");
+	menu_bar->SetPopupMenu(1, popup);
+
 
     vboxRightPanel->AddSpaceItem(5, 0);
 	wnd->HandleThemeChange();

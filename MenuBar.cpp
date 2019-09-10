@@ -10,6 +10,7 @@
 #include "MenuBar.h"
 #include "Button.h"
 #include "Window.h"
+#include "TimerManager.h"
 
 namespace ltk {
 
@@ -31,6 +32,7 @@ PopupMenu::PopupMenu() :
 PopupMenu::~PopupMenu()
 {
 	for (auto item : m_vecItems) {
+		delete item->sub_menu;
 		delete item;
 	}
 }
@@ -55,6 +57,12 @@ void PopupMenu::SetWidth(float w)
 float PopupMenu::GetWidth()
 {
 	return m_width;
+}
+
+void PopupMenu::SetSubMenu(UINT idx, PopupMenu *popup)
+{
+	LTK_ASSERT(m_vecItems[idx]->sub_menu == nullptr);
+	m_vecItems[idx]->sub_menu = popup;
 }
 
 void PopupMenu::OnThemeChanged()
@@ -86,7 +94,8 @@ bool PopupMenu::OnPaint(PaintEvent *ev)
 	brush->SetColor(m_textColor);
 	for (auto item : m_vecItems) {
 		ev->target->DrawText(item->text.c_str(), item->text.size(), m_format,
-			D2D1::RectF(PADDING + ICON_WIDTH, y, this->GetWidth(), y + ITEM_HEIGHT), brush);
+			D2D1::RectF(PADDING + ICON_WIDTH, y, this->GetWidth(), y + ITEM_HEIGHT),
+			brush);
 		y += ITEM_HEIGHT;
 	}
 	return false;
@@ -108,6 +117,10 @@ bool PopupMenu::OnMouseMove(MouseEvent* ev)
 	if (hover != m_hoverIdx) {
 		m_hoverIdx = hover;
 		Invalidate();
+		m_hoverTimer = ltk::SetOnceTimer(200, m_hoverTimer, [this, hover](){
+			LTK_LOG("hover %d", hover);
+			m_hoverTimer = 0;
+		});
 	}
 	return false;
 }

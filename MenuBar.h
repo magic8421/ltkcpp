@@ -14,17 +14,21 @@ namespace ltk {
 class Button;
 class AbstractBackground;
 class MenuBar;
+class PopupMenu;
 
 struct MenuItem
 {
 public:
 	MenuItem() {}
 
+	enum Type {Normal, Icon, Check, Radio};
+
+	Type type = Normal;
 	std::wstring text;
 	bool bChecked = false;
 	bool bNewRadioGroup = false;
-	bool bHasIcon = false;
 	ltk::IconInfo icon;
+	PopupMenu* sub_menu = nullptr;
 
 	Delegate<void()> ClickedEvent;
 
@@ -43,6 +47,8 @@ public:
 	
 	void SetWidth(float);
 	float GetWidth();
+
+	void SetSubMenu(UINT idx, PopupMenu *popup);
 
 	ImmutableString TextColor;
 	ImmutableString HoverColor;
@@ -65,6 +71,7 @@ private:
 	PopupMenu* m_parent = nullptr;
 	float m_width = 100.0f;
 	int m_hoverIdx = -1;
+	UINT m_hoverTimer = 0;
 };
 
 struct MenuButtonParam {

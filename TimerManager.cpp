@@ -107,6 +107,7 @@ UINT TimerManager::SetTimer(UINT id, const std::function<void()>&cb, UINT elapse
         auto iter = m_mapCallback.find(id);
         if (iter != m_mapCallback.end()) {
             iter->second->isOnceTimer = bOnce;
+			iter->second->callback = cb;
             ::SetTimer(m_hwnd, id, elapse, NULL); // refresh the timer.
         } else {
             LTK_ASSERT(false);
