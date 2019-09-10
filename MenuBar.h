@@ -51,15 +51,20 @@ public:
 
 	virtual bool OnPaint(PaintEvent *ev) override;
 	virtual bool OnKillFocus(FocusEvent* ev) override;
+	virtual bool OnMouseMove(MouseEvent* ev) override;
+	virtual bool OnMouseLeave(MouseEvent* ev) override;
 	virtual void OnThemeChanged() override;
+	virtual void OnParentChanged(Sprite* old, Sprite* new_) override;
 
 private:
 	std::vector<MenuItem *> m_vecItems;
 	IDWriteTextFormat *m_format = nullptr;
 	D2D1_COLOR_F m_textColor;
+	D2D1_COLOR_F m_hoverColor;
 	AbstractBackground *m_background = nullptr;
 	PopupMenu* m_parent = nullptr;
 	float m_width = 100.0f;
+	int m_hoverIdx = -1;
 };
 
 struct MenuButtonParam {

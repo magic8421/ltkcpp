@@ -67,7 +67,8 @@ void StyleManager::Free()
 
 D2D1_COLOR_F StyleManager::ColorFromString(const char *psz)
 {
-    if (strlen(psz) != 7) {
+	int len = strlen(psz);
+	if (len != 7 && len != 9) {
         LTK_ASSERT(false);
         return D2D1::ColorF(D2D1::ColorF::Cyan);
     }
@@ -75,9 +76,15 @@ D2D1_COLOR_F StyleManager::ColorFromString(const char *psz)
         LTK_ASSERT(false);
         return D2D1::ColorF(D2D1::ColorF::Cyan);
     }
-    long bin = strtol(psz + 1, NULL, 16);
+    long bin = strtoul(psz + 1, NULL, 16);
     D2D1_COLOR_F clr;
-    clr.a = 1.0f;
+
+	if (len == 9) {
+		clr.a = (bin & 0xFF) / 256.0f;
+		bin >>= 8;
+	} else {
+		clr.a = 1.0f;
+	}
     clr.b = (bin & 0xFF) / 256.0f;
     bin >>= 8;
     clr.g = (bin & 0xFF) / 256.0f;

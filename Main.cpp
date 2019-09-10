@@ -177,6 +177,7 @@ int CALLBACK WinMain(
 	menu_bar->AddItem(L"帮助");
 
 	PopupMenu *popup = new PopupMenu;
+	popup->SetWidth(120.f);
 	popup->AddItem(L"新建");
 	popup->AddItem(L"打开");
 	popup->AddItem(L"历史记录");

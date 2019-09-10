@@ -15,13 +15,16 @@ namespace ltk {
 
 const static float ITEM_HEIGHT = 30.f;
 const static float MENU_WIDTH = 300.f;
+const static float ICON_WIDTH = 16.f;
+const static float PADDING = 5.f;
 
 PopupMenu::PopupMenu() :
 	TextColor("item_text_clr"),
 	TextFormat("popup_menu_fmt"),
-	HoverColor("item_hover_clr"),
+	HoverColor("menu_hover_clr"),
 	Background("popup_menu_bg"),
-	m_textColor(D2D1::ColorF(D2D1::ColorF::Cyan))
+	m_textColor(D2D1::ColorF(D2D1::ColorF::Cyan)),
+	m_hoverColor(D2D1::ColorF(D2D1::ColorF::Cyan))
 {
 }
 
@@ -59,7 +62,13 @@ void PopupMenu::OnThemeChanged()
 	auto sm = StyleManager::Instance();
 	m_format = sm->GetTextFormat(this->TextFormat);
 	m_textColor = sm->GetColor(this->TextColor);
+	m_hoverColor = sm->GetColor(this->HoverColor);
 	m_background = sm->GetBackground(this->Background);
+}
+
+void PopupMenu::OnParentChanged(Sprite* old, Sprite* new_)
+{
+	m_hoverIdx = -1;
 }
 
 bool PopupMenu::OnPaint(PaintEvent *ev)
@@ -69,10 +78,15 @@ bool PopupMenu::OnPaint(PaintEvent *ev)
 		AbstractBackground::Normal, 1.f);
 	float y = 0;
 	auto brush = GetWindow()->GetStockBrush();
+	if (m_hoverIdx >= 0) {
+		brush->SetColor(m_hoverColor);
+		ev->target->FillRectangle(ltk::D2D1RectF(RectF(0.f, m_hoverIdx * ITEM_HEIGHT,
+			this->GetWidth(), ITEM_HEIGHT)), brush);
+	}
 	brush->SetColor(m_textColor);
 	for (auto item : m_vecItems) {
 		ev->target->DrawText(item->text.c_str(), item->text.size(), m_format,
-			D2D1::RectF(0.f, y, this->GetWidth(), y + ITEM_HEIGHT), brush);
+			D2D1::RectF(PADDING + ICON_WIDTH, y, this->GetWidth(), y + ITEM_HEIGHT), brush);
 		y += ITEM_HEIGHT;
 	}
 	return false;
@@ -84,6 +98,24 @@ bool PopupMenu::OnKillFocus(FocusEvent* ev)
 		GetParent()->RemoveChild(this);
 		Invalidate();
 	}
+	return false;
+}
+
+bool PopupMenu::OnMouseMove(MouseEvent* ev)
+{
+	TrackMouseLeave();
+	int hover = (int)(ev->y / ITEM_HEIGHT);
+	if (hover != m_hoverIdx) {
+		m_hoverIdx = hover;
+		Invalidate();
+	}
+	return false;
+}
+
+bool PopupMenu::OnMouseLeave(MouseEvent* ev)
+{
+	m_hoverIdx = -1;
+	Invalidate();
 	return false;
 }
 

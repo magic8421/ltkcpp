@@ -124,7 +124,7 @@ void SetupPixelStyle1()
 		{ "item_selected_clr", "#bbb073" },
 		{ "item_selected_text_clr", "#eae9ce" },
 		{ "caption_clr", "#fbfbf6" },
-		//{ "", "" },
+		{ "menu_hover_clr", "#fafad277" },
 		{NULL, NULL}
 	};
 	sm->RegisterColorBulk(colors);
@@ -226,7 +226,7 @@ void SetupVectorStyle1()
 		{ "item_selected_clr", "#00ff00" },
 		{ "item_selected_text_clr", "#000000" },
 		{ "caption_clr", "#00ff00" },
-		//{ "", "" },
+		{ "menu_hover_clr", "#004400" },
 		{ NULL, NULL }
 	};
 	sm->RegisterColorBulk(colors);
