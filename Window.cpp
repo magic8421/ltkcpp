@@ -190,7 +190,6 @@ void Window::HandleMouseMessage(UINT message, WPARAM wparam, LPARAM lparam)
 	{
 		//if (WM_LBUTTONDOWN == message)
 		//{
-			m_bHitFoucus = false;
 			m_sprite->DispatchMouseEvent(&event);
 			
 			std::vector<Sprite *> defer_remove;
@@ -213,10 +212,14 @@ void Window::HandleMouseMessage(UINT message, WPARAM wparam, LPARAM lparam)
 			{
 				m_setTrackMouseLeave.erase(sp);
 			}
-			if (m_spFocus && WM_LBUTTONDOWN == message && !m_bHitFoucus) {
-				FocusEvent ev;
-				ev.id = eKillFocus;
-				m_spFocus->OnEvent(&ev);
+			if (m_spFocus && WM_LBUTTONDOWN == message) {
+				auto arc = m_spFocus->GetAbsRect();
+				if (!arc.Contains(event.x, event.y)){
+					FocusEvent ev;
+					ev.id = eKillFocus;
+					m_spFocus->OnEvent(&ev);
+					m_spFocus = nullptr;
+				}
 			}
 		//}
 	}
@@ -850,11 +853,6 @@ void Window::HandleThemeChange()
 		ev.height = cy;
 		m_sprite->OnEvent(&ev);
 	}
-}
-
-void Window::SetHitFocus(bool b)
-{
-	m_bHitFoucus = b;
 }
 
 void Window::UpdateShadowFrame(bool bRedraw)

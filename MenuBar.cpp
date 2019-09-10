@@ -18,7 +18,7 @@ const static float MENU_WIDTH = 300.f;
 
 PopupMenu::PopupMenu() :
 	TextColor("item_text_clr"),
-	TextFormat("item_text_fmt"),
+	TextFormat("popup_menu_fmt"),
 	HoverColor("item_hover_clr"),
 	Background("popup_menu_bg"),
 	m_textColor(D2D1::ColorF(D2D1::ColorF::Cyan))
@@ -42,6 +42,16 @@ void PopupMenu::AddItem(LPCWSTR text)
 UINT PopupMenu::GetChildCount()
 {
 	return m_vecItems.size();
+}
+
+void PopupMenu::SetWidth(float w)
+{
+	m_width = w;
+}
+
+float PopupMenu::GetWidth()
+{
+	return m_width;
 }
 
 void PopupMenu::OnThemeChanged()
@@ -126,7 +136,8 @@ void MenuBar::OnMenuBtnClicked(UINT idx)
 	auto arc = m_vecMenuItems[idx].button->GetAbsRect();
 	auto root = GetWindow()->GetRootSprite();
 	root->AddChild(menu);
-	menu->SetRect(RectF(arc.X, arc.Y + arc.Height, MENU_WIDTH, menu->GetChildCount() * ITEM_HEIGHT));
+	menu->SetRect(RectF(arc.X, arc.Y + arc.Height,
+		m_vecMenuItems[idx].sub_menu->GetWidth(), menu->GetChildCount() * ITEM_HEIGHT));
 	GetWindow()->SetFocusSprite(menu);
 }
 

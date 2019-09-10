@@ -348,15 +348,11 @@ bool Sprite::DispatchMouseEvent(MouseEvent *ev)
 	if (!m_bVisible) {
 		return false;
 	}
-    for (auto i = 0u; i < m_children.size(); i++) {
-        auto sp = m_children[i];
+    for (auto i = m_children.size(); i > 0; i--) {
+        auto sp = m_children[i - 1];
         auto rc = sp->GetRect();
         if (rc.Contains(ev->x, ev->y)) {
-			auto wnd = GetWindow();
-			if (sp == wnd->GetFocusSprite()) {
-				wnd->SetHitFocus(true);
-			}
-            auto ev2 = *ev;
+            MouseEvent ev2 = *ev;
             ev2.x -= rc.X;
             ev2.y -= rc.Y;
             if (sp->DispatchMouseEvent(&ev2)) {

@@ -112,6 +112,10 @@ void SetupPixelStyle1()
         DWRITE_FONT_STYLE_NORMAL, 12, DWRITE_TEXT_ALIGNMENT_LEADING,
         DWRITE_PARAGRAPH_ALIGNMENT_NEAR);
 
+	sm->AddTextFormat2("popup_menu_fmt", L"Î¢ÈíÑÅºÚ", DWRITE_FONT_WEIGHT_NORMAL,
+		DWRITE_FONT_STYLE_NORMAL, 14, DWRITE_TEXT_ALIGNMENT_LEADING,
+		DWRITE_PARAGRAPH_ALIGNMENT_CENTER);
+
 	const ColorDesc colors[] = {
 		{ "default_btn_clr", "#362d01" },
 		{ "default_label_clr", "#362d01" },
@@ -209,6 +213,10 @@ void SetupVectorStyle1()
     sm->AddTextFormat2("caption_fmt", L"ËÎÌå", DWRITE_FONT_WEIGHT_NORMAL,
         DWRITE_FONT_STYLE_NORMAL, 12, DWRITE_TEXT_ALIGNMENT_LEADING,
         DWRITE_PARAGRAPH_ALIGNMENT_NEAR);
+
+	sm->AddTextFormat2("popup_menu_fmt", L"ËÎÌå", DWRITE_FONT_WEIGHT_NORMAL,
+		DWRITE_FONT_STYLE_NORMAL, 14, DWRITE_TEXT_ALIGNMENT_LEADING,
+		DWRITE_PARAGRAPH_ALIGNMENT_CENTER);
 
 	const ColorDesc colors[] = {
 		{ "default_btn_clr", "#00ff00" },

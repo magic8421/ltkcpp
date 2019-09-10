@@ -41,6 +41,8 @@ public:
 	void AddItem(LPCWSTR text);
 	UINT GetChildCount();
 	
+	void SetWidth(float);
+	float GetWidth();
 
 	ImmutableString TextColor;
 	ImmutableString HoverColor;
@@ -57,6 +59,7 @@ private:
 	D2D1_COLOR_F m_textColor;
 	AbstractBackground *m_background = nullptr;
 	PopupMenu* m_parent = nullptr;
+	float m_width = 100.0f;
 };
 
 struct MenuButtonParam {

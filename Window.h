@@ -86,8 +86,6 @@ public:
     void HandleThemeChange();
     virtual void OnThemeChanged() {}
 
-	void SetHitFocus(bool);
-
 public:
     Delegate<void(bool &)> CloseEvent;
 
@@ -112,7 +110,6 @@ private:
 
 	WindowLayout *m_sprite = nullptr; // owner
 
-	bool m_bHitFoucus = false;
     Sprite *m_spFocus = nullptr;
     Sprite *m_spCapture = nullptr;
     Sprite *m_spHover = nullptr;
