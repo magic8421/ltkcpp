@@ -113,15 +113,6 @@ void Sprite::SetWindow( Window *wnd )
 	m_window = wnd;
 }
 
-void Sprite::SetWindowRecursive(Window *wnd)
-{
-    for (size_t i = 0; i < m_children.size(); i++) {
-        auto sp = m_children[i];
-        sp->SetWindowRecursive(wnd);
-        sp->m_window = wnd;
-    }
-}
-
 void Sprite::HandlePaint( ID2D1RenderTarget *target )
 {
 	if (!m_bVisible)
@@ -163,23 +154,19 @@ void Sprite::HandlePaint( ID2D1RenderTarget *target )
 
 void Sprite::AddChild(Sprite *sp)
 {
-    if (sp->m_parent == this) {
-		LTK_ASSERT(false);
-        LTK_LOG("same parent");
-        return;
-    }
-    for (UINT i = 0; i < m_children.size(); i ++) {
-        if (m_children[i] == sp) {
-			LTK_ASSERT(false);
+    for (UINT i =  m_children.size(); i > 0; i--) {
+        if (m_children[i - 1] == sp) {
+			//LTK_ASSERT(false);
+			return;
         }
     }
-    m_children.push_back(sp);
-	sp->SetWindow(m_window);
+	//sp->SetWindow(m_window);
     if (sp->m_parent) {
         // if sp already has a parent, remove it first.
         sp->m_parent->RemoveChild(sp);
     }
-    sp->OnParentChanged(sp->m_parent, this);
+	m_children.push_back(sp);
+	sp->OnParentChanged(sp->m_parent, this);
 	sp->m_parent = this;
 }
 

@@ -50,6 +50,10 @@ public:
 
 	void SetSubMenu(UINT idx, PopupMenu *popup);
 
+	void Show(Window *wnd, const RectF &rc);
+	void Hide();
+	void TrackPopupMenu(UINT idx);
+
 	ImmutableString TextColor;
 	ImmutableString HoverColor;
 	ImmutableString TextFormat;
@@ -64,14 +68,16 @@ public:
 
 private:
 	std::vector<MenuItem *> m_vecItems;
-	IDWriteTextFormat *m_format = nullptr;
-	D2D1_COLOR_F m_textColor;
-	D2D1_COLOR_F m_hoverColor;
-	AbstractBackground *m_background = nullptr;
 	PopupMenu* m_parent = nullptr;
 	float m_width = 100.0f;
 	int m_hoverIdx = -1;
 	UINT m_hoverTimer = 0;
+	bool m_bTrackingPopup = false;
+
+	IDWriteTextFormat* m_format = nullptr;
+	D2D1_COLOR_F m_textColor;
+	D2D1_COLOR_F m_hoverColor;
+	AbstractBackground* m_background = nullptr;
 };
 
 struct MenuButtonParam {

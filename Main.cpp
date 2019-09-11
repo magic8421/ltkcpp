@@ -42,11 +42,10 @@ static void RecBuildNodes(TreeNode *parent, int depth)
 }
 
 int CALLBACK WinMain(
-    _In_ HINSTANCE hInstance,
-    _In_ HINSTANCE hPrevInstance,
-    _In_ LPSTR     lpCmdLine,
-    _In_ int       nCmdShow
-)
+	_In_ HINSTANCE hInstance,
+	_In_opt_ HINSTANCE hPrevInstance,
+	_In_ LPSTR lpCmdLine,
+	_In_ int nShowCmd)
 {
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 
@@ -75,7 +74,10 @@ int CALLBACK WinMain(
     TreeView *tree = new TreeView;
     hbox->AddLayoutItem(tree, 100, 0.3f);
     
+#pragma warning(push)
+#pragma warning(disable:28159)
     ::srand(::GetTickCount());
+#pragma warning(pop)
     RecBuildNodes(tree->GetRootNode(), 0);
 
 

@@ -33,7 +33,6 @@ public:
 	void Invalidate();
 
 	void SetWindow( Window *wnd );
-    void SetWindowRecursive( Window *wnd );
 	Window *GetWindow();
 
 	void SetVisible( bool );

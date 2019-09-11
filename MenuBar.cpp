@@ -62,7 +62,25 @@ float PopupMenu::GetWidth()
 void PopupMenu::SetSubMenu(UINT idx, PopupMenu *popup)
 {
 	LTK_ASSERT(m_vecItems[idx]->sub_menu == nullptr);
+	popup->m_parent = this;
 	m_vecItems[idx]->sub_menu = popup;
+}
+
+void PopupMenu::Show(Window* wnd, const RectF& rc)
+{
+	auto root = wnd->GetRootSprite();
+	root->AddChild(this);
+	this->SetRect(rc);
+	wnd->SetFocusSprite(this);
+	m_bTrackingPopup = false;
+}
+
+void PopupMenu::Hide()
+{
+	if (GetParent()) {
+		GetParent()->RemoveChild(this);
+		Invalidate();
+	}
 }
 
 void PopupMenu::OnThemeChanged()
@@ -72,6 +90,12 @@ void PopupMenu::OnThemeChanged()
 	m_textColor = sm->GetColor(this->TextColor);
 	m_hoverColor = sm->GetColor(this->HoverColor);
 	m_background = sm->GetBackground(this->Background);
+
+	for (auto item : m_vecItems) {
+		if (item->sub_menu) {
+			item->sub_menu->OnThemeChanged();
+		}
+	}
 }
 
 void PopupMenu::OnParentChanged(Sprite* old, Sprite* new_)
@@ -103,11 +127,27 @@ bool PopupMenu::OnPaint(PaintEvent *ev)
 
 bool PopupMenu::OnKillFocus(FocusEvent* ev)
 {
-	if (GetParent()) {
-		GetParent()->RemoveChild(this);
-		Invalidate();
+	if (!m_bTrackingPopup) {
+		this->Hide();
+		auto menu = m_parent;
+		while (menu) {
+			menu->Hide();
+			menu = menu->m_parent;
+		}
 	}
 	return false;
+}
+
+void PopupMenu::TrackPopupMenu(UINT idx)
+{
+	auto menu = m_vecItems[idx]->sub_menu;
+	if (menu) {
+		m_bTrackingPopup = true;
+		auto arc = this->GetAbsRect();
+		menu->Show(GetWindow(), RectF(
+			arc.X + this->GetWidth(), arc.Y + idx * ITEM_HEIGHT,
+			menu->GetWidth(), menu->GetChildCount() * ITEM_HEIGHT));
+	}
 }
 
 bool PopupMenu::OnMouseMove(MouseEvent* ev)
@@ -117,8 +157,9 @@ bool PopupMenu::OnMouseMove(MouseEvent* ev)
 	if (hover != m_hoverIdx) {
 		m_hoverIdx = hover;
 		Invalidate();
-		m_hoverTimer = ltk::SetOnceTimer(200, m_hoverTimer, [this, hover](){
+		m_hoverTimer = ltk::SetOnceTimer(400, m_hoverTimer, [this, hover]() {
 			LTK_LOG("hover %d", hover);
+			this->TrackPopupMenu(hover);
 			m_hoverTimer = 0;
 		});
 	}
@@ -179,11 +220,9 @@ void MenuBar::OnMenuBtnClicked(UINT idx)
 		return;
 	}
 	auto arc = m_vecMenuItems[idx].button->GetAbsRect();
-	auto root = GetWindow()->GetRootSprite();
-	root->AddChild(menu);
-	menu->SetRect(RectF(arc.X, arc.Y + arc.Height,
+
+	menu->Show(GetWindow(), RectF(arc.X, arc.Y + arc.Height,
 		m_vecMenuItems[idx].sub_menu->GetWidth(), menu->GetChildCount() * ITEM_HEIGHT));
-	GetWindow()->SetFocusSprite(menu);
 }
 
 void MenuBar::DoLayout()

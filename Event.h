@@ -80,7 +80,7 @@ class Sprite;
 
 struct FocusEvent : public Event
 {
-    Sprite *oldFocus;
+    Sprite *oldFocus = nullptr;
 };
 
 
