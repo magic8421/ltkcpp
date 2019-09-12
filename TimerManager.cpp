@@ -118,6 +118,9 @@ UINT TimerManager::SetTimer(UINT id, const std::function<void()>&cb, UINT elapse
 
 void TimerManager::KillTimer(UINT id)
 {
+	if (id == 0) {
+		return; // TODO [0] cannot be searched by stl hash table?
+	}
     auto iter = m_mapCallback.find(id);
     if (iter != m_mapCallback.end()) {
         delete iter->second;

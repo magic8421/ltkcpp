@@ -39,6 +39,7 @@ public:
 	bool GetVisible();
 
 	void AddChild( Sprite *sp );
+	void RemoveChild(Sprite* sp);
 
     void HandlePaint( ID2D1RenderTarget *target );
 
@@ -67,10 +68,6 @@ public:
 
 	bool DispatchMouseEvent(MouseEvent *ev);
 
-    Sprite *DispatchMouseEvent2(MouseEvent *ev);
-
-	void RemoveChild(Sprite *sp);
-
 	Sprite *GetAncestor();
 	Sprite *GetParent();
 
@@ -80,6 +77,9 @@ public:
 
     void BeginAnimation();
     void EndAnimation();
+
+	Sprite *SetFocus();
+	void KillFocus();
 
     virtual bool OnEvent(Event *ev);
 

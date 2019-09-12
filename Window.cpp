@@ -67,6 +67,8 @@ Window::~Window(void)
         m_atlas->Release();
     }
     m_atlas = INVALID_POINTER(ID2D1Bitmap);
+
+	::DestroyWindow(m_hwnd);
 }
 
 void Window::Create(Window *parent, RectF rc)
@@ -481,6 +483,10 @@ LRESULT CALLBACK Window::WndProcStatic(HWND hwnd, UINT message, WPARAM wparam, L
 	if (!thiz) {
         LTK_LOG("WndProc thiz is NULL, message: %d", message);
         return ::DefWindowProc(hwnd, message, wparam, lparam);
+	}
+	if (WM_NCDESTROY == message) {
+		thiz->m_hwnd = 0;
+		return 0;
 	}
     return thiz->WndProc(hwnd, message, wparam, lparam);
 }

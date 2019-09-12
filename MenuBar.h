@@ -71,6 +71,7 @@ private:
 	PopupMenu* m_parent = nullptr;
 	float m_width = 100.0f;
 	int m_hoverIdx = -1;
+	int m_trackingIdx = -1;
 	UINT m_hoverTimer = 0;
 	bool m_bTrackingPopup = false;
 

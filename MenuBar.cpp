@@ -31,6 +31,8 @@ PopupMenu::PopupMenu() :
 
 PopupMenu::~PopupMenu()
 {
+	ltk::KillTimer(m_hoverTimer);
+
 	for (auto item : m_vecItems) {
 		delete item->sub_menu;
 		delete item;
@@ -78,8 +80,9 @@ void PopupMenu::Show(Window* wnd, const RectF& rc)
 void PopupMenu::Hide()
 {
 	if (GetParent()) {
+		GetParent()->SetFocus();
 		GetParent()->RemoveChild(this);
-		Invalidate();
+		// Invalidate(); // because GetWindow() will return null, this does not work.
 	}
 }
 
@@ -142,11 +145,13 @@ void PopupMenu::TrackPopupMenu(UINT idx)
 {
 	auto menu = m_vecItems[idx]->sub_menu;
 	if (menu) {
+		m_trackingIdx = idx;
 		m_bTrackingPopup = true;
 		auto arc = this->GetAbsRect();
 		menu->Show(GetWindow(), RectF(
 			arc.X + this->GetWidth(), arc.Y + idx * ITEM_HEIGHT,
 			menu->GetWidth(), menu->GetChildCount() * ITEM_HEIGHT));
+		Invalidate();
 	}
 }
 
@@ -159,6 +164,14 @@ bool PopupMenu::OnMouseMove(MouseEvent* ev)
 		Invalidate();
 		m_hoverTimer = ltk::SetOnceTimer(400, m_hoverTimer, [this, hover]() {
 			LTK_LOG("hover %d", hover);
+			if (m_trackingIdx >= 0 && m_trackingIdx != hover) {
+				auto sub_menu = m_vecItems[m_trackingIdx]->sub_menu;
+				sub_menu->m_bTrackingPopup = true;
+				sub_menu->Hide();
+				m_trackingIdx = -1;
+				m_bTrackingPopup = false;
+				this->Invalidate();
+			}
 			this->TrackPopupMenu(hover);
 			m_hoverTimer = 0;
 		});

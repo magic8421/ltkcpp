@@ -100,7 +100,7 @@ void Sprite::Invalidate()
 {
 	// 0指针访问 不挂是因为x64系统一个bug 记得打开调试中的Win32异常断点
 	Window *wnd = GetWindow();
-    if (wnd && ::IsWindow(wnd->Handle()))
+    if (wnd)
 	{
 		BOOL ret = ::InvalidateRect(wnd->Handle(), NULL, FALSE);
         LTK_ASSERT(ret);
@@ -511,6 +511,27 @@ void Sprite::EndAnimation()
     if (wnd) {
         wnd->EndAnimation(this);
     }
+}
+
+Sprite* Sprite::SetFocus()
+{
+	auto wnd = GetWindow();
+	if (wnd) {
+		auto old = wnd->GetFocusSprite();
+		wnd->SetFocusSprite(this);
+		return old;
+	}
+	return nullptr;
+}
+
+void Sprite::KillFocus()
+{
+	auto wnd = GetWindow();
+	if (wnd) {
+		if (wnd->GetFocusSprite() == this) {
+			wnd->SetFocusSprite(nullptr);
+		}
+	}
 }
 
 } // namespace ltk
