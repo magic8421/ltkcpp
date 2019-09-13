@@ -56,6 +56,7 @@ public:
 
 	void SetFocusSprite(Sprite *sp);
 	Sprite *GetFocusSprite();
+	void DisableFocusChange();
 
 	void SetCaretHeight(float);
 
@@ -110,6 +111,7 @@ private:
 
 	WindowLayout *m_sprite = nullptr; // owner
 
+	bool m_bEnableFocusChange = true;
     Sprite *m_spFocus = nullptr;
     Sprite *m_spCapture = nullptr;
     Sprite *m_spHover = nullptr;

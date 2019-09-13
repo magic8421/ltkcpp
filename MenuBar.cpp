@@ -149,6 +149,12 @@ bool PopupMenu::OnKillFocus(FocusEvent* ev)
 	return false;
 }
 
+bool PopupMenu::OnLBtnDown(MouseEvent* ev)
+{
+	GetWindow()->DisableFocusChange();
+	return true;
+}
+
 void PopupMenu::TrackPopupMenu(UINT idx)
 {
 	auto menu = m_vecItems[idx]->sub_menu;
@@ -182,6 +188,10 @@ bool PopupMenu::OnMouseMove(MouseEvent* ev)
 			}
 			m_hoverTimer = 0;
 		});
+		if (m_parent) {
+			ltk::KillTimer(m_parent->m_hoverTimer);
+			m_parent->m_hoverTimer = 0;
+		}
 	}
 	return true;
 }

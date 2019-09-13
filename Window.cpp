@@ -192,6 +192,7 @@ void Window::HandleMouseMessage(UINT message, WPARAM wparam, LPARAM lparam)
 	{
 		//if (WM_LBUTTONDOWN == message)
 		//{
+			m_bEnableFocusChange = true;
 			m_sprite->DispatchMouseEvent(&event);
 			
 			std::vector<Sprite *> defer_remove;
@@ -214,7 +215,7 @@ void Window::HandleMouseMessage(UINT message, WPARAM wparam, LPARAM lparam)
 			{
 				m_setTrackMouseLeave.erase(sp);
 			}
-			if (m_spFocus && WM_LBUTTONDOWN == message) {
+			if (m_spFocus && WM_LBUTTONDOWN == message && m_bEnableFocusChange) {
 				auto arc = m_spFocus->GetAbsRect();
 				if (!arc.Contains(event.x, event.y)){
 					FocusEvent ev;
@@ -735,6 +736,11 @@ void Window::SetFocusSprite( Sprite *sp )
 Sprite *Window::GetFocusSprite()
 {
 	return m_spFocus;
+}
+
+void Window::DisableFocusChange()
+{
+	m_bEnableFocusChange = false;
 }
 
 void Window::OnImeInput( PCTSTR text )

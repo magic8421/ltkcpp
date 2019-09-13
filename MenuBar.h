@@ -61,6 +61,7 @@ public:
 
 	virtual bool OnPaint(PaintEvent *ev) override;
 	virtual bool OnKillFocus(FocusEvent* ev) override;
+	virtual bool OnLBtnDown(MouseEvent* ev) override;
 	virtual bool OnMouseMove(MouseEvent* ev) override;
 	virtual bool OnMouseLeave(MouseEvent* ev) override;
 	virtual void OnThemeChanged() override;
