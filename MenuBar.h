@@ -49,6 +49,7 @@ public:
 	float GetWidth();
 
 	void SetSubMenu(UINT idx, PopupMenu *popup);
+	void SetMenuBar(MenuBar*);
 
 	void Show(Window *wnd, const RectF &rc);
 	void Hide();
@@ -70,6 +71,7 @@ public:
 private:
 	std::vector<MenuItem *> m_vecItems;
 	PopupMenu* m_parent = nullptr;
+	MenuBar* m_menuBar = nullptr;
 	float m_width = 100.0f;
 	int m_hoverIdx = -1;
 	int m_trackingIdx = -1;
@@ -98,12 +100,14 @@ public:
 	void SetPopupMenu(UINT idx, PopupMenu *menu);
 	UINT GetItemCount();
 	void DoLayout();
+	void OnMenuHide();
 
 protected:
 	virtual bool OnSize(SizeEvent *ev) override;
 	virtual void OnThemeChanged() override;
 
 	void OnMenuBtnClicked(UINT idx);
+	void OnButtonMouseEvent(Button* btn, MouseEvent* ev, bool& bHandled);
 
 private:
 	std::vector<MenuButtonParam> m_vecMenuItems;

@@ -68,6 +68,11 @@ void PopupMenu::SetSubMenu(UINT idx, PopupMenu *popup)
 	m_vecItems[idx]->sub_menu = popup;
 }
 
+void PopupMenu::SetMenuBar(MenuBar *b)
+{
+	m_menuBar = b;
+}
+
 void PopupMenu::Show(Window* wnd, const RectF& rc)
 {
 	if (!wnd) {
@@ -89,6 +94,9 @@ void PopupMenu::Hide()
 	}
 	if (m_parent) {
 		m_parent->SetFocus();
+	}
+	if (m_menuBar) {
+		m_menuBar->OnMenuHide();
 	}
 	m_bHiding = false;
 }
@@ -230,8 +238,11 @@ void MenuBar::AddItem(LPCWSTR text)
 	param.button = btn;
 	m_vecMenuItems.push_back(param);
 	UINT idx = m_vecMenuItems.size() - 1;
-	btn->ClickedEvent.Attach([this, idx]() {
+	btn->ClickedEvent.Attach([this, idx]() { // TODO  包btn比较好 插入删除不会错
 		this->OnMenuBtnClicked(idx);
+	});
+	btn->DelegateMouseEvent.Attach([this, btn](MouseEvent *ev, bool &bHandled) {
+		this->OnButtonMouseEvent(btn, ev, bHandled);
 	});
 }
 
@@ -240,6 +251,7 @@ void MenuBar::SetPopupMenu(UINT idx, PopupMenu *menu)
 	LTK_ASSERT(m_vecMenuItems[idx].sub_menu == nullptr);
 	menu->OnThemeChanged();
 	m_vecMenuItems[idx].sub_menu = menu;
+	menu->SetMenuBar(this);
 }
 
 void MenuBar::OnMenuBtnClicked(UINT idx)
@@ -256,6 +268,19 @@ void MenuBar::OnMenuBtnClicked(UINT idx)
 	m_trackingIdx = idx;
 }
 
+void MenuBar::OnButtonMouseEvent(Button* btn, MouseEvent* ev, bool& bHandled)
+{
+	if (ev->id == eMouseMove && m_trackingIdx >= 0) {
+		size_t idx = 0;
+		for (; idx < m_vecMenuItems.size(); idx++) {
+			if (m_vecMenuItems[idx].button == btn) {
+				break;
+			}
+		}
+		OnMenuBtnClicked(idx);
+	}
+}
+
 void MenuBar::DoLayout()
 {
 	float x = 0;
@@ -267,6 +292,11 @@ void MenuBar::DoLayout()
 		param.button->SetRect(rc);
 		x += size.Width;
 	}
+}
+
+void MenuBar::OnMenuHide()
+{
+	m_trackingIdx = -1;
 }
 
 bool MenuBar::OnSize(SizeEvent *ev)
