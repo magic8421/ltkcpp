@@ -72,8 +72,8 @@ private:
 	float m_width = 100.0f;
 	int m_hoverIdx = -1;
 	int m_trackingIdx = -1;
+	bool m_bTrackingPopup = false; // TODO 这个能和m_trackingIdx合并吗？
 	UINT m_hoverTimer = 0;
-	bool m_bTrackingPopup = false;
 	bool m_bHiding = false;
 
 	IDWriteTextFormat* m_format = nullptr;
@@ -106,6 +106,7 @@ protected:
 
 private:
 	std::vector<MenuButtonParam> m_vecMenuItems;
+	int m_trackingIdx = -1;
 };
 
 } // namespace

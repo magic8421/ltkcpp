@@ -77,7 +77,7 @@ void PopupMenu::Show(Window* wnd, const RectF& rc)
 	root->AddChild(this);
 	this->SetRect(rc);
 	wnd->SetFocusSprite(this);
-	m_bTrackingPopup = false;
+	m_trackingIdx = -1;
 }
 
 void PopupMenu::Hide()
@@ -137,7 +137,8 @@ bool PopupMenu::OnPaint(PaintEvent *ev)
 
 bool PopupMenu::OnKillFocus(FocusEvent* ev)
 {
-	if (!m_bTrackingPopup && !m_bHiding) {
+	Invalidate();
+	if (m_trackingIdx < 0 && !m_bHiding) {
 		this->Hide();
 		auto menu = m_parent;
 		while (menu) {
@@ -153,7 +154,6 @@ void PopupMenu::TrackPopupMenu(UINT idx)
 	auto menu = m_vecItems[idx]->sub_menu;
 	if (menu) {
 		m_trackingIdx = idx;
-		m_bTrackingPopup = true;
 		auto arc = this->GetAbsRect();
 		menu->Show(GetWindow(), RectF(
 			arc.X + this->GetWidth(), arc.Y + idx * ITEM_HEIGHT,
@@ -173,13 +173,13 @@ bool PopupMenu::OnMouseMove(MouseEvent* ev)
 			LTK_LOG("hover %d", hover);
 			if (m_trackingIdx >= 0 && m_trackingIdx != hover) {
 				auto sub_menu = m_vecItems[m_trackingIdx]->sub_menu;
-				sub_menu->m_bTrackingPopup = true;
 				sub_menu->Hide();
 				m_trackingIdx = -1;
-				m_bTrackingPopup = false;
+				this->TrackPopupMenu(hover);
 				this->Invalidate();
+			} else if (m_trackingIdx < 0){
+				this->TrackPopupMenu(hover);
 			}
-			this->TrackPopupMenu(hover);
 			m_hoverTimer = 0;
 		});
 	}
@@ -243,6 +243,7 @@ void MenuBar::OnMenuBtnClicked(UINT idx)
 
 	menu->Show(GetWindow(), RectF(arc.X, arc.Y + arc.Height,
 		m_vecMenuItems[idx].sub_menu->GetWidth(), menu->GetChildCount() * ITEM_HEIGHT));
+	m_trackingIdx = idx;
 }
 
 void MenuBar::DoLayout()
