@@ -70,6 +70,9 @@ void PopupMenu::SetSubMenu(UINT idx, PopupMenu *popup)
 
 void PopupMenu::Show(Window* wnd, const RectF& rc)
 {
+	if (!wnd) {
+		return;
+	}
 	auto root = wnd->GetRootSprite();
 	root->AddChild(this);
 	this->SetRect(rc);
@@ -79,11 +82,15 @@ void PopupMenu::Show(Window* wnd, const RectF& rc)
 
 void PopupMenu::Hide()
 {
+	m_bHiding = true;
 	if (GetParent()) {
-		GetParent()->SetFocus();
 		GetParent()->RemoveChild(this);
 		// Invalidate(); // because GetWindow() will return null, this does not work.
 	}
+	if (m_parent) {
+		m_parent->SetFocus();
+	}
+	m_bHiding = false;
 }
 
 void PopupMenu::OnThemeChanged()
@@ -130,7 +137,7 @@ bool PopupMenu::OnPaint(PaintEvent *ev)
 
 bool PopupMenu::OnKillFocus(FocusEvent* ev)
 {
-	if (!m_bTrackingPopup) {
+	if (!m_bTrackingPopup && !m_bHiding) {
 		this->Hide();
 		auto menu = m_parent;
 		while (menu) {
@@ -176,7 +183,7 @@ bool PopupMenu::OnMouseMove(MouseEvent* ev)
 			m_hoverTimer = 0;
 		});
 	}
-	return false;
+	return true;
 }
 
 bool PopupMenu::OnMouseLeave(MouseEvent* ev)

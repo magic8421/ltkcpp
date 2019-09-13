@@ -74,6 +74,7 @@ private:
 	int m_trackingIdx = -1;
 	UINT m_hoverTimer = 0;
 	bool m_bTrackingPopup = false;
+	bool m_bHiding = false;
 
 	IDWriteTextFormat* m_format = nullptr;
 	D2D1_COLOR_F m_textColor;
