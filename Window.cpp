@@ -878,4 +878,24 @@ void Window::UpdateShadowFrame(bool bRedraw)
     LTK_ASSERT(ret);
 }
 
+Events Window::TranslateMessageCode(UINT message)
+{
+	switch (message) {
+	case WM_MOUSEMOVE:
+		return eMouseMove;
+	case WM_MOUSEWHEEL:
+		return eMouseWheel;
+	case WM_LBUTTONDOWN:
+		return eLBtnDown;
+	case WM_LBUTTONUP:
+		return eLBtnUp;
+	case WM_MOUSELEAVE:
+		return eMouseLeave;
+	default:
+		LTK_ASSERT(false);
+		break;
+	}
+	return (Events)0;
+}
+
 } // namespace ltk

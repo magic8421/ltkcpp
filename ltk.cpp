@@ -33,34 +33,45 @@ namespace ltk {
     // convert DIP to screen
     void DipCoordToScreen(float &x, float &y) 
     {
+		#pragma warning(push)
+		#pragma warning(disable:4996)
+		#pragma warning(disable:28159)
         float dpi_x = 0.0f;
         float dpi_y = 0.0f;
         g_d2d_factory->GetDesktopDpi(&dpi_x, &dpi_y); // wtf? non-square pixel?
 
         x = dpi_x * x / 96.0f;
         y = dpi_y * y / 96.0f;
+		#pragma warning(pop)
     }
 
     // convert screen to DIP
     void ScreenCoordToDip(float &x, float &y)
     {
+		#pragma warning(push)
+		#pragma warning(disable:4996)
+		#pragma warning(disable:28159)
         float dpi_x = 0.0f;
         float dpi_y = 0.0f;
         g_d2d_factory->GetDesktopDpi(&dpi_x, &dpi_y); // wtf? non-square pixel?
 
         x = x * 96.0f / dpi_x;
         y = y * 96.0f / dpi_y;
+		#pragma warning(pop)
     }
 
     RECT DipRectToScreen(const RectF &rc)
     {
-        float dpi_x = 0.0f;
+		#pragma warning(push)
+		#pragma warning(disable: 4244)
+		#pragma warning(disable:28159)
+		#pragma warning(disable:4996)
+		float dpi_x = 0.0f;
         float dpi_y = 0.0f;
         g_d2d_factory->GetDesktopDpi(&dpi_x, &dpi_y); // wtf? non-square pixel?
 
         RECT out;
-        #pragma warning(push)
-        #pragma warning(disable: 4244)
+
         out.left = dpi_x * rc.X / 96.0f;
         out.top = dpi_y * rc.Y / 96.0f;
         out.right = out.left + dpi_x * rc.Width / 96.0f;
@@ -230,9 +241,13 @@ namespace ltk {
 
         static float dpi_x = 0.0f;
         static float dpi_y = 0.0f;
-        if (dpi_x == 0.0f) {
+		#pragma warning(push)
+		#pragma warning(disable:28159)
+		#pragma warning(disable:4996)
+		if (dpi_x == 0.0f) {
             g_d2d_factory->GetDesktopDpi(&dpi_x, &dpi_y); // wtf? non-square pixel?
         }
+		#pragma warning(pop)
         target->DrawRectangle(rc2, brush, 96.0f / dpi_x);
     }
 

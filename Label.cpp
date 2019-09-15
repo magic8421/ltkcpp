@@ -31,7 +31,6 @@ bool Label::OnPaint(PaintEvent *ev)
     if (m_text.length() == 0) {
         return true;
     }
-    HRESULT hr = E_FAIL;
     RectF rc = this->GetClientRect();
 
     auto brush = this->GetWindow()->GetStockBrush();

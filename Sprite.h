@@ -91,7 +91,6 @@ protected:
     virtual bool OnRBtnDown         (MouseEvent *ev) { return false; }
     virtual bool OnRBtnUp           (MouseEvent *ev) { return false; }
     virtual bool OnMouseMove        (MouseEvent *ev) { return false; }
-    virtual bool OnMouseEnter       (MouseEvent *ev) { return false; }
     virtual bool OnMouseLeave       (MouseEvent *ev) { return false; }
     virtual bool OnMouseWheel       (MouseEvent *ev) { return false; }
     virtual bool OnKeyDown          (KeyEvent *ev)   { return false; }
@@ -108,7 +107,6 @@ protected:
 
 private:
 	bool m_bVisible;
-	bool m_bMouseIn; // TODO this one is useless
 	bool m_bClipChildren; // TODO this one is useless
 
     RectF m_rect;

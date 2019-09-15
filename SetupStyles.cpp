@@ -139,8 +139,6 @@ void SetupVectorStyle1()
     rect_bg->InnerColor().SetColor("#000000", "#003300", "#000000", "#cccccc");
     sm->AddBackgroundStyle("default_btn_bg", rect_bg);
 
-    NinePatchBackground *nine_in_one = nullptr;
-
     rect_bg = new RectangleBackground;
     rect_bg->BorderColor().SetColor("#00cc00", "#00ff00", "#00aa00", "#cccccc");
     rect_bg->InnerColor().SetColor("#000000", "#003300", "#000000", "#cccccc");

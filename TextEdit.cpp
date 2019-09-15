@@ -83,12 +83,12 @@ bool TextEdit::OnPaint(PaintEvent *ev)
         LTK_ASSERT(SUCCEEDED(hr));
 		brush->SetColor(StyleManager::ColorFromString("#0000ff"));
         for (auto &m : vecMetrics) {
-            D2D1_RECT_F rc;
-            rc.left = m.left;
-            rc.right = rc.left + m.width;
-            rc.top = m.top - m_scrollAni.GetScroll();
-            rc.bottom = rc.top + m.height;
-            target->FillRectangle(rc, brush);
+            D2D1_RECT_F rc2;
+            rc2.left = m.left;
+            rc2.right = rc2.left + m.width;
+            rc2.top = m.top - m_scrollAni.GetScroll();
+            rc2.bottom = rc2.top + m.height;
+            target->FillRectangle(rc2, brush);
         }
     }
 
@@ -268,6 +268,7 @@ void TextEdit::UpdateCursor(bool bEnsureVisible)
 
 bool TextEdit::OnMouseWheel(MouseEvent *ev)
 {
+	//LTK_LOG("delta %.2f", ev->delta);
     m_scrollAni.BeginScroll(ev->delta);
     this->HideCaret();
     this->BeginAnimation();
@@ -313,6 +314,7 @@ bool TextEdit::OnLBtnDown(MouseEvent *ev)
     this->UpdateCursor(false);
     this->SetCapture();
     m_bCapture = true;
+	this->SetFocus();
     return false;
 }
 

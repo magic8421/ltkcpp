@@ -14,7 +14,6 @@ enum Events
     // type: MouseEvent
     eMouseFirst,
     eMouseMove,
-    eMouseEnter,
     eMouseLeave,
     eMouseWheel,
     eLBtnDown,

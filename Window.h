@@ -96,6 +96,7 @@ private:
     void DrawNonClient();
     void RecreateResouce();
     void UpdateShadowFrame(bool bRedraw);
+	Events TranslateMessageCode(UINT message);
 
     LRESULT OnImeEvent(UINT message, WPARAM wparam, LPARAM lparam);
     LRESULT HandleNcHitTest(const POINT &pt);

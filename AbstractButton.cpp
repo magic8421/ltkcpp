@@ -64,19 +64,23 @@ bool AbstractButton::OnEvent(Event *ev)
     return bHandled;
 }
 
-bool AbstractButton::OnMouseEnter(MouseEvent *ev)
+bool AbstractButton::OnMouseMove(MouseEvent *ev)
 {
-    //LTK_LOG("OnMouseEnter");
-    this->BeginAnimation();
-    this->TrackMouseLeave();
-    m_state = State::Normal2Hover;
-    m_lastTick = ::GetTickCount();
+	if (!m_bMouseIn) {
+		//LTK_LOG("OnMouseMove");
+		m_bMouseIn = true;
+		this->BeginAnimation();
+		this->TrackMouseLeave();
+		m_state = State::Normal2Hover;
+		m_lastTick = ::GetTickCount();
+	}
     return true;
 }
 
 bool AbstractButton::OnMouseLeave(MouseEvent *ev)
 {
     //LTK_LOG("OnMouseLeave");
+	m_bMouseIn = false;
     this->BeginAnimation();
     m_state = State::Hover2Normal;
     m_lastTick = ::GetTickCount();

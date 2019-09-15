@@ -25,7 +25,6 @@ Sprite::Sprite(void)
 	m_rect.Height = 10;
 
 	m_bVisible = true;
-	m_bMouseIn = false;
 	m_bClipChildren = false;
 }
 
@@ -135,7 +134,7 @@ void Sprite::HandlePaint( ID2D1RenderTarget *target )
     PaintEvent ev;
     ev.id = ePaint;
     ev.target = target;
-    OnEvent(&ev);
+    OnPaint(&ev);
 
     for (size_t i = 0; i < m_children.size(); i++) {
         auto sp = m_children[i];
@@ -178,12 +177,6 @@ bool Sprite::TranslateMouseEvent( MouseEvent *ev )
 	case WM_MOUSEMOVE:
         ev->id = eMouseMove;
         ret = OnEvent(ev);
-		if (!m_bMouseIn)
-		{
-			m_bMouseIn = true;
-            ev->id = eMouseEnter;
-            OnEvent(ev); // Р§Эт
-		}
 		break;
 	case WM_MOUSEWHEEL:
         ev->id = eMouseWheel;
@@ -198,7 +191,6 @@ bool Sprite::TranslateMouseEvent( MouseEvent *ev )
         ret = OnEvent(ev);
         break;
 	case WM_MOUSELEAVE:
-		m_bMouseIn = false;
         ev->id = eMouseLeave;
         OnEvent(ev); // Р§Эт
         break;
@@ -426,17 +418,11 @@ bool Sprite::OnEvent(Event *ev)
 
     switch (id)
     {
-    case ePaint:
-        bHandled = OnPaint(static_cast<PaintEvent*>(ev));
-        break;
     case eMouseMove:
         bHandled = OnMouseMove(static_cast<MouseEvent*>(ev));
         break;
     case eSizeChanged:
         bHandled = OnSize(static_cast<SizeEvent*>(ev));
-        break;
-    case eMouseEnter:
-        bHandled = OnMouseEnter(static_cast<MouseEvent*>(ev));
         break;
     case eMouseLeave:
         bHandled = OnMouseLeave(static_cast<MouseEvent*>(ev));

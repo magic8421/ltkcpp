@@ -30,7 +30,7 @@ public:
 
     virtual bool OnEvent(Event *ev) override;
 
-    virtual bool OnMouseEnter(MouseEvent *ev) override;
+    virtual bool OnMouseMove(MouseEvent *ev) override;
     virtual bool OnMouseLeave(MouseEvent *ev) override;
     virtual bool OnLBtnDown(MouseEvent *ev) override;
     virtual bool OnLBtnUp(MouseEvent *ev) override;
@@ -39,6 +39,7 @@ public:
 
 private:
     bool m_bCaptureMouse = true;
+	bool m_bMouseIn = false;
 
     static const int AniDuration = 200;
 

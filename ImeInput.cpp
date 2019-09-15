@@ -38,10 +38,13 @@ bool ImeInput::SetInputLanguage() {
 	// or not the current input context has IMEs.
 	// Also save its input language for language-specific operations required
 	// while composing a text.
+	#pragma warning(push)
+	#pragma warning(disable:4302)
 	HKL keyboard_layout = ::GetKeyboardLayout(0);
 	input_language_id_ = reinterpret_cast<LANGID>(keyboard_layout);
 	ime_status_ = (::ImmIsIME(keyboard_layout) == TRUE) ? true : false;
 	return ime_status_;
+	#pragma warning(pop)
 }
 
 

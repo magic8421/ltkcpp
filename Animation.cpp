@@ -73,7 +73,8 @@ bool ScrollAnimation::UpdateScroll(float height)
         return true;
     } else if (m_scroll > height) {
         m_scroll = height;// this->GetTotalHeight() - rcSprite.Height;
-        m_state = stStop;
+		m_velocity = 0.0f;
+		m_state = stStop;
         return true;
     }
     if (m_velocity < 0.0f) {
