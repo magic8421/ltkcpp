@@ -18,6 +18,7 @@ enum Events
     eMouseWheel,
     eLBtnDown,
     eLBtnUp,
+	eLBtnDbClick,
     eRBtnDown,
     eRBtnUp,
     eMouseLast,
@@ -40,7 +41,6 @@ struct Event
 
 struct MouseEvent : public Event
 {
-    UINT message = 0;
     float x = 0.f;
     float y = 0.f;
     UINT flag = 0; // ctrl shift atl

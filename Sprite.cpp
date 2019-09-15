@@ -169,54 +169,6 @@ void Sprite::AddChild(Sprite *sp)
 	sp->m_parent = this;
 }
 
-bool Sprite::TranslateMouseEvent( MouseEvent *ev )
-{
-    bool ret = false;
-	switch(ev->message)
-	{
-	case WM_MOUSEMOVE:
-        ev->id = eMouseMove;
-        ret = OnEvent(ev);
-		break;
-	case WM_MOUSEWHEEL:
-        ev->id = eMouseWheel;
-        ret = OnEvent(ev);
-		break;
-	case WM_LBUTTONDOWN:
-        ev->id = eLBtnDown;
-        ret = OnEvent(ev);
-		break;
-	case WM_LBUTTONUP:
-        ev->id = eLBtnUp;
-        ret = OnEvent(ev);
-        break;
-	case WM_MOUSELEAVE:
-        ev->id = eMouseLeave;
-        OnEvent(ev); // Р§Эт
-        break;
-	}
-    return ret;
-}
-
-void Sprite::HandleCapturedMouseEvent( MouseEvent *ev)
-{
-	switch(ev->message)
-	{
-	case WM_MOUSEMOVE:
-        ev->id = eMouseMove;
-        OnEvent(ev);
-		break;
-	case WM_LBUTTONDOWN:
-        ev->id = eLBtnDown;
-        OnEvent(ev);
-		break;
-	case WM_LBUTTONUP:
-        ev->id = eLBtnUp;
-        OnEvent(ev);
-        break;
-	}			
-}
-
 void Sprite::HandleKeyEvent( UINT message, DWORD keyCode, DWORD flag )
 {
 	KeyEvent ev;
@@ -339,7 +291,7 @@ bool Sprite::DispatchMouseEvent(MouseEvent *ev)
             }
         }
     }
-    return this->TranslateMouseEvent(ev);
+    return this->OnEvent(ev);
 }
 
 Sprite * Sprite::GetAncestor()

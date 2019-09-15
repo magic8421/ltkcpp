@@ -43,10 +43,6 @@ public:
 
     void HandlePaint( ID2D1RenderTarget *target );
 
-    bool TranslateMouseEvent(MouseEvent *ev);
-
-	void HandleCapturedMouseEvent( MouseEvent *ev );
-
 	void HandleKeyEvent( UINT message, DWORD keyCode, DWORD flag );
 
 	void HandleImeInput( LPCTSTR text );

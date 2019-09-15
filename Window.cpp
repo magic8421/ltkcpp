@@ -153,9 +153,9 @@ void Window::RegisterWndClass()
 void Window::HandleMouseMessage(UINT message, WPARAM wparam, LPARAM lparam)
 {
     //LTK_LOG("Mouse Message: %d %08x %d %d", message, wparam, (short)LOWORD(lparam), (short)HIWORD(lparam));
-	MouseEvent event;
-	event.message = message;
-	event.flag = LOWORD(wparam);
+	MouseEvent ev;
+	ev.id = TranslateMessageCode(message);
+	ev.flag = LOWORD(wparam);
 
 	if (WM_MOUSEWHEEL == message)
 	{
@@ -163,18 +163,18 @@ void Window::HandleMouseMessage(UINT message, WPARAM wparam, LPARAM lparam)
 		pt.x = (short)LOWORD(lparam);
 		pt.y = (short)HIWORD(lparam);
 		::ScreenToClient(m_hwnd, &pt);
-		event.x = (float)pt.x;
-		event.y = (float)pt.y;
-		event.delta = (float)(short)HIWORD(wparam) / 120.0F;
+		ev.x = (float)pt.x;
+		ev.y = (float)pt.y;
+		ev.delta = (float)(short)HIWORD(wparam) / 120.0F;
         //LOG("WM_MOUSEWHEEL: " << event.x << " " << event.y);
 	}
 	else
 	{
-		event.x = (float)(short)LOWORD(lparam); //先切2字节 然后转有符号 再转浮点
-		event.y = (float)(short)HIWORD(lparam);
-		event.delta = 0.0f;
+		ev.x = (float)(short)LOWORD(lparam); //先切2字节 然后转有符号 再转浮点
+		ev.y = (float)(short)HIWORD(lparam);
+		ev.delta = 0.0f;
 	}
-    ScreenCoordToDip(event.x, event.y);
+    ScreenCoordToDip(ev.x, ev.y);
 
     if (WM_LBUTTONDBLCLK == message)
     {
@@ -184,16 +184,16 @@ void Window::HandleMouseMessage(UINT message, WPARAM wparam, LPARAM lparam)
 	if (m_spCapture)
 	{
 		RectF rc = m_spCapture->GetAbsRect();
-		event.x -= rc.X;
-		event.y -= rc.Y;
-		m_spCapture->HandleCapturedMouseEvent(&event);
+		ev.x -= rc.X;
+		ev.y -= rc.Y;
+		m_spCapture->OnEvent(&ev);
 	}
 	else if (m_sprite)
 	{
 		//if (WM_LBUTTONDOWN == message)
 		//{
 			m_bEnableFocusChange = true;
-			m_sprite->DispatchMouseEvent(&event);
+			m_sprite->DispatchMouseEvent(&ev);
 			
 			std::vector<Sprite *> defer_remove;
 			defer_remove.reserve(20);
@@ -202,11 +202,11 @@ void Window::HandleMouseMessage(UINT message, WPARAM wparam, LPARAM lparam)
 			{
 				Sprite *sp = *iter;
 				RectF rc = sp->GetAbsRect();
-				if (!rc.Contains(event.x, event.y))
+				if (!rc.Contains(ev.x, ev.y))
 				{
-					MouseEvent e2 = event;
-					e2.message = WM_MOUSELEAVE;
-					sp->TranslateMouseEvent(&e2);
+					MouseEvent e2 = ev;
+					e2.id = eMouseLeave;
+					sp->OnEvent(&e2);
 					defer_remove.push_back(sp);
 					// Fire the event and remove sp from the set;
 				}
@@ -217,10 +217,10 @@ void Window::HandleMouseMessage(UINT message, WPARAM wparam, LPARAM lparam)
 			}
 			if (m_spFocus && WM_LBUTTONDOWN == message && m_bEnableFocusChange) {
 				auto arc = m_spFocus->GetAbsRect();
-				if (!arc.Contains(event.x, event.y)){
-					FocusEvent ev;
-					ev.id = eKillFocus;
-					m_spFocus->OnEvent(&ev);
+				if (!arc.Contains(ev.x, ev.y)){
+					FocusEvent ev2;
+					ev2.id = eKillFocus;
+					m_spFocus->OnEvent(&ev2);
 					m_spFocus = nullptr;
 				}
 			}
@@ -239,8 +239,7 @@ void Window::HandleMouseLeave()
         e2.flag = 0;
         e2.x = 0;
         e2.y = 0;
-        e2.message = WM_MOUSELEAVE;
-        sp->TranslateMouseEvent(&e2);
+        sp->OnEvent(&e2);
         // Fire the event and remove sp from the set;
     }
     m_setTrackMouseLeave.clear();
@@ -312,6 +311,7 @@ LRESULT Window::WndProc(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam)
     case WM_MOUSEMOVE:
     case WM_LBUTTONDOWN:
     case WM_LBUTTONUP:
+	case WM_RBUTTONDOWN:
     case WM_RBUTTONUP:
     case WM_LBUTTONDBLCLK:
     case WM_MOUSEWHEEL:
@@ -891,6 +891,10 @@ Events Window::TranslateMessageCode(UINT message)
 		return eLBtnUp;
 	case WM_MOUSELEAVE:
 		return eMouseLeave;
+	case WM_RBUTTONDOWN:
+		return eRBtnDown;
+	case WM_RBUTTONUP:
+		return eRBtnDown;
 	default:
 		LTK_ASSERT(false);
 		break;
