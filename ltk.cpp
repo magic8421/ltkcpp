@@ -290,6 +290,14 @@ namespace ltk {
 		return E_FAIL;
 	}
 
+	DWORD TickCount()
+	{
+#pragma warning(push)
+#pragma warning(disable:28159)
+		return ::GetTickCount();
+#pragma warning(pop)
+	}
+
     void LtkInitialize()
     {
         ::CoInitialize(NULL);
@@ -409,14 +417,14 @@ static void log_thread_test()
             LTK_LOG("log in thread test: [%d] %i", ::GetCurrentThreadId(), i);
         }
     };
-    auto start_time = ::GetTickCount();
+    auto start_time = ltk::TickCount();
     std::thread tt1(tfunc);
     std::thread tt2(tfunc);
     std::thread tt3(tfunc);
     tt1.join();
     tt2.join();
     tt3.join();
-    LTK_LOG("time: %d", ::GetTickCount() - start_time);
+    LTK_LOG("time: %d", ltk::TickCount() - start_time);
 }
 
 /*

@@ -532,10 +532,8 @@ void Window::OnPaint(HWND hwnd )
 
     if (!m_target)
     {
-#pragma warning(push)
-#pragma warning(disable:28159)
-        LTK_LOG("RecreateResouce %d", ::GetTickCount());
-#pragma warning(pop)
+        LTK_LOG("RecreateResouce %d", ltk::TickCount());
+
         RECT rc;
         ::GetClientRect(hwnd, &rc);
 

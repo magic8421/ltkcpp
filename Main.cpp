@@ -74,10 +74,8 @@ int CALLBACK WinMain(
     TreeView *tree = new TreeView;
     hbox->AddLayoutItem(tree, 100, 0.3f);
     
-#pragma warning(push)
-#pragma warning(disable:28159)
-    ::srand(::GetTickCount());
-#pragma warning(pop)
+    ::srand(ltk::TickCount());
+
     RecBuildNodes(tree->GetRootNode(), 0);
 
 

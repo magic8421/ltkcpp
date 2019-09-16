@@ -22,6 +22,7 @@ namespace ltk {
     void TranslateTransform(ID2D1RenderTarget *target, float dx, float dy);
     D2D1_RECT_F D2D1RectF(const RectF &rc);
 	HRESULT LoadBitmapFromFile(ID2D1RenderTarget * target, LPCWSTR path, ID2D1Bitmap ** bitmap);
+	DWORD TickCount();
 
     struct Margin {
         float left = 0.0f;

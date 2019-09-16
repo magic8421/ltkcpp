@@ -24,9 +24,9 @@ void AbstractButton::EnableCapture(bool v)
 
 void AbstractButton::Update()
 {
-    DWORD timeDiff = ::GetTickCount() - m_lastTick;
+	DWORD timeDiff = ltk::TickCount() -m_lastTick;
     //LTK_LOG("timeDiff: %d", timeDiff);
-    m_lastTick = ::GetTickCount();
+    m_lastTick = ltk::TickCount();
     if (m_state == State::Normal2Hover) {
         m_aniCounter += timeDiff;
         if (m_aniCounter >= AniDuration) {
@@ -72,7 +72,7 @@ bool AbstractButton::OnMouseMove(MouseEvent *ev)
 		this->BeginAnimation();
 		this->TrackMouseLeave();
 		m_state = State::Normal2Hover;
-		m_lastTick = ::GetTickCount();
+		m_lastTick = ltk::TickCount();
 	}
     return true;
 }
@@ -83,7 +83,7 @@ bool AbstractButton::OnMouseLeave(MouseEvent *ev)
 	m_bMouseIn = false;
     this->BeginAnimation();
     m_state = State::Hover2Normal;
-    m_lastTick = ::GetTickCount();
+    m_lastTick = ltk::TickCount();
     return true;
 }
 

@@ -8,6 +8,7 @@
 #include "stdafx.h"
 #include "Animation.h"
 #include "TimerManager.h"
+#include "ltk.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW 
@@ -37,7 +38,7 @@ void ScrollAnimation::BeginScroll(float delta)
         m_velocity = 0.0f;
     }
     m_state = new_state;
-    m_lastTick = ::GetTickCount();
+    m_lastTick = ltk::TickCount();
 }
 
 void ScrollAnimation::Stop()
@@ -51,7 +52,7 @@ bool ScrollAnimation::UpdateScroll(float height)
     if (height < 0.0f) {
         return false;
     }
-    DWORD now = ::GetTickCount();
+    DWORD now = ltk::TickCount();
     if (m_state == stScrollUp) {
         m_scroll -= m_velocity * (now - m_lastTick);
     } else if (m_state == stScrollDown) {
