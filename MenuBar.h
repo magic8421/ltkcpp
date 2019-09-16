@@ -79,6 +79,12 @@ private:
 	UINT m_hoverTimer = 0;
 	bool m_bHiding = false;
 
+	enum State {sHide, sSlideIn, sShow};
+	State m_state = sHide;
+	float m_aniProgress = 0.f;
+	const float AniDelta = 1.f / 300.f;
+	DWORD m_lastTick = 0;
+
 	IDWriteTextFormat* m_format = nullptr;
 	D2D1_COLOR_F m_textColor;
 	D2D1_COLOR_F m_hoverColor;

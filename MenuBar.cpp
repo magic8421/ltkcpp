@@ -83,6 +83,11 @@ void PopupMenu::Show(Window* wnd, const RectF& rc)
 	this->SetRect(rc);
 	wnd->SetFocusSprite(this);
 	m_trackingIdx = -1;
+	
+	m_state = sSlideIn;
+	m_aniProgress = 0.f;
+	m_lastTick = ::GetTickCount();
+	BeginAnimation();
 }
 
 void PopupMenu::Hide()
@@ -123,6 +128,14 @@ void PopupMenu::OnParentChanged(Sprite* old, Sprite* new_)
 
 bool PopupMenu::OnPaint(PaintEvent *ev)
 {
+	float slide_h = 0.f;
+	if (m_state == sSlideIn) {
+		slide_h = -this->GetHeight() + this->GetHeight() * m_aniProgress;
+		ev->target->PushAxisAlignedClip(ltk::D2D1RectF(GetClientRect()),
+			D2D1_ANTIALIAS_MODE_ALIASED);
+		ltk::TranslateTransform(ev->target, 0.f, slide_h);
+	}
+
 	m_background->Draw(GetWindow(), ev->target,
 		this->GetClientRect(), 
 		AbstractBackground::Normal, 1.f);
@@ -139,6 +152,16 @@ bool PopupMenu::OnPaint(PaintEvent *ev)
 			D2D1::RectF(PADDING + ICON_WIDTH, y, this->GetWidth(), y + ITEM_HEIGHT),
 			brush);
 		y += ITEM_HEIGHT;
+	}
+
+	if (m_state == sSlideIn) {
+		ltk::TranslateTransform(ev->target, 0.f, -slide_h);
+		ev->target->PopAxisAlignedClip();
+		m_aniProgress += (::GetTickCount() - m_lastTick) * AniDelta;
+		if (m_aniProgress > 1.f) {
+			EndAnimation();
+			m_state = sShow;
+		}
 	}
 	return false;
 }
@@ -256,6 +279,9 @@ void MenuBar::SetPopupMenu(UINT idx, PopupMenu *menu)
 
 void MenuBar::OnMenuBtnClicked(UINT idx)
 {
+	if (m_trackingIdx == (int)idx) {
+		return;
+	}
 	LTK_ASSERT(idx < m_vecMenuItems.size());
 	auto menu = m_vecMenuItems[idx].sub_menu;
 	if (!menu) {
