@@ -92,6 +92,7 @@ void PopupMenu::Show(Window* wnd, const RectF& rc)
 
 void PopupMenu::Hide()
 {
+	m_state = sHide;
 	m_bHiding = true;
 	if (GetParent()) {
 		GetParent()->RemoveChild(this);
@@ -130,6 +131,8 @@ bool PopupMenu::OnPaint(PaintEvent *ev)
 {
 	float slide_h = 0.f;
 	if (m_state == sSlideIn) {
+		m_aniProgress += (::GetTickCount() - m_lastTick) * AniDelta;
+		m_aniProgress = min(1.0f, m_aniProgress);
 		slide_h = -this->GetHeight() + this->GetHeight() * m_aniProgress;
 		ev->target->PushAxisAlignedClip(ltk::D2D1RectF(GetClientRect()),
 			D2D1_ANTIALIAS_MODE_ALIASED);
@@ -157,8 +160,9 @@ bool PopupMenu::OnPaint(PaintEvent *ev)
 	if (m_state == sSlideIn) {
 		ltk::TranslateTransform(ev->target, 0.f, -slide_h);
 		ev->target->PopAxisAlignedClip();
-		m_aniProgress += (::GetTickCount() - m_lastTick) * AniDelta;
-		if (m_aniProgress > 1.f) {
+		m_lastTick = ::GetTickCount();
+		//LTK_LOG("m_aniProgress: %.2f", m_aniProgress);
+		if (m_aniProgress >= 1.f) {
 			EndAnimation();
 			m_state = sShow;
 		}
