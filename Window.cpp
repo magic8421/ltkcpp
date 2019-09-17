@@ -496,7 +496,9 @@ void Window::DrawNonClient()
 {
     SizeF size = this->GetClientSize();
     RectF rc(0, 0, size.Width, size.Height);
-    m_background->Draw(this, m_target, rc, AbstractBackground::Normal, 1.0f);
+	if (m_background) {
+		m_background->Draw(this, m_target, rc, AbstractBackground::Normal, 1.0f);
+	}
     //DrawTextureNineInOne(
     //    m_target,
     //    this->GetAtlasBitmap(),
@@ -617,6 +619,11 @@ bool Window::OnClose(bool &proceed)
     proceed = true;
     this->CloseEvent.Invoke(std::ref(proceed));
     return proceed;
+}
+
+void Window::OnDestroy()
+{ 
+	InvokeCallback(LTK_WINDOW_DESTROY, NULL);
 }
 
 HWND Window::Handle()
@@ -843,7 +850,7 @@ void Window::SetBackground(LPCSTR style)
     m_styleName = style;
 }
 
-void Window::HandleThemeChange()
+void Window::UpdateTheme()
 {
     m_background = StyleManager::Instance()->GetBackground(m_styleName.c_str());
     this->OnThemeChanged();

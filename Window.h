@@ -11,6 +11,8 @@
 #include "Event.h"
 #include "ImeInput.h"
 #include "Delegate.h"
+#include "Object.h"
+#include "LtkInterface.h"
 
 namespace ltk {
 
@@ -20,7 +22,7 @@ class WindowLayout;
 class AbstractBackground;
 class MenuBar;
 
-class Window
+class Window : public Object
 {
 public:
     Window(void);
@@ -48,7 +50,6 @@ public:
 	void SetImePosition( float x, float y );
 
     Sprite *GetRootSprite();
-	void SetRootSprite();
     Sprite *SetClientSprite(Sprite *sp);
 
 	MenuBar *SetMenu(MenuBar *);
@@ -78,13 +79,13 @@ public:
 
     virtual bool OnSize(float cx, float cy, DWORD flag);
     virtual bool OnClose(bool &proceed);
-    virtual bool OnDestroy() { return false; }
+	virtual void OnDestroy();
 
     ID2D1Bitmap *GetAtlasBitmap();
     ID2D1SolidColorBrush *GetStockBrush();
     void SetBackground(LPCSTR style);
     
-    void HandleThemeChange();
+    void UpdateTheme();
     virtual void OnThemeChanged() {}
 
 public:

@@ -4,3 +4,5 @@
 *.bak
 /Release
 /.vs/ltkcpp
+/LtkCDemo/Debug
+/LtkCDemo/res

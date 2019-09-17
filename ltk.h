@@ -7,16 +7,12 @@
 
 #pragma once
 
-#ifdef LTK_EXPORTS
-#define LTK_API __declspec(dllexport)
-#else
-#define LTK_API __declspec(dllimport)
-#endif
+
 
 namespace ltk {
-    void LtkInitialize();
-    void LtkUninitialize();
-    ID2D1Factory *GetD2DFactory();
+	void LtkInitialize();
+	void LtkUninitialize();
+	ID2D1Factory *GetD2DFactory();
     IWICImagingFactory *GetWICFactory();
     IDWriteFactory *GetDWriteFactory();
     void TranslateTransform(ID2D1RenderTarget *target, float dx, float dy);
