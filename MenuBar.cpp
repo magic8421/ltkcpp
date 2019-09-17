@@ -107,6 +107,23 @@ void PopupMenu::Hide()
 	m_bHiding = false;
 }
 
+void PopupMenu::HideAll()
+{
+	m_state = sHide;
+	m_bHiding = true;
+	if (GetParent()) {
+		GetParent()->RemoveChild(this);
+		// Invalidate(); // because GetWindow() will return null, this does not work.
+	}
+	if (m_parent) {
+		m_parent->HideAll();
+	}
+	if (m_menuBar) {
+		m_menuBar->OnMenuHide();
+	}
+	m_bHiding = false;
+}
+
 void PopupMenu::OnThemeChanged()
 {
 	auto sm = StyleManager::Instance();
@@ -186,7 +203,27 @@ bool PopupMenu::OnKillFocus(FocusEvent* ev)
 
 bool PopupMenu::OnLBtnDown(MouseEvent* ev)
 {
-	GetWindow()->DisableFocusChange();
+	auto wnd = GetWindow();
+	wnd->DisableFocusChange();
+	int hit = (int)(ev->y / ITEM_HEIGHT);
+	if (hit < 0 || hit >= (int)m_vecItems.size()) {
+		return false;
+	}
+	if (hit == m_trackingIdx) {
+		return false;
+	}
+	auto item = m_vecItems[hit];
+	if (!item->sub_menu) {
+		item->ClickedEvent.Invoke();
+	}
+	int tracking = m_trackingIdx;
+	PopupMenu* menu = this;
+	while (tracking >= 0) {
+		menu = menu->m_vecItems[tracking]->sub_menu;
+		tracking = menu->m_trackingIdx;
+	}
+	menu->HideAll();
+	::InvalidateRect(wnd->Handle(), NULL, FALSE);
 	return true;
 }
 
@@ -210,8 +247,8 @@ bool PopupMenu::OnMouseMove(MouseEvent* ev)
 	if (hover != m_hoverIdx) {
 		m_hoverIdx = hover;
 		Invalidate();
-		m_hoverTimer = ltk::SetOnceTimer(400, m_hoverTimer, [this, hover]() {
-			LTK_LOG("hover %d", hover);
+		m_hoverTimer = ltk::SetOnceTimer(0, m_hoverTimer, [this, hover]() {
+			//LTK_LOG("hover %d", hover);
 			if (m_trackingIdx >= 0 && m_trackingIdx != hover) {
 				auto sub_menu = m_vecItems[m_trackingIdx]->sub_menu;
 				sub_menu->Hide();
@@ -283,9 +320,6 @@ void MenuBar::SetPopupMenu(UINT idx, PopupMenu *menu)
 
 void MenuBar::OnMenuBtnClicked(UINT idx)
 {
-	if (m_trackingIdx == (int)idx) {
-		return;
-	}
 	LTK_ASSERT(idx < m_vecMenuItems.size());
 	auto menu = m_vecMenuItems[idx].sub_menu;
 	if (!menu) {
@@ -307,7 +341,9 @@ void MenuBar::OnButtonMouseEvent(Button* btn, MouseEvent* ev, bool& bHandled)
 				break;
 			}
 		}
-		OnMenuBtnClicked(idx);
+		if (m_trackingIdx != (int)idx) {
+			OnMenuBtnClicked(idx);
+		}
 	}
 }
 

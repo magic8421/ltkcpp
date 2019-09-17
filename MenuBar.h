@@ -53,6 +53,7 @@ public:
 
 	void Show(Window *wnd, const RectF &rc);
 	void Hide();
+	void HideAll();
 	void TrackPopupMenu(UINT idx);
 
 	ImmutableString TextColor;

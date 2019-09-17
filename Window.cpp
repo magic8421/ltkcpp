@@ -887,6 +887,8 @@ Events Window::TranslateMessageCode(UINT message)
 		return eLBtnDown;
 	case WM_LBUTTONUP:
 		return eLBtnUp;
+	case WM_LBUTTONDBLCLK:
+		return eLBtnDbClick;
 	case WM_MOUSELEAVE:
 		return eMouseLeave;
 	case WM_RBUTTONDOWN:

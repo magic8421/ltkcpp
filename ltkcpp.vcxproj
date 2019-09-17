@@ -197,6 +197,7 @@
     <ClInclude Include="ScrollBar.h" />
     <ClInclude Include="SetupStyles.h" />
     <ClInclude Include="ShadowFrame.h" />
+    <ClInclude Include="Splitter.h" />
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="StyleManager.h" />
