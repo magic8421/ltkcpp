@@ -340,7 +340,7 @@ namespace ltk {
 		SetupVectorStyle1();
 
 		StyleManager::NewTheme("pixel");
-		StyleManager::Instance()->LoadFromXml("res\\style.xml");
+		//StyleManager::Instance()->LoadFromXml("res\\style.xml");
 		SetupPixelStyle1();
     }
 

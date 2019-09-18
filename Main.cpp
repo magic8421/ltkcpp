@@ -51,12 +51,12 @@ int CALLBACK WinMain(
 
     ltk::LtkInitialize();
 
-    StyleManager::NewTheme("rect");
-    SetupVectorStyle1();
+    //StyleManager::NewTheme("rect");
+    //SetupVectorStyle1();
 
-    StyleManager::NewTheme("pixel");
-    StyleManager::Instance()->LoadFromXml("res\\style.xml");
-    SetupPixelStyle1();
+    //StyleManager::NewTheme("pixel");
+    ////StyleManager::Instance()->LoadFromXml("res\\style.xml");
+    //SetupPixelStyle1();
 
     unique_ptr<Window> wnd;
     wnd.reset(new Window);
