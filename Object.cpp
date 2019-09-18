@@ -4,7 +4,12 @@
 
 namespace ltk {
 
-void Object::RegisterCallback(UINT event_id, LtkEventCallback cb, void* userdata)
+	Object::~Object() 
+	{
+		InvokeCallback(LTK_OBJECT_DESTROY, this);
+	}
+
+	void Object::RegisterCallback(UINT event_id, LtkEventCallback cb, void* userdata)
 {
 	auto& vecCallbacks = m_mapCallbacks[event_id];
 	bool bFound = false;

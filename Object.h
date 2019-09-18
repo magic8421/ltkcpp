@@ -14,7 +14,7 @@ class Object
 {
 public:
 	Object() {}
-	virtual ~Object() {}
+	virtual ~Object();
 
 	void RegisterCallback(UINT event_id, LtkEventCallback cb, void* userdata);
 	void InvokeCallback(UINT event_id, void* arg);

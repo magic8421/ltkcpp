@@ -9,7 +9,7 @@ template <typename F>
 class ScopeGuard
 {
 public:
-    ScopeGuard(ScopeGuard &&other) noexcept
+    ScopeGuard(ScopeGuard &&other)
         : m_func(std::move(other.m_func))
         , m_invoke(other.m_invoke)
     {
@@ -20,12 +20,12 @@ public:
         if (m_invoke)
             m_func();
     }
-    void dismiss() noexcept
+    void dismiss()
     {
         m_invoke = false;
     }
 private:
-    explicit ScopeGuard(F &&f) noexcept
+    explicit ScopeGuard(F &&f)
         : m_func(std::move(f))
     {
     }

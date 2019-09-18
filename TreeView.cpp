@@ -222,8 +222,9 @@ bool TreeView::OnMouseWheel(MouseEvent *ev)
 
 bool TreeView::OnLBtnDown(MouseEvent *ev)
 {
+	auto scroll = m_scrollAni.GetScroll();
     TraverseTree(&m_root, 0, 
-        [ev, scroll = m_scrollAni.GetScroll()](TreeNode *node, int) {
+		[ev, scroll](TreeNode *node, int) {
             node->OnLBtnDown(PointF(ev->x, ev->y + scroll));
     });
     this->DoLayout(); // TODO change callback to return bool, early abort.
