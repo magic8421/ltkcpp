@@ -49,14 +49,14 @@ int CALLBACK WinMain(
 {
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 
-    LtkInitialize();
+    ltk::LtkInitialize();
 
-    StyleManager::NewTheme("rect");
-    SetupVectorStyle1();
+    //StyleManager::NewTheme("rect");
+    //SetupVectorStyle1();
 
-    StyleManager::NewTheme("pixel");
-    StyleManager::Instance()->LoadFromXml("res\\style.xml");
-    SetupPixelStyle1();
+    //StyleManager::NewTheme("pixel");
+    ////StyleManager::Instance()->LoadFromXml("res\\style.xml");
+    //SetupPixelStyle1();
 
     unique_ptr<Window> wnd;
     wnd.reset(new Window);
@@ -158,7 +158,7 @@ int CALLBACK WinMain(
     btnPixelTheme->SetText(L"位图资源");
     btnPixelTheme->ClickedEvent.Attach([wnd = wnd.get()]() {
         StyleManager::SetCurrentTheme("pixel");
-        wnd->HandleThemeChange();
+        wnd->UpdateTheme();
     });
 
     Button *btnRectTheme = new Button;
@@ -166,7 +166,7 @@ int CALLBACK WinMain(
     btnRectTheme->SetText(L"纯色1");
 	btnRectTheme->ClickedEvent.Attach([wnd = wnd.get()]() {
         StyleManager::SetCurrentTheme("rect");
-        wnd->HandleThemeChange();
+        wnd->UpdateTheme();
     });
 
 	MenuBar *menu_bar = new MenuBar;
@@ -203,7 +203,7 @@ int CALLBACK WinMain(
 
 
     vboxRightPanel->AddSpaceItem(5, 0);
-	wnd->HandleThemeChange();
+	wnd->UpdateTheme();
 	hbox->DoLayout();
 
 
@@ -220,6 +220,6 @@ int CALLBACK WinMain(
     LTK_LOG("MessageLoop END");
     ::Sleep(2000);
 
-    LtkUninitialize();
+    ltk::LtkUninitialize();
     return 0;
 }

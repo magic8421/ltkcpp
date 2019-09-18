@@ -32,7 +32,7 @@
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v140</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
@@ -86,7 +86,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;LTK_EXPORTS;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <DisableSpecificWarnings>4100;4189</DisableSpecificWarnings>
       <TreatWarningAsError>true</TreatWarningAsError>
@@ -117,7 +117,7 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;LTK_EXPORTS;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <DisableSpecificWarnings>4100;4189</DisableSpecificWarnings>
       <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
@@ -159,8 +159,10 @@
     <ClCompile Include="Label.cpp" />
     <ClCompile Include="ListView.cpp" />
     <ClCompile Include="ltk.cpp" />
+    <ClCompile Include="LtkInterface.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="MenuBar.cpp" />
+    <ClCompile Include="Object.cpp" />
     <ClCompile Include="ScrollBar.cpp" />
     <ClCompile Include="SetupStyles.cpp" />
     <ClCompile Include="ShadowFrame.cpp" />
@@ -193,7 +195,9 @@
     <ClInclude Include="Label.h" />
     <ClInclude Include="ListView.h" />
     <ClInclude Include="ltk.h" />
+    <ClInclude Include="LtkInterface.h" />
     <ClInclude Include="MenuBar.h" />
+    <ClInclude Include="Object.h" />
     <ClInclude Include="ScrollBar.h" />
     <ClInclude Include="SetupStyles.h" />
     <ClInclude Include="ShadowFrame.h" />
@@ -208,6 +212,9 @@
     <ClInclude Include="UniConversion.h" />
     <ClInclude Include="Window.h" />
     <ClInclude Include="WindowLayout.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="cpp.hint" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

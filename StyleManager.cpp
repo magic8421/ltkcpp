@@ -41,6 +41,11 @@ void StyleManager::NewTheme(LPCSTR name)
 	if (!m_sThemeData) {
         m_sThemeData = new ThemeData;
     }
+	if (m_sThemeData->MapTheme[name]) {
+		//LTK_ASSERT(false);
+		LTK_LOG("StyleManager::NewTheme theme already exists: %s", name);
+		return;
+	}
     m_sThemeData->MapTheme[name] = new StyleManager;
     m_sThemeData->CurrentTheme = name;
 }
@@ -112,9 +117,13 @@ void StyleManager::AddBackgroundStyle(const char *name, AbstractBackground *bg)
 {
 	LTK_ASSERT(name);
 	std::string strName(name);
-    if (m_mapBackgroundStyle[strName]) {
-        LTK_ASSERT(false);
-    }
+	auto iter = m_mapBackgroundStyle.find(strName);
+	if (iter != m_mapBackgroundStyle.end()) {
+		//LTK_ASSERT(false);
+		LTK_LOG("StyleManager::AddBackgroundStyle style already exists: %s", name);
+		delete bg;
+		return;
+	}
     m_mapBackgroundStyle[strName] = bg;
 }
 
@@ -124,8 +133,9 @@ void StyleManager::RegisterColor(LPCSTR name, D2D1_COLOR_F color)
 	std::string strName(name);
 	auto iter = m_mapColor.find(strName);
 	if (iter != m_mapColor.end()) {
-		LTK_ASSERT(false);
+		//LTK_ASSERT(false);
 		LTK_LOG("StyleManager::RegisterColor() [%s] already exists.", name);
+		return;
 	}
 	m_mapColor[strName] = color;
 }
@@ -155,7 +165,11 @@ IDWriteTextFormat * StyleManager::GetTextFormat(LPCSTR name)
 void StyleManager::AddTextFormat(LPCSTR name, IDWriteTextFormat *format)
 {
 	LTK_ASSERT(name);
-	LTK_ASSERT(m_mapTextFormat[name] == nullptr);
+	if (m_mapTextFormat[name] != nullptr) {
+		//LTK_ASSERT(false);
+		LTK_LOG("StyleManager::AddTextFormat [%s] already exists.", name);
+		return;
+	}
     m_mapTextFormat[name] = format;
     format->AddRef();
 }

@@ -96,6 +96,12 @@
     <ClCompile Include="MenuBar.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="LtkInterface.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Object.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -185,5 +191,14 @@
     <ClInclude Include="Splitter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="LtkInterface.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Object.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="cpp.hint" />
   </ItemGroup>
 </Project>

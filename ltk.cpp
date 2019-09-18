@@ -15,6 +15,7 @@
 #include "RefCounted.h"
 #include "Sprite.h"
 #include "TimerManager.h"
+#include "SetupStyles.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW 
@@ -335,6 +336,11 @@ namespace ltk {
         ShadowFrame::Init();
         Window::RegisterWndClass();
 
+		StyleManager::NewTheme("rect");
+		SetupVectorStyle1();
+
+		StyleManager::NewTheme("pixel");
+		SetupPixelStyle1();
     }
 
     void LtkUninitialize()
