@@ -96,10 +96,10 @@
     <ClCompile Include="MenuBar.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="LtkInterface.cpp">
+    <ClCompile Include="Object.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Object.cpp">
+    <ClCompile Include="Splitter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -189,9 +189,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Splitter.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="LtkInterface.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Object.h">

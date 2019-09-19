@@ -45,6 +45,10 @@ m_shadowBottom(ShadowFrame::eBottom)
 
 Window::~Window(void)
 {
+    if (m_sprite) {
+        delete m_sprite;
+    }
+
     m_spFocus = INVALID_POINTER(Sprite);
     m_spCapture = INVALID_POINTER(Sprite);
     m_spHover = INVALID_POINTER(Sprite);
@@ -692,9 +696,9 @@ void Window::SetImePosition( float x, float y )
 	m_rectComposition.bottom = (int)y + 20;
 }
 
-Ptr<Sprite> Window::GetRootSprite()
+Sprite *Window::GetRootSprite()
 {
-	return m_sprite.ToPtr();
+    return m_sprite;
 }
 
 Sprite *Window::SetClientSprite(Sprite *sp)

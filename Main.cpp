@@ -17,6 +17,7 @@
 #include "BoxLayout.h"
 #include "HeaderCtrl.h"
 #include "MenuBar.h"
+#include "Splitter.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW 
@@ -67,6 +68,16 @@ int CALLBACK WinMain(
         ::PostQuitMessage(0);
     });
 
+	Splitter *spitter1 = new Splitter(Splitter::Horizontal);
+	wnd->SetClientSprite(spitter1);
+	spitter1->AddClient(new Button);
+	spitter1->SetClientSize(0, 100);
+	spitter1->AddClient(new Button);
+	spitter1->SetClientSize(1, 150);
+	spitter1->AddClient(new Button);
+	spitter1->SetClientSize(2, 200);
+
+	/*
     BoxLayout *hbox = new BoxLayout(BoxLayout::Horizontal);
     wnd->SetClientSprite(hbox);
 
@@ -202,8 +213,9 @@ int CALLBACK WinMain(
 
 
     vboxRightPanel->AddSpaceItem(5, 0);
+	*/
 	wnd->UpdateTheme();
-	hbox->DoLayout();
+	spitter1->DoLayout();
 
 
     MSG msg;
