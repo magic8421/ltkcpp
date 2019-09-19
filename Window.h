@@ -51,7 +51,7 @@ public:
 	void OnImeInput(LPCTSTR text);
 	void SetImePosition( float x, float y );
 
-	Ptr<WindowLayout> GetRootSprite();
+	Ptr<Sprite> GetRootSprite();
     Sprite *SetClientSprite(Sprite *sp);
 
 	MenuBar *SetMenu(MenuBar *);

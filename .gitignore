@@ -6,3 +6,4 @@
 /.vs/ltkcpp
 /LtkCDemo/Debug
 /LtkCDemo/res
+*.log

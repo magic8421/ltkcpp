@@ -692,7 +692,7 @@ void Window::SetImePosition( float x, float y )
 	m_rectComposition.bottom = (int)y + 20;
 }
 
-Ptr<WindowLayout> Window::GetRootSprite()
+Ptr<Sprite> Window::GetRootSprite()
 {
 	return m_sprite.ToPtr();
 }

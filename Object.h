@@ -9,11 +9,11 @@ class ObserverCtrl {
 public:
 	explicit ObserverCtrl(Object *p) : pobj(p) {}
 	void AddRef() {
-		refCount++;
+		InterlockedIncrement(&refCount);
 	}
 	void Release() {
-		refCount--;
-		if (refCount == 0) {
+		long ref = InterlockedDecrement(&refCount);
+		if (ref == 0) {
 			delete this;
 		}
 	}
@@ -21,7 +21,7 @@ public:
 		return pobj;
 	}
 	void Set(Object *p){
-		pobj = p;
+		InterlockedExchangePointer((void**)&pobj, p);
 	}
 
 private:
@@ -29,7 +29,7 @@ private:
 	long refCount = 1;
 };
 
-template<typename T>
+template<class T>
 class Ptr {
 public:
 	explicit Ptr(ObserverCtrl *ctrl) :m_obctrl(ctrl) {
@@ -45,6 +45,13 @@ public:
 		m_obctrl->AddRef();
 		return *this;
 	}
+	template<class T2, 
+	class = typename std::enable_if<std::is_convertible<T2 *, T *>::value, void>::type>
+	Ptr(const Ptr<T2> &rhs) {
+		Ptr *prhs = (Ptr<T> *)&rhs;
+		m_obctrl = prhs->m_obctrl;
+		m_obctrl->AddRef();
+	}
 	~Ptr() {
 		m_obctrl->Release();
 	}
@@ -58,7 +65,7 @@ private:
 	ObserverCtrl *m_obctrl;
 };
 
-template<typename T>
+template<class T>
 class Owner {
 public:
 	~Owner() { delete m_ptr; }
