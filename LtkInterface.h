@@ -35,7 +35,10 @@ typedef struct _LtkRect
 	float h;
 } LtkRect;
 
-typedef void (CALLBACK * LtkEventCallback) (void* userdata, UINT event_id, void* sender, void* arg);
+typedef void* LTK_ARG;
+
+typedef LTK_ARG(CALLBACK *LtkCallback)(LTK_ARG self, UINT code,
+	LTK_ARG arg1, LTK_ARG arg2, LTK_ARG arg3, LTK_ARG arg4);
 
 #define LTK_WINDOW_DESTROY		100
 
@@ -44,7 +47,7 @@ LTK_API LtkError WINAPI LtkInitialize();
 LTK_API void WINAPI LtkUninitialize();
 LTK_API void WINAPI LtkRunApp();
 
-LTK_API void WINAPI LtkObject_RegisterCallback(LtkObject* self, UINT event_id, LtkEventCallback cb, void* userdata);
+LTK_API void WINAPI LtkObject_RegisterCallback(LtkObject* self, UINT event_id, LtkCallback cb, void* userdata);
 
 LTK_API LtkWindow* WINAPI LtkCreateWindow(LtkWindow* parent, LtkRect* rc);
 LTK_API void WINAPI LtkWindow_SetBackground(LtkWindow* self, LPCSTR name);

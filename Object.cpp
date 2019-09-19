@@ -4,7 +4,7 @@
 
 namespace ltk {
 
-void Object::RegisterCallback(UINT event_id, LtkEventCallback cb, void* userdata)
+void Object::RegisterCallback(UINT event_id, LtkCallback cb, void* userdata)
 {
 	auto& vecCallbacks = m_mapCallbacks[event_id];
 	bool bFound = false;
@@ -24,7 +24,7 @@ void Object::RegisterCallback(UINT event_id, LtkEventCallback cb, void* userdata
 	vecCallbacks.push_back(info);
 }
 
-void Object::InvokeCallback(UINT event_id, void* arg)
+void Object::InvokeCallback(UINT event_id, LTK_ARG arg1, LTK_ARG arg2, LTK_ARG arg3, LTK_ARG arg4)
 {
 	auto iter = m_mapCallbacks.find(event_id);
 	if (iter == m_mapCallbacks.end()) {
@@ -32,7 +32,7 @@ void Object::InvokeCallback(UINT event_id, void* arg)
 	}
 	auto& vecCallbacks = m_mapCallbacks[event_id];
 	for (auto info : vecCallbacks) {
-		info.callback(info.userdata, event_id, this, arg);
+		info.callback(info.userdata, event_id, arg1, arg2, arg3, arg4);
 	}
 }
 

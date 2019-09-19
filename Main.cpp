@@ -58,8 +58,7 @@ int CALLBACK WinMain(
     ////StyleManager::Instance()->LoadFromXml("res\\style.xml");
     //SetupPixelStyle1();
 
-    unique_ptr<Window> wnd;
-    wnd.reset(new Window);
+	auto wnd = new Window;
     wnd->SetCaption(L"LTK测试窗口");
     wnd->SetBackground("window_bg");
     wnd->Create(nullptr, RectF(0, 0, 600, 500));
@@ -156,7 +155,7 @@ int CALLBACK WinMain(
     Button *btnPixelTheme = new Button;
     hboxTheme->AddLayoutItem(btnPixelTheme, 100);
     btnPixelTheme->SetText(L"位图资源");
-    btnPixelTheme->ClickedEvent.Attach([wnd = wnd.get()]() {
+    btnPixelTheme->ClickedEvent.Attach([wnd]() {
         StyleManager::SetCurrentTheme("pixel");
         wnd->UpdateTheme();
     });
@@ -164,7 +163,7 @@ int CALLBACK WinMain(
     Button *btnRectTheme = new Button;
     hboxTheme->AddLayoutItem(btnRectTheme, 100);
     btnRectTheme->SetText(L"纯色1");
-	btnRectTheme->ClickedEvent.Attach([wnd = wnd.get()]() {
+	btnRectTheme->ClickedEvent.Attach([wnd]() {
         StyleManager::SetCurrentTheme("rect");
         wnd->UpdateTheme();
     });
@@ -217,6 +216,7 @@ int CALLBACK WinMain(
             DispatchMessage(&msg);
         }
     }
+	delete wnd;
     LTK_LOG("MessageLoop END");
     ::Sleep(2000);
 
