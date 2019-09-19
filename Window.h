@@ -25,6 +25,8 @@ class MenuBar;
 class Window : public Object
 {
 public:
+	RTTI_DECLARATIONS(Window, Object);
+
     Window(void);
     virtual ~Window(void);
 

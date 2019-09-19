@@ -623,7 +623,6 @@ bool Window::OnClose(bool &proceed)
 
 void Window::OnDestroy()
 { 
-	InvokeCallback(LTK_WINDOW_DESTROY, NULL);
 }
 
 HWND Window::Handle()

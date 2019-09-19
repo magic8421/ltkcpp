@@ -32,7 +32,7 @@ LTK_API void WINAPI LtkRunApp()
 LTK_API void WINAPI LtkObject_RegisterCallback(LtkObject* self, UINT event_id, LtkEventCallback cb, void* userdata)
 {
 	ltk::Object* thiz = (ltk::Object*)self;
-	thiz->RegisterCallback(event_id, cb, userdata);
+	//thiz->RegisterCallback(event_id, cb, userdata);
 }
 
 LTK_API LtkWindow* WINAPI LtkCreateWindow(LtkWindow *parent, LtkRect *rc)

@@ -216,7 +216,10 @@ int CALLBACK WinMain(
             DispatchMessage(&msg);
         }
     }
+	Observer<Window> ob = wnd->GetObserver<Window>();
 	delete wnd;
+	LTK_ASSERT(ob.Get() == nullptr);
+
     LTK_LOG("MessageLoop END");
     ::Sleep(2000);
 
