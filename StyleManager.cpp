@@ -9,6 +9,9 @@
 #include "StyleManager.h"
 #include "ltk.h"
 #include "Window.h"
+#include <memory>
+
+using std::unique_ptr;
 
 #ifdef _DEBUG
 #define new DEBUG_NEW 

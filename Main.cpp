@@ -58,7 +58,8 @@ int CALLBACK WinMain(
     ////StyleManager::Instance()->LoadFromXml("res\\style.xml");
     //SetupPixelStyle1();
 
-	auto wnd = new Window;
+	shared_ptr<Window> wnd;
+	wnd.reset(new Window);
     wnd->SetCaption(L"LTK²âÊÔ´°¿Ú");
     wnd->SetBackground("window_bg");
     wnd->Create(nullptr, RectF(0, 0, 600, 500));
@@ -216,9 +217,6 @@ int CALLBACK WinMain(
             DispatchMessage(&msg);
         }
     }
-	ltk::Ptr<Window> ob = wnd->GetPtr<Window>();
-	delete wnd;
-	LTK_ASSERT(ob.Get() == nullptr);
 
     LTK_LOG("MessageLoop END");
     ::Sleep(2000);

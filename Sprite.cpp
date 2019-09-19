@@ -30,9 +30,6 @@ Sprite::Sprite(void)
 
 Sprite::~Sprite(void)
 {
-    for (size_t i = 0; i < m_children.size(); i++) {
-        delete m_children[i];
-	}
 }
 
 RectF Sprite::GetRect()
@@ -50,14 +47,14 @@ RectF Sprite::GetClientRect()
 
 RectF Sprite::GetAbsRect()
 {
-	Sprite *sp = m_parent;
+	shared_ptr<Sprite> sp = m_parent.lock();
 	RectF rcSelf = GetRect();
 	RectF rcParent;
 	while(sp)
 	{
 		rcParent = sp->GetRect();
 		rcSelf.Offset(rcParent.X, rcParent.Y);
-		sp = sp->m_parent;
+		sp = sp->m_parent.lock();
 	}
 	return rcSelf;
 }
@@ -98,7 +95,7 @@ void Sprite::SetRect( RectF rect )
 void Sprite::Invalidate()
 {
 	// 0指针访问 不挂是因为x64系统一个bug 记得打开调试中的Win32异常断点
-	Window *wnd = GetWindow();
+	shared_ptr<Window> wnd = GetWindow();
     if (wnd)
 	{
 		BOOL ret = ::InvalidateRect(wnd->Handle(), NULL, FALSE);
@@ -106,7 +103,7 @@ void Sprite::Invalidate()
 	}
 }
 
-void Sprite::SetWindow( Window *wnd )
+void Sprite::SetWindow( shared_ptr<Window> wnd )
 {
     //LTK_LOG("SetWindow: %08x", wnd);
 	m_window = wnd;
@@ -151,7 +148,7 @@ void Sprite::HandlePaint( ID2D1RenderTarget *target )
 	}
 }
 
-void Sprite::AddChild(Sprite *sp)
+void Sprite::AddChild(shared_ptr<Sprite> sp)
 {
     for (UINT i =  m_children.size(); i > 0; i--) {
         if (m_children[i - 1] == sp) {
@@ -160,13 +157,14 @@ void Sprite::AddChild(Sprite *sp)
         }
     }
 	//sp->SetWindow(m_window);
-    if (sp->m_parent) {
+	auto parent = sp->m_parent.lock();
+	if (parent) {
         // if sp already has a parent, remove it first.
-        sp->m_parent->RemoveChild(sp);
+		parent->RemoveChild(sp);
     }
 	m_children.push_back(sp);
-	sp->OnParentChanged(sp->m_parent, this);
-	sp->m_parent = this;
+	sp->OnParentChanged(parent.get(), this);
+	sp->m_parent = shared_from_this();
 }
 
 void Sprite::HandleKeyEvent( UINT message, DWORD keyCode, DWORD flag )
@@ -200,15 +198,16 @@ void Sprite::HandleImeInput(LPCTSTR text)
     OnEvent(&ev);
 }
 
-// return weak ref
-Window * Sprite::GetWindow()
+shared_ptr<Window> Sprite::GetWindow()
 {
-	Sprite *sp = this;
-	while (sp->m_parent)
+	shared_ptr<Sprite> parent = m_parent.lock();
+	shared_ptr<Window> wnd;
+	while (parent)
 	{
-		sp = sp->m_parent;
+		wnd = parent->m_window.lock();
+		parent = parent->m_parent.lock();
 	}
-	return sp->m_window;
+	return wnd;
 }
 
 void Sprite::SetCapture()
@@ -233,7 +232,7 @@ void Sprite::ReleaseCapture()
 
 bool Sprite::IsCapturing()
 {
-    Window *wnd = GetWindow();
+    auto wnd = GetWindow();
     if (wnd) {
         return wnd->IsCapturing(this);
     } else {
@@ -294,38 +293,39 @@ bool Sprite::DispatchMouseEvent(MouseEvent *ev)
     return this->OnEvent(ev);
 }
 
-Sprite * Sprite::GetAncestor()
+shared_ptr<Sprite> Sprite::GetAncestor()
 {
-	Sprite *sp = this;
-	while (sp->m_parent)
+	shared_ptr<Sprite> sp = this->m_parent.lock();
+	shared_ptr<Sprite> sp2 = sp;
+	while (sp)
 	{
-		sp = sp->m_parent;
+		sp2 = sp;
+		sp = sp->m_parent.lock();
 	}
-	return sp;
+	return sp2;
 }
 
-Sprite * Sprite::GetParent()
+shared_ptr<Sprite> Sprite::GetParent()
 {
-	return m_parent;
+	return m_parent.lock();
 }
 
 void Sprite::TrackMouseLeave()
 {
-	Window *wnd = GetWindow();
+	shared_ptr<Window> wnd = GetWindow();
 	if (wnd)
 	{
 		wnd->TrackMouseLeave(this);
 	}
 }
 
-void Sprite::RemoveChild( Sprite *sp )
+void Sprite::RemoveChild( shared_ptr<Sprite> sp )
 {
     // maybe searh from the end is better, because we always push to the end.
     for (int i = m_children.size() - 1; i >= 0; i--) {
         auto sp2 = m_children[i];
         if (sp2 == sp) {
-            //sp2->Release();
-			sp2->m_parent = nullptr;
+			sp2->m_parent.empty();
             for (int j = i + 1; j < (int)m_children.size(); j++) {
                 m_children[j - 1] = m_children[j];
             }
@@ -438,14 +438,14 @@ void Sprite::HandleThemeChange()
 void Sprite::BeginAnimation()
 {
     //LTK_LOG("BeginAnimation");
-    Window *wnd = GetWindow();
+    auto wnd = GetWindow();
     wnd->BeginAnimation(this);
 }
 
 void Sprite::EndAnimation()
 {
     //LTK_LOG("EndAnimation");
-    Window *wnd = GetWindow();
+    auto wnd = GetWindow();
     if (wnd) {
         wnd->EndAnimation(this);
     }

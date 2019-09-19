@@ -37,7 +37,7 @@ m_shadowBottom(ShadowFrame::eBottom)
 	m_rectComposition.right = 5;
 	m_rectComposition.bottom = 20;
 
-    m_sprite = new WindowLayout;
+    m_sprite.reset(new WindowLayout);
     m_sprite->SetWindow(this);
     
 	m_caretHeight = 20;
@@ -692,9 +692,9 @@ void Window::SetImePosition( float x, float y )
 	m_rectComposition.bottom = (int)y + 20;
 }
 
-Ptr<Sprite> Window::GetRootSprite()
+shared_ptr<Sprite> Window::GetRootSprite()
 {
-	return m_sprite.ToPtr();
+	return m_sprite;
 }
 
 Sprite *Window::SetClientSprite(Sprite *sp)

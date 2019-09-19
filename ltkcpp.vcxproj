@@ -90,6 +90,7 @@
       <LanguageStandard>stdcpp17</LanguageStandard>
       <DisableSpecificWarnings>4100;4189</DisableSpecificWarnings>
       <TreatWarningAsError>true</TreatWarningAsError>
+      <AdditionalIncludeDirectories>E:\boost_1_71_0</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

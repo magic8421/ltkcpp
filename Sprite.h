@@ -14,11 +14,9 @@ namespace ltk {
 
 class Window;
 
-class Sprite : public Object
+class Sprite : public boost::enable_shared_from_this<Sprite>
 {
 public:
-	RTTI_DECLARATIONS(Sprite, Object);
-
     Sprite(void);
     virtual ~Sprite(void);
 
@@ -34,14 +32,14 @@ public:
 
 	void Invalidate();
 
-	void SetWindow( Window *wnd );
-	Window *GetWindow();
+	void SetWindow( shared_ptr<Window> wnd );
+	shared_ptr<Window> GetWindow();
 
 	void SetVisible( bool );
 	bool GetVisible();
 
-	void AddChild( Sprite *sp );
-	void RemoveChild(Sprite* sp);
+	void AddChild( shared_ptr<Sprite> sp );
+	void RemoveChild( shared_ptr<Sprite> sp );
 
     void HandlePaint( ID2D1RenderTarget *target );
 
@@ -66,8 +64,8 @@ public:
 
 	bool DispatchMouseEvent(MouseEvent *ev);
 
-	Sprite *GetAncestor();
-	Sprite *GetParent();
+	shared_ptr<Sprite> GetAncestor();
+	shared_ptr<Sprite> GetParent();
 
     void ShowCaret();
     void SetCaretPos(RectF rc);
@@ -108,10 +106,10 @@ private:
 	bool m_bClipChildren; // TODO this one is useless
 
     RectF m_rect;
-    Window *m_window = nullptr;
+    weak_ptr<Window> m_window;
 
-    std::vector<Sprite *> m_children;
-    Sprite *m_parent = nullptr;
+    std::vector<shared_ptr<Sprite>> m_children;
+    weak_ptr<Sprite> m_parent;
 
 	DISALLOW_COPY_AND_ASSIGN(Sprite);
 };

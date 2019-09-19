@@ -17,7 +17,6 @@
 #include <unordered_map>
 #include <unordered_set>
 #include <stack>
-#include <memory>
 #include <algorithm>
 #include <functional>
 #include <thread>
@@ -25,8 +24,13 @@
 using std::wstring;
 using std::wstringstream;
 using std::stringstream;
-using std::unique_ptr;
 using std::vector;
+
+#include <boost\shared_ptr.hpp>
+#include <boost\weak_ptr.hpp>
+#include <boost\enable_shared_from_this.hpp>
+using boost::shared_ptr;
+using boost::weak_ptr;
 
 #include <stdio.h>
 #include <stdarg.h>
