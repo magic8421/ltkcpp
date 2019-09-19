@@ -7,6 +7,7 @@ class Object;
 
 class ObserverCtrl {
 public:
+	explicit ObserverCtrl(Object *p) : pobj(p) {}
 	void AddRef() {
 		refCount++;
 	}
@@ -29,22 +30,22 @@ private:
 };
 
 template<typename T>
-class Observer {
+class Ptr {
 public:
-	explicit Observer(ObserverCtrl *ctrl) :m_obctrl(ctrl) {
+	explicit Ptr(ObserverCtrl *ctrl) :m_obctrl(ctrl) {
 		m_obctrl->AddRef();
 	}
-	Observer(const Observer &rhs) {
+	Ptr(const Ptr &rhs) {
 		m_obctrl = rhs.m_obctrl;
 		m_obctrl->AddRef();
 	}
-	Observer operator=(const Observer &rhs) {
+	Ptr operator=(const Ptr &rhs) {
 		m_obctrl->Release();
 		m_obctrl = rhs.m_obctrl;
 		m_obctrl->AddRef();
 		return *this;
 	}
-	~Observer() {
+	~Ptr() {
 		m_obctrl->Release();
 	}
 	T *operator->() {
@@ -57,6 +58,50 @@ private:
 	ObserverCtrl *m_obctrl;
 };
 
+template<typename T>
+class Owner {
+public:
+	~Owner() { delete m_ptr; }
+	Owner() : m_ptr(nullptr) {}
+	Owner(T* p) : m_ptr(p) {}
+	Owner(const Owner& rhs) = delete;
+	void operator=(const Owner& rhs) = delete;
+
+	Owner(Owner &&rhs) {
+		m_ptr = rhs.m_ptr;
+		rhs.m_ptr = nullptr;
+	}
+	void operator=(Owner &&rhs) {
+		m_ptr = rhs.m_ptr;
+		rhs.m_ptr = nullptr;
+	}
+	T* operator->() {
+		return m_ptr;
+	}
+	operator bool() {
+		return m_ptr ? true : false;
+	}
+	bool operator==(const Owner& rhs) {
+		return m_ptr == rhs.m_ptr;
+	}
+	T* reset(T *p) {
+		T* old = m_ptr;
+		m_ptr = p;
+		return old;
+	}
+	T* reset() {
+		delete m_ptr;
+	}
+	T* get() {
+		return m_ptr;
+	}
+	Ptr<T> ToPtr(){
+		return m_ptr->GetPtr<T>();
+	}
+private:
+	T *m_ptr;
+};
+
 class Object : public RTTI
 {
 public:
@@ -66,9 +111,9 @@ public:
 	virtual ~Object();
 
 	template<typename T>
-	Observer<T> GetObserver() {
+	Ptr<T> GetPtr() {
 		assert(this->Is(T::TypeIdClass()));
-		return Observer<T>(m_obctrl);
+		return Ptr<T>(m_obctrl);
 	}
 
 	void SetInvalid();

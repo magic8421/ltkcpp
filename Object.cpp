@@ -6,7 +6,7 @@ namespace ltk {
 
 Object::Object()
 {
-	m_obctrl = new ObserverCtrl;
+	m_obctrl = new ObserverCtrl(this);
 }
 
 Object::~Object() 

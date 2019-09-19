@@ -8,15 +8,17 @@
 #pragma once
 #include "Common.h"
 #include "Event.h"
-#include "RTTI.h"
+#include "Object.h"
 
 namespace ltk {
 
 class Window;
 
-class Sprite 
+class Sprite : public Object
 {
 public:
+	RTTI_DECLARATIONS(Sprite, Object);
+
     Sprite(void);
     virtual ~Sprite(void);
 

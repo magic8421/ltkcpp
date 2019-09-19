@@ -11,6 +11,7 @@
 #include "Button.h"
 #include "Window.h"
 #include "TimerManager.h"
+#include "WindowLayout.h"
 
 namespace ltk {
 

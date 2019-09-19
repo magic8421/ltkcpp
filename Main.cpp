@@ -216,7 +216,7 @@ int CALLBACK WinMain(
             DispatchMessage(&msg);
         }
     }
-	Observer<Window> ob = wnd->GetObserver<Window>();
+	ltk::Ptr<Window> ob = wnd->GetPtr<Window>();
 	delete wnd;
 	LTK_ASSERT(ob.Get() == nullptr);
 

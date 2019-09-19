@@ -51,7 +51,7 @@ public:
 	void OnImeInput(LPCTSTR text);
 	void SetImePosition( float x, float y );
 
-    Sprite *GetRootSprite();
+	Ptr<WindowLayout> GetRootSprite();
     Sprite *SetClientSprite(Sprite *sp);
 
 	MenuBar *SetMenu(MenuBar *);
@@ -113,7 +113,7 @@ private:
 	RECT m_rectComposition;
 	int m_caretHeight;
 
-	WindowLayout *m_sprite = nullptr; // owner
+	Owner<WindowLayout> m_sprite;
 
 	bool m_bEnableFocusChange = true;
     Sprite *m_spFocus = nullptr;
