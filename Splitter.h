@@ -16,6 +16,7 @@ public:
 	
 	void DoLayout();
 	int HitTest(float x, float y);
+	float PosFromIdx(UINT idx);
 
 protected:
 	virtual bool OnMouseMove(MouseEvent *ev) override;

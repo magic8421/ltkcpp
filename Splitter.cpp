@@ -4,6 +4,7 @@
 namespace ltk {
 
 static const float GRIP_SIZE = 5.f;
+static const float MIN_SIZE = 15.f;
 
 void Splitter::AddClient(Sprite *sp)
 {
@@ -80,7 +81,7 @@ bool Splitter::OnLBtnDown(MouseEvent *ev)
 	if (m_dragIdx >= 0) {
 		this->SetCapture();
 		m_bCapture = true;
-		m_dragPos = ev->x;
+		m_dragPos = ev->x - PosFromIdx(m_dragIdx);
 	}
 	return false;
 }
@@ -102,6 +103,17 @@ bool Splitter::OnSize(SizeEvent *ev)
 	return false;
 }
 
+float Splitter::PosFromIdx(UINT idx)
+{
+	float sum = 0.f;
+	for (UINT i = 0; i <= idx; i ++) {
+		sum += m_vecItems[i].size;
+		sum += GRIP_SIZE;
+	}
+	sum -= GRIP_SIZE;
+	return sum;
+}
+
 bool Splitter::OnMouseMove(MouseEvent *ev)
 {
 	if (!m_bCapture) {
@@ -117,8 +129,18 @@ bool Splitter::OnMouseMove(MouseEvent *ev)
 		}
 	}
 	else {
-		auto dragDelta = ev->x - m_dragPos;
-		//m_vecItems[m_dragIdx].size += dragDelta;
+		for (int i = 0; i < m_dragIdx; i++) {
+			ev->x -= m_vecItems[i].size;
+		}
+		m_vecItems[m_dragIdx].size = max(MIN_SIZE, ev->x - m_dragPos);
+		float sum = PosFromIdx(m_vecItems.size() - 1);
+		for (int i = m_vecItems.size() - 1; i >= 0; i --) {
+			auto &item = m_vecItems[i];
+			item.size -= sum - this->GetWidth();
+			item.size = max(MIN_SIZE, item.size);
+			sum = PosFromIdx(m_vecItems.size() - 1);
+		}
+		DoLayout();
 	}
 	return false;
 }

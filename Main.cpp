@@ -73,9 +73,12 @@ int CALLBACK WinMain(
 	spitter1->AddClient(new Button);
 	spitter1->SetClientSize(0, 100);
 	spitter1->AddClient(new Button);
-	spitter1->SetClientSize(1, 150);
+	spitter1->SetClientSize(1, 100);
 	spitter1->AddClient(new Button);
-	spitter1->SetClientSize(2, 200);
+	spitter1->SetClientSize(2, 100);
+	spitter1->AddClient(new Button);
+	spitter1->SetClientSize(3, 100);
+
 
 	/*
     BoxLayout *hbox = new BoxLayout(BoxLayout::Horizontal);
