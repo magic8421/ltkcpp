@@ -109,9 +109,7 @@ private:
     static const wchar_t * ClsName;
 
 private:
-	WindowPrivate *d_func() {
-		return (WindowPrivate *)(d_ptr);
-	}
+	LTK_DECLARE_PRIVATE(Window);
 };
 
 } // namespace ltk

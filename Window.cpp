@@ -59,7 +59,6 @@ Window::~Window(void)
 	d->atlas = INVALID_POINTER(ID2D1Bitmap);
 
 	::DestroyWindow(d->hwnd);
-	delete d;
 }
 
 void Window::Create(Window *parent, RectF rc)
@@ -636,7 +635,7 @@ bool Window::OnClose(bool &proceed)
 {
 	LTK_D(Window);
 	proceed = true;
-    d->CloseEvent.Invoke(std::ref(proceed));
+    d->CloseDelegate.Invoke(std::ref(proceed));
     return proceed;
 }
 
@@ -916,13 +915,13 @@ void Window::UpdateTheme()
 Cookie Window::AttachCloseDelegate(const std::function<void(bool &)> &cb)
 {
 	LTK_D(Window);
-	return d->CloseEvent.Attach(cb);
+	return d->CloseDelegate.Attach(cb);
 }
 
 void Window::RemoveCloseDelegate(Cookie c)
 {
 	LTK_D(Window);
-	d->CloseEvent.Remove(c);
+	d->CloseDelegate.Remove(c);
 }
 
 void Window::UpdateShadowFrame(bool bRedraw)

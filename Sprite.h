@@ -13,6 +13,7 @@
 namespace ltk {
 
 class Window;
+struct SpritePrivate;
 
 class Sprite : public Object
 {
@@ -104,16 +105,7 @@ protected:
     virtual void OnThemeChanged() {}
 
 private:
-	bool m_bVisible;
-	bool m_bClipChildren; // TODO this one is useless
-
-    RectF m_rect;
-    Window *m_window = nullptr;
-
-    std::vector<Sprite *> m_children;
-    Sprite *m_parent = nullptr;
-
-	DISALLOW_COPY_AND_ASSIGN(Sprite);
+	LTK_DECLARE_PRIVATE(Sprite)
 };
 
 } // namespace ltk

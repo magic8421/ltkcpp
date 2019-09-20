@@ -203,6 +203,7 @@
     <ClInclude Include="ShadowFrame.h" />
     <ClInclude Include="Splitter.h" />
     <ClInclude Include="Sprite.h" />
+    <ClInclude Include="Sprite_p.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="StyleManager.h" />
     <ClInclude Include="TextEdit.h" />

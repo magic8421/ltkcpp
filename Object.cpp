@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "Object.h"
+#include "Object_p.h"
 #include "Common.h"
 
 namespace ltk {
@@ -20,6 +21,7 @@ Object::~Object()
 {
 	m_obctrl->Set(nullptr);
 	m_obctrl->Release();
+	delete d_ptr;
 }
 
 

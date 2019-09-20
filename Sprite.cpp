@@ -8,6 +8,7 @@
 #include "StdAfx.h"
 #include "Window.h"
 #include "Sprite.h"
+#include "Sprite_p.h"
 #include "ltk.h"
 #include <cmath>
 
@@ -17,27 +18,30 @@
 
 namespace ltk {
 
-Sprite::Sprite(void)
+Sprite::Sprite() : Object(new SpritePrivate(this))
 {
-	m_rect.X = 0;
-	m_rect.Y = 0;
-	m_rect.Width = 10;
-	m_rect.Height = 10;
+	LTK_D(Sprite);
+	d->rect.X = 0;
+	d->rect.Y = 0;
+	d->rect.Width = 10;
+	d->rect.Height = 10;
 
-	m_bVisible = true;
-	m_bClipChildren = false;
+	d->bVisible = true;
+	d->bClipChildren = false;
 }
 
 Sprite::~Sprite(void)
 {
-    for (size_t i = 0; i < m_children.size(); i++) {
-        delete m_children[i];
+	LTK_D(Sprite);
+	for (size_t i = 0; i < d->children.size(); i++) {
+		delete d->children[i];
 	}
 }
 
 RectF Sprite::GetRect()
 {
-	return m_rect;
+	LTK_D(Sprite);
+	return d->rect;
 }
 
 RectF Sprite::GetClientRect()
@@ -50,38 +54,42 @@ RectF Sprite::GetClientRect()
 
 RectF Sprite::GetAbsRect()
 {
-	Sprite *sp = m_parent;
+	LTK_D(Sprite);
+	Sprite *sp = d->parent;
 	RectF rcSelf = GetRect();
 	RectF rcParent;
 	while(sp)
 	{
 		rcParent = sp->GetRect();
 		rcSelf.Offset(rcParent.X, rcParent.Y);
-		sp = sp->m_parent;
+		sp = sp->d_func()->parent;
 	}
 	return rcSelf;
 }
 
 float Sprite::GetWidth()
 {
-    return m_rect.Width;
+	LTK_D(Sprite);
+	return d->rect.Width;
 }
 
 float Sprite::GetHeight()
 {
-    return m_rect.Height;
+	LTK_D(Sprite);
+	return d->rect.Height;
 }
 
 void Sprite::SetRect( RectF rect )
 {
+	LTK_D(Sprite);
 	// 检查下宽高是否小于0 是则设为0 然后0宽或0高要在OnDraw这些里面特殊处理一下
 	rect.Width = max(0.0f, rect.Width);
 	rect.Height = max(0.0f, rect.Height);
-	if (!m_rect.Equals(rect))
+	if (!d->rect.Equals(rect))
 	{
-		RectF rcOld = m_rect;
+		RectF rcOld = d->rect;
 		// TODO OnMove
-		m_rect = rect;
+		d->rect = rect;
 		this->Invalidate(); // 刷新整个窗口
 		// 原先回掉的顺序错了 导致在OnSize里面GetRect和OnSize的参数不一样 诡异错误
 		if (rect.Width != rcOld.Width || rect.Height != rcOld.Height)
@@ -108,13 +116,15 @@ void Sprite::Invalidate()
 
 void Sprite::SetWindow( Window *wnd )
 {
-    //LTK_LOG("SetWindow: %08x", wnd);
-	m_window = wnd;
+	LTK_D(Sprite);
+	//LTK_LOG("SetWindow: %08x", wnd);
+	d->window = wnd;
 }
 
 void Sprite::HandlePaint( ID2D1RenderTarget *target )
 {
-	if (!m_bVisible)
+	LTK_D(Sprite);
+	if (!d->bVisible)
 	{
 		return; // 子节点也不会被绘制
 	}
@@ -125,7 +135,7 @@ void Sprite::HandlePaint( ID2D1RenderTarget *target )
 	//	LOGW(<<L"Orignal Size 10 10"); // 检查下有没有多余的重绘
 	//}
 
-	if (m_bClipChildren)
+	if (d->bClipChildren)
 	{
         auto rcSprite = this->GetClientRect();
         D2D1_RECT_F rcClip = D2D1RectF(rcSprite);
@@ -136,8 +146,8 @@ void Sprite::HandlePaint( ID2D1RenderTarget *target )
     ev.target = target;
     OnPaint(&ev);
 
-    for (size_t i = 0; i < m_children.size(); i++) {
-        auto sp = m_children[i];
+    for (size_t i = 0; i < d->children.size(); i++) {
+        auto sp = d->children[i];
 		RectF rc2 = sp->GetRect();
 
 		TranslateTransform(target, rc2.X, rc2.Y);
@@ -145,7 +155,7 @@ void Sprite::HandlePaint( ID2D1RenderTarget *target )
 		TranslateTransform(target, -rc2.X, -rc2.Y);
 	}
 
-	if (m_bClipChildren)
+	if (d->bClipChildren)
 	{
         target->PopAxisAlignedClip();
 	}
@@ -153,20 +163,21 @@ void Sprite::HandlePaint( ID2D1RenderTarget *target )
 
 void Sprite::AddChild(Sprite *sp)
 {
-    for (UINT i =  m_children.size(); i > 0; i--) {
-        if (m_children[i - 1] == sp) {
+	LTK_D(Sprite);
+	for (UINT i = d->children.size(); i > 0; i--) {
+        if (d->children[i - 1] == sp) {
 			//LTK_ASSERT(false);
 			return;
         }
     }
-	//sp->SetWindow(m_window);
-    if (sp->m_parent) {
+	//sp->SetWindow(d->window);
+    if (sp->d_func()->parent) {
         // if sp already has a parent, remove it first.
-        sp->m_parent->RemoveChild(sp);
+        sp->d_func()->parent->RemoveChild(sp);
     }
-	m_children.push_back(sp);
-	sp->OnParentChanged(sp->m_parent, this);
-	sp->m_parent = this;
+	d->children.push_back(sp);
+	sp->OnParentChanged(sp->d_func()->parent, this);
+	sp->d_func()->parent = this;
 }
 
 void Sprite::HandleKeyEvent( UINT message, DWORD keyCode, DWORD flag )
@@ -203,12 +214,13 @@ void Sprite::HandleImeInput(LPCTSTR text)
 // return weak ref
 Window * Sprite::GetWindow()
 {
+	LTK_D(Sprite);
 	Sprite *sp = this;
-	while (sp->m_parent)
+	while (sp->d_func()->parent)
 	{
-		sp = sp->m_parent;
+		sp = sp->d_func()->parent;
 	}
-	return sp->m_window;
+	return sp->d_func()->window;
 }
 
 void Sprite::SetCapture()
@@ -248,39 +260,44 @@ void Sprite::BringToFront()
 
 void Sprite::SetVisible( bool v )
 {
-	if (m_bVisible != v)
+	LTK_D(Sprite);
+	if (d->bVisible != v)
 	{
 		Invalidate();
 	}
-	m_bVisible = v;
+	d->bVisible = v;
 }
 
 bool Sprite::GetVisible()
 {
-	return m_bVisible;
+	LTK_D(Sprite);
+	return d->bVisible;
 }
 
 void Sprite::EnableClipChildren( bool bClip )
 {
-	if (m_bClipChildren != bClip)
+	LTK_D(Sprite);
+	if (d->bClipChildren != bClip)
 	{
-		m_bClipChildren = bClip;
+		d->bClipChildren = bClip;
 		Invalidate();
 	}
 }
 
 bool Sprite::GetClipChildren()
 {
-	return m_bClipChildren;
+	LTK_D(Sprite);
+	return d->bClipChildren;
 }
 
 bool Sprite::DispatchMouseEvent(MouseEvent *ev)
 {
-	if (!m_bVisible) {
+	LTK_D(Sprite);
+	if (!d->bVisible) {
 		return false;
 	}
-    for (auto i = m_children.size(); i > 0; i--) {
-        auto sp = m_children[i - 1];
+    for (auto i = d->children.size(); i > 0; i--) {
+        auto sp = d->children[i - 1];
         auto rc = sp->GetRect();
         if (rc.Contains(ev->x, ev->y)) {
             MouseEvent ev2 = *ev;
@@ -296,17 +313,19 @@ bool Sprite::DispatchMouseEvent(MouseEvent *ev)
 
 Sprite * Sprite::GetAncestor()
 {
+	LTK_D(Sprite);
 	Sprite *sp = this;
-	while (sp->m_parent)
+	while (sp->d_func()->parent)
 	{
-		sp = sp->m_parent;
+		sp = sp->d_func()->parent;
 	}
 	return sp;
 }
 
 Sprite * Sprite::GetParent()
 {
-	return m_parent;
+	LTK_D(Sprite);
+	return d->parent;
 }
 
 void Sprite::TrackMouseLeave()
@@ -320,16 +339,17 @@ void Sprite::TrackMouseLeave()
 
 void Sprite::RemoveChild( Sprite *sp )
 {
-    // maybe searh from the end is better, because we always push to the end.
-    for (int i = m_children.size() - 1; i >= 0; i--) {
-        auto sp2 = m_children[i];
+	LTK_D(Sprite);
+	// maybe searh from the end is better, because we always push to the end.
+    for (int i = d->children.size() - 1; i >= 0; i--) {
+        auto sp2 = d->children[i];
         if (sp2 == sp) {
             //sp2->Release();
-			sp2->m_parent = nullptr;
-            for (int j = i + 1; j < (int)m_children.size(); j++) {
-                m_children[j - 1] = m_children[j];
+			sp2->d_func()->parent = nullptr;
+            for (int j = i + 1; j < (int)d->children.size(); j++) {
+                d->children[j - 1] = d->children[j];
             }
-            m_children.pop_back();
+            d->children.pop_back();
             i--;
         }
     }
@@ -420,8 +440,9 @@ bool Sprite::OnEvent(Event *ev)
 
 void Sprite::HandleRecreateResouce(ID2D1RenderTarget *target)
 {
-    for (size_t i = 0; i < m_children.size(); i++) {
-        auto sp = m_children[i];
+	LTK_D(Sprite);
+	for (size_t i = 0; i < d->children.size(); i++) {
+        auto sp = d->children[i];
         sp->HandleRecreateResouce(target);
     }
     this->RecreateResouce(target);
@@ -429,8 +450,9 @@ void Sprite::HandleRecreateResouce(ID2D1RenderTarget *target)
 
 void Sprite::HandleThemeChange()
 {
-    this->OnThemeChanged();
-    for (auto sp : m_children) {
+	LTK_D(Sprite);
+	this->OnThemeChanged();
+    for (auto sp : d->children) {
         sp->HandleThemeChange();
     }
 }
