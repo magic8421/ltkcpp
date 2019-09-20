@@ -20,14 +20,10 @@ namespace ltk {
 
 Sprite::Sprite() : Object(new SpritePrivate(this))
 {
-	LTK_D(Sprite);
-	d->rect.X = 0;
-	d->rect.Y = 0;
-	d->rect.Width = 10;
-	d->rect.Height = 10;
+}
 
-	d->bVisible = true;
-	d->bClipChildren = false;
+Sprite::Sprite(SpritePrivate *pp) : Object(pp)
+{
 }
 
 Sprite::~Sprite(void)

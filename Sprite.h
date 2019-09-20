@@ -104,6 +104,9 @@ protected:
     virtual void OnParentChanged(Sprite *old, Sprite *new_){}
     virtual void OnThemeChanged() {}
 
+protected:
+	Sprite(SpritePrivate *pp);
+
 private:
 	LTK_DECLARE_PRIVATE(Sprite)
 };

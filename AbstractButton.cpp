@@ -1,11 +1,18 @@
 #include "stdafx.h"
 #include "AbstractButton.h"
+#include "AbstractButton_p.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW 
 #endif
 
 namespace ltk {
+
+static const int AniDuration = 200;
+
+AbstractButton::AbstractButton() : Sprite(new AbstractButtonPrivate(this))
+{
+}
 
 AbstractButton::~AbstractButton()
 {
@@ -14,31 +21,34 @@ AbstractButton::~AbstractButton()
 
 AbstractButton::State AbstractButton::GetState()
 {
-    return m_state;
+	LTK_D(AbstractButton);
+    return d->state;
 }
 
 void AbstractButton::EnableCapture(bool v)
 {
-    m_bCaptureMouse = v;
+	LTK_D(AbstractButton);
+	d->bCaptureMouse = v;
 }
 
 void AbstractButton::Update()
 {
-	DWORD timeDiff = ltk::TickCount() -m_lastTick;
+	LTK_D(AbstractButton);
+	DWORD timeDiff = ltk::TickCount() - d->lastTick;
     //LTK_LOG("timeDiff: %d", timeDiff);
-    m_lastTick = ltk::TickCount();
-    if (m_state == State::Normal2Hover) {
-        m_aniCounter += timeDiff;
-        if (m_aniCounter >= AniDuration) {
-            m_aniCounter = AniDuration;
-            m_state = State::Hover;
+    d->lastTick = ltk::TickCount();
+    if (d->state == State::Normal2Hover) {
+        d->aniCounter += timeDiff;
+        if (d->aniCounter >= AniDuration) {
+            d->aniCounter = AniDuration;
+            d->state = State::Hover;
             this->EndAnimation();
         }
-    } else if (m_state == State::Hover2Normal) {
-        m_aniCounter -= timeDiff;
-        if (m_aniCounter <= 0) {
-            m_aniCounter = 0;
-            m_state = State::Normal;
+    } else if (d->state == State::Hover2Normal) {
+        d->aniCounter -= timeDiff;
+        if (d->aniCounter <= 0) {
+            d->aniCounter = 0;
+            d->state = State::Normal;
             this->EndAnimation();
         }
     } else {
@@ -48,7 +58,8 @@ void AbstractButton::Update()
 
 float AbstractButton::GetBlend()
 {
-    return (float)m_aniCounter / AniDuration;
+	LTK_D(AbstractButton);
+	return (float)d->aniCounter / AniDuration;
 }
 
 bool AbstractButton::OnEvent(Event *ev)
@@ -66,31 +77,34 @@ bool AbstractButton::OnEvent(Event *ev)
 
 bool AbstractButton::OnMouseMove(MouseEvent *ev)
 {
-	if (!m_bMouseIn) {
+	LTK_D(AbstractButton);
+	if (!d->bMouseIn) {
 		//LTK_LOG("OnMouseMove");
-		m_bMouseIn = true;
+		d->bMouseIn = true;
 		this->BeginAnimation();
 		this->TrackMouseLeave();
-		m_state = State::Normal2Hover;
-		m_lastTick = ltk::TickCount();
+		d->state = State::Normal2Hover;
+		d->lastTick = ltk::TickCount();
 	}
     return true;
 }
 
 bool AbstractButton::OnMouseLeave(MouseEvent *ev)
 {
-    //LTK_LOG("OnMouseLeave");
-	m_bMouseIn = false;
+	LTK_D(AbstractButton);
+	//LTK_LOG("OnMouseLeave");
+	d->bMouseIn = false;
     this->BeginAnimation();
-    m_state = State::Hover2Normal;
-    m_lastTick = ltk::TickCount();
+    d->state = State::Hover2Normal;
+    d->lastTick = ltk::TickCount();
     return true;
 }
 
 bool AbstractButton::OnLBtnDown(MouseEvent *ev)
 {
-    m_state = State::Pressed;
-    if (m_bCaptureMouse) {
+	LTK_D(AbstractButton);
+    d->state = State::Pressed;
+    if (d->bCaptureMouse) {
         this->SetCapture();
     }
     this->Invalidate();
@@ -99,8 +113,9 @@ bool AbstractButton::OnLBtnDown(MouseEvent *ev)
 
 bool AbstractButton::OnLBtnUp(MouseEvent *ev)
 {
-    m_state = State::Hover;
-    if (m_bCaptureMouse) {
+	LTK_D(AbstractButton);
+	d->state = State::Hover;
+    if (d->bCaptureMouse) {
         this->ReleaseCapture();
     }
     auto rc = this->GetClientRect();

@@ -12,10 +12,12 @@
 
 namespace ltk {
 
+struct AbstractButtonPrivate;
+
 class AbstractButton : public Sprite
 {
 public:
-    AbstractButton() {}
+    AbstractButton();
     virtual ~AbstractButton();
 
     typedef AbstractBackground::State State;
@@ -38,14 +40,7 @@ public:
     virtual void OnClicked();
 
 private:
-    bool m_bCaptureMouse = true;
-	bool m_bMouseIn = false;
-
-    static const int AniDuration = 200;
-
-    State m_state = State::Normal;
-    int m_aniCounter = 0;
-    DWORD m_lastTick = 0;
+	LTK_DECLARE_PRIVATE(AbstractButton);
 };
 
 
