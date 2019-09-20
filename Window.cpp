@@ -26,49 +26,86 @@ static const long CAPTION_HEIGHT = 20 + 3;
 static const long SYSICON_SIZE = 24;
 static const long WINDOW_BORDER = 6;
 
-Window::Window() :
-m_shadowLeft(ShadowFrame::eLeft),
-m_shadowTop(ShadowFrame::eTop),
-m_shadowRight(ShadowFrame::eRight),
-m_shadowBottom(ShadowFrame::eBottom)
-{
-	m_rectComposition.left = 0;
-	m_rectComposition.top = 0;
-	m_rectComposition.right = 5;
-	m_rectComposition.bottom = 20;
+struct WindowPrivate {
+	WindowPrivate(Window *wnd) :
+		shadowLeft(ShadowFrame::eLeft),
+		shadowTop(ShadowFrame::eTop),
+		shadowRight(ShadowFrame::eRight),
+		shadowBottom(ShadowFrame::eBottom) {
 
-    m_sprite = new WindowLayout;
-    m_sprite->SetWindow(this);
-    
-	m_caretHeight = 20;
+		rectComposition.left = 0;
+		rectComposition.top = 0;
+		rectComposition.right = 5;
+		rectComposition.bottom = 20;
+
+		sprite = new WindowLayout;
+		sprite->SetWindow(wnd);
+
+		caretHeight = 20;
+	}
+
+	HWND hwnd = NULL;
+
+	ImeInput ime;
+	RECT rectComposition;
+	int caretHeight;
+
+	WindowLayout *sprite = nullptr; // owner
+
+	bool bEnableFocusChange = true;
+	Sprite *spFocus = nullptr;
+	Sprite *spCapture = nullptr;
+	Sprite *spHover = nullptr;
+	std::unordered_set<Sprite *> setTrackMouseLeave;
+	std::unordered_set<Sprite *> setAnimation;
+
+	ID2D1HwndRenderTarget *target = nullptr; // owner
+	ID2D1SolidColorBrush *brush = nullptr; // owner
+
+	ShadowFrame shadowLeft;
+	ShadowFrame shadowTop;
+	ShadowFrame shadowRight;
+	ShadowFrame shadowBottom;
+
+	ID2D1Bitmap *atlas = nullptr; // owner TODO share across multiple Window
+	AbstractBackground *background = nullptr;
+	std::string styleName;
+
+	Delegate<void(bool &)> CloseEvent;
+};
+
+Window::Window()
+{
+	d = new WindowPrivate(this);
 }
 
 Window::~Window(void)
 {
-    if (m_sprite) {
-        delete m_sprite;
+    if (d->sprite) {
+        delete d->sprite;
     }
 
-    m_spFocus = INVALID_POINTER(Sprite);
-    m_spCapture = INVALID_POINTER(Sprite);
-    m_spHover = INVALID_POINTER(Sprite);
+	d->spFocus = INVALID_POINTER(Sprite);
+	d->spCapture = INVALID_POINTER(Sprite);
+	d->spHover = INVALID_POINTER(Sprite);
 
-    if (m_target) {
-        m_target->Release();
+	if (d->target) {
+		d->target->Release();
     }
-    m_target = INVALID_POINTER(ID2D1HwndRenderTarget);
+	d->target = INVALID_POINTER(ID2D1HwndRenderTarget);
 
-    if (m_brush) {
-        m_brush->Release();
+	if (d->brush) {
+		d->brush->Release();
     }
-    m_brush = INVALID_POINTER(ID2D1SolidColorBrush);
+	d->brush = INVALID_POINTER(ID2D1SolidColorBrush);
 
-    if (m_atlas) {
-        m_atlas->Release();
+	if (d->atlas) {
+		d->atlas->Release();
     }
-    m_atlas = INVALID_POINTER(ID2D1Bitmap);
+	d->atlas = INVALID_POINTER(ID2D1Bitmap);
 
-	::DestroyWindow(m_hwnd);
+	::DestroyWindow(d->hwnd);
+	delete d;
 }
 
 void Window::Create(Window *parent, RectF rc)
@@ -80,16 +117,16 @@ void Window::Create(Window *parent, RectF rc)
     }
     else
     {
-        hParent = parent->m_hwnd;
+		hParent = parent->d->hwnd;
     }
     DWORD style = WS_VISIBLE;
     
     style |= WS_OVERLAPPEDWINDOW;
 
-    m_shadowLeft.Create();
-    m_shadowTop.Create();
-    m_shadowRight.Create();
-    m_shadowBottom.Create();
+	d->shadowLeft.Create();
+	d->shadowTop.Create();
+	d->shadowRight.Create();
+	d->shadowBottom.Create();
 
     style |=  WS_SYSMENU | WS_MINIMIZEBOX | WS_MAXIMIZEBOX;
 
@@ -104,7 +141,7 @@ RectF Window::GetRect()
 {
     RectF rf;
     RECT rc;
-    ::GetWindowRect(m_hwnd, &rc);
+	::GetWindowRect(d->hwnd, &rc);
     rf.X = (float)rc.left;
     rf.Y = (float)rc.top;
     rf.Width = (float)(rc.right - rc.left);
@@ -114,19 +151,19 @@ RectF Window::GetRect()
 
 void Window::SetRect(RectF rc)
 {
-    ::MoveWindow(m_hwnd, (int)rc.X, (int)rc.Y, (int)rc.Width, (int)rc.Height, TRUE);
+	::MoveWindow(d->hwnd, (int)rc.X, (int)rc.Y, (int)rc.Width, (int)rc.Height, TRUE);
 }
 
 void Window::SetCaption(LPCWSTR text)
 {
-    ::SetWindowText(m_hwnd, text);
-    m_sprite->SetCaptionText(text);
+	::SetWindowText(d->hwnd, text);
+	d->sprite->SetCaptionText(text);
 }
 
 SizeF Window::GetClientSize()
 {
     RECT rc;
-    ::GetClientRect(m_hwnd, &rc);
+	::GetClientRect(d->hwnd, &rc);
     SizeF sf((float)rc.right - rc.left, (float)rc.bottom - rc.top);
     ScreenCoordToDip(sf.Width, sf.Height);
     return sf;
@@ -162,7 +199,7 @@ void Window::HandleMouseMessage(UINT message, WPARAM wparam, LPARAM lparam)
 		POINT pt;
 		pt.x = (short)LOWORD(lparam);
 		pt.y = (short)HIWORD(lparam);
-		::ScreenToClient(m_hwnd, &pt);
+		::ScreenToClient(d->hwnd, &pt);
 		ev.x = (float)pt.x;
 		ev.y = (float)pt.y;
 		ev.delta = (float)(short)HIWORD(wparam) / 120.0F;
@@ -178,27 +215,27 @@ void Window::HandleMouseMessage(UINT message, WPARAM wparam, LPARAM lparam)
 
     if (WM_LBUTTONDBLCLK == message)
     {
-        ::PostMessage(m_hwnd, WM_LBUTTONDOWN, wparam, lparam);
+		::PostMessage(d->hwnd, WM_LBUTTONDOWN, wparam, lparam);
     }
 
-	if (m_spCapture)
+	if (d->spCapture)
 	{
-		RectF rc = m_spCapture->GetAbsRect();
+		RectF rc = d->spCapture->GetAbsRect();
 		ev.x -= rc.X;
 		ev.y -= rc.Y;
-		m_spCapture->OnEvent(&ev);
+		d->spCapture->OnEvent(&ev);
 	}
-	else if (m_sprite)
+	else if (d->sprite)
 	{
 		//if (WM_LBUTTONDOWN == message)
 		//{
-			m_bEnableFocusChange = true;
-			m_sprite->DispatchMouseEvent(&ev);
+		d->bEnableFocusChange = true;
+		d->sprite->DispatchMouseEvent(&ev);
 			
 			std::vector<Sprite *> defer_remove;
 			defer_remove.reserve(20);
-			for (std::unordered_set<Sprite *>::iterator iter = m_setTrackMouseLeave.begin();
-				iter != m_setTrackMouseLeave.end(); ++iter)
+			for (std::unordered_set<Sprite *>::iterator iter = d->setTrackMouseLeave.begin();
+				iter != d->setTrackMouseLeave.end(); ++iter)
 			{
 				Sprite *sp = *iter;
 				RectF rc = sp->GetAbsRect();
@@ -213,15 +250,15 @@ void Window::HandleMouseMessage(UINT message, WPARAM wparam, LPARAM lparam)
 			}
 			for (auto sp: defer_remove)
 			{
-				m_setTrackMouseLeave.erase(sp);
+				d->setTrackMouseLeave.erase(sp);
 			}
-			if (m_spFocus && WM_LBUTTONDOWN == message && m_bEnableFocusChange) {
-				auto arc = m_spFocus->GetAbsRect();
+			if (d->spFocus && WM_LBUTTONDOWN == message && d->bEnableFocusChange) {
+				auto arc = d->spFocus->GetAbsRect();
 				if (!arc.Contains(ev.x, ev.y)){
 					FocusEvent ev2;
 					ev2.id = eKillFocus;
-					m_spFocus->OnEvent(&ev2);
-					m_spFocus = nullptr;
+					d->spFocus->OnEvent(&ev2);
+					d->spFocus = nullptr;
 				}
 			}
 		//}
@@ -230,7 +267,7 @@ void Window::HandleMouseMessage(UINT message, WPARAM wparam, LPARAM lparam)
 
 void Window::HandleMouseLeave()
 {
-    for (auto iter = m_setTrackMouseLeave.begin(); iter != m_setTrackMouseLeave.end(); ++iter)
+	for (auto iter = d->setTrackMouseLeave.begin(); iter != d->setTrackMouseLeave.end(); ++iter)
     {
         Sprite *sp = *iter;
         MouseEvent e2;
@@ -242,7 +279,7 @@ void Window::HandleMouseLeave()
         sp->OnEvent(&e2);
         // Fire the event and remove sp from the set;
     }
-    m_setTrackMouseLeave.clear();
+	d->setTrackMouseLeave.clear();
 }
 
 LRESULT Window::HandleNcHitTest(const POINT &pt)
@@ -250,10 +287,10 @@ LRESULT Window::HandleNcHitTest(const POINT &pt)
     //LTK_LOG("WM_NCHITTEST %d %d", pt.x, pt.y);
     const long margin = 7;
     RECT rcWnd;
-    ::GetClientRect(m_hwnd, &rcWnd);
+	::GetClientRect(d->hwnd, &rcWnd);
     const long width = rcWnd.right - rcWnd.left;
     const long height = rcWnd.bottom - rcWnd.top;
-    auto rcCaption = DipRectToScreen(m_sprite->GetCaptionRect());
+	auto rcCaption = DipRectToScreen(d->sprite->GetCaptionRect());
     
 	long caption_h = 35;
 
@@ -336,22 +373,22 @@ LRESULT Window::WndProc(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam)
             UINT cx = LOWORD(lparam);
             UINT cy = HIWORD(lparam);
 
-            if (m_target)
+			if (d->target)
             {
-                m_target->Resize(D2D1::SizeU(cx, cy));
+				d->target->Resize(D2D1::SizeU(cx, cy));
             }
             OnSize((float)cx, (float)cy, (DWORD)wparam);
             UpdateShadowFrame(true);
 
             //LTK_LOG("WM_SIZE %d", wparam);
             if (wparam == SIZE_MAXIMIZED) {
-                m_sprite->DoLayout();
+				d->sprite->DoLayout();
             }
             else if (wparam == SIZE_RESTORED){
-                m_sprite->DoLayout();
+				d->sprite->DoLayout();
             }
             else if (wparam == SIZE_MINIMIZED) {
-                m_setAnimation.clear();
+				d->setAnimation.clear();
                 ::ReleaseCapture();
                 ::KillTimer(hwnd, TIMER_ANIMATION);
                 LTK_LOG("WM_SIZE KillTimer");
@@ -373,9 +410,9 @@ LRESULT Window::WndProc(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam)
     case WM_KEYDOWN:
     case WM_KEYUP:
     case WM_CHAR:
-        if (m_spFocus)
+		if (d->spFocus)
         {
-            m_spFocus->HandleKeyEvent(message, (DWORD)wparam, (DWORD)lparam);
+			d->spFocus->HandleKeyEvent(message, (DWORD)wparam, (DWORD)lparam);
         }
         break;
     case WM_IME_SETCONTEXT:
@@ -386,27 +423,27 @@ LRESULT Window::WndProc(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam)
         return OnImeEvent(message, wparam, lparam);
     case WM_SETFOCUS:
         //LOG("WM_SETFOCUS");
-        ::CreateCaret(hwnd, NULL, 1, m_caretHeight);
+		::CreateCaret(hwnd, NULL, 1, d->caretHeight);
         //::ShowCaret(hwnd);
-        if (m_spFocus)
+		if (d->spFocus)
         {
 			FocusEvent ev;
             ev.id = eSetFocus;
-            m_spFocus->OnEvent(&ev);
+			d->spFocus->OnEvent(&ev);
         }
         return 0;
     case WM_KILLFOCUS:
         //LOG("WM_KILLFOCUS");
         ::DestroyCaret();
-        if (m_spFocus)
+		if (d->spFocus)
         {
 			FocusEvent ev;
             ev.id = eKillFocus;
-            m_spFocus->OnEvent(&ev);
+			d->spFocus->OnEvent(&ev);
         }
         LTK_LOG("WM_KILLFOCUS KillTimer");
         KillTimer(hwnd, TIMER_ANIMATION);
-        m_setAnimation.clear();
+		d->setAnimation.clear();
         ::ReleaseCapture();
         return 0;
     case WM_SYSCOMMAND:
@@ -436,10 +473,10 @@ LRESULT Window::WndProc(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam)
     case WM_DESTROY:
         OnDestroy();
         //CallEventHandler(L, "OnDestroy", 0, 0);
-        m_shadowLeft.Destroy();
-        m_shadowTop.Destroy();
-        m_shadowRight.Destroy();
-        m_shadowBottom.Destroy();
+		d->shadowLeft.Destroy();
+		d->shadowTop.Destroy();
+		d->shadowRight.Destroy();
+		d->shadowBottom.Destroy();
         return 0;
     }
     return ::DefWindowProc(hwnd, message, wparam, lparam);
@@ -453,7 +490,7 @@ LRESULT CALLBACK Window::WndProcStatic(HWND hwnd, UINT message, WPARAM wparam, L
 	{
 		LPCREATESTRUCT lpcs = reinterpret_cast<LPCREATESTRUCT>(lparam);
         thiz = reinterpret_cast<Window*>(lpcs->lpCreateParams);
-		thiz->m_hwnd = hwnd;
+		thiz->d->hwnd = hwnd;
 		SetWindowLongPtr(hwnd, GWLP_USERDATA,
 			reinterpret_cast<LPARAM>(thiz));
 	}
@@ -486,7 +523,7 @@ LRESULT CALLBACK Window::WndProcStatic(HWND hwnd, UINT message, WPARAM wparam, L
         return ::DefWindowProc(hwnd, message, wparam, lparam);
 	}
 	if (WM_NCDESTROY == message) {
-		thiz->m_hwnd = 0;
+		thiz->d->hwnd = 0;
 		return 0;
 	}
     return thiz->WndProc(hwnd, message, wparam, lparam);
@@ -496,33 +533,33 @@ void Window::DrawNonClient()
 {
     SizeF size = this->GetClientSize();
     RectF rc(0, 0, size.Width, size.Height);
-	if (m_background) {
-		m_background->Draw(this, m_target, rc, AbstractBackground::Normal, 1.0f);
+	if (d->background) {
+		d->background->Draw(this, d->target, rc, AbstractBackground::Normal, 1.0f);
 	}
     //DrawTextureNineInOne(
-    //    m_target,
+    //    d->target,
     //    this->GetAtlasBitmap(),
-    //    m_background.atlas,
-    //    m_background.margin,
+    //    d->background.atlas,
+    //    d->background.margin,
     //    rc,
     //    1.0f,
-    //    m_background.scale);
+    //    d->background.scale);
 }
 
 ID2D1SolidColorBrush *Window::GetStockBrush()
 {
-    return m_brush;
+	return d->brush;
 }
 
 void Window::RecreateResouce()
 {
     HRESULT hr = E_FAIL;
-    SAFE_RELEASE(m_brush);
-    hr = m_target->CreateSolidColorBrush(D2D1::ColorF(0.5f, 0.5f, 0.5f), &m_brush);
+	SAFE_RELEASE(d->brush);
+	hr = d->target->CreateSolidColorBrush(D2D1::ColorF(0.5f, 0.5f, 0.5f), &d->brush);
     LTK_ASSERT(SUCCEEDED(hr));
 
-    SAFE_RELEASE(m_atlas);
-    hr = LoadBitmapFromFile(m_target, L"res\\atlas.png", &m_atlas);
+	SAFE_RELEASE(d->atlas);
+	hr = LoadBitmapFromFile(d->target, L"res\\atlas.png", &d->atlas);
     LTK_ASSERT(SUCCEEDED(hr));
 }
 
@@ -532,7 +569,7 @@ void Window::OnPaint(HWND hwnd )
 	HDC hdc = ::BeginPaint(hwnd, &ps);
     HRESULT hr = E_FAIL;
 
-    if (!m_target)
+	if (!d->target)
     {
         LTK_LOG("RecreateResouce %d", ltk::TickCount());
 
@@ -541,37 +578,37 @@ void Window::OnPaint(HWND hwnd )
 
         hr = GetD2DFactory()->CreateHwndRenderTarget(D2D1::RenderTargetProperties(),
             D2D1::HwndRenderTargetProperties(
-            hwnd, D2D1::SizeU(rc.right, rc.bottom)), &m_target);
+			hwnd, D2D1::SizeU(rc.right, rc.bottom)), &d->target);
         assert(SUCCEEDED(hr));
 
-        if (m_sprite)
+		if (d->sprite)
         {
-            m_sprite->HandleRecreateResouce(m_target);
+			d->sprite->HandleRecreateResouce(d->target);
         }
         this->RecreateResouce();
     }
 
-    m_target->BeginDraw();
-    m_target->SetTransform(D2D1::Matrix3x2F::Identity());
-    //TranslateTransform(m_target, 0.5f, 0.5f);
-    //m_target->Clear(StyleManager::Instance()->GetColor(StyleManager::clrBackground));
-    m_target->SetAntialiasMode(D2D1_ANTIALIAS_MODE_ALIASED);
+	d->target->BeginDraw();
+	d->target->SetTransform(D2D1::Matrix3x2F::Identity());
+    //TranslateTransform(d->target, 0.5f, 0.5f);
+    //d->target->Clear(StyleManager::Instance()->GetColor(StyleManager::clrBackground));
+	d->target->SetAntialiasMode(D2D1_ANTIALIAS_MODE_ALIASED);
     this->DrawNonClient();
 
-    if (m_sprite)
+	if (d->sprite)
     {
-        RectF rc = m_sprite->GetRect();
-        TranslateTransform(m_target, rc.X, rc.Y);
-        m_sprite->HandlePaint(m_target);
-        TranslateTransform(m_target, -rc.X, -rc.Y);
+		RectF rc = d->sprite->GetRect();
+		TranslateTransform(d->target, rc.X, rc.Y);
+		d->sprite->HandlePaint(d->target);
+		TranslateTransform(d->target, -rc.X, -rc.Y);
     }
 
-    hr = m_target->EndDraw();
+	hr = d->target->EndDraw();
     if (hr == D2DERR_RECREATE_TARGET)
     {
         hr = S_OK;
         LTK_LOG("release the render target.");
-        SAFE_RELEASE(m_target);
+		SAFE_RELEASE(d->target);
     }
     else if (FAILED(hr)) {
         LTK_LOG("EndDraw failed: %d", hr);
@@ -581,9 +618,9 @@ void Window::OnPaint(HWND hwnd )
 
 bool Window::OnSize(float cx, float cy, DWORD flag)
 {
-	if (m_sprite) {
+	if (d->sprite) {
 		ScreenCoordToDip(cx, cy);
-		m_sprite->SetRect(RectF(1.0f, 1.0f, (float)(cx - 2.0f), (float)(cy - 1.0f)));
+		d->sprite->SetRect(RectF(1.0f, 1.0f, (float)(cx - 2.0f), (float)(cy - 1.0f)));
 	}
     return false;
 }
@@ -593,31 +630,31 @@ void Window::CloseWindow()
     bool proceed = false;
     OnClose(proceed);
     if (proceed) {
-        ::DestroyWindow(m_hwnd);
+		::DestroyWindow(d->hwnd);
     }
 }
 
 void Window::Minimize()
 {
-    ::ShowWindow(m_hwnd, SW_MINIMIZE);
+	::ShowWindow(d->hwnd, SW_MINIMIZE);
 }
 
 void Window::Maximize()
 {
     WINDOWPLACEMENT wp = { 0 };
     wp.length = sizeof(wp);
-    ::GetWindowPlacement(m_hwnd, &wp);
+	::GetWindowPlacement(d->hwnd, &wp);
     if (wp.showCmd == SW_MAXIMIZE) {
-        ::ShowWindow(m_hwnd, SW_RESTORE);
+		::ShowWindow(d->hwnd, SW_RESTORE);
     } else {
-        ::ShowWindow(m_hwnd, SW_MAXIMIZE);
+		::ShowWindow(d->hwnd, SW_MAXIMIZE);
     }
 }
 
 bool Window::OnClose(bool &proceed)
 {
     proceed = true;
-    this->CloseEvent.Invoke(std::ref(proceed));
+    d->CloseEvent.Invoke(std::ref(proceed));
     return proceed;
 }
 
@@ -627,7 +664,7 @@ void Window::OnDestroy()
 
 HWND Window::Handle()
 {
-	return m_hwnd;
+	return d->hwnd;
 }
 
 LRESULT Window::OnImeEvent( UINT uMsg, WPARAM wParam, LPARAM lParam )
@@ -640,47 +677,47 @@ LRESULT Window::OnImeEvent( UINT uMsg, WPARAM wParam, LPARAM lParam )
 		{
 			//LOG(<<"WM_IME_SETCONTEXT");
 			BOOL handled = FALSE;
-			m_ime.CreateImeWindow(m_hwnd);
-			m_ime.CleanupComposition(m_hwnd);
-			m_ime.SetImeWindowStyle(m_hwnd, uMsg, wParam, lParam, &handled);
+			d->ime.CreateImeWindow(d->hwnd);
+			d->ime.CleanupComposition(d->hwnd);
+			d->ime.SetImeWindowStyle(d->hwnd, uMsg, wParam, lParam, &handled);
 		} while (0);
 		return 0;
 	case WM_IME_STARTCOMPOSITION:
 		//LOG(<<"WM_IME_STARTCOMPOSITION");
-		m_ime.CreateImeWindow(m_hwnd);
-		m_ime.ResetComposition(m_hwnd);
+		d->ime.CreateImeWindow(d->hwnd);
+		d->ime.ResetComposition(d->hwnd);
 		return 0;
 	case WM_IME_COMPOSITION:
 		do
 		{
 			//LOG(<<"WM_IME_COMPOSITION");
 			ImeComposition comp;
-			m_ime.UpdateImeWindow(m_hwnd);
-			m_ime.GetResult(m_hwnd, lParam, &comp);
+			d->ime.UpdateImeWindow(d->hwnd);
+			d->ime.GetResult(d->hwnd, lParam, &comp);
 			if (GCS_RESULTSTR == comp.string_type)
 			{
 				wstring tmp = comp.ime_string; // 这里结尾居然多出个0 可能是改了谷歌的代码导致的问题
 				tmp.resize(wcslen(tmp.c_str()));
 				LOGW(<<tmp);
 				OnImeInput(tmp.c_str());
-				//m_text += tmp;
+				//d->text += tmp;
 				//::InvalidateRect(GetHWND(), NULL, TRUE);
 			}
-			m_ime.ResetComposition(m_hwnd);
-			m_ime.EnableIME(m_hwnd, m_rectComposition, false); // 输入窗口跟随
+			d->ime.ResetComposition(d->hwnd);
+			d->ime.EnableIME(d->hwnd, d->rectComposition, false); // 输入窗口跟随
 		}while(0);
 		return 0;
 	case WM_IME_ENDCOMPOSITION:
 		//LOG(<<"WM_IME_ENDCOMPOSITION");
-		m_ime.ResetComposition(m_hwnd);
-		m_ime.DestroyImeWindow(m_hwnd);
-		//::ShowCaret(m_hwnd);
-		::DefWindowProc(m_hwnd, uMsg, wParam, lParam);
+		d->ime.ResetComposition(d->hwnd);
+		d->ime.DestroyImeWindow(d->hwnd);
+		//::ShowCaret(d->hwnd);
+		::DefWindowProc(d->hwnd, uMsg, wParam, lParam);
 		return 0;
 	case WM_INPUTLANGCHANGE:
 		//LOG(<<"WM_INPUTLANGCHANGE");
-		m_ime.SetInputLanguage();
-		::DefWindowProc(m_hwnd, uMsg, wParam, lParam);
+		d->ime.SetInputLanguage();
+		::DefWindowProc(d->hwnd, uMsg, wParam, lParam);
 		return 0;
 	case WM_KEYDOWN:
 		return 0;
@@ -690,120 +727,120 @@ LRESULT Window::OnImeEvent( UINT uMsg, WPARAM wParam, LPARAM lParam )
 
 void Window::SetImePosition( float x, float y )
 {
-	m_rectComposition.left = (int)x;
-	m_rectComposition.right = (int)x + 5;
-	m_rectComposition.top = (int)y;
-	m_rectComposition.bottom = (int)y + 20;
+	d->rectComposition.left = (int)x;
+	d->rectComposition.right = (int)x + 5;
+	d->rectComposition.top = (int)y;
+	d->rectComposition.bottom = (int)y + 20;
 }
 
 Sprite *Window::GetRootSprite()
 {
-    return m_sprite;
+	return d->sprite;
 }
 
 Sprite *Window::SetClientSprite(Sprite *sp)
 {
-    return m_sprite->SetClientSprite(sp);
+	return d->sprite->SetClientSprite(sp);
 }
 
 MenuBar *Window::SetMenu(MenuBar *m)
 {
-	return m_sprite->SetMenuBar(m);
+	return d->sprite->SetMenuBar(m);
 }
 
 MenuBar * Window::GetMenu()
 {
-	return m_sprite->GetMenuBar();
+	return d->sprite->GetMenuBar();
 }
 
 void Window::SetFocusSprite( Sprite *sp )
 {
-	if (m_spFocus == sp)
+	if (d->spFocus == sp)
 	{
 		return;
 	}
-	if (m_spFocus)
+	if (d->spFocus)
 	{
 		FocusEvent ev;
         ev.id = eKillFocus;
-        m_spFocus->OnEvent(&ev);
+		d->spFocus->OnEvent(&ev);
 	}
-	m_spFocus = sp;
-	if (m_spFocus)
+	d->spFocus = sp;
+	if (d->spFocus)
 	{
 		FocusEvent ev;
         ev.id = eSetFocus;
-        m_spFocus->OnEvent(&ev);
+		d->spFocus->OnEvent(&ev);
 	}
 }
 
 Sprite *Window::GetFocusSprite()
 {
-	return m_spFocus;
+	return d->spFocus;
 }
 
 void Window::DisableFocusChange()
 {
-	m_bEnableFocusChange = false;
+	d->bEnableFocusChange = false;
 }
 
 void Window::OnImeInput( PCTSTR text )
 {
-	if (m_spFocus)
+	if (d->spFocus)
 	{
 		// 其他的Sprite也有可能去接受ime消息。比如再来一个RichEdit
-		m_spFocus->HandleImeInput(text);
+		d->spFocus->HandleImeInput(text);
 	}
 }
 
 void Window::SetCaretHeight( float h)
 {
-	m_caretHeight = (int)h;
+	d->caretHeight = (int)h;
 }
 
 void Window::SetCapture( Sprite *sp )
 {
 	LTK_ASSERT(sp->GetWindow() == this);
-	m_spCapture = sp;
-    LTK_ASSERT(::IsWindow(m_hwnd));
-	auto hwnd = ::SetCapture(m_hwnd);
+	d->spCapture = sp;
+	LTK_ASSERT(::IsWindow(d->hwnd));
+	auto hwnd = ::SetCapture(d->hwnd);
     //LTK_LOG("old capture %p", hwnd);
 }
 
 void Window::ReleaseCapture()
 {
-	m_spCapture = NULL;
+	d->spCapture = NULL;
 	::ReleaseCapture();
     //LTK_LOG("ReleaseCapture");
 }
 
 bool Window::IsCapturing(Sprite *sp)
 {
-    return m_spCapture == sp;
+	return d->spCapture == sp;
 }
 
 void Window::ShowCaret()
 {
 	LTK_LOG("ShowCaret");
-	::ShowCaret(m_hwnd);
+	::ShowCaret(d->hwnd);
 }
 
 void Window::HideCaret()
 {
     LTK_LOG("HideCaret");
-	::HideCaret(m_hwnd);
+	::HideCaret(d->hwnd);
 }
 
 void Window::TrackMouseLeave( Sprite *sp )
 {
 	if (sp->GetWindow() == this)
 	{
-		m_setTrackMouseLeave.insert(sp);
+		d->setTrackMouseLeave.insert(sp);
 	}
 	// Track for the HWND
     TRACKMOUSEEVENT tme;
     tme.cbSize = sizeof(tme);
-    tme.hwndTrack = m_hwnd;
+	tme.hwndTrack = d->hwnd;
     tme.dwFlags = TME_LEAVE;
     tme.dwHoverTime = HOVER_DEFAULT;
     ::TrackMouseEvent(&tme);
@@ -811,55 +848,55 @@ void Window::TrackMouseLeave( Sprite *sp )
 
 void Window::BeginAnimation(Sprite *sp)
 {
-    //if (!::IsIconic(m_hwnd)) {
-        if (m_setAnimation.size() == 0)
+    //if (!::IsIconic(d->hwnd)) {
+	if (d->setAnimation.size() == 0)
         {
-            ::SetTimer(m_hwnd, TIMER_ANIMATION, 0, NULL);
+			::SetTimer(d->hwnd, TIMER_ANIMATION, 0, NULL);
         }
-        m_setAnimation.insert(sp);
+	d->setAnimation.insert(sp);
     //}
 }
 
 void Window::EndAnimation(Sprite *sp)
 {
-    if (m_setAnimation.size() == 0)
+	if (d->setAnimation.size() == 0)
     {
-        ::KillTimer(m_hwnd, TIMER_ANIMATION);
+		::KillTimer(d->hwnd, TIMER_ANIMATION);
         return;
     }
-    auto iter = m_setAnimation.find(sp);
-    if (iter != m_setAnimation.end())
+	auto iter = d->setAnimation.find(sp);
+	if (iter != d->setAnimation.end())
     {
-        m_setAnimation.erase(iter);
-        if (m_setAnimation.size() == 0)
+		d->setAnimation.erase(iter);
+        if (d->setAnimation.size() == 0)
         {
-            ::KillTimer(m_hwnd, TIMER_ANIMATION);
+			::KillTimer(d->hwnd, TIMER_ANIMATION);
         }
     }
 }
 
 ID2D1Bitmap *Window::GetAtlasBitmap()
 {
-    return m_atlas;
+	return d->atlas;
 }
 
 void Window::SetBackground(LPCSTR style)
 {
-    m_background = StyleManager::Instance()->GetBackground(style);
-    m_styleName = style;
+	d->background = StyleManager::Instance()->GetBackground(style);
+	d->styleName = style;
 }
 
 void Window::UpdateTheme()
 {
-    m_background = StyleManager::Instance()->GetBackground(m_styleName.c_str());
+	d->background = StyleManager::Instance()->GetBackground(d->styleName.c_str());
     this->OnThemeChanged();
-	if (m_sprite) {
-		m_sprite->HandleThemeChange();
+	if (d->sprite) {
+		d->sprite->HandleThemeChange();
 		// TODO send a eSizeChanged to the Sprite tree.
 		// let the controls use the new style measure.
 		float cx, cy;
 		RECT rc;
-		::GetClientRect(m_hwnd, &rc);
+		::GetClientRect(d->hwnd, &rc);
 		cx = (float)rc.right;
 		cy = (float)rc.bottom;
 		ltk::ScreenCoordToDip(cx, cy);
@@ -867,17 +904,27 @@ void Window::UpdateTheme()
 		ev.id = eSizeChanged;
 		ev.width = cx;
 		ev.height = cy;
-		m_sprite->OnEvent(&ev);
+		d->sprite->OnEvent(&ev);
 	}
+}
+
+Cookie Window::AttachCloseDelegate(const std::function<void(bool &)> &cb)
+{
+	return d->CloseEvent.Attach(cb);
+}
+
+void Window::RemoveCloseDelegate(Cookie c)
+{
+	d->CloseEvent.Remove(c);
 }
 
 void Window::UpdateShadowFrame(bool bRedraw)
 {
     HDWP hdwp = ::BeginDeferWindowPos(4);
-    m_shadowLeft.Update(m_hwnd, hdwp, bRedraw);
-    m_shadowTop.Update(m_hwnd, hdwp, bRedraw);
-    m_shadowRight.Update(m_hwnd, hdwp, bRedraw);
-    m_shadowBottom.Update(m_hwnd, hdwp, bRedraw);
+	d->shadowLeft.Update(d->hwnd, hdwp, bRedraw);
+	d->shadowTop.Update(d->hwnd, hdwp, bRedraw);
+	d->shadowRight.Update(d->hwnd, hdwp, bRedraw);
+	d->shadowBottom.Update(d->hwnd, hdwp, bRedraw);
     BOOL ret = ::EndDeferWindowPos(hdwp);
     LTK_ASSERT(ret);
 }

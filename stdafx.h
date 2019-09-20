@@ -73,3 +73,9 @@ using Gdiplus::Color;
 #else
 #define DEBUG_NEW
 #endif // _DEBUG
+
+#ifdef LTK_EXPORTS
+#define LTK_API __declspec(dllexport)
+#else
+#define LTK_API __declspec(dllimport)
+#endif

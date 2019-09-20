@@ -20,8 +20,9 @@ class Label;
 class WindowLayout;
 class AbstractBackground;
 class MenuBar;
+struct WindowPrivate;
 
-class Window : public Object
+class LTK_API Window : public Object
 {
 public:
 	RTTI_DECLARATIONS(Window, Object);
@@ -90,7 +91,8 @@ public:
     virtual void OnThemeChanged() {}
 
 public:
-    Delegate<void(bool &)> CloseEvent;
+	Cookie AttachCloseDelegate(const std::function<void(bool &)> &cb);
+	void RemoveCloseDelegate(Cookie c);
 
 private:
 	void HandleMouseMessage(UINT message, WPARAM wparam, LPARAM lparam);
@@ -106,32 +108,7 @@ private:
     static const wchar_t * ClsName;
 
 private:
-	HWND m_hwnd = NULL;
-
-	ImeInput m_ime;
-	RECT m_rectComposition;
-	int m_caretHeight;
-
-	WindowLayout *m_sprite = nullptr; // owner
-
-	bool m_bEnableFocusChange = true;
-    Sprite *m_spFocus = nullptr;
-    Sprite *m_spCapture = nullptr;
-    Sprite *m_spHover = nullptr;
-	std::unordered_set<Sprite *> m_setTrackMouseLeave;
-    std::unordered_set<Sprite *> m_setAnimation;
-
-    ID2D1HwndRenderTarget *m_target = nullptr; // owner
-    ID2D1SolidColorBrush *m_brush = nullptr; // owner
-
-    ShadowFrame m_shadowLeft;
-    ShadowFrame m_shadowTop;
-    ShadowFrame m_shadowRight;
-    ShadowFrame m_shadowBottom;
-
-    ID2D1Bitmap *m_atlas = nullptr; // owner TODO share across multiple Window
-    AbstractBackground *m_background = nullptr;
-    std::string m_styleName;
+	WindowPrivate *d = nullptr;
 };
 
 } // namespace ltk

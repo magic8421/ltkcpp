@@ -109,7 +109,7 @@ private:
 	T *m_ptr;
 };
 
-class Object : public RTTI
+class LTK_API Object : public RTTI
 {
 public:
 	RTTI_DECLARATIONS(Object, RTTI);
@@ -119,7 +119,9 @@ public:
 
 	template<typename T>
 	Ptr<T> GetPtr() {
-		assert(this->Is(T::TypeIdClass()));
+		if (!this->Is(T::TypeIdClass())) {
+			__debugbreak();
+		}
 		return Ptr<T>(m_obctrl);
 	}
 
