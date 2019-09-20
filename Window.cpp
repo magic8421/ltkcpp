@@ -7,6 +7,7 @@
 
 #include "StdAfx.h"
 #include "Window.h"
+#include "Window_p.h"
 #include "Common.h"
 #include "Sprite.h"
 #include "ltk.h"
@@ -26,61 +27,14 @@ static const long CAPTION_HEIGHT = 20 + 3;
 static const long SYSICON_SIZE = 24;
 static const long WINDOW_BORDER = 6;
 
-struct WindowPrivate {
-	WindowPrivate(Window *wnd) :
-		shadowLeft(ShadowFrame::eLeft),
-		shadowTop(ShadowFrame::eTop),
-		shadowRight(ShadowFrame::eRight),
-		shadowBottom(ShadowFrame::eBottom) {
-
-		rectComposition.left = 0;
-		rectComposition.top = 0;
-		rectComposition.right = 5;
-		rectComposition.bottom = 20;
-
-		sprite = new WindowLayout;
-		sprite->SetWindow(wnd);
-
-		caretHeight = 20;
-	}
-
-	HWND hwnd = NULL;
-
-	ImeInput ime;
-	RECT rectComposition;
-	int caretHeight;
-
-	WindowLayout *sprite = nullptr; // owner
-
-	bool bEnableFocusChange = true;
-	Sprite *spFocus = nullptr;
-	Sprite *spCapture = nullptr;
-	Sprite *spHover = nullptr;
-	std::unordered_set<Sprite *> setTrackMouseLeave;
-	std::unordered_set<Sprite *> setAnimation;
-
-	ID2D1HwndRenderTarget *target = nullptr; // owner
-	ID2D1SolidColorBrush *brush = nullptr; // owner
-
-	ShadowFrame shadowLeft;
-	ShadowFrame shadowTop;
-	ShadowFrame shadowRight;
-	ShadowFrame shadowBottom;
-
-	ID2D1Bitmap *atlas = nullptr; // owner TODO share across multiple Window
-	AbstractBackground *background = nullptr;
-	std::string styleName;
-
-	Delegate<void(bool &)> CloseEvent;
-};
-
-Window::Window()
+Window::Window() : Object(new WindowPrivate(this))
 {
-	d = new WindowPrivate(this);
 }
 
 Window::~Window(void)
 {
+	LTK_D(Window);
+
     if (d->sprite) {
         delete d->sprite;
     }
@@ -110,6 +64,8 @@ Window::~Window(void)
 
 void Window::Create(Window *parent, RectF rc)
 {
+	LTK_D(Window);
+
     HWND hParent = NULL;
     if (!parent)
     {
@@ -117,7 +73,7 @@ void Window::Create(Window *parent, RectF rc)
     }
     else
     {
-		hParent = parent->d->hwnd;
+		hParent = parent->d_func()->hwnd;
     }
     DWORD style = WS_VISIBLE;
     
@@ -139,6 +95,8 @@ void Window::Create(Window *parent, RectF rc)
 
 RectF Window::GetRect()
 {
+	LTK_D(Window);
+
     RectF rf;
     RECT rc;
 	::GetWindowRect(d->hwnd, &rc);
@@ -151,17 +109,23 @@ RectF Window::GetRect()
 
 void Window::SetRect(RectF rc)
 {
+	LTK_D(Window);
+
 	::MoveWindow(d->hwnd, (int)rc.X, (int)rc.Y, (int)rc.Width, (int)rc.Height, TRUE);
 }
 
 void Window::SetCaption(LPCWSTR text)
 {
+	LTK_D(Window);
+
 	::SetWindowText(d->hwnd, text);
 	d->sprite->SetCaptionText(text);
 }
 
 SizeF Window::GetClientSize()
 {
+	LTK_D(Window);
+
     RECT rc;
 	::GetClientRect(d->hwnd, &rc);
     SizeF sf((float)rc.right - rc.left, (float)rc.bottom - rc.top);
@@ -189,6 +153,8 @@ void Window::RegisterWndClass()
 
 void Window::HandleMouseMessage(UINT message, WPARAM wparam, LPARAM lparam)
 {
+	LTK_D(Window);
+
     //LTK_LOG("Mouse Message: %d %08x %d %d", message, wparam, (short)LOWORD(lparam), (short)HIWORD(lparam));
 	MouseEvent ev;
 	ev.id = TranslateMessageCode(message);
@@ -267,6 +233,8 @@ void Window::HandleMouseMessage(UINT message, WPARAM wparam, LPARAM lparam)
 
 void Window::HandleMouseLeave()
 {
+	LTK_D(Window);
+
 	for (auto iter = d->setTrackMouseLeave.begin(); iter != d->setTrackMouseLeave.end(); ++iter)
     {
         Sprite *sp = *iter;
@@ -284,6 +252,8 @@ void Window::HandleMouseLeave()
 
 LRESULT Window::HandleNcHitTest(const POINT &pt)
 {
+	LTK_D(Window);
+
     //LTK_LOG("WM_NCHITTEST %d %d", pt.x, pt.y);
     const long margin = 7;
     RECT rcWnd;
@@ -329,6 +299,8 @@ LRESULT Window::HandleNcHitTest(const POINT &pt)
 
 LRESULT Window::WndProc(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam)
 {
+	LTK_D(Window);
+
     POINT pt;
     switch (message)
     {
@@ -490,7 +462,7 @@ LRESULT CALLBACK Window::WndProcStatic(HWND hwnd, UINT message, WPARAM wparam, L
 	{
 		LPCREATESTRUCT lpcs = reinterpret_cast<LPCREATESTRUCT>(lparam);
         thiz = reinterpret_cast<Window*>(lpcs->lpCreateParams);
-		thiz->d->hwnd = hwnd;
+		thiz->d_func()->hwnd = hwnd;
 		SetWindowLongPtr(hwnd, GWLP_USERDATA,
 			reinterpret_cast<LPARAM>(thiz));
 	}
@@ -523,7 +495,7 @@ LRESULT CALLBACK Window::WndProcStatic(HWND hwnd, UINT message, WPARAM wparam, L
         return ::DefWindowProc(hwnd, message, wparam, lparam);
 	}
 	if (WM_NCDESTROY == message) {
-		thiz->d->hwnd = 0;
+		thiz->d_func()->hwnd = 0;
 		return 0;
 	}
     return thiz->WndProc(hwnd, message, wparam, lparam);
@@ -531,6 +503,8 @@ LRESULT CALLBACK Window::WndProcStatic(HWND hwnd, UINT message, WPARAM wparam, L
 
 void Window::DrawNonClient()
 {
+	LTK_D(Window);
+
     SizeF size = this->GetClientSize();
     RectF rc(0, 0, size.Width, size.Height);
 	if (d->background) {
@@ -548,12 +522,14 @@ void Window::DrawNonClient()
 
 ID2D1SolidColorBrush *Window::GetStockBrush()
 {
+	LTK_D(Window);
 	return d->brush;
 }
 
 void Window::RecreateResouce()
 {
-    HRESULT hr = E_FAIL;
+	LTK_D(Window);
+	HRESULT hr = E_FAIL;
 	SAFE_RELEASE(d->brush);
 	hr = d->target->CreateSolidColorBrush(D2D1::ColorF(0.5f, 0.5f, 0.5f), &d->brush);
     LTK_ASSERT(SUCCEEDED(hr));
@@ -565,6 +541,7 @@ void Window::RecreateResouce()
 
 void Window::OnPaint(HWND hwnd )
 {
+	LTK_D(Window);
 	PAINTSTRUCT ps;
 	HDC hdc = ::BeginPaint(hwnd, &ps);
     HRESULT hr = E_FAIL;
@@ -618,6 +595,7 @@ void Window::OnPaint(HWND hwnd )
 
 bool Window::OnSize(float cx, float cy, DWORD flag)
 {
+	LTK_D(Window);
 	if (d->sprite) {
 		ScreenCoordToDip(cx, cy);
 		d->sprite->SetRect(RectF(1.0f, 1.0f, (float)(cx - 2.0f), (float)(cy - 1.0f)));
@@ -627,7 +605,8 @@ bool Window::OnSize(float cx, float cy, DWORD flag)
 
 void Window::CloseWindow()
 {
-    bool proceed = false;
+	LTK_D(Window);
+	bool proceed = false;
     OnClose(proceed);
     if (proceed) {
 		::DestroyWindow(d->hwnd);
@@ -636,12 +615,14 @@ void Window::CloseWindow()
 
 void Window::Minimize()
 {
+	LTK_D(Window);
 	::ShowWindow(d->hwnd, SW_MINIMIZE);
 }
 
 void Window::Maximize()
 {
-    WINDOWPLACEMENT wp = { 0 };
+	LTK_D(Window);
+	WINDOWPLACEMENT wp = { 0 };
     wp.length = sizeof(wp);
 	::GetWindowPlacement(d->hwnd, &wp);
     if (wp.showCmd == SW_MAXIMIZE) {
@@ -653,7 +634,8 @@ void Window::Maximize()
 
 bool Window::OnClose(bool &proceed)
 {
-    proceed = true;
+	LTK_D(Window);
+	proceed = true;
     d->CloseEvent.Invoke(std::ref(proceed));
     return proceed;
 }
@@ -664,12 +646,14 @@ void Window::OnDestroy()
 
 HWND Window::Handle()
 {
+	LTK_D(Window);
 	return d->hwnd;
 }
 
 LRESULT Window::OnImeEvent( UINT uMsg, WPARAM wParam, LPARAM lParam )
 {
-    // TODO 加个开关 能够关闭输入法 当焦点不在输入框上的时候就关闭
+	LTK_D(Window);
+	// TODO 加个开关 能够关闭输入法 当焦点不在输入框上的时候就关闭
 	switch(uMsg)
 	{
 	case WM_IME_SETCONTEXT:
@@ -727,6 +711,7 @@ LRESULT Window::OnImeEvent( UINT uMsg, WPARAM wParam, LPARAM lParam )
 
 void Window::SetImePosition( float x, float y )
 {
+	LTK_D(Window);
 	d->rectComposition.left = (int)x;
 	d->rectComposition.right = (int)x + 5;
 	d->rectComposition.top = (int)y;
@@ -735,26 +720,31 @@ void Window::SetImePosition( float x, float y )
 
 Sprite *Window::GetRootSprite()
 {
+	LTK_D(Window);
 	return d->sprite;
 }
 
 Sprite *Window::SetClientSprite(Sprite *sp)
 {
+	LTK_D(Window);
 	return d->sprite->SetClientSprite(sp);
 }
 
 MenuBar *Window::SetMenu(MenuBar *m)
 {
+	LTK_D(Window);
 	return d->sprite->SetMenuBar(m);
 }
 
 MenuBar * Window::GetMenu()
 {
+	LTK_D(Window);
 	return d->sprite->GetMenuBar();
 }
 
 void Window::SetFocusSprite( Sprite *sp )
 {
+	LTK_D(Window);
 	if (d->spFocus == sp)
 	{
 		return;
@@ -776,16 +766,19 @@ void Window::SetFocusSprite( Sprite *sp )
 
 Sprite *Window::GetFocusSprite()
 {
+	LTK_D(Window);
 	return d->spFocus;
 }
 
 void Window::DisableFocusChange()
 {
+	LTK_D(Window);
 	d->bEnableFocusChange = false;
 }
 
 void Window::OnImeInput( PCTSTR text )
 {
+	LTK_D(Window);
 	if (d->spFocus)
 	{
 		// 其他的Sprite也有可能去接受ime消息。比如再来一个RichEdit
@@ -795,11 +788,13 @@ void Window::OnImeInput( PCTSTR text )
 
 void Window::SetCaretHeight( float h)
 {
+	LTK_D(Window);
 	d->caretHeight = (int)h;
 }
 
 void Window::SetCapture( Sprite *sp )
 {
+	LTK_D(Window);
 	LTK_ASSERT(sp->GetWindow() == this);
 	d->spCapture = sp;
 	LTK_ASSERT(::IsWindow(d->hwnd));
@@ -809,6 +804,7 @@ void Window::SetCapture( Sprite *sp )
 
 void Window::ReleaseCapture()
 {
+	LTK_D(Window);
 	d->spCapture = NULL;
 	::ReleaseCapture();
     //LTK_LOG("ReleaseCapture");
@@ -816,23 +812,27 @@ void Window::ReleaseCapture()
 
 bool Window::IsCapturing(Sprite *sp)
 {
+	LTK_D(Window);
 	return d->spCapture == sp;
 }
 
 void Window::ShowCaret()
 {
+	LTK_D(Window);
 	LTK_LOG("ShowCaret");
 	::ShowCaret(d->hwnd);
 }
 
 void Window::HideCaret()
 {
-    LTK_LOG("HideCaret");
+	LTK_D(Window);
+	LTK_LOG("HideCaret");
 	::HideCaret(d->hwnd);
 }
 
 void Window::TrackMouseLeave( Sprite *sp )
 {
+	LTK_D(Window);
 	if (sp->GetWindow() == this)
 	{
 		d->setTrackMouseLeave.insert(sp);
@@ -848,7 +848,8 @@ void Window::TrackMouseLeave( Sprite *sp )
 
 void Window::BeginAnimation(Sprite *sp)
 {
-    //if (!::IsIconic(d->hwnd)) {
+	LTK_D(Window);
+	//if (!::IsIconic(d->hwnd)) {
 	if (d->setAnimation.size() == 0)
         {
 			::SetTimer(d->hwnd, TIMER_ANIMATION, 0, NULL);
@@ -859,6 +860,7 @@ void Window::BeginAnimation(Sprite *sp)
 
 void Window::EndAnimation(Sprite *sp)
 {
+	LTK_D(Window);
 	if (d->setAnimation.size() == 0)
     {
 		::KillTimer(d->hwnd, TIMER_ANIMATION);
@@ -877,17 +879,20 @@ void Window::EndAnimation(Sprite *sp)
 
 ID2D1Bitmap *Window::GetAtlasBitmap()
 {
+	LTK_D(Window);
 	return d->atlas;
 }
 
 void Window::SetBackground(LPCSTR style)
 {
+	LTK_D(Window);
 	d->background = StyleManager::Instance()->GetBackground(style);
 	d->styleName = style;
 }
 
 void Window::UpdateTheme()
 {
+	LTK_D(Window);
 	d->background = StyleManager::Instance()->GetBackground(d->styleName.c_str());
     this->OnThemeChanged();
 	if (d->sprite) {
@@ -910,17 +915,20 @@ void Window::UpdateTheme()
 
 Cookie Window::AttachCloseDelegate(const std::function<void(bool &)> &cb)
 {
+	LTK_D(Window);
 	return d->CloseEvent.Attach(cb);
 }
 
 void Window::RemoveCloseDelegate(Cookie c)
 {
+	LTK_D(Window);
 	d->CloseEvent.Remove(c);
 }
 
 void Window::UpdateShadowFrame(bool bRedraw)
 {
-    HDWP hdwp = ::BeginDeferWindowPos(4);
+	LTK_D(Window);
+	HDWP hdwp = ::BeginDeferWindowPos(4);
 	d->shadowLeft.Update(d->hwnd, hdwp, bRedraw);
 	d->shadowTop.Update(d->hwnd, hdwp, bRedraw);
 	d->shadowRight.Update(d->hwnd, hdwp, bRedraw);

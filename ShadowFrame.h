@@ -9,7 +9,7 @@
 
 namespace ltk {
 
-class LTK_API ShadowFrame
+class ShadowFrame
 {
 public:
     enum Mode {

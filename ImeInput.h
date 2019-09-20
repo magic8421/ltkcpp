@@ -91,7 +91,7 @@ struct ImeComposition {
 //   hand, we can NEVER disable either TSF or CUAS in Windows Vista, i.e.
 //   THIS CLASS IS NOT ONLY USED ON THE INPUT CONTEXTS OF EAST-ASIAN
 //   LANGUAGES BUT ALSO USED ON THE INPUT CONTEXTS OF ALL LANGUAGES.
-class LTK_API ImeInput {
+class ImeInput {
 public:
 	ImeInput();
 	~ImeInput();

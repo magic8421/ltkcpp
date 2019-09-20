@@ -79,3 +79,4 @@ using Gdiplus::Color;
 #else
 #define LTK_API __declspec(dllimport)
 #endif
+

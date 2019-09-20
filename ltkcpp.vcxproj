@@ -197,6 +197,7 @@
     <ClInclude Include="ltk.h" />
     <ClInclude Include="MenuBar.h" />
     <ClInclude Include="Object.h" />
+    <ClInclude Include="Object_p.h" />
     <ClInclude Include="ScrollBar.h" />
     <ClInclude Include="SetupStyles.h" />
     <ClInclude Include="ShadowFrame.h" />
@@ -211,6 +212,7 @@
     <ClInclude Include="UniConversion.h" />
     <ClInclude Include="Window.h" />
     <ClInclude Include="WindowLayout.h" />
+    <ClInclude Include="Window_p.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />

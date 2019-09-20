@@ -109,6 +109,8 @@ private:
 	T *m_ptr;
 };
 
+struct ObjectPrivate;
+
 class LTK_API Object : public RTTI
 {
 public:
@@ -129,6 +131,10 @@ public:
 
 private:
 	ObserverCtrl *m_obctrl = nullptr;
+
+protected:
+	ObjectPrivate *d_ptr = nullptr;
+	Object(ObjectPrivate *pp);
 };
 
 } // namespace ltk

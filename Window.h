@@ -12,6 +12,7 @@
 #include "ImeInput.h"
 #include "Delegate.h"
 #include "Object.h"
+#include "Common.h"
 
 namespace ltk {
 
@@ -108,7 +109,9 @@ private:
     static const wchar_t * ClsName;
 
 private:
-	WindowPrivate *d = nullptr;
+	WindowPrivate *d_func() {
+		return (WindowPrivate *)(d_ptr);
+	}
 };
 
 } // namespace ltk
