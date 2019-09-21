@@ -193,12 +193,14 @@
     <ClInclude Include="HeaderCtrl.h" />
     <ClInclude Include="ImageSprite.h" />
     <ClInclude Include="ImeInput.h" />
+    <ClInclude Include="ImmutableString.h" />
     <ClInclude Include="Label.h" />
     <ClInclude Include="ListView.h" />
     <ClInclude Include="ltk.h" />
     <ClInclude Include="MenuBar.h" />
     <ClInclude Include="Object.h" />
     <ClInclude Include="Object_p.h" />
+    <ClInclude Include="RTTI.h" />
     <ClInclude Include="ScrollBar.h" />
     <ClInclude Include="SetupStyles.h" />
     <ClInclude Include="ShadowFrame.h" />

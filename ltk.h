@@ -17,6 +17,7 @@ namespace ltk {
     D2D1_RECT_F D2D1RectF(const RectF &rc);
 	HRESULT LoadBitmapFromFile(ID2D1RenderTarget * target, LPCWSTR path, ID2D1Bitmap ** bitmap);
 	DWORD TickCount();
+	std::wstring WStringFormat(LPCWSTR format, ...);
 
     struct Margin {
         float left = 0.0f;

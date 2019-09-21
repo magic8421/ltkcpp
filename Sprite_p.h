@@ -1,5 +1,6 @@
 #pragma once
 #include "Object_p.h"
+#include "ImmutableString.h"
 
 namespace ltk {
 

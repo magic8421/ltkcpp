@@ -261,9 +261,6 @@ namespace ltk {
         target->SetTransform(&matrix);
     }
 
-
-
-
 	HRESULT LoadBitmapFromFile(ID2D1RenderTarget *target, LPCWSTR path, ID2D1Bitmap **bitmap)
 	{
 		IWICBitmapDecoder *decorder = NULL;
@@ -385,7 +382,22 @@ namespace ltk {
         return *this;
     }
 
-}
+	std::wstring WStringFormat(LPCWSTR format, ...)
+	{
+#pragma warning(push)
+#pragma warning(disable:4996)
+		std::wstring str;
+		va_list arg;
+		va_start(arg, format);
+		auto len = _vscwprintf(format, arg);
+		str.resize(len);
+		vswprintf(&str[0], format, arg);
+		va_end(arg);
+		return std::move(str);
+#pragma warning(pop)
+	}
+
+} // namespace ltk
 
 using namespace ltk;
 

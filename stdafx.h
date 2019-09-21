@@ -69,3 +69,21 @@ using std::vector;
 #else
 #define DEBUG_NEW
 #endif // _DEBUG
+
+// https://stackoverflow.com/questions/3060006/is-it-worth-setting-pointers-to-null-in-a-destructor
+#ifndef INVALID_POINTER
+#define INVALID_POINTER(type) reinterpret_cast<type *>(0xDEADBEEF)
+#endif
+
+#define RELEASE_AND_INVALIDATE(type, p) if (p) { (p)->Release(); (p) = reinterpret_cast<type *>(0xDEADBEEF); }
+
+//#define LTK_ASSERT(expr) if (!(expr)) {\
+//    CStringW msg; msg.Format(L"Assertion Failed: %s\r\n%s(%d)", L#expr, __FILEW__, __LINE__);\
+//    ::OutputDebugStringW(msg);__debugbreak();}
+
+#define LOGW(msg) do\
+{\
+	std::wstringstream ss;\
+	ss << __FUNCTIONW__ << L"() " msg << std::endl;\
+	OutputDebugStringW(ss.str().c_str());\
+} while (0)

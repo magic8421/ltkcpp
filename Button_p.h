@@ -1,5 +1,6 @@
 #pragma once
 #include "AbstractButton_p.h"
+#include "ImmutableString.h"
 
 namespace ltk {
 

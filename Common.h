@@ -2,84 +2,18 @@
 // Author:    Sara Chen
 // Email:     6659907@163.com
 // QQ:        314266265
-// License:   MIT license
 //////////////////////////////////////////////////////////////////////////
 
 #pragma once
-//#include "ltk.h"
-#include "ScopeGuard.h"
-
-std::wstring Utf8ToUtf16(LPCSTR strA, int len = -1);
-CStringA Utf16ToUtf8(LPCTSTR strW, int len);
-CStringA Utf16ToGbk(LPCTSTR strW, int len);
-
-std::wstring WStringFormat(LPCWSTR format, ...);
-
-class ImmutableString
-{
-public:
-	ImmutableString() {}
-	ImmutableString(LPCSTR str)
-	{
-		m_ptr = _strdup(str);
-	}
-	~ImmutableString()
-	{
-		free((void *)m_ptr);
-	}
-	bool operator==(LPCSTR rhs)
-	{
-		if (m_ptr && rhs) {
-			return strcmp(m_ptr, rhs) == 0;
-		} else {
-			return m_ptr == rhs;
-		}
-	}
-	void operator=(LPCSTR str)
-	{
-		free((void *)m_ptr);
-		if (str) {
-			m_ptr = _strdup(str);
-		} else {
-			m_ptr = nullptr;
-		}
-	}
-	operator LPCSTR()
-	{
-		return m_ptr;
-	}
-
-private:
-	const char *m_ptr = nullptr;
-};
-
-
-#define LOGW(msg) do\
-{\
-	std::wstringstream ss;\
-	ss << __FUNCTIONW__ << L"() " msg << std::endl;\
-	OutputDebugStringW(ss.str().c_str());\
-} while (0)
 
 #define DISALLOW_COPY_AND_ASSIGN(TypeName) \
 	TypeName(const TypeName&) = delete;             \
 	void operator=(const TypeName&) = delete;
 
-// https://stackoverflow.com/questions/3060006/is-it-worth-setting-pointers-to-null-in-a-destructor
-#ifndef INVALID_POINTER
-#define INVALID_POINTER(type) reinterpret_cast<type *>(0xDEADBEEF)
-#endif
-
 #define SAFE_RELEASE(p) if (p) { (p)->Release(); (p) = nullptr; }
-
-#define RELEASE_AND_INVALIDATE(type, p) if (p) { (p)->Release(); (p) = reinterpret_cast<type *>(0xDEADBEEF); }
 
 EXTERN_C IMAGE_DOS_HEADER __ImageBase;
 #define HINST_THISCOMPONENT ((HINSTANCE)&__ImageBase)
-
-//#define LTK_ASSERT(expr) if (!(expr)) {\
-//    CStringW msg; msg.Format(L"Assertion Failed: %s\r\n%s(%d)", L#expr, __FILEW__, __LINE__);\
-//    ::OutputDebugStringW(msg);__debugbreak();}
 
 #ifdef _DEBUG
 #define LTK_ASSERT(expr) if (!(expr)) {__debugbreak();} // super KISS
@@ -110,8 +44,8 @@ EXTERN_C IMAGE_DOS_HEADER __ImageBase;
 
 #define  LTK_LOG(...) LtkLogImpl(__FILE__, __LINE__, __VA_ARGS__)
 
-void LtkLogInit();
-void LtkLogImpl(const char *source, int line, const char *format, ...);
+void LTK_API LtkLogInit();
+void LTK_API LtkLogImpl(const char *source, int line, const char *format, ...);
 
 //////////////////////////////////////////////////////////////////////////
 
@@ -125,37 +59,36 @@ public:
 		Width = Height = 0.0f;
 	}
 
-	SizeF(IN const SizeF& size)
+	SizeF(const SizeF& size)
 	{
 		Width = size.Width;
 		Height = size.Height;
 	}
 
-	SizeF(IN float width,
-		IN float height)
+	SizeF(float width, float height)
 	{
 		Width = width;
 		Height = height;
 	}
 
-	SizeF operator+(IN const SizeF& sz) const
+	SizeF operator+(const SizeF& sz) const
 	{
 		return SizeF(Width + sz.Width,
 			Height + sz.Height);
 	}
 
-	SizeF operator-(IN const SizeF& sz) const
+	SizeF operator-(const SizeF& sz) const
 	{
 		return SizeF(Width - sz.Width,
 			Height - sz.Height);
 	}
 
-	BOOL Equals(IN const SizeF& sz) const
+	bool Equals(const SizeF& sz) const
 	{
 		return (Width == sz.Width) && (Height == sz.Height);
 	}
 
-	BOOL Empty() const
+	bool Empty() const
 	{
 		return (Width == 0.0f && Height == 0.0f);
 	}
@@ -173,37 +106,37 @@ public:
 		X = Y = 0.0f;
 	}
 
-	PointF(IN const PointF &point)
+	PointF(const PointF &point)
 	{
 		X = point.X;
 		Y = point.Y;
 	}
 
-	PointF(IN const SizeF &size)
+	PointF(const SizeF &size)
 	{
 		X = size.Width;
 		Y = size.Height;
 	}
 
-	PointF(IN float x, IN float y)
+	PointF(float x, float y)
 	{
 		X = x;
 		Y = y;
 	}
 
-	PointF operator+(IN const PointF& point) const
+	PointF operator+(const PointF& point) const
 	{
 		return PointF(X + point.X,
 			Y + point.Y);
 	}
 
-	PointF operator-(IN const PointF& point) const
+	PointF operator-(const PointF& point) const
 	{
 		return PointF(X - point.X,
 			Y - point.Y);
 	}
 
-	BOOL Equals(IN const PointF& point)
+	BOOL Equals(const PointF& point)
 	{
 		return (X == point.X) && (Y == point.Y);
 	}
@@ -223,10 +156,7 @@ public:
 		X = Y = Width = Height = 0.0f;
 	}
 
-	RectF(float x,
-		float y,
-		float width,
-		float height)
+	RectF(float x, float y, float width, float height)
 	{
 		X = x;
 		Y = y;
@@ -234,8 +164,7 @@ public:
 		Height = height;
 	}
 
-	RectF(const PointF& location,
-		const SizeF& size)
+	RectF(const PointF& location, const SizeF& size)
 	{
 		X = location.X;
 		Y = location.Y;
@@ -288,12 +217,13 @@ public:
 		return Y + Height;
 	}
 
-	BOOL IsEmptyArea() const
+	bool IsEmptyArea() const
 	{
-		return (Width <= REAL_EPSILON) || (Height <= REAL_EPSILON);
+		const float epsilon = 1.192092896e-07F;
+		return (Width <= epsilon) || (Height <= epsilon);
 	}
 
-	BOOL Equals(const RectF & rect) const
+	bool Equals(const RectF & rect) const
 	{
 		return X == rect.X &&
 			Y == rect.Y &&
@@ -301,18 +231,18 @@ public:
 			Height == rect.Height;
 	}
 
-	BOOL Contains(float x, float y) const
+	bool Contains(float x, float y) const
 	{
 		return x >= X && x < X + Width &&
 			y >= Y && y < Y + Height;
 	}
 
-	BOOL Contains(const PointF& pt) const
+	bool Contains(const PointF& pt) const
 	{
 		return Contains(pt.X, pt.Y);
 	}
 
-	BOOL Contains(const RectF& rect) const
+	bool Contains(const RectF& rect) const
 	{
 		return (X <= rect.X) && (rect.GetRight() <= GetRight()) &&
 			(Y <= rect.Y) && (rect.GetBottom() <= GetBottom());
@@ -331,14 +261,12 @@ public:
 		Inflate(point.X, point.Y);
 	}
 
-	BOOL Intersect(const RectF& rect)
+	bool Intersect(const RectF& rect)
 	{
 		return Intersect(*this, *this, rect);
 	}
 
-	static BOOL Intersect(RectF& c,
-		const RectF& a,
-		const RectF& b)
+	static bool Intersect(RectF& c, const RectF& a, const RectF& b)
 	{
 		float right = min(a.GetRight(), b.GetRight());
 		float bottom = min(a.GetBottom(), b.GetBottom());
@@ -352,7 +280,7 @@ public:
 		return !c.IsEmptyArea();
 	}
 
-	BOOL IntersectsWith(const RectF& rect) const
+	bool IntersectsWith(const RectF& rect) const
 	{
 		return (GetLeft() < rect.GetRight() &&
 			GetTop() < rect.GetBottom() &&
@@ -360,9 +288,7 @@ public:
 			GetBottom() > rect.GetTop());
 	}
 
-	static BOOL Union(RectF& c,
-		const RectF& a,
-		const RectF& b)
+	static bool Union(RectF& c, const RectF& a, const RectF& b)
 	{
 		float right = max(a.GetRight(), b.GetRight());
 		float bottom = max(a.GetBottom(), b.GetBottom());

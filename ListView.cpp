@@ -12,6 +12,7 @@
 #include "ScrollBar.h"
 #include "HeaderCtrl.h"
 #include "Window.h"
+#include "ScopeGuard.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW 

@@ -9,6 +9,7 @@
 #include "Sprite.h"
 #include "Delegate.h"
 #include "ltk.h"
+#include "ImmutableString.h"
 
 namespace ltk {
 

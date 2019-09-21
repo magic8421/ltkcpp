@@ -8,6 +8,7 @@
 #pragma once
 #include "Sprite.h"
 #include "Common.h"
+#include "ImmutableString.h"
 
 namespace ltk {
 

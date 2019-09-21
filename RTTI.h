@@ -18,7 +18,7 @@ namespace ltk {
         virtual bool OnEvent(Event *ev) { return false; }
 
         virtual const size_t TypeIdInstance() const = 0;
-        virtual std::string TypeNameInstance() const = 0;
+        virtual const char* TypeNameInstance() const = 0;
 
         virtual RTTI* QueryInterface(const size_t)
         {
@@ -63,8 +63,8 @@ namespace ltk {
 
 #define RTTI_DECLARATIONS(Type, ParentType)                            \
     public:                                                            \
-        virtual std::string TypeNameInstance() const override          \
-        { return std::string(#Type); }                                 \
+        virtual const char* TypeNameInstance() const override          \
+        { return (#Type); }                                 \
         virtual const size_t TypeIdInstance() const override           \
         { return Type::TypeIdClass(); }                                \
         static const size_t TypeIdClass()                              \

@@ -57,21 +57,6 @@ CStringA Utf16ToGbk(LPCTSTR strW, int len)
     return strA;
 }
 
-std::wstring WStringFormat(LPCWSTR format, ...)
-{
-#pragma warning(push)
-#pragma warning(disable:4996)
-    std::wstring str;
-    va_list arg;
-    va_start(arg, format);
-    auto len = _vscwprintf(format, arg);
-    str.resize(len);
-    vswprintf(&str[0], format, arg);
-    va_end(arg);
-    return std::move(str);
-#pragma warning(pop)
-}
-
 ///////////////////////////////////////////////////////////////////////////////
 // LTK LOG
 ///////////////////////////////////////////////////////////////////////////////
@@ -138,7 +123,7 @@ static void DeleteOldLog()
     }
 }
 
-void LtkLogInit()
+void LTK_API LtkLogInit()
 {
     if (::PathFileExists(LOG_DIR)) {
         DeleteOldLog();
@@ -146,7 +131,7 @@ void LtkLogInit()
     }
 }
 
-void LtkLogImpl(const char *source, int line, const char *format, ...)
+void LTK_API LtkLogImpl(const char *source, int line, const char *format, ...)
 {
     const size_t SIZE = 1024 * 2;
     char buffer[SIZE];

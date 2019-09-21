@@ -10,6 +10,7 @@
 #include "Sprite.h"
 #include "Animation.h"
 #include "Common.h"
+#include "ImmutableString.h"
 
 namespace ltk {
 
