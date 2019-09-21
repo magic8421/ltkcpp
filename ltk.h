@@ -2,12 +2,10 @@
 // Author:    Sara Chen
 // Email:     6659907@163.com
 // QQ:        314266265
-// License:   MIT license
 //////////////////////////////////////////////////////////////////////////
 
 #pragma once
-
-
+#include "Common.h"
 
 namespace ltk {
 	void LtkInitialize();

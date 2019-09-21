@@ -125,7 +125,7 @@ int CALLBACK WinMain(
     Button *btnRepeatTimer = new Button;
     UINT cookie1 = 0;
     btnRepeatTimer->SetText(L"循环定时器");
-    btnRepeatTimer->ClickedEvent.Attach([&]() {
+	btnRepeatTimer->AttachClickedDelegate([&]() {
         cookie1 = ltk::SetTimer(1000, cookie1,[&]() {
             LTK_LOG("tick: %d", cookie1);
         });
@@ -136,7 +136,7 @@ int CALLBACK WinMain(
 
     Button *btnStopRepeatTimer = new Button;
     btnStopRepeatTimer->SetText(L"停止");
-    btnStopRepeatTimer->ClickedEvent.Attach([&]() {
+	btnStopRepeatTimer->AttachClickedDelegate([&]() {
         ltk::KillTimer(cookie1);
         cookie1 = 0;
     });
@@ -145,7 +145,7 @@ int CALLBACK WinMain(
     Button *btnOnceTimer = new Button;
     UINT cookie2 = 0;
     btnOnceTimer->SetText(L"单次定时器");
-    btnOnceTimer->ClickedEvent.Attach([&]() {
+	btnOnceTimer->AttachClickedDelegate([&]() {
         cookie2 = ltk::SetOnceTimer(1000, cookie2, [&]() {
             LTK_LOG("tick: %d", cookie2);
             cookie2 = 0;
@@ -157,7 +157,7 @@ int CALLBACK WinMain(
 
     Button *btnStopOnceTimer = new Button;
     btnStopOnceTimer->SetText(L"停止");
-    btnStopOnceTimer->ClickedEvent.Attach([&]() {
+	btnStopOnceTimer->AttachClickedDelegate([&]() {
         ltk::KillTimer(cookie2);
         cookie2 = 0;
     });
@@ -169,7 +169,7 @@ int CALLBACK WinMain(
     Button *btnPixelTheme = new Button;
     hboxTheme->AddLayoutItem(btnPixelTheme, 100);
     btnPixelTheme->SetText(L"位图资源");
-    btnPixelTheme->ClickedEvent.Attach([wnd]() {
+	btnPixelTheme->AttachClickedDelegate([wnd]() {
         StyleManager::SetCurrentTheme("pixel");
         wnd->UpdateTheme();
     });
@@ -177,7 +177,7 @@ int CALLBACK WinMain(
     Button *btnRectTheme = new Button;
     hboxTheme->AddLayoutItem(btnRectTheme, 100);
     btnRectTheme->SetText(L"纯色1");
-	btnRectTheme->ClickedEvent.Attach([wnd]() {
+	btnRectTheme->AttachClickedDelegate([wnd]() {
         StyleManager::SetCurrentTheme("rect");
         wnd->UpdateTheme();
     });
@@ -186,7 +186,7 @@ int CALLBACK WinMain(
 	wnd->SetMenu(menu_bar);
 	menu_bar->AddItem(L"文件");
 	menu_bar->AddItem(L"编辑");
-	menu_bar->AddItem(L"工具");
+	menu_bar->AddItem(L"自适应长度");
 	menu_bar->AddItem(L"帮助");
 
 	PopupMenu *popup = new PopupMenu;

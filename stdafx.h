@@ -46,10 +46,6 @@ using std::vector;
 #pragma warning(push)
 #pragma warning(disable:4458)
 #include <GdiPlus.h>
-using Gdiplus::RectF;
-using Gdiplus::SizeF;
-using Gdiplus::PointF;
-using Gdiplus::Color;
 #pragma warning(pop)
 
 

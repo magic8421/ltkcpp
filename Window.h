@@ -2,24 +2,16 @@
 // Author:    Sara Chen
 // Email:     6659907@163.com
 // QQ:        314266265
-// License:   MIT license
 //////////////////////////////////////////////////////////////////////////
 
 #pragma once
-#include "stdafx.h"
-#include "ShadowFrame.h"
 #include "Event.h"
-#include "ImeInput.h"
 #include "Delegate.h"
 #include "Object.h"
-#include "Common.h"
 
 namespace ltk {
 
-class Button;
-class Label;
-class WindowLayout;
-class AbstractBackground;
+class Sprite;
 class MenuBar;
 class WindowPrivate;
 

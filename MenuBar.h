@@ -8,6 +8,7 @@
 #pragma once
 #include "Sprite.h"
 #include "Delegate.h"
+#include "ltk.h"
 
 namespace ltk {
 

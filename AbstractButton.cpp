@@ -66,11 +66,36 @@ float AbstractButton::GetBlend()
 	return (float)d->aniCounter / AniDuration;
 }
 
+Cookie AbstractButton::AttachClickedDelegate(const std::function<void()> &cb)
+{
+	LTK_D(AbstractButton);
+	return d->clickedDelegate.Attach(cb);
+}
+
+void AbstractButton::RemoveClickedDelegate(Cookie c)
+{
+	LTK_D(AbstractButton);
+	d->clickedDelegate.Remove(c);
+}
+
+Cookie AbstractButton::AttachMouseEventDelegate(const std::function<void(MouseEvent*, bool&)> &cb)
+{
+	LTK_D(AbstractButton);
+	return d->mouseEventDelegate.Attach(cb);
+}
+
+void AbstractButton::RemoveMouseEventDelegate(Cookie c)
+{
+	LTK_D(AbstractButton);
+	d->mouseEventDelegate.Remove(c);
+}
+
 bool AbstractButton::OnEvent(Event *ev)
 {
-    bool bHandled = false;
+	LTK_D(AbstractButton);
+	bool bHandled = false;
     if (ev->id > eMouseFirst && ev->id < eMouseLast) {
-        this->DelegateMouseEvent.Invoke(
+        d->mouseEventDelegate.Invoke(
             static_cast<MouseEvent *>(ev), std::ref(bHandled));
     }
     if (!bHandled) {
@@ -123,7 +148,7 @@ bool AbstractButton::OnLBtnUp(MouseEvent *ev)
         this->ReleaseCapture();
     }
     auto rc = this->GetClientRect();
-    if (rc.Contains(Gdiplus::PointF(ev->x, ev->y))) {
+    if (rc.Contains(PointF(ev->x, ev->y))) {
         this->OnClicked();
     } else {
         this->OnMouseLeave(ev);
@@ -134,7 +159,8 @@ bool AbstractButton::OnLBtnUp(MouseEvent *ev)
 
 void AbstractButton::OnClicked()
 {
-    this->ClickedEvent.Invoke();
+	LTK_D(AbstractButton);
+	d->clickedDelegate.Invoke();
 }
 
 

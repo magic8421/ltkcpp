@@ -2,8 +2,13 @@
 #include "Object_p.h"
 #include "Window.h"
 #include "WindowLayout.h"
+#include "ShadowFrame.h"
+#include "ImeInput.h"
 
 namespace ltk {
+
+class AbstractBackground;
+class WindowLayout;
 
 class WindowPrivate : public ObjectPrivate {
 public:

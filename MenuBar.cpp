@@ -302,10 +302,10 @@ void MenuBar::AddItem(LPCWSTR text)
 	param.button = btn;
 	m_vecMenuItems.push_back(param);
 	UINT idx = m_vecMenuItems.size() - 1;
-	btn->ClickedEvent.Attach([this, idx]() { // TODO  包btn比较好 插入删除不会错
+	btn->AttachClickedDelegate([this, idx]() { // TODO  包btn比较好 插入删除不会错
 		this->OnMenuBtnClicked(idx);
 	});
-	btn->DelegateMouseEvent.Attach([this, btn](MouseEvent *ev, bool &bHandled) {
+	btn->AttachMouseEventDelegate([this, btn](MouseEvent *ev, bool &bHandled) {
 		this->OnButtonMouseEvent(btn, ev, bHandled);
 	});
 }

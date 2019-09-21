@@ -1,13 +1,9 @@
 #pragma once
-#include "stdafx.h"
-#include "RTTI.h"
 
 namespace ltk {
 
 enum Events
 {
-    eDestroy = 1,
-
     eSpriteFirst,
     ePaint,
 
@@ -45,12 +41,6 @@ struct MouseEvent : public Event
     float y = 0.f;
     UINT flag = 0; // ctrl shift atl
     float delta = 0.f; // wheel
-};
-
-struct DelegateMouseEvent : public Event
-{
-    MouseEvent *data = nullptr;
-    bool bHandled = false;
 };
 
 struct KeyEvent : public Event

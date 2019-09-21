@@ -9,6 +9,7 @@
 
 #include "Sprite.h"
 #include "Animation.h"
+#include "Common.h"
 
 namespace ltk {
 

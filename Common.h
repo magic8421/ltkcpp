@@ -6,7 +6,7 @@
 //////////////////////////////////////////////////////////////////////////
 
 #pragma once
-#include "ltk.h"
+//#include "ltk.h"
 #include "ScopeGuard.h"
 
 std::wstring Utf8ToUtf16(LPCSTR strA, int len = -1);
@@ -112,3 +112,287 @@ EXTERN_C IMAGE_DOS_HEADER __ImageBase;
 
 void LtkLogInit();
 void LtkLogImpl(const char *source, int line, const char *format, ...);
+
+//////////////////////////////////////////////////////////////////////////
+
+namespace ltk {
+
+class SizeF
+{
+public:
+	SizeF()
+	{
+		Width = Height = 0.0f;
+	}
+
+	SizeF(IN const SizeF& size)
+	{
+		Width = size.Width;
+		Height = size.Height;
+	}
+
+	SizeF(IN float width,
+		IN float height)
+	{
+		Width = width;
+		Height = height;
+	}
+
+	SizeF operator+(IN const SizeF& sz) const
+	{
+		return SizeF(Width + sz.Width,
+			Height + sz.Height);
+	}
+
+	SizeF operator-(IN const SizeF& sz) const
+	{
+		return SizeF(Width - sz.Width,
+			Height - sz.Height);
+	}
+
+	BOOL Equals(IN const SizeF& sz) const
+	{
+		return (Width == sz.Width) && (Height == sz.Height);
+	}
+
+	BOOL Empty() const
+	{
+		return (Width == 0.0f && Height == 0.0f);
+	}
+
+public:
+	float Width;
+	float Height;
+};
+
+class PointF
+{
+public:
+	PointF()
+	{
+		X = Y = 0.0f;
+	}
+
+	PointF(IN const PointF &point)
+	{
+		X = point.X;
+		Y = point.Y;
+	}
+
+	PointF(IN const SizeF &size)
+	{
+		X = size.Width;
+		Y = size.Height;
+	}
+
+	PointF(IN float x, IN float y)
+	{
+		X = x;
+		Y = y;
+	}
+
+	PointF operator+(IN const PointF& point) const
+	{
+		return PointF(X + point.X,
+			Y + point.Y);
+	}
+
+	PointF operator-(IN const PointF& point) const
+	{
+		return PointF(X - point.X,
+			Y - point.Y);
+	}
+
+	BOOL Equals(IN const PointF& point)
+	{
+		return (X == point.X) && (Y == point.Y);
+	}
+
+public:
+
+	float X;
+	float Y;
+};
+
+class RectF
+{
+public:
+
+	RectF()
+	{
+		X = Y = Width = Height = 0.0f;
+	}
+
+	RectF(float x,
+		float y,
+		float width,
+		float height)
+	{
+		X = x;
+		Y = y;
+		Width = width;
+		Height = height;
+	}
+
+	RectF(const PointF& location,
+		const SizeF& size)
+	{
+		X = location.X;
+		Y = location.Y;
+		Width = size.Width;
+		Height = size.Height;
+	}
+
+	RectF* Clone() const
+	{
+		return new RectF(X, Y, Width, Height);
+	}
+
+	void GetLocation(PointF* point) const
+	{
+		point->X = X;
+		point->Y = Y;
+	}
+
+	void GetSize(SizeF* size) const
+	{
+		size->Width = Width;
+		size->Height = Height;
+	}
+
+	void GetBounds(RectF* rect) const
+	{
+		rect->X = X;
+		rect->Y = Y;
+		rect->Width = Width;
+		rect->Height = Height;
+	}
+
+	float GetLeft() const
+	{
+		return X;
+	}
+
+	float GetTop() const
+	{
+		return Y;
+	}
+
+	float GetRight() const
+	{
+		return X + Width;
+	}
+
+	float GetBottom() const
+	{
+		return Y + Height;
+	}
+
+	BOOL IsEmptyArea() const
+	{
+		return (Width <= REAL_EPSILON) || (Height <= REAL_EPSILON);
+	}
+
+	BOOL Equals(const RectF & rect) const
+	{
+		return X == rect.X &&
+			Y == rect.Y &&
+			Width == rect.Width &&
+			Height == rect.Height;
+	}
+
+	BOOL Contains(float x, float y) const
+	{
+		return x >= X && x < X + Width &&
+			y >= Y && y < Y + Height;
+	}
+
+	BOOL Contains(const PointF& pt) const
+	{
+		return Contains(pt.X, pt.Y);
+	}
+
+	BOOL Contains(const RectF& rect) const
+	{
+		return (X <= rect.X) && (rect.GetRight() <= GetRight()) &&
+			(Y <= rect.Y) && (rect.GetBottom() <= GetBottom());
+	}
+
+	void Inflate(float dx, float dy)
+	{
+		X -= dx;
+		Y -= dy;
+		Width += 2 * dx;
+		Height += 2 * dy;
+	}
+
+	void Inflate(const PointF& point)
+	{
+		Inflate(point.X, point.Y);
+	}
+
+	BOOL Intersect(const RectF& rect)
+	{
+		return Intersect(*this, *this, rect);
+	}
+
+	static BOOL Intersect(RectF& c,
+		const RectF& a,
+		const RectF& b)
+	{
+		float right = min(a.GetRight(), b.GetRight());
+		float bottom = min(a.GetBottom(), b.GetBottom());
+		float left = max(a.GetLeft(), b.GetLeft());
+		float top = max(a.GetTop(), b.GetTop());
+
+		c.X = left;
+		c.Y = top;
+		c.Width = right - left;
+		c.Height = bottom - top;
+		return !c.IsEmptyArea();
+	}
+
+	BOOL IntersectsWith(const RectF& rect) const
+	{
+		return (GetLeft() < rect.GetRight() &&
+			GetTop() < rect.GetBottom() &&
+			GetRight() > rect.GetLeft() &&
+			GetBottom() > rect.GetTop());
+	}
+
+	static BOOL Union(RectF& c,
+		const RectF& a,
+		const RectF& b)
+	{
+		float right = max(a.GetRight(), b.GetRight());
+		float bottom = max(a.GetBottom(), b.GetBottom());
+		float left = min(a.GetLeft(), b.GetLeft());
+		float top = min(a.GetTop(), b.GetTop());
+
+		c.X = left;
+		c.Y = top;
+		c.Width = right - left;
+		c.Height = bottom - top;
+		return !c.IsEmptyArea();
+	}
+
+	void Offset(const PointF& point)
+	{
+		Offset(point.X, point.Y);
+	}
+
+	void Offset(float dx, float dy)
+	{
+		X += dx;
+		Y += dy;
+	}
+
+public:
+
+	float X;
+	float Y;
+	float Width;
+	float Height;
+};
+
+} // namespace ltk

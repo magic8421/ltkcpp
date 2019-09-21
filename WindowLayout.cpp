@@ -130,18 +130,18 @@ void WindowLayout::SetWindow( Window *wnd )
 {
     Sprite::SetWindow(wnd);
 
-    m_minBtn->ClickedEvent.Remove(m_minTrack);
-    m_minTrack = m_minBtn->ClickedEvent.Attach([=]() {
+    m_minBtn->RemoveClickedDelegate(m_minTrack);
+    m_minTrack = m_minBtn->AttachClickedDelegate([=]() {
         wnd->Minimize();
     });
 
-    m_maxBtn->ClickedEvent.Remove(m_maxTrack);
-    m_maxTrack = m_maxBtn->ClickedEvent.Attach([=]() {
+	m_maxBtn->RemoveClickedDelegate(m_maxTrack);
+	m_maxTrack = m_maxBtn->AttachClickedDelegate([=]() {
         wnd->Maximize();
     });
 
-    m_closeBtn->ClickedEvent.Remove(m_closeTrack);
-    m_closeTrack = m_closeBtn->ClickedEvent.Attach([=]() {
+	m_closeBtn->RemoveClickedDelegate(m_closeTrack);
+	m_closeTrack = m_closeBtn->AttachClickedDelegate([=]() {
         wnd->CloseWindow();
     });
 }

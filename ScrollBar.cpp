@@ -23,7 +23,7 @@ ScrollBar::ScrollBar(Mode mode) : m_mode(mode)
 {
     m_slider = new Button;
     m_slider->EnableCapture(false);
-    m_slider->DelegateMouseEvent.Attach([this](MouseEvent *ev, bool &bHandled) {
+    m_slider->AttachMouseEventDelegate([this](MouseEvent *ev, bool &bHandled) {
         this->OnSilderEvent(ev, bHandled);
     });
     if (m_mode == Horizontal) {
