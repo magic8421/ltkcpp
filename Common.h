@@ -93,11 +93,12 @@ EXTERN_C IMAGE_DOS_HEADER __ImageBase;
 #define LTK_DECLARE_PRIVATE(Class)\
     inline Class##Private* d_func() {\
         return (Class##Private*)(d_ptr);\
-    }
+    }\
+	friend struct Class##Private;
  //   inline const Class##Private d_func() const {\
  //       return (const Class##Private *)(d_ptr);\
  //   }
-	//friend class Class##Private;
+	//
 
 #ifdef LTK_EXPORTS
 #define LTK_API __declspec(dllexport)

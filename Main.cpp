@@ -68,6 +68,7 @@ int CALLBACK WinMain(
         ::PostQuitMessage(0);
     });
 
+	/*
 	Splitter *spitter1 = new Splitter(Splitter::Horizontal);
 	wnd->SetClientSprite(spitter1);
 	spitter1->AddClient(new Button);
@@ -78,9 +79,8 @@ int CALLBACK WinMain(
 	spitter1->SetClientSize(2, 100);
 	spitter1->AddClient(new Button);
 	spitter1->SetClientSize(3, 100);
+	*/
 
-
-	/*
     BoxLayout *hbox = new BoxLayout(BoxLayout::Horizontal);
     wnd->SetClientSprite(hbox);
 
@@ -196,6 +196,7 @@ int CALLBACK WinMain(
 	popup->AddItem(L"历史记录");
 	popup->AddItem(L"保存");
 	popup->AddItem(L"另存为");
+	popup->AddItem(L"退出");
 	menu_bar->SetPopupMenu(0, popup);
 
 	PopupMenu *popup2 = new PopupMenu;
@@ -214,11 +215,24 @@ int CALLBACK WinMain(
 	popup->AddItem(L"粘贴");
 	menu_bar->SetPopupMenu(1, popup);
 
+	popup = new PopupMenu;
+	popup->SetWidth(120.f);
+	popup->AddItem(L"选择");
+	popup->AddItem(L"钢笔");
+	popup->AddItem(L"铅笔");
+	popup->AddItem(L"橡皮擦");
+	menu_bar->SetPopupMenu(2, popup);
+
+	popup = new PopupMenu;
+	popup->SetWidth(120.f);
+	popup->AddItem(L"在线文档");
+	popup->AddItem(L"关于");
+	menu_bar->SetPopupMenu(3, popup);
 
     vboxRightPanel->AddSpaceItem(5, 0);
-	*/
+	
 	wnd->UpdateTheme();
-	spitter1->DoLayout();
+	//spitter1->DoLayout();
 
 
     MSG msg;

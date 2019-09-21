@@ -131,10 +131,9 @@ void Sprite::SetWindow( Window *wnd )
 	d->window = wnd;
 }
 
-void Sprite::HandlePaint( ID2D1RenderTarget *target )
+void SpritePrivate::HandlePaint(ID2D1RenderTarget *target)
 {
-	LTK_D(Sprite);
-	if (!d->bVisible)
+	if (!this->bVisible)
 	{
 		return; // 子节点也不会被绘制
 	}
@@ -145,27 +144,27 @@ void Sprite::HandlePaint( ID2D1RenderTarget *target )
 	//	LOGW(<<L"Orignal Size 10 10"); // 检查下有没有多余的重绘
 	//}
 
-	if (d->bClipChildren)
+	if (this->bClipChildren)
 	{
-        auto rcSprite = this->GetClientRect();
+        auto rcSprite = q_ptr->GetClientRect();
         D2D1_RECT_F rcClip = D2D1RectF(rcSprite);
         target->PushAxisAlignedClip(rcClip, D2D1_ANTIALIAS_MODE_ALIASED);
 	}
     PaintEvent ev;
     ev.id = ePaint;
     ev.target = target;
-    OnPaint(&ev);
+    q_ptr->OnPaint(&ev);
 
-    for (size_t i = 0; i < d->children.size(); i++) {
-        auto sp = d->children[i];
+    for (size_t i = 0; i < this->children.size(); i++) {
+        auto sp = this->children[i];
 		RectF rc2 = sp->GetRect();
 
 		TranslateTransform(target, rc2.X, rc2.Y);
-		sp->HandlePaint(target);
+		sp->d_func()->HandlePaint(target);
 		TranslateTransform(target, -rc2.X, -rc2.Y);
 	}
 
-	if (d->bClipChildren)
+	if (this->bClipChildren)
 	{
         target->PopAxisAlignedClip();
 	}
@@ -190,7 +189,7 @@ void Sprite::AddChild(Sprite *sp)
 	sp->d_func()->parent = this;
 }
 
-void Sprite::HandleKeyEvent( UINT message, DWORD keyCode, DWORD flag )
+void SpritePrivate::HandleKeyEvent(UINT message, DWORD keyCode, DWORD flag)
 {
 	KeyEvent ev;
     ev.keyCode = keyCode;
@@ -200,25 +199,25 @@ void Sprite::HandleKeyEvent( UINT message, DWORD keyCode, DWORD flag )
 	{
 	case WM_KEYDOWN:
         ev.id = eKeyDown;
-        OnEvent(&ev);
+        q_ptr->OnEvent(&ev);
 		break;
 	case WM_KEYUP:
         ev.id = eKeyUp;
-        OnEvent(&ev);
+		q_ptr->OnEvent(&ev);
 		break;
 	case WM_CHAR:
         ev.id = eCharInput;
-        OnEvent(&ev);
+		q_ptr->OnEvent(&ev);
 		break;
 	}
 }
 
-void Sprite::HandleImeInput(LPCTSTR text)
+void SpritePrivate::HandleImeInput(LPCTSTR text)
 {
     ImeEvent ev;
     ev.id = eImeInput;
     ev.text = text;
-    OnEvent(&ev);
+	q_ptr->OnEvent(&ev);
 }
 
 // return weak ref
@@ -300,25 +299,24 @@ bool Sprite::IsClipChildren()
 	return d->bClipChildren;
 }
 
-bool Sprite::DispatchMouseEvent(MouseEvent *ev)
+bool SpritePrivate::DispatchMouseEvent(MouseEvent *ev)
 {
-	LTK_D(Sprite);
-	if (!d->bVisible) {
+	if (!this->bVisible) {
 		return false;
 	}
-    for (auto i = d->children.size(); i > 0; i--) {
-        auto sp = d->children[i - 1];
+    for (auto i = this->children.size(); i > 0; i--) {
+        auto sp = this->children[i - 1];
         auto rc = sp->GetRect();
         if (rc.Contains(ev->x, ev->y)) {
             MouseEvent ev2 = *ev;
             ev2.x -= rc.X;
             ev2.y -= rc.Y;
-            if (sp->DispatchMouseEvent(&ev2)) {
+            if (sp->d_func()->DispatchMouseEvent(&ev2)) {
                 return true;
             }
         }
     }
-    return this->OnEvent(ev);
+    return q_ptr->OnEvent(ev);
 }
 
 Sprite * Sprite::GetAncestor()
@@ -448,22 +446,20 @@ bool Sprite::OnEvent(Event *ev)
 	return bHandled;
 }
 
-void Sprite::HandleRecreateResouce(ID2D1RenderTarget *target)
+void SpritePrivate::HandleRecreateResouce(ID2D1RenderTarget *target)
 {
-	LTK_D(Sprite);
-	for (size_t i = 0; i < d->children.size(); i++) {
-        auto sp = d->children[i];
-        sp->HandleRecreateResouce(target);
+	for (size_t i = 0; i < this->children.size(); i++) {
+        auto sp = this->children[i];
+        sp->d_func()->HandleRecreateResouce(target);
     }
-    this->OnRecreateResouce(target);
+    q_ptr->OnRecreateResouce(target);
 }
 
-void Sprite::HandleThemeChange()
+void SpritePrivate::HandleThemeChange()
 {
-	LTK_D(Sprite);
-	this->OnThemeChanged();
-    for (auto sp : d->children) {
-        sp->HandleThemeChange();
+	q_ptr->OnThemeChanged();
+    for (auto sp : this->children) {
+        sp->d_func()->HandleThemeChange();
     }
 }
 

@@ -10,6 +10,7 @@
 #include "Window_p.h"
 #include "Common.h"
 #include "Sprite.h"
+#include "Sprite_p.h"
 #include "ltk.h"
 #include "StyleManager.h"
 #include "WindowLayout.h"
@@ -212,7 +213,7 @@ void Window::HandleMouseMessage(UINT message, WPARAM wparam, LPARAM lparam)
 		//if (WM_LBUTTONDOWN == message)
 		//{
 		d->bEnableFocusChange = true;
-		d->sprite->DispatchMouseEvent(&ev);
+		d->sprite->d_func()->DispatchMouseEvent(&ev);
 			
 			std::vector<Sprite *> defer_remove;
 			defer_remove.reserve(20);
@@ -400,7 +401,7 @@ LRESULT Window::WndProc(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam)
     case WM_CHAR:
 		if (d->spFocus)
         {
-			d->spFocus->HandleKeyEvent(message, (DWORD)wparam, (DWORD)lparam);
+			d->spFocus->d_func()->HandleKeyEvent(message, (DWORD)wparam, (DWORD)lparam);
         }
         break;
     case WM_IME_SETCONTEXT:
@@ -576,7 +577,7 @@ void Window::OnPaint(HWND hwnd )
 
 		if (d->sprite)
         {
-			d->sprite->HandleRecreateResouce(d->target);
+			d->sprite->d_func()->HandleRecreateResouce(d->target);
         }
         this->RecreateResouce();
     }
@@ -592,7 +593,7 @@ void Window::OnPaint(HWND hwnd )
     {
 		RectF rc = d->sprite->GetRect();
 		TranslateTransform(d->target, rc.X, rc.Y);
-		d->sprite->HandlePaint(d->target);
+		d->sprite->d_func()->HandlePaint(d->target);
 		TranslateTransform(d->target, -rc.X, -rc.Y);
     }
 
@@ -798,7 +799,7 @@ void Window::OnImeInput( PCTSTR text )
 	if (d->spFocus)
 	{
 		// 其他的Sprite也有可能去接受ime消息。比如再来一个RichEdit
-		d->spFocus->HandleImeInput(text);
+		d->spFocus->d_func()->HandleImeInput(text);
 	}
 }
 
@@ -912,7 +913,7 @@ void Window::UpdateTheme()
 	d->background = StyleManager::Instance()->GetBackground(d->styleName.c_str());
     this->OnThemeChanged();
 	if (d->sprite) {
-		d->sprite->HandleThemeChange();
+		d->sprite->d_func()->HandleThemeChange();
 		// TODO send a eSizeChanged to the Sprite tree.
 		// let the controls use the new style measure.
 		float cx, cy;

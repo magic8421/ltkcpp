@@ -93,15 +93,7 @@ protected:
     virtual void OnParentChanged(Sprite *old, Sprite *new_){}
     virtual void OnThemeChanged() {}
 
-private:
 	friend class Window;
-
-	bool DispatchMouseEvent(MouseEvent *ev);
-	void HandlePaint(ID2D1RenderTarget *target);
-	void HandleKeyEvent(UINT message, DWORD keyCode, DWORD flag);
-	void HandleImeInput(LPCTSTR text);
-	void HandleRecreateResouce(ID2D1RenderTarget *target);
-	void HandleThemeChange();
 
 protected:
 	Sprite(SpritePrivate *pp);
