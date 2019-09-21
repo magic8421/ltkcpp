@@ -94,7 +94,7 @@ EXTERN_C IMAGE_DOS_HEADER __ImageBase;
     inline Class##Private* d_func() {\
         return (Class##Private*)(d_ptr);\
     }\
-	friend struct Class##Private;
+	friend class Class##Private;
  //   inline const Class##Private d_func() const {\
  //       return (const Class##Private *)(d_ptr);\
  //   }

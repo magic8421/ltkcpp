@@ -3,8 +3,9 @@
 
 namespace ltk {
 
-struct ObjectPrivate 
+class ObjectPrivate
 {
+public:
 	virtual ~ObjectPrivate() {}
 	DWORD thread_id = 0; // TODO check gui thread
 };

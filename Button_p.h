@@ -3,8 +3,9 @@
 
 namespace ltk {
 
-struct ButtonPrivate : public AbstractButtonPrivate
+class ButtonPrivate : public AbstractButtonPrivate
 {
+public:
 	ButtonPrivate(Button *pq);
 	virtual ~ButtonPrivate();
 

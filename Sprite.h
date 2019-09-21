@@ -13,7 +13,7 @@
 namespace ltk {
 
 class Window;
-struct SpritePrivate;
+class SpritePrivate;
 
 class LTK_API Sprite : public Object
 {

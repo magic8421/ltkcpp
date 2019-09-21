@@ -3,8 +3,9 @@
 
 namespace ltk {
 
-struct SpritePrivate : public ObjectPrivate
+class SpritePrivate : public ObjectPrivate
 {
+public:
 	SpritePrivate(Sprite *q);
 	virtual ~SpritePrivate();
 

@@ -5,7 +5,8 @@
 
 namespace ltk {
 
-struct WindowPrivate : public ObjectPrivate {
+class WindowPrivate : public ObjectPrivate {
+public:
 	WindowPrivate(Window *wnd);
 	~WindowPrivate() {}
 

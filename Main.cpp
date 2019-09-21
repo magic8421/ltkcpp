@@ -245,7 +245,7 @@ int CALLBACK WinMain(
             DispatchMessage(&msg);
         }
     }
-	ltk::Ptr<Window> ob = wnd->GetPtr<Window>();
+	auto ob = ToPtr(wnd);
 	delete wnd;
 	LTK_ASSERT(ob.Get() == nullptr);
 

@@ -109,7 +109,13 @@ private:
 	T *m_ptr;
 };
 
-struct ObjectPrivate;
+class ObjectPrivate;
+
+template<class T>
+Ptr<T> ToPtr(T *obj)
+{
+	return obj->GetPtr<T>();
+}
 
 class LTK_API Object : public RTTI
 {
@@ -121,9 +127,9 @@ public:
 
 	template<typename T>
 	Ptr<T> GetPtr() {
-		if (!this->Is(T::TypeIdClass())) {
-			__debugbreak();
-		}
+		//if (!this->Is(T::TypeIdClass())) {
+		//	__debugbreak();
+		//}
 		return Ptr<T>(m_obctrl);
 	}
 

@@ -21,7 +21,7 @@ class Label;
 class WindowLayout;
 class AbstractBackground;
 class MenuBar;
-struct WindowPrivate;
+class WindowPrivate;
 
 class LTK_API Window : public Object
 {

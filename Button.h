@@ -13,7 +13,7 @@
 
 namespace ltk {
 
-struct ButtonPrivate;
+class ButtonPrivate;
 
 class Button : public AbstractButton
 {

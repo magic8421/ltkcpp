@@ -4,8 +4,9 @@
 
 namespace ltk {
 
-struct AbstractButtonPrivate : public SpritePrivate
+class AbstractButtonPrivate : public SpritePrivate
 {
+public:
 	AbstractButtonPrivate(AbstractButton *q) : q_ptr(q), SpritePrivate(q) {}
 	virtual ~AbstractButtonPrivate() {}
 
