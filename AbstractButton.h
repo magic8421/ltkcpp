@@ -39,6 +39,9 @@ public:
 
     virtual void OnClicked();
 
+protected:
+	AbstractButton(AbstractButtonPrivate *pd);
+
 private:
 	LTK_DECLARE_PRIVATE(AbstractButton);
 };

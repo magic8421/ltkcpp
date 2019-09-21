@@ -186,6 +186,7 @@
     <ClInclude Include="Animation.h" />
     <ClInclude Include="BoxLayout.h" />
     <ClInclude Include="Button.h" />
+    <ClInclude Include="Button_p.h" />
     <ClInclude Include="Common.h" />
     <ClInclude Include="Container.h" />
     <ClInclude Include="Delegate.h" />

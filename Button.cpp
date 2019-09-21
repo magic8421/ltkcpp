@@ -9,6 +9,7 @@
 #include "ltk.h"
 #include "StyleManager.h"
 #include "Button.h"
+#include "Button_p.h"
 #include "Window.h"
 
 #ifdef _DEBUG
@@ -17,10 +18,11 @@
 
 namespace ltk {
 
-Button::Button() : 
-	Background("default_btn_bg"),
-	TextFormat("default_btn_fmt"),
-	TextColor("default_btn_clr")
+Button::Button() : AbstractButton(new ButtonPrivate(this))
+{
+}
+
+Button::Button(ButtonPrivate *pd) : AbstractButton(pd)
 {
 }
 
@@ -28,24 +30,39 @@ Button::~Button()
 {
 }
 
+ButtonPrivate::ButtonPrivate(Button *pq) :
+	Background("default_btn_bg"),
+	TextFormat("default_btn_fmt"),
+	TextColor("default_btn_clr"),
+	AbstractButtonPrivate(pq)
+{
+}
+
+ButtonPrivate::~ButtonPrivate()
+{
+	SAFE_RELEASE(layout);
+}
+
 void Button::OnThemeChanged()
 {
-	SAFE_RELEASE(m_layout);
+	LTK_D(Button);
+	SAFE_RELEASE(d->layout);
 	auto sm = StyleManager::Instance();
 
-	m_background = sm->GetBackground(Background);
-	m_format = sm->GetTextFormat(TextFormat);
-	m_textColor = sm->GetColor(TextColor);
+	d->background = sm->GetBackground(d->Background);
+	d->format = sm->GetTextFormat(d->TextFormat);
+	d->textColor = sm->GetColor(d->TextColor);
 }
 
 bool Button::OnPaint(PaintEvent *ev)
 {
-    Update();
+	LTK_D(Button);
+	Update();
     //LTK_LOG("OnPaint target: 0x%08x", ev->target);
 
     Window *wnd = this->GetWindow();
     auto rc = this->GetClientRect();
-    if (m_background) {
+    if (d->background) {
         float blend;
         switch (GetState()) {
         case AbstractBackground::Normal2Hover:
@@ -55,21 +72,21 @@ bool Button::OnPaint(PaintEvent *ev)
         default:
             blend = 1.0f;
         }
-        m_background->Draw(wnd, ev->target, rc, GetState(), blend);
+        d->background->Draw(wnd, ev->target, rc, GetState(), blend);
     }
-    if (m_text.size() > 0) {
+    if (d->text.size() > 0) {
         auto brush = wnd->GetStockBrush();
-        brush->SetColor(m_textColor);
-        //ev->target->DrawText(m_text.c_str(), m_text.size(), m_format, ltk::D2D1RectF(rc),
+        brush->SetColor(d->textColor);
+        //ev->target->DrawText(d->text.c_str(), d->text.size(), d->format, ltk::D2D1RectF(rc),
         //    brush);
-		if (!m_layout) {
+		if (!d->layout) {
 			this->RecreateLayout();
 		}
 		DWRITE_TEXT_METRICS dtm = { 0 };
-		m_layout->GetMetrics(&dtm);
+		d->layout->GetMetrics(&dtm);
 		ev->target->DrawTextLayout(D2D1::Point2F(
 			(GetWidth() - dtm.width) / 2.f, (GetHeight() - dtm.height) / 2.f),
-			m_layout, brush);
+			d->layout, brush);
 
 		// test
 		GetPreferredSize();
@@ -79,36 +96,39 @@ bool Button::OnPaint(PaintEvent *ev)
 
 void Button::SetText(LPCWSTR text)
 {
-    m_text = text;
-	SAFE_RELEASE(m_layout);
+	LTK_D(Button);
+	d->text = text;
+	SAFE_RELEASE(d->layout);
     this->Invalidate();
 }
 
 void Button::RecreateLayout()
 {
+	LTK_D(Button);
 	static int cnt = 0;
 	LTK_LOG("Button::RecreateLayout() %d", cnt++);
 
-	SAFE_RELEASE(m_layout);
+	SAFE_RELEASE(d->layout);
 	auto rc = this->GetClientRect();
-	if (!m_format) {
+	if (!d->format) {
 		this->OnThemeChanged();
 	}
-	LTK_ASSERT(m_format->GetTextAlignment() == DWRITE_TEXT_ALIGNMENT_LEADING);
-	LTK_ASSERT(m_format->GetParagraphAlignment() == DWRITE_PARAGRAPH_ALIGNMENT_NEAR);
+	LTK_ASSERT(d->format->GetTextAlignment() == DWRITE_TEXT_ALIGNMENT_LEADING);
+	LTK_ASSERT(d->format->GetParagraphAlignment() == DWRITE_PARAGRAPH_ALIGNMENT_NEAR);
 	HRESULT hr = GetDWriteFactory()->CreateTextLayout(
-		m_text.c_str(), m_text.size(), m_format,
-		999, 999, &m_layout);
+		d->text.c_str(), d->text.size(), d->format,
+		999, 999, &d->layout);
 	LTK_ASSERT(SUCCEEDED(hr));
 }
 
 SizeF Button::GetPreferredSize()
 {
-	if (!m_layout) {
+	LTK_D(Button);
+	if (!d->layout) {
 		this->RecreateLayout();
 	}
 	DWRITE_TEXT_METRICS dtm = { 0 };
-	m_layout->GetMetrics(&dtm);
+	d->layout->GetMetrics(&dtm);
 
 	const float padding = 8;
 	return SizeF(dtm.width + padding * 2, dtm.height + padding * 2);
@@ -116,8 +136,26 @@ SizeF Button::GetPreferredSize()
 
 bool Button::OnSize(SizeEvent *ev)
 {
-	//SAFE_RELEASE(m_layout);
+	//SAFE_RELEASE(d->layout);
 	return false;
+}
+
+void Button::SetBackground(LPCSTR name)
+{
+	LTK_D(Button);
+	d->Background = name;
+}
+
+void Button::SetTextFormat(LPCSTR name)
+{
+	LTK_D(Button);
+	d->TextFormat = name;
+}
+
+void Button::SetTextColor(LPCSTR name)
+{
+	LTK_D(Button);
+	d->TextColor = name;
 }
 
 } // namespace ltk

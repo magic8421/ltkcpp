@@ -13,6 +13,8 @@
 
 namespace ltk {
 
+struct ButtonPrivate;
+
 class Button : public AbstractButton
 {
 public:
@@ -23,21 +25,21 @@ public:
 	void RecreateLayout();
 	SizeF GetPreferredSize();
 
-	ImmutableString Background;
-	ImmutableString TextFormat;
-	ImmutableString TextColor;
+	void SetBackground(LPCSTR);
+	void SetTextFormat(LPCSTR);
+	void SetTextColor(LPCSTR);
 
 protected:
 	virtual bool OnSize(SizeEvent *ev) override;
 	virtual bool OnPaint(PaintEvent *ev) override;
     virtual void OnThemeChanged() override;
 
+protected:
+	Button(ButtonPrivate *pd);
+
 private:
-    std::wstring m_text;
-    AbstractBackground *m_background = nullptr;
-    IDWriteTextFormat *m_format = nullptr;
-	IDWriteTextLayout *m_layout = nullptr;
-	D2D1_COLOR_F m_textColor;
+	LTK_DECLARE_PRIVATE(Button);
 };
 
 } // namespace
+

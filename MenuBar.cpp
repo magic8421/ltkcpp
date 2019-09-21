@@ -295,7 +295,7 @@ void MenuBar::AddItem(LPCWSTR text)
 {
 	Button *btn = new Button;
 	btn->SetText(text);
-	btn->Background = "menu_bar_btn_bg";
+	btn->SetBackground("menu_bar_btn_bg");
 	//btn->ObjectName = "menu_btn";
 	this->AddChild(btn);
 	MenuButtonParam param;

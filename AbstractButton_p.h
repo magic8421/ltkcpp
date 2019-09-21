@@ -9,7 +9,7 @@ struct AbstractButtonPrivate : public SpritePrivate
 	AbstractButtonPrivate(AbstractButton *q) : q_ptr(q), SpritePrivate(q) {}
 	virtual ~AbstractButtonPrivate() {}
 
-	AbstractButton *q_ptr;
+	AbstractButton *q_ptr = nullptr;
 
 	bool bCaptureMouse = true;
 	bool bMouseIn = false;

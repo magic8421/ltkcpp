@@ -14,6 +14,10 @@ AbstractButton::AbstractButton() : Sprite(new AbstractButtonPrivate(this))
 {
 }
 
+AbstractButton::AbstractButton(AbstractButtonPrivate *pd) : Sprite(pd)
+{
+}
+
 AbstractButton::~AbstractButton()
 {
     this->EndAnimation();

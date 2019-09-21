@@ -6,7 +6,7 @@ namespace ltk {
 struct ObjectPrivate 
 {
 	virtual ~ObjectPrivate() {}
-	int dummy = 0;
+	DWORD thread_id = 0; // TODO check gui thread
 };
 
 } // namespace ltk
