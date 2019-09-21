@@ -201,7 +201,7 @@ bool ListView::OnMouseWheel(MouseEvent *ev)
     return true;
 }
 
-void ListView::RecreateResouce(ID2D1RenderTarget *target)
+void ListView::OnRecreateResouce(ID2D1RenderTarget *target)
 {
 }
 

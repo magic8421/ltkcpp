@@ -18,6 +18,24 @@
 
 namespace ltk {
 
+SpritePrivate::SpritePrivate(Sprite *q) : q_ptr(q)
+{
+	rect.X = 0;
+	rect.Y = 0;
+	rect.Width = 10;
+	rect.Height = 10;
+
+	bVisible = true;
+	bClipChildren = false;
+}
+
+SpritePrivate::~SpritePrivate()
+{
+	for (size_t i = 0; i < this->children.size(); i++) {
+		delete this->children[i];
+	}
+}
+
 Sprite::Sprite() : Object(new SpritePrivate(this))
 {
 }
@@ -28,10 +46,6 @@ Sprite::Sprite(SpritePrivate *pp) : Object(pp)
 
 Sprite::~Sprite(void)
 {
-	LTK_D(Sprite);
-	for (size_t i = 0; i < d->children.size(); i++) {
-		delete d->children[i];
-	}
 }
 
 RectF Sprite::GetRect()
@@ -280,7 +294,7 @@ void Sprite::EnableClipChildren( bool bClip )
 	}
 }
 
-bool Sprite::GetClipChildren()
+bool Sprite::IsClipChildren()
 {
 	LTK_D(Sprite);
 	return d->bClipChildren;
@@ -441,7 +455,7 @@ void Sprite::HandleRecreateResouce(ID2D1RenderTarget *target)
         auto sp = d->children[i];
         sp->HandleRecreateResouce(target);
     }
-    this->RecreateResouce(target);
+    this->OnRecreateResouce(target);
 }
 
 void Sprite::HandleThemeChange()
@@ -488,6 +502,18 @@ void Sprite::KillFocus()
 			wnd->SetFocusSprite(nullptr);
 		}
 	}
+}
+
+LPCSTR Sprite::GetName()
+{
+	LTK_D(Sprite);
+	return d->name;
+}
+
+void Sprite::SetName(LPCSTR n)
+{
+	LTK_D(Sprite);
+	d->name = n;
 }
 
 } // namespace ltk

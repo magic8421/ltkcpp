@@ -6,22 +6,7 @@
 namespace ltk {
 
 struct WindowPrivate : public ObjectPrivate {
-	WindowPrivate(Window *wnd) :
-		shadowLeft(ShadowFrame::eLeft),
-		shadowTop(ShadowFrame::eTop),
-		shadowRight(ShadowFrame::eRight),
-		shadowBottom(ShadowFrame::eBottom) {
-
-		rectComposition.left = 0;
-		rectComposition.top = 0;
-		rectComposition.right = 5;
-		rectComposition.bottom = 20;
-
-		sprite = new WindowLayout;
-		sprite->SetWindow(wnd);
-
-		caretHeight = 20;
-	}
+	WindowPrivate(Window *wnd);
 	~WindowPrivate() {}
 
 	HWND hwnd = NULL;

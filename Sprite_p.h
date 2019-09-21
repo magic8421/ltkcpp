@@ -5,17 +5,9 @@ namespace ltk {
 
 struct SpritePrivate : public ObjectPrivate
 {
-	SpritePrivate(Sprite *q) : q_ptr(q)
-	{
-		rect.X = 0;
-		rect.Y = 0;
-		rect.Width = 10;
-		rect.Height = 10;
+	SpritePrivate(Sprite *q);
+	virtual ~SpritePrivate();
 
-		bVisible = true;
-		bClipChildren = false;
-	}
-	virtual ~SpritePrivate() {}
 	Sprite *q_ptr = nullptr;
 
 	bool bVisible;
@@ -26,6 +18,7 @@ struct SpritePrivate : public ObjectPrivate
 
 	std::vector<Sprite *> children;
 	Sprite *parent = nullptr;
+	ImmutableString name;
 };
 
 } // namespace ltk

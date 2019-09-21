@@ -198,7 +198,7 @@ bool TreeView::OnPaint(PaintEvent *ev)
     return true;
 }
 
-void TreeView::RecreateResouce(ID2D1RenderTarget *target)
+void TreeView::OnRecreateResouce(ID2D1RenderTarget *target)
 {
 }
 

@@ -27,6 +27,23 @@ static const long CAPTION_HEIGHT = 20 + 3;
 static const long SYSICON_SIZE = 24;
 static const long WINDOW_BORDER = 6;
 
+WindowPrivate::WindowPrivate(Window *wnd) :
+	shadowLeft(ShadowFrame::eLeft),
+	shadowTop(ShadowFrame::eTop),
+	shadowRight(ShadowFrame::eRight),
+	shadowBottom(ShadowFrame::eBottom) 
+{
+	rectComposition.left = 0;
+	rectComposition.top = 0;
+	rectComposition.right = 5;
+	rectComposition.bottom = 20;
+
+	sprite = new WindowLayout;
+	sprite->SetWindow(wnd);
+
+	caretHeight = 20;
+}
+
 Window::Window() : Object(new WindowPrivate(this))
 {
 }

@@ -151,7 +151,7 @@ bool ScrollBar::OnValueChanged(float pos)
     return false;
 }
 
-void ScrollBar::RecreateResouce(ID2D1RenderTarget *target)
+void ScrollBar::OnRecreateResouce(ID2D1RenderTarget *target)
 {
     HRESULT hr = E_FAIL;
     SAFE_RELEASE(m_brush);

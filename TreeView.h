@@ -92,7 +92,7 @@ protected:
     virtual bool OnSize(SizeEvent *ev) override;
     virtual bool OnLBtnDown(MouseEvent *ev) override;
     virtual bool OnMouseWheel(MouseEvent *ev) override;
-    virtual void RecreateResouce(ID2D1RenderTarget *target) override;
+    virtual void OnRecreateResouce(ID2D1RenderTarget *target) override;
 
 
 	virtual void OnThemeChanged() override;

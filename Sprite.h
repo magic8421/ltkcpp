@@ -15,7 +15,7 @@ namespace ltk {
 class Window;
 struct SpritePrivate;
 
-class Sprite : public Object
+class LTK_API Sprite : public Object
 {
 public:
 	RTTI_DECLARATIONS(Sprite, Object);
@@ -23,7 +23,8 @@ public:
     Sprite(void);
     virtual ~Sprite(void);
 
-	ImmutableString ObjectName;
+	LPCSTR GetName();
+	void SetName(LPCSTR);
 
     RectF GetRect();
 	RectF GetClientRect();
@@ -44,16 +45,6 @@ public:
 	void AddChild( Sprite *sp );
 	void RemoveChild(Sprite* sp);
 
-    void HandlePaint( ID2D1RenderTarget *target );
-
-	void HandleKeyEvent( UINT message, DWORD keyCode, DWORD flag );
-
-	void HandleImeInput( LPCTSTR text );
-
-    void HandleRecreateResouce( ID2D1RenderTarget *target );
-
-    void HandleThemeChange();
-
 	void SetCapture();
 	void ReleaseCapture();
     bool IsCapturing();
@@ -61,11 +52,9 @@ public:
     void BringToFront();
 
 	void EnableClipChildren(bool bClip);
-	bool GetClipChildren();
+	bool IsClipChildren();
 
 	void TrackMouseLeave();
-
-	bool DispatchMouseEvent(MouseEvent *ev);
 
 	Sprite *GetAncestor();
 	Sprite *GetParent();
@@ -100,9 +89,19 @@ protected:
     virtual bool OnSetFocus         (FocusEvent *ev) { return false; }
     virtual bool OnKillFocus        (FocusEvent *ev) { return false; }
 
-    virtual void RecreateResouce(ID2D1RenderTarget *target){}
+    virtual void OnRecreateResouce(ID2D1RenderTarget *target){}
     virtual void OnParentChanged(Sprite *old, Sprite *new_){}
     virtual void OnThemeChanged() {}
+
+private:
+	friend class Window;
+
+	bool DispatchMouseEvent(MouseEvent *ev);
+	void HandlePaint(ID2D1RenderTarget *target);
+	void HandleKeyEvent(UINT message, DWORD keyCode, DWORD flag);
+	void HandleImeInput(LPCTSTR text);
+	void HandleRecreateResouce(ID2D1RenderTarget *target);
+	void HandleThemeChange();
 
 protected:
 	Sprite(SpritePrivate *pp);

@@ -51,7 +51,7 @@ public:
 	virtual bool OnMouseMove(MouseEvent *ev) override;
 	virtual bool OnMouseLeave(MouseEvent *ev) override;
 	virtual bool OnSize(SizeEvent *ev) override;
-	virtual void RecreateResouce(ID2D1RenderTarget *target) override;
+	virtual void OnRecreateResouce(ID2D1RenderTarget *target) override;
 	virtual void OnThemeChanged() override;
 
 private:

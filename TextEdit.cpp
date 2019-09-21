@@ -348,7 +348,7 @@ bool TextEdit::OnSize(SizeEvent *ev)
     return false;
 }
 
-void TextEdit::RecreateResouce(ID2D1RenderTarget *target)
+void TextEdit::OnRecreateResouce(ID2D1RenderTarget *target)
 {
     SAFE_RELEASE(m_brushSelectedText);
     auto textColor = StyleManager::ColorFromString("#ffffff");

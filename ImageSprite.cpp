@@ -86,7 +86,7 @@ bool ImageSprite::SetImage(const wchar_t *path)
     return false;
 }
 
-void ImageSprite::RecreateResouce(ID2D1RenderTarget *target)
+void ImageSprite::OnRecreateResouce(ID2D1RenderTarget *target)
 {
     throw std::logic_error("The method or operation is not implemented.");
 }
