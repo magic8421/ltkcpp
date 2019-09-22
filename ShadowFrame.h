@@ -22,6 +22,7 @@ public:
     static void Free();
     void Create();
     void Destroy();
+	void Show(bool);
     void Update(HWND hParent, HDWP &hdwp, bool bRedraw);
     void OnDraw(const RECT &rc);
     void DrawShadow(Gdiplus::Graphics &g, Gdiplus::Rect rc);

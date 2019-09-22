@@ -100,6 +100,7 @@ void Window::Create(Window *parent, RectF rc)
 	d->shadowTop.Create();
 	d->shadowRight.Create();
 	d->shadowBottom.Create();
+	d->ShowShadowFrame(d->bShadow);
 
     style |=  WS_SYSMENU | WS_MINIMIZEBOX | WS_MAXIMIZEBOX;
 
@@ -108,6 +109,26 @@ void Window::Create(Window *parent, RectF rc)
     ::CreateWindowEx(0, ClsName, L"", style,
         (int)rc.X, (int)rc.Y, (int)rc.Width, (int)rc.Height,
         hParent, NULL, HINST_THISCOMPONENT, this);
+}
+
+void Window::Create(Window *parent, SizeF size)
+{
+	POINT pt = { 0 };
+	auto ret = ::GetCursorPos(&pt);
+	LTK_ASSERT(ret);
+	auto monitor = ::MonitorFromPoint(pt, MONITOR_DEFAULTTONEAREST);
+	LTK_ASSERT(monitor);
+	MONITORINFO info = { 0 };
+	info.cbSize = sizeof(info);
+	ret = ::GetMonitorInfoW(monitor, &info);
+	LTK_ASSERT(monitor);
+	const auto &rc = info.rcWork;
+	RectF rcWnd;
+	rcWnd.X = (rc.right - rc.left - size.Width) / 2.f + rc.left;
+	rcWnd.Y = (rc.bottom - rc.top - size.Height) / 2.f + rc.top;
+	rcWnd.Width = size.Width;
+	rcWnd.Height = size.Height;
+	this->Create(parent, rcWnd);
 }
 
 RectF Window::GetRect()
@@ -137,6 +158,12 @@ void Window::SetCaption(LPCWSTR text)
 
 	::SetWindowText(d->hwnd, text);
 	d->sprite->SetCaptionText(text);
+}
+
+void Window::EnableShadow(bool b)
+{
+	LTK_D(Window);
+	d->bShadow = b;
 }
 
 SizeF Window::GetClientSize()
@@ -940,6 +967,14 @@ void Window::RemoveCloseDelegate(Cookie c)
 {
 	LTK_D(Window);
 	d->CloseDelegate.Remove(c);
+}
+
+void WindowPrivate::ShowShadowFrame(bool show)
+{
+	this->shadowLeft.Show(show);
+	this->shadowTop.Show(show);
+	this->shadowRight.Show(show);
+	this->shadowBottom.Show(show);
 }
 
 void Window::UpdateShadowFrame(bool bRedraw)

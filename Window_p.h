@@ -37,6 +37,9 @@ public:
 	ShadowFrame shadowTop;
 	ShadowFrame shadowRight;
 	ShadowFrame shadowBottom;
+	bool bShadow = true;
+
+	void ShowShadowFrame(bool);
 
 	ID2D1Bitmap *atlas = nullptr; // owner TODO share across multiple Window
 	AbstractBackground *background = nullptr;

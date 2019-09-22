@@ -24,6 +24,7 @@ public:
     virtual ~Window(void);
 
     void Create(Window *parent, RectF rc);
+	void Create(Window *parent, SizeF size);
 
     void SetRect(RectF rc);
     RectF GetRect();
@@ -31,6 +32,7 @@ public:
     SizeF GetClientSize();
 
     void SetCaption(LPCWSTR text);
+	void EnableShadow(bool);
 
 	static void RegisterWndClass();
 

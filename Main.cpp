@@ -64,9 +64,10 @@ int CALLBACK WinMain(
 
 	auto wnd = new Window;
     wnd->SetCaption(L"LTK²âÊÔ´°¿Ú");
-    wnd->SetBackground("window_bg");
-    wnd->Create(nullptr, RectF(0, 0, 600, 500));
-    wnd->AttachCloseDelegate([](bool &proceed) {
+	wnd->EnableShadow(false);
+	wnd->SetBackground("window_bg");
+    wnd->Create(nullptr, SizeF(600, 500));
+	wnd->AttachCloseDelegate([](bool &proceed) {
         //proceed = false;
         ::PostQuitMessage(0);
     });
@@ -233,6 +234,7 @@ int CALLBACK WinMain(
 	menu_bar->SetPopupMenu(3, popup);
 
     vboxRightPanel->AddSpaceItem(5, 0);
+	
 	
 	wnd->UpdateTheme();
 	//spitter1->DoLayout();

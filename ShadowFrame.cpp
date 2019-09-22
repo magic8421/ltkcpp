@@ -78,13 +78,23 @@ LRESULT CALLBACK ShadowFrame::WndProc(HWND hwnd, UINT message, WPARAM wparam, LP
 void ShadowFrame::Create()
 {
      HWND hwnd = ::CreateWindowEx(WS_EX_LAYERED | WS_EX_TRANSPARENT | WS_EX_TOOLWINDOW, L"ltk_ShadowFrame",
-        L"", WS_POPUPWINDOW | WS_VISIBLE, 0, 0, 100, 100, NULL, NULL, HINST_THISCOMPONENT, this);
+        L"", WS_POPUPWINDOW, 0, 0, 100, 100, NULL, NULL, HINST_THISCOMPONENT, this);
      LTK_ASSERT(hwnd != NULL);
 }
 
 void ShadowFrame::Destroy()
 {
     ::DestroyWindow(m_hwnd);
+}
+
+void ShadowFrame::Show(bool show)
+{
+	if (show) {
+		::ShowWindow(m_hwnd, SW_SHOW);
+	}
+	else {
+		::ShowWindow(m_hwnd, SW_HIDE);
+	}
 }
 
 void ShadowFrame::Init()
