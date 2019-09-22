@@ -10,7 +10,7 @@ public:
 	ButtonPrivate(Button *pq);
 	virtual ~ButtonPrivate();
 
-	Button *q_ptr = nullptr;
+	LTK_DECLARE_PUBLIC(Button);
 
 	std::wstring text;
 	AbstractBackground *background = nullptr;

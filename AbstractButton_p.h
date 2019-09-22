@@ -8,10 +8,10 @@ namespace ltk {
 class AbstractButtonPrivate : public SpritePrivate
 {
 public:
-	AbstractButtonPrivate(AbstractButton *q) : q_ptr(q), SpritePrivate(q) {}
+	AbstractButtonPrivate(AbstractButton *q) : SpritePrivate(q) {}
 	virtual ~AbstractButtonPrivate() {}
 
-	AbstractButton *q_ptr = nullptr;
+	LTK_DECLARE_PUBLIC(AbstractButton);
 
 	bool bCaptureMouse = true;
 	bool bMouseIn = false;

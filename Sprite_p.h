@@ -10,14 +10,14 @@ public:
 	SpritePrivate(Sprite *q);
 	virtual ~SpritePrivate();
 
+	LTK_DECLARE_PUBLIC(Sprite);
+
 	bool DispatchMouseEvent(MouseEvent *ev);
 	void HandlePaint(ID2D1RenderTarget *target);
 	void HandleKeyEvent(UINT message, DWORD keyCode, DWORD flag);
 	void HandleImeInput(LPCTSTR text);
 	void HandleRecreateResouce(ID2D1RenderTarget *target);
 	void HandleThemeChange();
-
-	Sprite *q_ptr = nullptr;
 
 	bool bVisible;
 	bool bClipChildren; // TODO this one is useless

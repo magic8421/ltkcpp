@@ -18,7 +18,7 @@
 
 namespace ltk {
 
-SpritePrivate::SpritePrivate(Sprite *q) : q_ptr(q)
+SpritePrivate::SpritePrivate(Sprite *q) : ObjectPrivate(q)
 {
 	rect.X = 0;
 	rect.Y = 0;
@@ -152,14 +152,14 @@ void SpritePrivate::HandlePaint(ID2D1RenderTarget *target)
 
 	if (this->bClipChildren)
 	{
-        auto rcSprite = q_ptr->GetClientRect();
+        auto rcSprite = q_func()->GetClientRect();
         D2D1_RECT_F rcClip = D2D1RectF(rcSprite);
         target->PushAxisAlignedClip(rcClip, D2D1_ANTIALIAS_MODE_ALIASED);
 	}
     PaintEvent ev;
     ev.id = ePaint;
     ev.target = target;
-    q_ptr->OnPaint(&ev);
+	q_func()->OnPaint(&ev);
 
     for (size_t i = 0; i < this->children.size(); i++) {
         auto sp = this->children[i];
@@ -206,15 +206,15 @@ void SpritePrivate::HandleKeyEvent(UINT message, DWORD keyCode, DWORD flag)
 	{
 	case WM_KEYDOWN:
         ev.id = eKeyDown;
-        q_ptr->OnEvent(&ev);
+		q_func()->OnEvent(&ev);
 		break;
 	case WM_KEYUP:
         ev.id = eKeyUp;
-		q_ptr->OnEvent(&ev);
+		q_func()->OnEvent(&ev);
 		break;
 	case WM_CHAR:
         ev.id = eCharInput;
-		q_ptr->OnEvent(&ev);
+		q_func()->OnEvent(&ev);
 		break;
 	}
 }
@@ -224,7 +224,7 @@ void SpritePrivate::HandleImeInput(LPCTSTR text)
     ImeEvent ev;
     ev.id = eImeInput;
     ev.text = text;
-	q_ptr->OnEvent(&ev);
+	q_func()->OnEvent(&ev);
 }
 
 // return weak ref
@@ -331,7 +331,7 @@ bool SpritePrivate::DispatchMouseEvent(MouseEvent *ev)
             }
         }
     }
-    return q_ptr->OnEvent(ev);
+	return q_func()->OnEvent(ev);
 }
 
 Sprite * Sprite::GetAncestor()
@@ -473,12 +473,12 @@ void SpritePrivate::HandleRecreateResouce(ID2D1RenderTarget *target)
         auto sp = this->children[i];
         sp->d_func()->HandleRecreateResouce(target);
     }
-    q_ptr->OnRecreateResouce(target);
+	q_func()->OnRecreateResouce(target);
 }
 
 void SpritePrivate::HandleThemeChange()
 {
-	q_ptr->OnThemeChanged();
+	q_func()->OnThemeChanged();
     for (auto sp : this->children) {
         sp->d_func()->HandleThemeChange();
     }

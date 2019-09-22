@@ -7,8 +7,11 @@ class ObjectPrivate
 {
 public:
 	ObjectPrivate();
+	ObjectPrivate(Object *q) : q_ptr(q) {}
 	virtual ~ObjectPrivate() {}
-	DWORD thread_id = 0; // TODO check gui thread
+
+	DWORD thread_id = 0;
+	Object *q_ptr = nullptr;
 };
 
 } // namespace ltk

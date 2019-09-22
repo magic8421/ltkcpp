@@ -16,7 +16,7 @@ EXTERN_C IMAGE_DOS_HEADER __ImageBase;
 #define HINST_THISCOMPONENT ((HINSTANCE)&__ImageBase)
 
 #ifdef _DEBUG
-#define LTK_ASSERT(expr) if (!(expr)) {__debugbreak();} // super KISS
+#define LTK_ASSERT(expr) if (!(expr)) {__debugbreak();}
 #else
 #define LTK_ASSERT(expr) (void)(expr)
 #endif
@@ -29,15 +29,10 @@ EXTERN_C IMAGE_DOS_HEADER __ImageBase;
         return (Class##Private*)(d_ptr);\
     }\
 	friend class Class##Private;
- //   inline const Class##Private d_func() const {\
- //       return (const Class##Private *)(d_ptr);\
- //   }
-	//
 
 #define LTK_DECLARE_PUBLIC(Class)\
     inline Class* q_func() { return static_cast<Class *>(q_ptr); }\
     friend class Class;
-//inline const Class* q_func() const { return static_cast<const Class *>(q_ptr); } \
 
 
 #ifdef LTK_EXPORTS
