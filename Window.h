@@ -90,19 +90,6 @@ public:
 	void RemoveCloseDelegate(Cookie c);
 
 private:
-	void HandleMouseMessage(UINT message, WPARAM wparam, LPARAM lparam);
-    void HandleMouseLeave();
-    void DrawNonClient();
-    void RecreateResouce();
-    void UpdateShadowFrame(bool bRedraw);
-	Events TranslateMessageCode(UINT message);
-
-    LRESULT OnImeEvent(UINT message, WPARAM wparam, LPARAM lparam);
-    LRESULT HandleNcHitTest(const POINT &pt);
-    enum { TIMER_ANIMATION = 100 };
-    static const wchar_t * ClsName;
-
-private:
 	LTK_DECLARE_PRIVATE(Window);
 };
 

@@ -15,6 +15,8 @@ public:
 	WindowPrivate(Window *wnd);
 	~WindowPrivate() {}
 
+	LTK_DECLARE_PUBLIC(Window);
+
 	HWND hwnd = NULL;
 
 	ImeInput ime;
@@ -46,6 +48,16 @@ public:
 	std::string styleName;
 
 	Delegate<void(bool &)> CloseDelegate;
+
+	void HandleMouseMessage(UINT message, WPARAM wparam, LPARAM lparam);
+	void HandleMouseLeave();
+	void DrawNonClient();
+	void RecreateResouce();
+	void UpdateShadowFrame(bool bRedraw);
+	Events TranslateMessageCode(UINT message);
+
+	LRESULT OnImeEvent(UINT message, WPARAM wparam, LPARAM lparam); // TODO change name
+	LRESULT HandleNcHitTest(const POINT &pt);
 };
 
 } // namespace ltk

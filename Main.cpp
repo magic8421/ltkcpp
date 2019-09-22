@@ -241,7 +241,8 @@ int CALLBACK WinMain(
         ::PostQuitMessage(0);
     });
 
-	BuildSplitterTest(wnd);
+	BuildDemoWindow(wnd);
+	//BuildSplitterTest(wnd);
 	wnd->UpdateTheme();
 
 	ltk::RunMessageLoop();

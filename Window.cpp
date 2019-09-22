@@ -22,13 +22,15 @@
 
 namespace ltk {
 
-const wchar_t * Window::ClsName = L"ltk_cls";
+static const wchar_t * ClsName = L"ltk_cls";
+enum { TIMER_ANIMATION = 100 };
 static const long SYSBTN_WIDTH = 22;
 static const long CAPTION_HEIGHT = 20 + 3;
 static const long SYSICON_SIZE = 24;
 static const long WINDOW_BORDER = 6;
 
 WindowPrivate::WindowPrivate(Window *wnd) :
+	ObjectPrivate(wnd),
 	shadowLeft(ShadowFrame::eLeft),
 	shadowTop(ShadowFrame::eTop),
 	shadowRight(ShadowFrame::eRight),
@@ -195,13 +197,11 @@ void Window::RegisterWndClass()
     assert(a);
 }
 
-void Window::HandleMouseMessage(UINT message, WPARAM wparam, LPARAM lparam)
+void WindowPrivate::HandleMouseMessage(UINT message, WPARAM wparam, LPARAM lparam)
 {
-	LTK_D(Window);
-
     //LTK_LOG("Mouse Message: %d %08x %d %d", message, wparam, (short)LOWORD(lparam), (short)HIWORD(lparam));
 	MouseEvent ev;
-	ev.id = TranslateMessageCode(message);
+	ev.id = this->TranslateMessageCode(message);
 	ev.flag = LOWORD(wparam);
 
 	if (WM_MOUSEWHEEL == message)
@@ -209,7 +209,7 @@ void Window::HandleMouseMessage(UINT message, WPARAM wparam, LPARAM lparam)
 		POINT pt;
 		pt.x = (short)LOWORD(lparam);
 		pt.y = (short)HIWORD(lparam);
-		::ScreenToClient(d->hwnd, &pt);
+		::ScreenToClient(this->hwnd, &pt);
 		ev.x = (float)pt.x;
 		ev.y = (float)pt.y;
 		ev.delta = (float)(short)HIWORD(wparam) / 120.0F;
@@ -225,27 +225,27 @@ void Window::HandleMouseMessage(UINT message, WPARAM wparam, LPARAM lparam)
 
     if (WM_LBUTTONDBLCLK == message)
     {
-		::PostMessage(d->hwnd, WM_LBUTTONDOWN, wparam, lparam);
+		::PostMessage(this->hwnd, WM_LBUTTONDOWN, wparam, lparam);
     }
 
-	if (d->spCapture)
+	if (this->spCapture)
 	{
-		RectF rc = d->spCapture->GetAbsRect();
+		RectF rc = this->spCapture->GetAbsRect();
 		ev.x -= rc.X;
 		ev.y -= rc.Y;
-		d->spCapture->OnEvent(&ev);
+		this->spCapture->OnEvent(&ev);
 	}
-	else if (d->sprite)
+	else if (this->sprite)
 	{
 		//if (WM_LBUTTONDOWN == message)
 		//{
-		d->bEnableFocusChange = true;
-		d->sprite->d_func()->DispatchMouseEvent(&ev);
+		this->bEnableFocusChange = true;
+		this->sprite->d_func()->DispatchMouseEvent(&ev);
 			
 			std::vector<Sprite *> defer_remove;
 			defer_remove.reserve(20);
-			for (std::unordered_set<Sprite *>::iterator iter = d->setTrackMouseLeave.begin();
-				iter != d->setTrackMouseLeave.end(); ++iter)
+			for (std::unordered_set<Sprite *>::iterator iter = this->setTrackMouseLeave.begin();
+				iter != this->setTrackMouseLeave.end(); ++iter)
 			{
 				Sprite *sp = *iter;
 				RectF rc = sp->GetAbsRect();
@@ -260,26 +260,24 @@ void Window::HandleMouseMessage(UINT message, WPARAM wparam, LPARAM lparam)
 			}
 			for (auto sp: defer_remove)
 			{
-				d->setTrackMouseLeave.erase(sp);
+				this->setTrackMouseLeave.erase(sp);
 			}
-			if (d->spFocus && WM_LBUTTONDOWN == message && d->bEnableFocusChange) {
-				auto arc = d->spFocus->GetAbsRect();
+			if (this->spFocus && WM_LBUTTONDOWN == message && this->bEnableFocusChange) {
+				auto arc = this->spFocus->GetAbsRect();
 				if (!arc.Contains(ev.x, ev.y)){
 					FocusEvent ev2;
 					ev2.id = eKillFocus;
-					d->spFocus->OnEvent(&ev2);
-					d->spFocus = nullptr;
+					this->spFocus->OnEvent(&ev2);
+					this->spFocus = nullptr;
 				}
 			}
 		//}
 	}
 }
 
-void Window::HandleMouseLeave()
+void WindowPrivate::HandleMouseLeave()
 {
-	LTK_D(Window);
-
-	for (auto iter = d->setTrackMouseLeave.begin(); iter != d->setTrackMouseLeave.end(); ++iter)
+	for (auto iter = this->setTrackMouseLeave.begin(); iter != this->setTrackMouseLeave.end(); ++iter)
     {
         Sprite *sp = *iter;
         MouseEvent e2;
@@ -291,20 +289,18 @@ void Window::HandleMouseLeave()
         sp->OnEvent(&e2);
         // Fire the event and remove sp from the set;
     }
-	d->setTrackMouseLeave.clear();
+	this->setTrackMouseLeave.clear();
 }
 
-LRESULT Window::HandleNcHitTest(const POINT &pt)
+LRESULT WindowPrivate::HandleNcHitTest(const POINT &pt)
 {
-	LTK_D(Window);
-
     //LTK_LOG("WM_NCHITTEST %d %d", pt.x, pt.y);
     const long margin = 7;
     RECT rcWnd;
-	::GetClientRect(d->hwnd, &rcWnd);
+	::GetClientRect(this->hwnd, &rcWnd);
     const long width = rcWnd.right - rcWnd.left;
     const long height = rcWnd.bottom - rcWnd.top;
-	auto rcCaption = DipRectToScreen(d->sprite->GetCaptionRect());
+	auto rcCaption = DipRectToScreen(this->sprite->GetCaptionRect());
     
 	long caption_h = 35;
 
@@ -355,7 +351,7 @@ LRESULT Window::WndProc(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam)
         pt.x = (short)LOWORD(lparam);
         pt.y = (short)HIWORD(lparam);
         ::ScreenToClient(hwnd, &pt);
-        return HandleNcHitTest(pt);
+        return d->HandleNcHitTest(pt);
     case WM_NCCALCSIZE:
         if (wparam) {
             return 0;
@@ -368,12 +364,12 @@ LRESULT Window::WndProc(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam)
     case WM_RBUTTONUP:
     case WM_LBUTTONDBLCLK:
     case WM_MOUSEWHEEL:
-        HandleMouseMessage(message, wparam, lparam);
+		d->HandleMouseMessage(message, wparam, lparam);
         break;
     case WM_ERASEBKGND:
         return TRUE;
     case WM_TIMER:
-        if (wparam == TIMER_ANIMATION)
+		if (wparam == TIMER_ANIMATION)
         {
             static int cnt = 0;
             cnt++;
@@ -394,7 +390,7 @@ LRESULT Window::WndProc(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam)
 				d->target->Resize(D2D1::SizeU(cx, cy));
             }
             OnSize((float)cx, (float)cy, (DWORD)wparam);
-            UpdateShadowFrame(true);
+			d->UpdateShadowFrame(true);
 
             //LTK_LOG("WM_SIZE %d", wparam);
             if (wparam == SIZE_MAXIMIZED) {
@@ -406,22 +402,22 @@ LRESULT Window::WndProc(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam)
             else if (wparam == SIZE_MINIMIZED) {
 				d->setAnimation.clear();
                 ::ReleaseCapture();
-                ::KillTimer(hwnd, TIMER_ANIMATION);
+				::KillTimer(hwnd, TIMER_ANIMATION);
                 LTK_LOG("WM_SIZE KillTimer");
             }
         } while (0);
         return 0;
     case WM_MOVE:
-        UpdateShadowFrame(false);
+		d->UpdateShadowFrame(false);
         break;
     case WM_ACTIVATE:
         if (LOWORD(wparam)) {
-            UpdateShadowFrame(false);
+			d->UpdateShadowFrame(false);
         }
         break;
         // TODO hide shadow when maximized or hide main window.
     case WM_MOUSELEAVE:
-        HandleMouseLeave();
+		d->HandleMouseLeave();
         break;
     case WM_KEYDOWN:
     case WM_KEYUP:
@@ -436,7 +432,7 @@ LRESULT Window::WndProc(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam)
     case WM_IME_COMPOSITION:
     case WM_IME_ENDCOMPOSITION:
     case WM_INPUTLANGCHANGE:
-        return OnImeEvent(message, wparam, lparam);
+		return d->OnImeEvent(message, wparam, lparam);
     case WM_SETFOCUS:
         //LOG("WM_SETFOCUS");
 		::CreateCaret(hwnd, NULL, 1, d->caretHeight);
@@ -458,7 +454,7 @@ LRESULT Window::WndProc(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam)
 			d->spFocus->OnEvent(&ev);
         }
         LTK_LOG("WM_KILLFOCUS KillTimer");
-        KillTimer(hwnd, TIMER_ANIMATION);
+		KillTimer(hwnd, TIMER_ANIMATION);
 		d->setAnimation.clear();
         ::ReleaseCapture();
         return 0;
@@ -545,23 +541,21 @@ LRESULT CALLBACK Window::WndProcStatic(HWND hwnd, UINT message, WPARAM wparam, L
     return thiz->WndProc(hwnd, message, wparam, lparam);
 }
 
-void Window::DrawNonClient()
+void WindowPrivate::DrawNonClient()
 {
-	LTK_D(Window);
-
-    SizeF size = this->GetClientSize();
+    SizeF size = q_func()->GetClientSize();
     RectF rc(0, 0, size.Width, size.Height);
-	if (d->background) {
-		d->background->Draw(this, d->target, rc, AbstractBackground::Normal, 1.0f);
+	if (this->background) {
+		this->background->Draw(q_func(), this->target, rc, AbstractBackground::Normal, 1.0f);
 	}
     //DrawTextureNineInOne(
-    //    d->target,
+    //    this->target,
     //    this->GetAtlasBitmap(),
-    //    d->background.atlas,
-    //    d->background.margin,
+    //    this->background.atlas,
+    //    this->background.margin,
     //    rc,
     //    1.0f,
-    //    d->background.scale);
+    //    this->background.scale);
 }
 
 ID2D1SolidColorBrush *Window::GetStockBrush()
@@ -570,16 +564,15 @@ ID2D1SolidColorBrush *Window::GetStockBrush()
 	return d->brush;
 }
 
-void Window::RecreateResouce()
+void WindowPrivate::RecreateResouce()
 {
-	LTK_D(Window);
 	HRESULT hr = E_FAIL;
-	SAFE_RELEASE(d->brush);
-	hr = d->target->CreateSolidColorBrush(D2D1::ColorF(0.5f, 0.5f, 0.5f), &d->brush);
+	SAFE_RELEASE(this->brush);
+	hr = this->target->CreateSolidColorBrush(D2D1::ColorF(0.5f, 0.5f, 0.5f), &this->brush);
     LTK_ASSERT(SUCCEEDED(hr));
 
-	SAFE_RELEASE(d->atlas);
-	hr = LoadBitmapFromFile(d->target, L"res\\atlas.png", &d->atlas);
+	SAFE_RELEASE(this->atlas);
+	hr = LoadBitmapFromFile(this->target, L"res\\atlas.png", &this->atlas);
     LTK_ASSERT(SUCCEEDED(hr));
 }
 
@@ -606,7 +599,7 @@ void Window::OnPaint(HWND hwnd )
         {
 			d->sprite->d_func()->HandleRecreateResouce(d->target);
         }
-        this->RecreateResouce();
+        d->RecreateResouce();
     }
 
 	d->target->BeginDraw();
@@ -614,7 +607,7 @@ void Window::OnPaint(HWND hwnd )
     //TranslateTransform(d->target, 0.5f, 0.5f);
     //d->target->Clear(StyleManager::Instance()->GetColor(StyleManager::clrBackground));
 	d->target->SetAntialiasMode(D2D1_ANTIALIAS_MODE_ALIASED);
-    this->DrawNonClient();
+    d->DrawNonClient();
 
 	if (d->sprite)
     {
@@ -694,9 +687,8 @@ HWND Window::Handle()
 	return d->hwnd;
 }
 
-LRESULT Window::OnImeEvent( UINT uMsg, WPARAM wParam, LPARAM lParam )
+LRESULT WindowPrivate::OnImeEvent(UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-	LTK_D(Window);
 	// TODO 加个开关 能够关闭输入法 当焦点不在输入框上的时候就关闭
 	switch(uMsg)
 	{
@@ -705,47 +697,47 @@ LRESULT Window::OnImeEvent( UINT uMsg, WPARAM wParam, LPARAM lParam )
 		{
 			//LOG(<<"WM_IME_SETCONTEXT");
 			BOOL handled = FALSE;
-			d->ime.CreateImeWindow(d->hwnd);
-			d->ime.CleanupComposition(d->hwnd);
-			d->ime.SetImeWindowStyle(d->hwnd, uMsg, wParam, lParam, &handled);
+			this->ime.CreateImeWindow(this->hwnd);
+			this->ime.CleanupComposition(this->hwnd);
+			this->ime.SetImeWindowStyle(this->hwnd, uMsg, wParam, lParam, &handled);
 		} while (0);
 		return 0;
 	case WM_IME_STARTCOMPOSITION:
 		//LOG(<<"WM_IME_STARTCOMPOSITION");
-		d->ime.CreateImeWindow(d->hwnd);
-		d->ime.ResetComposition(d->hwnd);
+		this->ime.CreateImeWindow(this->hwnd);
+		this->ime.ResetComposition(this->hwnd);
 		return 0;
 	case WM_IME_COMPOSITION:
 		do
 		{
 			//LOG(<<"WM_IME_COMPOSITION");
 			ImeComposition comp;
-			d->ime.UpdateImeWindow(d->hwnd);
-			d->ime.GetResult(d->hwnd, lParam, &comp);
+			this->ime.UpdateImeWindow(this->hwnd);
+			this->ime.GetResult(this->hwnd, lParam, &comp);
 			if (GCS_RESULTSTR == comp.string_type)
 			{
 				wstring tmp = comp.ime_string; // 这里结尾居然多出个0 可能是改了谷歌的代码导致的问题
 				tmp.resize(wcslen(tmp.c_str()));
 				//LOGW(<<tmp); // TODO wide version of LTK_LOG
-				OnImeInput(tmp.c_str());
-				//d->text += tmp;
+				q_func()->OnImeInput(tmp.c_str());
+				//this->text += tmp;
 				//::InvalidateRect(GetHWND(), NULL, TRUE);
 			}
-			d->ime.ResetComposition(d->hwnd);
-			d->ime.EnableIME(d->hwnd, d->rectComposition, false); // 输入窗口跟随
+			this->ime.ResetComposition(this->hwnd);
+			this->ime.EnableIME(this->hwnd, this->rectComposition, false); // 输入窗口跟随
 		}while(0);
 		return 0;
 	case WM_IME_ENDCOMPOSITION:
 		//LOG(<<"WM_IME_ENDCOMPOSITION");
-		d->ime.ResetComposition(d->hwnd);
-		d->ime.DestroyImeWindow(d->hwnd);
-		//::ShowCaret(d->hwnd);
-		::DefWindowProc(d->hwnd, uMsg, wParam, lParam);
+		this->ime.ResetComposition(this->hwnd);
+		this->ime.DestroyImeWindow(this->hwnd);
+		//::ShowCaret(this->hwnd);
+		::DefWindowProc(this->hwnd, uMsg, wParam, lParam);
 		return 0;
 	case WM_INPUTLANGCHANGE:
 		//LOG(<<"WM_INPUTLANGCHANGE");
-		d->ime.SetInputLanguage();
-		::DefWindowProc(d->hwnd, uMsg, wParam, lParam);
+		this->ime.SetInputLanguage();
+		::DefWindowProc(this->hwnd, uMsg, wParam, lParam);
 		return 0;
 	case WM_KEYDOWN:
 		return 0;
@@ -820,6 +812,7 @@ void Window::DisableFocusChange()
 	d->bEnableFocusChange = false;
 }
 
+// TODO change to private?
 void Window::OnImeInput( PCTSTR text )
 {
 	LTK_D(Window);
@@ -977,19 +970,18 @@ void WindowPrivate::ShowShadowFrame(bool show)
 	this->shadowBottom.Show(show);
 }
 
-void Window::UpdateShadowFrame(bool bRedraw)
+void WindowPrivate::UpdateShadowFrame(bool bRedraw)
 {
-	LTK_D(Window);
 	HDWP hdwp = ::BeginDeferWindowPos(4);
-	d->shadowLeft.Update(d->hwnd, hdwp, bRedraw);
-	d->shadowTop.Update(d->hwnd, hdwp, bRedraw);
-	d->shadowRight.Update(d->hwnd, hdwp, bRedraw);
-	d->shadowBottom.Update(d->hwnd, hdwp, bRedraw);
+	this->shadowLeft.Update(this->hwnd, hdwp, bRedraw);
+	this->shadowTop.Update(this->hwnd, hdwp, bRedraw);
+	this->shadowRight.Update(this->hwnd, hdwp, bRedraw);
+	this->shadowBottom.Update(this->hwnd, hdwp, bRedraw);
     BOOL ret = ::EndDeferWindowPos(hdwp);
     LTK_ASSERT(ret);
 }
 
-Events Window::TranslateMessageCode(UINT message)
+Events WindowPrivate::TranslateMessageCode(UINT message)
 {
 	switch (message) {
 	case WM_MOUSEMOVE:

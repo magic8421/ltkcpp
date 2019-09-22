@@ -93,6 +93,7 @@ protected:
     virtual void OnThemeChanged() {}
 
 	friend class Window;
+	friend class WindowPrivate;
 
 protected:
 	Sprite(SpritePrivate *pp);
