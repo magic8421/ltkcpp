@@ -4,6 +4,8 @@
 #include "Object.h"
 #include "Window.h"
 
+using namespace ltk;
+
 LTK_API UINT WINAPI LtkInitialize()
 {
 	ltk::LtkInitialize();
@@ -29,33 +31,55 @@ LTK_API void WINAPI LtkRunApp()
 	}
 }
 
-LTK_API void WINAPI LtkObject_RegisterCallback(LtkObject* self, UINT event_id, LtkCallback cb, void* userdata)
+LTK_API void WINAPI LtkFree(HLTK h)
 {
-	ltk::Object* thiz = (ltk::Object*)self;
+	Object *pobj = (Object *)h;
+	delete pobj;
+}
+
+LTK_API void WINAPI LtkObject_RegisterCallback(
+	HLTK obj, UINT event_id, LtkCallback cb, void* userdata)
+{
+	Object* thiz = (Object*)obj;
 	thiz->RegisterCallback(event_id, cb, userdata);
 }
 
-LTK_API LtkWindow* WINAPI LtkCreateWindow(LtkWindow *parent, LtkRect *rc)
+
+LTK_API HLTK WINAPI LtkGetEventSender()
 {
-	ltk::Window* p2 = nullptr;
-	if (parent) {
-		p2 = (ltk::Window*)parent;
-	}
-	Gdiplus::RectF rcf(rc->x, rc->y, rc->w, rc->h);
-	auto wnd = new ltk::Window;
-	wnd->Create(p2, rcf);
-	return (LtkWindow*)wnd;
+	return (HLTK)Object::GetEventSender();
 }
 
-LTK_API void WINAPI LtkWindow_SetBackground(LtkWindow* self, LPCSTR name)
+LTK_API HLTK WINAPI LtkCreateWindow(HLTK parent, LtkRect *rc)
 {
-	ltk::Window* thiz = (ltk::Window*)self;
+	Window* p2 = nullptr;
+	if (parent) {
+		p2 = (Window*)parent;
+	}
+	Gdiplus::RectF rcf(rc->x, rc->y, rc->w, rc->h);
+	auto wnd = new Window;
+	wnd->Create(p2, rcf);
+	return (HLTK)wnd;
+}
+
+
+LTK_API HLTK WINAPI LtkCreateWindowCenter(HLTK parent, float width, float height)
+{
+	Gdiplus::SizeF size(width, height);
+	auto wnd = new Window;
+	wnd->Create(nullptr, size);
+	return (HLTK)wnd;
+}
+
+LTK_API void WINAPI LtkWindow_SetBackground(HLTK wnd, LPCSTR name)
+{
+	Window* thiz = ((RTTI*)wnd)->As<Window>();
 	thiz->SetBackground(name);
 }
 
-LTK_API void WINAPI LtkWindow_UpdateTheme(LtkWindow* self)
+LTK_API void WINAPI LtkWindow_UpdateTheme(HLTK wnd)
 {
-	ltk::Window* thiz = (ltk::Window*)self;
+	Window* thiz = ((RTTI*)wnd)->As<Window>();
 	thiz->UpdateTheme();
 }
 

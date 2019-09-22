@@ -100,6 +100,26 @@ void Window::Create(Window *parent, RectF rc)
         hParent, NULL, HINST_THISCOMPONENT, this);
 }
 
+void Window::Create(Window *parent, SizeF size)
+{
+	POINT pt = { 0 };
+	auto ret = ::GetCursorPos(&pt);
+	LTK_ASSERT(ret);
+	auto monitor = ::MonitorFromPoint(pt, MONITOR_DEFAULTTONEAREST);
+	LTK_ASSERT(monitor);
+	MONITORINFO info = { 0 };
+	info.cbSize = sizeof(info);
+	ret = ::GetMonitorInfoW(monitor, &info);
+	LTK_ASSERT(monitor);
+	const auto &rc = info.rcWork;
+	RectF rcWnd;
+	rcWnd.X = (rc.right - rc.left - size.Width) / 2.f + rc.left;
+	rcWnd.Y = (rc.bottom - rc.top - size.Height) / 2.f + rc.top;
+	rcWnd.Width = size.Width;
+	rcWnd.Height = size.Height;
+	this->Create(parent, rcWnd);
+}
+
 RectF Window::GetRect()
 {
     RectF rf;

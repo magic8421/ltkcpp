@@ -301,6 +301,8 @@ namespace ltk {
 
     void LtkInitialize()
     {
+		_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+
         ::CoInitialize(NULL);
 
         if (g_d2d_factory) {

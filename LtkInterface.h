@@ -17,13 +17,10 @@ enum LtkError
 	LTK_NO_IMPLEMENT
 };
 
-typedef struct _LtkObject {
+struct _HLTK {
 	int dummy;
-} LtkObject;
-
-typedef struct _LtkWindow {
-	int dummy;
-} LtkWindow;
+};
+typedef struct _HLTK* HLTK;
 
 typedef struct _LtkRect {
 	float x;
@@ -45,12 +42,15 @@ LTK_API UINT WINAPI LtkInitialize();
 LTK_API void WINAPI LtkUninitialize();
 LTK_API void WINAPI LtkRunApp();
 
-LTK_API void WINAPI LtkObject_RegisterCallback(LtkObject* self, UINT event_id, LtkCallback cb, void* userdata);
-LTK_API LtkObject* WINAPI LtkGetEventSender();
+LTK_API void WINAPI LtkFree(HLTK h);
 
-LTK_API LtkWindow* WINAPI LtkCreateWindow(LtkWindow* parent, LtkRect* rc);
-LTK_API void WINAPI LtkWindow_SetBackground(LtkWindow* self, LPCSTR name);
-LTK_API void WINAPI LtkWindow_UpdateTheme(LtkWindow* self);
+LTK_API void WINAPI LtkObject_RegisterCallback(HLTK obj, UINT event_id, LtkCallback cb, void* userdata);
+LTK_API HLTK WINAPI LtkGetEventSender();
+
+LTK_API HLTK WINAPI LtkCreateWindow(HLTK parent, LtkRect* rc);
+LTK_API HLTK WINAPI LtkCreateWindowCenter(HLTK parent, float width, float height);
+LTK_API void WINAPI LtkWindow_SetBackground(HLTK self, LPCSTR name);
+LTK_API void WINAPI LtkWindow_UpdateTheme(HLTK wnd);
 
 #ifdef __cplusplus
 } // extern "C"

@@ -9,6 +9,7 @@
 BOOL CALLBACK OnWindowClose(void* userdata, BOOL *pProceed)
 {
 	*pProceed = TRUE;
+	HLTK obj = LtkGetEventSender();
 	return TRUE;
 }
 
@@ -26,16 +27,16 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 {
 	LtkInitialize();
 
-	LtkRect rc = { 10.f, 10.f, 400.f, 400.f };
-	LtkWindow* wnd = LtkCreateWindow(NULL, &rc);
+	HLTK wnd = LtkCreateWindowCenter(NULL, 500, 400);
 	LtkWindow_SetBackground(wnd, "window_bg");
 	LtkWindow_UpdateTheme(wnd);
-	LtkObject_RegisterCallback((LtkObject*)wnd, LTK_WINDOW_DESTROY,
+	LtkObject_RegisterCallback(wnd, LTK_WINDOW_DESTROY,
 		(LtkCallback)OnWindowDestroy, NULL);
-	LtkObject_RegisterCallback((LtkObject*)wnd, LTK_WINDOW_CLOSE, 
+	LtkObject_RegisterCallback(wnd, LTK_WINDOW_CLOSE,
 		(LtkCallback)OnWindowClose, NULL);
 
 	LtkRunApp();
+	LtkFree(wnd);
 	LtkUninitialize();
 	return 0;
 }

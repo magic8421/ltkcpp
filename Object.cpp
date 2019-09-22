@@ -4,6 +4,8 @@
 
 namespace ltk {
 
+Object *Object::m_staticSender = nullptr;
+
 void Object::RegisterCallback(UINT event_id, LtkCallback cb, void* userdata)
 {
 	auto& vecCallbacks = m_mapCallbacks[event_id];
@@ -26,6 +28,8 @@ void Object::RegisterCallback(UINT event_id, LtkCallback cb, void* userdata)
 
 void Object::InvokeCallback(UINT event_id, ...)
 {
+	m_staticSender = this; // TODO thread?
+
 	auto iter = m_mapCallbacks.find(event_id);
 	if (iter == m_mapCallbacks.end()) {
 		return;
@@ -42,6 +46,11 @@ void Object::InvokeCallback(UINT event_id, ...)
 		}
 		va_end(args);
 	}
+}
+
+Object *Object::GetEventSender()
+{
+	return m_staticSender;
 }
 
 } // namespace ltk
