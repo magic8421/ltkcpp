@@ -7,7 +7,7 @@ class ObjectPrivate
 {
 public:
 	ObjectPrivate();
-	ObjectPrivate(Object *q) : q_ptr(q) {}
+	ObjectPrivate(Object *q);
 	virtual ~ObjectPrivate() {}
 
 	DWORD thread_id = 0;

@@ -215,6 +215,9 @@
     <ClInclude Include="RTTI.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Splitter_p.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />

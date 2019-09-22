@@ -5,7 +5,11 @@
 
 namespace ltk {
 
-ObjectPrivate::ObjectPrivate()
+ObjectPrivate::ObjectPrivate() : ObjectPrivate(nullptr)
+{
+}
+
+ObjectPrivate::ObjectPrivate(Object *q) : q_ptr(q) 
 {
 #ifdef _DEBUG
 	this->thread_id = ::GetCurrentThreadId();

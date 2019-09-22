@@ -1,38 +1,45 @@
 #include "stdafx.h"
 #include "Splitter.h"
+#include "Splitter_p.h"
 
 namespace ltk {
 
 static const float GRIP_SIZE = 5.f;
 static const float MIN_SIZE = 15.f;
 
+Splitter::Splitter(Mode m) : Sprite(new SplitterPrivate(this, m))
+{}
+
 void Splitter::AddClient(Sprite *sp)
 {
+	LTK_D(Splitter);
 	SplitterItem item;
 	item.client = sp;
 	this->AddChild(sp);
-	m_vecItems.push_back(item);
+	d->vecItems.push_back(item);
 }
 
 void Splitter::SetClientSize(UINT idx, float size)
 {
-	m_vecItems[idx].size = size;
+	LTK_D(Splitter);
+	d->vecItems[idx].size = size;
 }
 
 void Splitter::DoLayout()
 {
-	if (m_vecItems.size() == 0) {
+	LTK_D(Splitter);
+	if (d->vecItems.size() == 0) {
 		return;
 	}
 	float x = 0;
 	float y = 0;
-	for (UINT i = 0; i < m_vecItems.size(); i ++) {
+	for (UINT i = 0; i < d->vecItems.size(); i++) {
 		RectF rc;
-		auto &item = m_vecItems[i];
-		if (m_mode == Horizontal) {
+		auto &item = d->vecItems[i];
+		if (d->mode == Horizontal) {
 			rc.X = x;
 			rc.Y = y;
-			if (i == m_vecItems.size() - 1) {
+			if (i == d->vecItems.size() - 1) {
 				rc.Width = this->GetWidth() - x;
 			} else {
 				rc.Width = item.size;
@@ -44,7 +51,7 @@ void Splitter::DoLayout()
 			rc.X = x;
 			rc.Y = y;
 			rc.Width = this->GetWidth();
-			if (i == m_vecItems.size() - 1) {
+			if (i == d->vecItems.size() - 1) {
 				rc.Height = this->GetHeight() - y;
 			} else {
 				rc.Height = item.size;
@@ -55,12 +62,12 @@ void Splitter::DoLayout()
 	}
 }
 
-int Splitter::HitTest(float x, float y)
+int SplitterPrivate::HitTest(float x, float y)
 {
 	float pos = 0.f;
-	for (UINT i = 0; i < m_vecItems.size(); i++) {
-		SplitterItem &item = m_vecItems[i];
-		if (m_mode == Horizontal) {
+	for (UINT i = 0; i < this->vecItems.size(); i++) {
+		SplitterItem &item = this->vecItems[i];
+		if (this->mode == Splitter::Horizontal) {
 			if (x > pos + item.size && x < pos + item.size + GRIP_SIZE) {
 				return (int)i;
 			}
@@ -77,21 +84,23 @@ int Splitter::HitTest(float x, float y)
 
 bool Splitter::OnLBtnDown(MouseEvent *ev)
 {
-	m_dragIdx = HitTest(ev->x, ev->y);
-	if (m_dragIdx >= 0) {
+	LTK_D(Splitter);
+	d->dragIdx = d->HitTest(ev->x, ev->y);
+	if (d->dragIdx >= 0) {
 		this->SetCapture();
-		m_bCapture = true;
-		m_dragPos = ev->x - PosFromIdx(m_dragIdx);
+		d->bCapture = true;
+		d->dragPos = ev->x - d->PosFromIdx(d->dragIdx);
 	}
 	return false;
 }
 
 bool Splitter::OnLBtnUp(MouseEvent *ev)
 {
-	if (m_bCapture) {
-		m_dragPos = 0.f;
-		m_dragIdx = -1;
-		m_bCapture = false;
+	LTK_D(Splitter);
+	if (d->bCapture) {
+		d->dragPos = 0.f;
+		d->dragIdx = -1;
+		d->bCapture = false;
 		this->ReleaseCapture();
 	}
 	return false;
@@ -103,11 +112,11 @@ bool Splitter::OnSize(SizeEvent *ev)
 	return false;
 }
 
-float Splitter::PosFromIdx(UINT idx)
+float SplitterPrivate::PosFromIdx(UINT idx)
 {
 	float sum = 0.f;
 	for (UINT i = 0; i <= idx; i ++) {
-		sum += m_vecItems[i].size;
+		sum += this->vecItems[i].size;
 		sum += GRIP_SIZE;
 	}
 	sum -= GRIP_SIZE;
@@ -116,11 +125,12 @@ float Splitter::PosFromIdx(UINT idx)
 
 bool Splitter::OnMouseMove(MouseEvent *ev)
 {
-	if (!m_bCapture) {
-		auto idx = HitTest(ev->x, ev->y);
+	LTK_D(Splitter);
+	if (!d->bCapture) {
+		auto idx = d->HitTest(ev->x, ev->y);
 		if (idx >= 0) {
 			LTK_LOG("HIT: %d", idx);
-			if (m_mode == Horizontal) {
+			if (d->mode == Horizontal) {
 				::SetCursor(::LoadCursor(NULL, IDC_SIZEWE));
 			}
 			else {
@@ -129,16 +139,16 @@ bool Splitter::OnMouseMove(MouseEvent *ev)
 		}
 	}
 	else {
-		for (int i = 0; i < m_dragIdx; i++) {
-			ev->x -= m_vecItems[i].size;
+		for (int i = 0; i < d->dragIdx; i++) {
+			ev->x -= d->vecItems[i].size;
 		}
-		m_vecItems[m_dragIdx].size = max(MIN_SIZE, ev->x - m_dragPos);
-		float sum = PosFromIdx(m_vecItems.size() - 1);
-		for (int i = m_vecItems.size() - 1; i >= 0; i --) {
-			auto &item = m_vecItems[i];
+		d->vecItems[d->dragIdx].size = max(MIN_SIZE, ev->x - d->dragPos);
+		float sum = d->PosFromIdx(d->vecItems.size() - 1);
+		for (int i = d->vecItems.size() - 1; i >= 0; i--) {
+			auto &item = d->vecItems[i];
 			item.size -= sum - this->GetWidth();
 			item.size = max(MIN_SIZE, item.size);
-			sum = PosFromIdx(m_vecItems.size() - 1);
+			sum = d->PosFromIdx(d->vecItems.size() - 1);
 		}
 		DoLayout();
 	}
