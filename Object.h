@@ -17,7 +17,10 @@ public:
 	virtual ~Object() {}
 
 	void RegisterCallback(UINT event_id, LtkCallback cb, void* userdata);
-	void InvokeCallback(UINT event_id, LTK_ARG arg1, LTK_ARG arg2, LTK_ARG arg3, LTK_ARG arg4);
+	void InvokeCallback(UINT event_id, ...);
+
+	virtual BOOL DoInvokeCallback(UINT event_id, LtkCallback cb,
+		void* userdata, va_list args) { return 1; }
 
 private:
 	std::map<UINT, std::vector<CallbackInfo>> m_mapCallbacks;

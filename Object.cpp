@@ -24,15 +24,23 @@ void Object::RegisterCallback(UINT event_id, LtkCallback cb, void* userdata)
 	vecCallbacks.push_back(info);
 }
 
-void Object::InvokeCallback(UINT event_id, LTK_ARG arg1, LTK_ARG arg2, LTK_ARG arg3, LTK_ARG arg4)
+void Object::InvokeCallback(UINT event_id, ...)
 {
 	auto iter = m_mapCallbacks.find(event_id);
 	if (iter == m_mapCallbacks.end()) {
 		return;
 	}
-	auto& vecCallbacks = m_mapCallbacks[event_id];
-	for (auto info : vecCallbacks) {
-		info.callback(info.userdata, event_id, arg1, arg2, arg3, arg4);
+	auto& vecCallbacks = iter->second; // TODO copy?
+	for (UINT i = vecCallbacks.size(); i > 0; i--) {
+		const CallbackInfo &info = vecCallbacks[i - 1];
+		va_list args;
+		va_start(args, event_id);
+		//info.callback(info.userdata, event_id, arg1, arg2, arg3, arg4);
+		if (DoInvokeCallback(event_id, info.callback, info.userdata, args)) {
+			va_end(args);
+			break;
+		}
+		va_end(args);
 	}
 }
 

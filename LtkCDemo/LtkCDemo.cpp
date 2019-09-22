@@ -6,16 +6,16 @@
 #include "LtkCDemo.h"
 #include "LtkInterface.h"
 
-
-void CALLBACK MyEventCallback(void* userdata, UINT event_id, void* sender, void* arg)
+BOOL CALLBACK OnWindowClose(void* userdata, BOOL *pProceed)
 {
-	switch (event_id) {
-	case LTK_WINDOW_DESTROY:
-		::PostQuitMessage(0);
-		break;
-	default:
-		break;
-	}
+	*pProceed = TRUE;
+	return TRUE;
+}
+
+BOOL CALLBACK OnWindowDestroy(void* userdata)
+{
+	PostQuitMessage(0);
+	return TRUE;
 }
 
 
@@ -30,7 +30,10 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	LtkWindow* wnd = LtkCreateWindow(NULL, &rc);
 	LtkWindow_SetBackground(wnd, "window_bg");
 	LtkWindow_UpdateTheme(wnd);
-	LtkObject_RegisterCallback((LtkObject*)wnd, LTK_WINDOW_DESTROY, MyEventCallback, NULL);
+	LtkObject_RegisterCallback((LtkObject*)wnd, LTK_WINDOW_DESTROY,
+		(LtkCallback)OnWindowDestroy, NULL);
+	LtkObject_RegisterCallback((LtkObject*)wnd, LTK_WINDOW_CLOSE, 
+		(LtkCallback)OnWindowClose, NULL);
 
 	LtkRunApp();
 	LtkUninitialize();

@@ -4,7 +4,7 @@
 #include "Object.h"
 #include "Window.h"
 
-LTK_API LtkError WINAPI LtkInitialize()
+LTK_API UINT WINAPI LtkInitialize()
 {
 	ltk::LtkInitialize();
 	return LTK_OK;

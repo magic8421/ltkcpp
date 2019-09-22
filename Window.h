@@ -78,7 +78,7 @@ public:
     void CloseWindow();
 
     virtual bool OnSize(float cx, float cy, DWORD flag);
-    virtual bool OnClose(bool &proceed);
+    virtual void OnClose(BOOL *proceed);
 	virtual void OnDestroy();
 
     ID2D1Bitmap *GetAtlasBitmap();
@@ -87,6 +87,9 @@ public:
     
     void UpdateTheme();
     virtual void OnThemeChanged() {}
+
+
+	virtual BOOL DoInvokeCallback(UINT event_id, LtkCallback cb, void* userdata, va_list args) override;
 
 public:
     Delegate<void(bool &)> CloseEvent;

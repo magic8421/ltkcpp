@@ -9,6 +9,7 @@
 
 #include <new> // for `placement new`
 #include <cassert>
+#include <stdarg.h>
 #include <vector>
 #include <forward_list>
 #include <string>

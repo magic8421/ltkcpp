@@ -17,37 +17,36 @@ enum LtkError
 	LTK_NO_IMPLEMENT
 };
 
-typedef struct _LtkObject
-{
+typedef struct _LtkObject {
 	int dummy;
 } LtkObject;
 
-typedef struct _LtkWindow
-{
+typedef struct _LtkWindow {
 	int dummy;
 } LtkWindow;
 
-typedef struct _LtkRect
-{
+typedef struct _LtkRect {
 	float x;
 	float y;
 	float w;
 	float h;
 } LtkRect;
 
-typedef void* LTK_ARG;
+typedef void (CALLBACK *LtkCallback)();
 
-typedef LTK_ARG(CALLBACK *LtkCallback)(LTK_ARG self, UINT code,
-	LTK_ARG arg1, LTK_ARG arg2, LTK_ARG arg3, LTK_ARG arg4);
-
+// BOOL OnWindowDestory()
 #define LTK_WINDOW_DESTROY		100
 
+// BOOL OnWindowClose(BOOL *pProceed);
+#define LTK_WINDOW_CLOSE		101
 
-LTK_API LtkError WINAPI LtkInitialize();
+
+LTK_API UINT WINAPI LtkInitialize();
 LTK_API void WINAPI LtkUninitialize();
 LTK_API void WINAPI LtkRunApp();
 
 LTK_API void WINAPI LtkObject_RegisterCallback(LtkObject* self, UINT event_id, LtkCallback cb, void* userdata);
+LTK_API LtkObject* WINAPI LtkGetEventSender();
 
 LTK_API LtkWindow* WINAPI LtkCreateWindow(LtkWindow* parent, LtkRect* rc);
 LTK_API void WINAPI LtkWindow_SetBackground(LtkWindow* self, LPCSTR name);

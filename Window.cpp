@@ -590,8 +590,8 @@ bool Window::OnSize(float cx, float cy, DWORD flag)
 
 void Window::CloseWindow()
 {
-    bool proceed = false;
-    OnClose(proceed);
+    BOOL proceed = TRUE;
+    OnClose(&proceed);
     if (proceed) {
         ::DestroyWindow(m_hwnd);
     }
@@ -614,16 +614,15 @@ void Window::Maximize()
     }
 }
 
-bool Window::OnClose(bool &proceed)
+void Window::OnClose(BOOL *proceed)
 {
-    proceed = true;
-    this->CloseEvent.Invoke(std::ref(proceed));
-    return proceed;
+	InvokeCallback(LTK_WINDOW_CLOSE, proceed);
+    //this->CloseEvent.Invoke(std::ref(proceed));
 }
 
 void Window::OnDestroy()
 { 
-	InvokeCallback(LTK_WINDOW_DESTROY, NULL, NULL, NULL, NULL);
+	InvokeCallback(LTK_WINDOW_DESTROY);
 }
 
 HWND Window::Handle()
@@ -869,6 +868,27 @@ void Window::UpdateTheme()
 		ev.width = cx;
 		ev.height = cy;
 		m_sprite->OnEvent(&ev);
+	}
+}
+
+typedef BOOL(CALLBACK *WindowCloseCallback)(void *userdata, BOOL *pProceed);
+typedef BOOL(CALLBACK *WindowDestroyCallback)(void *userdata);
+
+BOOL Window::DoInvokeCallback(UINT event_id, LtkCallback cb, void* userdata, va_list args)
+{
+	switch (event_id)
+	{
+	case LTK_WINDOW_CLOSE:
+	{
+		BOOL *pProceed = va_arg(args, BOOL *);
+		return ((WindowCloseCallback)cb)(userdata, pProceed);
+	}
+	case LTK_WINDOW_DESTROY:
+	{
+		return ((WindowDestroyCallback)cb)(userdata);
+	}
+	default:
+		return 0;
 	}
 }
 
