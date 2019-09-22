@@ -8,6 +8,7 @@
 #include "stdafx.h"
 #include "Common.h"
 #include "UniConversion.h"
+#include "ltk.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW 
@@ -152,3 +153,27 @@ void LTK_API LtkLogImpl(const char *source, int line, const char *format, ...)
     }
 }
 
+void LTK_API LtkInitialize()
+{
+	ltk::LtkInitialize();
+}
+
+void LTK_API LtkUninitialize()
+{
+	ltk::LtkUninitialize();
+}
+
+void LTK_API ltk::RunMessageLoop()
+{
+	MSG msg;
+	BOOL bRet;
+	while ((bRet = GetMessage(&msg, NULL, 0, 0)) != 0) {
+		if (bRet == -1) {
+			LTK_LOG("MessageLoop ERROR");
+		}
+		else {
+			TranslateMessage(&msg);
+			DispatchMessage(&msg);
+		}
+	}
+}

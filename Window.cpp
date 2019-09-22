@@ -726,7 +726,7 @@ LRESULT Window::OnImeEvent( UINT uMsg, WPARAM wParam, LPARAM lParam )
 			{
 				wstring tmp = comp.ime_string; // 这里结尾居然多出个0 可能是改了谷歌的代码导致的问题
 				tmp.resize(wcslen(tmp.c_str()));
-				LOGW(<<tmp);
+				//LOGW(<<tmp); // TODO wide version of LTK_LOG
 				OnImeInput(tmp.c_str());
 				//d->text += tmp;
 				//::InvalidateRect(GetHWND(), NULL, TRUE);

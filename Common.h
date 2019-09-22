@@ -50,7 +50,12 @@ void LTK_API LtkLogImpl(const char *source, int line, const char *format, ...);
 
 //////////////////////////////////////////////////////////////////////////
 
+void LTK_API LtkInitialize();
+void LTK_API LtkUninitialize();
+
 namespace ltk {
+
+void LTK_API RunMessageLoop();
 
 class SizeF
 {

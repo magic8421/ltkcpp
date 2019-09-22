@@ -45,146 +45,108 @@ static void RecBuildNodes(TreeNode *parent, int depth)
     }
 }
 
-int CALLBACK WinMain(
-	_In_ HINSTANCE hInstance,
-	_In_opt_ HINSTANCE hPrevInstance,
-	_In_ LPSTR lpCmdLine,
-	_In_ int nShowCmd)
+void BuildDemoWindow(Window *wnd)
 {
-	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+	BoxLayout *hbox = new BoxLayout(BoxLayout::Horizontal);
+	wnd->SetClientSprite(hbox);
 
-    ltk::LtkInitialize();
+	TreeView *tree = new TreeView;
+	hbox->AddLayoutItem(tree, 100, 0.3f);
 
-    //StyleManager::NewTheme("rect");
-    //SetupVectorStyle1();
+	::srand(ltk::TickCount());
 
-    //StyleManager::NewTheme("pixel");
-    ////StyleManager::Instance()->LoadFromXml("res\\style.xml");
-    //SetupPixelStyle1();
-
-	auto wnd = new Window;
-    wnd->SetCaption(L"LTK测试窗口");
-	wnd->EnableShadow(false);
-	wnd->SetBackground("window_bg");
-    wnd->Create(nullptr, SizeF(600, 500));
-	wnd->AttachCloseDelegate([](bool &proceed) {
-        //proceed = false;
-        ::PostQuitMessage(0);
-    });
-
-	/*
-	Splitter *spitter1 = new Splitter(Splitter::Horizontal);
-	wnd->SetClientSprite(spitter1);
-	spitter1->AddClient(new Button);
-	spitter1->SetClientSize(0, 100);
-	spitter1->AddClient(new Button);
-	spitter1->SetClientSize(1, 100);
-	spitter1->AddClient(new Button);
-	spitter1->SetClientSize(2, 100);
-	spitter1->AddClient(new Button);
-	spitter1->SetClientSize(3, 100);
-	*/
-
-    BoxLayout *hbox = new BoxLayout(BoxLayout::Horizontal);
-    wnd->SetClientSprite(hbox);
-
-    TreeView *tree = new TreeView;
-    hbox->AddLayoutItem(tree, 100, 0.3f);
-    
-    ::srand(ltk::TickCount());
-
-    RecBuildNodes(tree->GetRootNode(), 0);
+	RecBuildNodes(tree->GetRootNode(), 0);
 	LTK_LOG("node_count: %d", node_count);
 
-    BoxLayout *vboxRightPanel = new BoxLayout(BoxLayout::Vertical);
-    //vbox->SetSpacing(10);
-    hbox->AddLayoutItem(vboxRightPanel, 100, 0.7f);
+	BoxLayout *vboxRightPanel = new BoxLayout(BoxLayout::Vertical);
+	//vbox->SetSpacing(10);
+	hbox->AddLayoutItem(vboxRightPanel, 100, 0.7f);
 
-    HeaderCtrl *header = new HeaderCtrl;
-    header->AddColumn(L"项目名", 100);
-    header->AddColumn(L"工程名", 200);
-    header->AddColumn(L"负责人", 200);
-    vboxRightPanel->AddLayoutItem(header, 30, 0.0f);
+	HeaderCtrl *header = new HeaderCtrl;
+	header->AddColumn(L"项目名", 100);
+	header->AddColumn(L"工程名", 200);
+	header->AddColumn(L"负责人", 200);
+	vboxRightPanel->AddLayoutItem(header, 30, 0.0f);
 
-    ListView *listview1 = new ListView();
-    vboxRightPanel->AddLayoutItem(listview1, 0.0f, 1.0f);
-    listview1->SetHeaderCtrl(header);
-    std::wstring text;
-    UINT num = rand() % 200;
-    for (UINT i = 0; i < num; i++) {
-        text = WStringFormat(L"item:%d", i);
-        listview1->AddItem(text.c_str());
-        text = WStringFormat(L"subitem1:%d", i);
-        listview1->SetSubItemText(i, 1, text.c_str());
-        text = WStringFormat(L"subitem2:%d", i);
-        listview1->SetSubItemText(i, 2, text.c_str());
-    }
+	ListView *listview1 = new ListView();
+	vboxRightPanel->AddLayoutItem(listview1, 0.0f, 1.0f);
+	listview1->SetHeaderCtrl(header);
+	std::wstring text;
+	UINT num = rand() % 200;
+	for (UINT i = 0; i < num; i++) {
+		text = WStringFormat(L"item:%d", i);
+		listview1->AddItem(text.c_str());
+		text = WStringFormat(L"subitem1:%d", i);
+		listview1->SetSubItemText(i, 1, text.c_str());
+		text = WStringFormat(L"subitem2:%d", i);
+		listview1->SetSubItemText(i, 2, text.c_str());
+	}
 
-    TextEdit *edit1 = new TextEdit;
-    vboxRightPanel->AddLayoutItem(edit1, 100, 0.0f);
+	TextEdit *edit1 = new TextEdit;
+	vboxRightPanel->AddLayoutItem(edit1, 100, 0.0f);
 
-    auto hboxTimerTest = new BoxLayout(BoxLayout::Horizontal);
-    vboxRightPanel->AddLayoutItem(hboxTimerTest, 30, 0.0f);
+	auto hboxTimerTest = new BoxLayout(BoxLayout::Horizontal);
+	vboxRightPanel->AddLayoutItem(hboxTimerTest, 30, 0.0f);
 
-    Button *btnRepeatTimer = new Button;
-    UINT cookie1 = 0;
-    btnRepeatTimer->SetText(L"循环定时器");
+	Button *btnRepeatTimer = new Button;
+	UINT cookie1 = 0;
+	btnRepeatTimer->SetText(L"循环定时器");
 	btnRepeatTimer->AttachClickedDelegate([&]() {
-        cookie1 = ltk::SetTimer(1000, cookie1,[&]() {
-            LTK_LOG("tick: %d", cookie1);
-        });
-        //wnd->CloseWindow(); // WTF, with [&] you can capture unique_ptr
-        //::PostQuitMessage(0);
-    });
-    hboxTimerTest->AddLayoutItem(btnRepeatTimer, 0, 1);
+		cookie1 = ltk::SetTimer(1000, cookie1, [&]() {
+			LTK_LOG("tick: %d", cookie1);
+		});
+		//wnd->CloseWindow(); // WTF, with [&] you can capture unique_ptr
+		//::PostQuitMessage(0);
+	});
+	hboxTimerTest->AddLayoutItem(btnRepeatTimer, 0, 1);
 
-    Button *btnStopRepeatTimer = new Button;
-    btnStopRepeatTimer->SetText(L"停止");
+	Button *btnStopRepeatTimer = new Button;
+	btnStopRepeatTimer->SetText(L"停止");
 	btnStopRepeatTimer->AttachClickedDelegate([&]() {
-        ltk::KillTimer(cookie1);
-        cookie1 = 0;
-    });
-    hboxTimerTest->AddLayoutItem(btnStopRepeatTimer, 0, 1);
+		ltk::KillTimer(cookie1);
+		cookie1 = 0;
+	});
+	hboxTimerTest->AddLayoutItem(btnStopRepeatTimer, 0, 1);
 
-    Button *btnOnceTimer = new Button;
-    UINT cookie2 = 0;
-    btnOnceTimer->SetText(L"单次定时器");
+	Button *btnOnceTimer = new Button;
+	UINT cookie2 = 0;
+	btnOnceTimer->SetText(L"单次定时器");
 	btnOnceTimer->AttachClickedDelegate([&]() {
-        cookie2 = ltk::SetOnceTimer(1000, cookie2, [&]() {
-            LTK_LOG("tick: %d", cookie2);
-            cookie2 = 0;
-        });
-        //wnd->CloseWindow(); // WTF, with [&] you can capture unique_ptr
-        //::PostQuitMessage(0);
-    });
-    hboxTimerTest->AddLayoutItem(btnOnceTimer, 0, 1);
+		cookie2 = ltk::SetOnceTimer(1000, cookie2, [&]() {
+			LTK_LOG("tick: %d", cookie2);
+			cookie2 = 0;
+		});
+		//wnd->CloseWindow(); // WTF, with [&] you can capture unique_ptr
+		//::PostQuitMessage(0);
+	});
+	hboxTimerTest->AddLayoutItem(btnOnceTimer, 0, 1);
 
-    Button *btnStopOnceTimer = new Button;
-    btnStopOnceTimer->SetText(L"停止");
+	Button *btnStopOnceTimer = new Button;
+	btnStopOnceTimer->SetText(L"停止");
 	btnStopOnceTimer->AttachClickedDelegate([&]() {
-        ltk::KillTimer(cookie2);
-        cookie2 = 0;
-    });
-    hboxTimerTest->AddLayoutItem(btnStopOnceTimer, 0, 1);
+		ltk::KillTimer(cookie2);
+		cookie2 = 0;
+	});
+	hboxTimerTest->AddLayoutItem(btnStopOnceTimer, 0, 1);
 
-    auto hboxTheme = new BoxLayout(BoxLayout::Horizontal);
-    vboxRightPanel->AddLayoutItem(hboxTheme, 30, 0.0f);
+	auto hboxTheme = new BoxLayout(BoxLayout::Horizontal);
+	vboxRightPanel->AddLayoutItem(hboxTheme, 30, 0.0f);
 
-    Button *btnPixelTheme = new Button;
-    hboxTheme->AddLayoutItem(btnPixelTheme, 100);
-    btnPixelTheme->SetText(L"位图资源");
+	Button *btnPixelTheme = new Button;
+	hboxTheme->AddLayoutItem(btnPixelTheme, 100);
+	btnPixelTheme->SetText(L"位图资源");
 	btnPixelTheme->AttachClickedDelegate([wnd]() {
-        StyleManager::SetCurrentTheme("pixel");
-        wnd->UpdateTheme();
-    });
+		StyleManager::SetCurrentTheme("pixel");
+		wnd->UpdateTheme();
+	});
 
-    Button *btnRectTheme = new Button;
-    hboxTheme->AddLayoutItem(btnRectTheme, 100);
-    btnRectTheme->SetText(L"纯色1");
+	Button *btnRectTheme = new Button;
+	hboxTheme->AddLayoutItem(btnRectTheme, 100);
+	btnRectTheme->SetText(L"纯色1");
 	btnRectTheme->AttachClickedDelegate([wnd]() {
-        StyleManager::SetCurrentTheme("rect");
-        wnd->UpdateTheme();
-    });
+		StyleManager::SetCurrentTheme("rect");
+		wnd->UpdateTheme();
+	});
 
 	MenuBar *menu_bar = new MenuBar;
 	wnd->SetMenu(menu_bar);
@@ -233,23 +195,57 @@ int CALLBACK WinMain(
 	popup->AddItem(L"关于");
 	menu_bar->SetPopupMenu(3, popup);
 
-    vboxRightPanel->AddSpaceItem(5, 0);
-	
-	
+	vboxRightPanel->AddSpaceItem(5, 0);
+}
+
+void BuildSplitterTest(Window *wnd)
+{
+	Splitter *spitter1 = new Splitter(Splitter::Horizontal);
+	wnd->SetClientSprite(spitter1);
+	spitter1->AddClient(new Button);
+	spitter1->SetClientSize(0, 100);
+	spitter1->AddClient(new Button);
+	spitter1->SetClientSize(1, 100);
+	spitter1->AddClient(new Button);
+	spitter1->SetClientSize(2, 100);
+	spitter1->AddClient(new Button);
+	spitter1->SetClientSize(3, 100);
+
+	spitter1->DoLayout();
+}
+
+int CALLBACK WinMain(
+	_In_ HINSTANCE hInstance,
+	_In_opt_ HINSTANCE hPrevInstance,
+	_In_ LPSTR lpCmdLine,
+	_In_ int nShowCmd)
+{
+	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+
+    ltk::LtkInitialize();
+
+    //StyleManager::NewTheme("rect");
+    //SetupVectorStyle1();
+
+    //StyleManager::NewTheme("pixel");
+    ////StyleManager::Instance()->LoadFromXml("res\\style.xml");
+    //SetupPixelStyle1();
+
+	auto wnd = new Window;
+    wnd->SetCaption(L"LTK测试窗口");
+	wnd->EnableShadow(false);
+	wnd->SetBackground("window_bg");
+    wnd->Create(nullptr, SizeF(600, 500));
+	wnd->AttachCloseDelegate([](bool &proceed) {
+        //proceed = false;
+        ::PostQuitMessage(0);
+    });
+
+	BuildSplitterTest(wnd);
 	wnd->UpdateTheme();
-	//spitter1->DoLayout();
 
+	ltk::RunMessageLoop();
 
-    MSG msg;
-    BOOL bRet;
-    while ((bRet = GetMessage(&msg, NULL, 0, 0)) != 0) {
-        if (bRet == -1) {
-            LTK_LOG("MessageLoop ERROR");
-        } else {
-            TranslateMessage(&msg);
-            DispatchMessage(&msg);
-        }
-    }
 	auto ob = ToPtr(wnd);
 	delete wnd;
 	LTK_ASSERT(ob.Get() == nullptr);
