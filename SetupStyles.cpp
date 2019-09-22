@@ -85,7 +85,7 @@ void SetupPixelStyle1()
     sm->AddBackgroundStyle("menu_bar_btn_bg", nine_in_one); // TODO change to menu_bar_btn_bg
 
 	nine_in_one = new NinePatchBackground;
-	nine_in_one->Normal().SetAtals(2, 126, 39, 38).SetMargin(18, 18, 18, 18);
+	nine_in_one->Normal().SetAtals(54, 118, 56, 56).SetMargin(20, 20, 20, 20);
 	nine_in_one->Hover() = nine_in_one->Normal();
 	nine_in_one->Pressed() = nine_in_one->Normal();
 	nine_in_one->Disable() = nine_in_one->Normal();

@@ -233,7 +233,7 @@ int CALLBACK WinMain(
 
 	auto wnd = new Window;
     wnd->SetCaption(L"LTK²âÊÔ´°¿Ú");
-	wnd->EnableShadow(false);
+	//wnd->EnableShadow(false);
 	wnd->SetBackground("window_bg");
     wnd->Create(nullptr, SizeF(600, 500));
 	wnd->AttachCloseDelegate([](bool &proceed) {
