@@ -68,24 +68,28 @@ float AbstractButton::GetBlend()
 
 Cookie AbstractButton::AttachClickedDelegate(const std::function<void()> &cb)
 {
+	LTK_CHECK_THREAD;
 	LTK_D(AbstractButton);
 	return d->clickedDelegate.Attach(cb);
 }
 
 void AbstractButton::RemoveClickedDelegate(Cookie c)
 {
+	LTK_CHECK_THREAD;
 	LTK_D(AbstractButton);
 	d->clickedDelegate.Remove(c);
 }
 
 Cookie AbstractButton::AttachMouseEventDelegate(const std::function<void(MouseEvent*, bool&)> &cb)
 {
+	LTK_CHECK_THREAD;
 	LTK_D(AbstractButton);
 	return d->mouseEventDelegate.Attach(cb);
 }
 
 void AbstractButton::RemoveMouseEventDelegate(Cookie c)
 {
+	LTK_CHECK_THREAD;
 	LTK_D(AbstractButton);
 	d->mouseEventDelegate.Remove(c);
 }

@@ -87,3 +87,9 @@ using std::vector;
 	ss << __FUNCTIONW__ << L"() " msg << std::endl;\
 	OutputDebugStringW(ss.str().c_str());\
 } while (0)
+
+#ifdef _DEBUG
+#define LTK_CHECK_THREAD Object::CheckThread()
+#else
+#define LTK_CHECK_THREAD
+#endif

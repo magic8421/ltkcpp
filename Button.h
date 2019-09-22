@@ -19,7 +19,7 @@ public:
     virtual ~Button();
 
     void SetText(LPCWSTR text);
-	void RecreateLayout();
+	void RecreateLayout(); // TODO make private
 	SizeF GetPreferredSize();
 
 	void SetBackground(LPCSTR);

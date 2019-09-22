@@ -21,10 +21,7 @@ public:
 
     typedef AbstractBackground::State State;
 
-    State GetState();
-    void EnableCapture(bool);
-    void Update();
-    float GetBlend();
+	void EnableCapture(bool);
 
 	Cookie AttachClickedDelegate(const std::function<void()> &cb);
 	void RemoveClickedDelegate(Cookie c);
@@ -41,6 +38,10 @@ public:
 
 protected:
 	AbstractButton(AbstractButtonPrivate *pd);
+
+	State GetState();
+	void Update();
+	float GetBlend();
 
 private:
 	LTK_DECLARE_PRIVATE(AbstractButton);

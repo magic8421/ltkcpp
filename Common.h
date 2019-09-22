@@ -34,6 +34,12 @@ EXTERN_C IMAGE_DOS_HEADER __ImageBase;
  //   }
 	//
 
+#define LTK_DECLARE_PUBLIC(Class)\
+    inline Class* q_func() { return static_cast<Class *>(q_ptr); }\
+    friend class Class;
+//inline const Class* q_func() const { return static_cast<const Class *>(q_ptr); } \
+
+
 #ifdef LTK_EXPORTS
 #define LTK_API __declspec(dllexport)
 #else

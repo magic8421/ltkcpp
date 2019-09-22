@@ -50,12 +50,14 @@ Sprite::~Sprite(void)
 
 RectF Sprite::GetRect()
 {
+	LTK_CHECK_THREAD;
 	LTK_D(Sprite);
 	return d->rect;
 }
 
 RectF Sprite::GetClientRect()
 {
+	LTK_CHECK_THREAD;
 	RectF rc = this->GetRect();
 	rc.X = 0.0f;
 	rc.Y = 0.0f;
@@ -64,6 +66,7 @@ RectF Sprite::GetClientRect()
 
 RectF Sprite::GetAbsRect()
 {
+	LTK_CHECK_THREAD;
 	LTK_D(Sprite);
 	Sprite *sp = d->parent;
 	RectF rcSelf = GetRect();
@@ -91,6 +94,7 @@ float Sprite::GetHeight()
 
 void Sprite::SetRect( RectF rect )
 {
+	LTK_CHECK_THREAD;
 	LTK_D(Sprite);
 	// 检查下宽高是否小于0 是则设为0 然后0宽或0高要在OnDraw这些里面特殊处理一下
 	rect.Width = max(0.0f, rect.Width);
@@ -115,6 +119,7 @@ void Sprite::SetRect( RectF rect )
 
 void Sprite::Invalidate()
 {
+	LTK_CHECK_THREAD;
 	// 0指针访问 不挂是因为x64系统一个bug 记得打开调试中的Win32异常断点
 	Window *wnd = GetWindow();
     if (wnd)
@@ -126,6 +131,7 @@ void Sprite::Invalidate()
 
 void Sprite::SetWindow( Window *wnd )
 {
+	LTK_CHECK_THREAD;
 	LTK_D(Sprite);
 	//LTK_LOG("SetWindow: %08x", wnd);
 	d->window = wnd;
@@ -172,6 +178,7 @@ void SpritePrivate::HandlePaint(ID2D1RenderTarget *target)
 
 void Sprite::AddChild(Sprite *sp)
 {
+	LTK_CHECK_THREAD;
 	LTK_D(Sprite);
 	for (UINT i = d->children.size(); i > 0; i--) {
         if (d->children[i - 1] == sp) {
@@ -223,6 +230,7 @@ void SpritePrivate::HandleImeInput(LPCTSTR text)
 // return weak ref
 Window * Sprite::GetWindow()
 {
+	LTK_CHECK_THREAD;
 	LTK_D(Sprite);
 	Sprite *sp = this;
 	while (sp->d_func()->parent)
@@ -234,7 +242,8 @@ Window * Sprite::GetWindow()
 
 void Sprite::SetCapture()
 {
-    auto wnd = GetWindow();
+	LTK_CHECK_THREAD;
+	auto wnd = GetWindow();
     LTK_ASSERT(wnd);
 	if (wnd)
 	{
@@ -244,7 +253,8 @@ void Sprite::SetCapture()
 
 void Sprite::ReleaseCapture()
 {
-    auto wnd = GetWindow();
+	LTK_CHECK_THREAD;
+	auto wnd = GetWindow();
     LTK_ASSERT(wnd);
 	if (wnd)
 	{
@@ -254,7 +264,8 @@ void Sprite::ReleaseCapture()
 
 bool Sprite::IsCapturing()
 {
-    Window *wnd = GetWindow();
+	LTK_CHECK_THREAD;
+	Window *wnd = GetWindow();
     if (wnd) {
         return wnd->IsCapturing(this);
     } else {
@@ -269,6 +280,7 @@ void Sprite::BringToFront()
 
 void Sprite::SetVisible( bool v )
 {
+	LTK_CHECK_THREAD;
 	LTK_D(Sprite);
 	if (d->bVisible != v)
 	{
@@ -279,12 +291,14 @@ void Sprite::SetVisible( bool v )
 
 bool Sprite::GetVisible()
 {
+	LTK_CHECK_THREAD;
 	LTK_D(Sprite);
 	return d->bVisible;
 }
 
 void Sprite::EnableClipChildren( bool bClip )
 {
+	LTK_CHECK_THREAD;
 	LTK_D(Sprite);
 	if (d->bClipChildren != bClip)
 	{
@@ -295,6 +309,7 @@ void Sprite::EnableClipChildren( bool bClip )
 
 bool Sprite::IsClipChildren()
 {
+	LTK_CHECK_THREAD;
 	LTK_D(Sprite);
 	return d->bClipChildren;
 }
@@ -321,6 +336,7 @@ bool SpritePrivate::DispatchMouseEvent(MouseEvent *ev)
 
 Sprite * Sprite::GetAncestor()
 {
+	LTK_CHECK_THREAD;
 	LTK_D(Sprite);
 	Sprite *sp = this;
 	while (sp->d_func()->parent)
@@ -332,12 +348,14 @@ Sprite * Sprite::GetAncestor()
 
 Sprite * Sprite::GetParent()
 {
+	LTK_CHECK_THREAD;
 	LTK_D(Sprite);
 	return d->parent;
 }
 
 void Sprite::TrackMouseLeave()
 {
+	LTK_CHECK_THREAD;
 	Window *wnd = GetWindow();
 	if (wnd)
 	{
@@ -347,6 +365,7 @@ void Sprite::TrackMouseLeave()
 
 void Sprite::RemoveChild( Sprite *sp )
 {
+	LTK_CHECK_THREAD;
 	LTK_D(Sprite);
 	// maybe searh from the end is better, because we always push to the end.
     for (int i = d->children.size() - 1; i >= 0; i--) {
@@ -365,12 +384,14 @@ void Sprite::RemoveChild( Sprite *sp )
 
 void Sprite::ShowCaret()
 {
-    GetWindow()->ShowCaret();
+	LTK_CHECK_THREAD;
+	GetWindow()->ShowCaret();
 }
 
 void Sprite::SetCaretPos(RectF rc)
 {
-    RECT rc2 = DipRectToScreen(rc);
+	LTK_CHECK_THREAD;
+	RECT rc2 = DipRectToScreen(rc);
     RECT arc = DipRectToScreen(Sprite::GetAbsRect());
     rc2.left += arc.left;
     rc2.top += arc.top;
@@ -465,7 +486,7 @@ void SpritePrivate::HandleThemeChange()
 
 void Sprite::BeginAnimation()
 {
-    //LTK_LOG("BeginAnimation");
+	//LTK_LOG("BeginAnimation");
     Window *wnd = GetWindow();
     wnd->BeginAnimation(this);
 }
@@ -481,6 +502,7 @@ void Sprite::EndAnimation()
 
 Sprite* Sprite::SetFocus()
 {
+	LTK_CHECK_THREAD;
 	auto wnd = GetWindow();
 	if (wnd) {
 		auto old = wnd->GetFocusSprite();
@@ -492,6 +514,7 @@ Sprite* Sprite::SetFocus()
 
 void Sprite::KillFocus()
 {
+	LTK_CHECK_THREAD;
 	auto wnd = GetWindow();
 	if (wnd) {
 		if (wnd->GetFocusSprite() == this) {
@@ -502,12 +525,14 @@ void Sprite::KillFocus()
 
 LPCSTR Sprite::GetName()
 {
+	LTK_CHECK_THREAD;
 	LTK_D(Sprite);
 	return d->name;
 }
 
 void Sprite::SetName(LPCSTR n)
 {
+	LTK_CHECK_THREAD;
 	LTK_D(Sprite);
 	d->name = n;
 }

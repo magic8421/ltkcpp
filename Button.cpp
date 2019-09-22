@@ -96,6 +96,7 @@ bool Button::OnPaint(PaintEvent *ev)
 
 void Button::SetText(LPCWSTR text)
 {
+	LTK_CHECK_THREAD;
 	LTK_D(Button);
 	d->text = text;
 	SAFE_RELEASE(d->layout);
@@ -106,7 +107,7 @@ void Button::RecreateLayout()
 {
 	LTK_D(Button);
 	static int cnt = 0;
-	LTK_LOG("Button::RecreateLayout() %d", cnt++);
+	//LTK_LOG("Button::RecreateLayout() %d", cnt++);
 
 	SAFE_RELEASE(d->layout);
 	auto rc = this->GetClientRect();
@@ -123,6 +124,7 @@ void Button::RecreateLayout()
 
 SizeF Button::GetPreferredSize()
 {
+	LTK_CHECK_THREAD;
 	LTK_D(Button);
 	if (!d->layout) {
 		this->RecreateLayout();
@@ -142,18 +144,21 @@ bool Button::OnSize(SizeEvent *ev)
 
 void Button::SetBackground(LPCSTR name)
 {
+	LTK_CHECK_THREAD;
 	LTK_D(Button);
 	d->Background = name;
 }
 
 void Button::SetTextFormat(LPCSTR name)
 {
+	LTK_CHECK_THREAD;
 	LTK_D(Button);
 	d->TextFormat = name;
 }
 
 void Button::SetTextColor(LPCSTR name)
 {
+	LTK_CHECK_THREAD;
 	LTK_D(Button);
 	d->TextColor = name;
 }

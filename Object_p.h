@@ -6,6 +6,7 @@ namespace ltk {
 class ObjectPrivate
 {
 public:
+	ObjectPrivate();
 	virtual ~ObjectPrivate() {}
 	DWORD thread_id = 0; // TODO check gui thread
 };

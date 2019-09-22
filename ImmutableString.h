@@ -5,7 +5,7 @@ class ImmutableString
 {
 public:
 	ImmutableString() {}
-	ImmutableString(LPCSTR str)
+	explicit ImmutableString(LPCSTR str)
 	{
 		m_ptr = _strdup(str);
 	}
@@ -39,6 +39,7 @@ public:
 
 private:
 	const char *m_ptr = nullptr;
+	DISALLOW_COPY_AND_ASSIGN(ImmutableString);
 };
 
 

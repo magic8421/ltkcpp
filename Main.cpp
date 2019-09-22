@@ -25,18 +25,21 @@
 
 using namespace ltk;
 
+static int node_count = 0;
+
 static void RecBuildNodes(TreeNode *parent, int depth)
 {
     if (depth > 4) {
         return;
     }
-    int num = rand() % 15 + 1;
+    int num = rand() % 13 + 3;
     for (int i = 0; i < num; i++) {
         TreeNode *node = new TreeNode;
         wstring text = WStringFormat(L"%d", rand());
         node->SetText(text.c_str());
         parent->AddChild(node);
-        if (rand() % 100 < 25) {
+		node_count++;
+        if (rand() % 100 < 35) {
             RecBuildNodes(node, depth + 1);
         }
     }
@@ -90,7 +93,7 @@ int CALLBACK WinMain(
     ::srand(ltk::TickCount());
 
     RecBuildNodes(tree->GetRootNode(), 0);
-
+	LTK_LOG("node_count: %d", node_count);
 
     BoxLayout *vboxRightPanel = new BoxLayout(BoxLayout::Vertical);
     //vbox->SetSpacing(10);
