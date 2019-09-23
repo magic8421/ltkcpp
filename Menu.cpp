@@ -8,6 +8,7 @@
 
 #include "stdafx.h"
 #include "Menu.h"
+#include "Menu_p.h"
 #include "Button.h"
 #include "Window.h"
 #include "TimerManager.h"
@@ -18,63 +19,85 @@ const static float ITEM_HEIGHT = 30.f;
 const static float MENU_WIDTH = 300.f;
 const static float ICON_WIDTH = 16.f;
 const static float PADDING = 5.f;
+const float AniDelta = 1.f / 300.f;
 
-PopupMenu::PopupMenu() :
-	TextColor("item_text_clr"),
-	TextFormat("popup_menu_fmt"),
-	HoverColor("menu_hover_clr"),
-	Background("popup_menu_bg"),
-	m_textColor(D2D1::ColorF(D2D1::ColorF::Cyan)),
-	m_hoverColor(D2D1::ColorF(D2D1::ColorF::Cyan))
+PopupMenu::PopupMenu() : Sprite(new PopupMenuPrivate(this))
+{
+}
+
+PopupMenu::PopupMenu(PopupMenuPrivate *d) : Sprite(d)
 {
 }
 
 PopupMenu::~PopupMenu()
 {
-	ltk::KillTimer(m_hoverTimer);
 
-	for (auto item : m_vecItems) {
+}
+
+PopupMenuPrivate::~PopupMenuPrivate()
+{
+	ltk::KillTimer(this->hoverTimer);
+
+	for (auto item : this->vecItems) {
 		delete item->sub_menu;
 		delete item;
 	}
 }
 
+PopupMenuPrivate::PopupMenuPrivate(PopupMenu *q) :
+	SpritePrivate(q),
+	TextColor("item_text_clr"),
+	TextFormat("popup_menu_fmt"),
+	HoverColor("menu_hover_clr"),
+	Background("popup_menu_bg"),
+	textColor(D2D1::ColorF(D2D1::ColorF::Cyan)),
+	hoverColor(D2D1::ColorF(D2D1::ColorF::Cyan))
+{
+}
+
 void PopupMenu::AddItem(LPCWSTR text)
 {
+	LTK_D(PopupMenu);
 	auto item = new MenuItem;
 	item->text = text;
-	m_vecItems.push_back(item);
+	d->vecItems.push_back(item);
 }
 
 UINT PopupMenu::GetChildCount()
 {
-	return m_vecItems.size();
+	LTK_D(PopupMenu);
+	return d->vecItems.size();
 }
 
 void PopupMenu::SetWidth(float w)
 {
-	m_width = w;
+	LTK_D(PopupMenu);
+	d->width = w;
 }
 
 float PopupMenu::GetWidth()
 {
-	return m_width;
+	LTK_D(PopupMenu);
+	return d->width;
 }
 
 void PopupMenu::SetSubMenu(UINT idx, PopupMenu *popup)
 {
-	LTK_ASSERT(m_vecItems[idx]->sub_menu == nullptr);
-	popup->m_parent = this;
-	m_vecItems[idx]->sub_menu = popup;
+	LTK_D(PopupMenu);
+	LTK_ASSERT(d->vecItems[idx]->sub_menu == nullptr);
+	popup->d_func()->parent = this;
+	d->vecItems[idx]->sub_menu = popup;
 }
 
 void PopupMenu::SetMenuBar(MenuBar *b)
 {
-	m_menuBar = b;
+	LTK_D(PopupMenu);
+	d->menuBar = b;
 }
 
 void PopupMenu::Show(Window* wnd, const RectF& rc)
 {
+	LTK_D(PopupMenu);
 	if (!wnd) {
 		return;
 	}
@@ -82,57 +105,60 @@ void PopupMenu::Show(Window* wnd, const RectF& rc)
 	root->AddChild(this);
 	this->SetRect(rc);
 	wnd->SetFocusSprite(this);
-	m_trackingIdx = -1;
+	d->trackingIdx = -1;
 	
-	m_state = sSlideIn;
-	m_aniProgress = 0.f;
-	m_lastTick = TickCount();
+	d->state = PopupMenuPrivate::sSlideIn;
+	d->aniProgress = 0.f;
+	d->lastTick = TickCount();
 	BeginAnimation();
 }
 
 void PopupMenu::Hide()
 {
-	m_state = sHide;
-	m_bHiding = true;
+	LTK_D(PopupMenu);
+	d->state = PopupMenuPrivate::sHide;
+	d->bHiding = true;
 	if (GetParent()) {
 		GetParent()->RemoveChild(this);
 		// Invalidate(); // because GetWindow() will return null, this does not work.
 	}
-	if (m_parent) {
-		m_parent->SetFocus();
+	if (d->parent) {
+		d->parent->SetFocus();
 	}
-	if (m_menuBar) {
-		m_menuBar->OnMenuHide();
+	if (d->menuBar) {
+		d->menuBar->OnMenuHide();
 	}
-	m_bHiding = false;
+	d->bHiding = false;
 }
 
 void PopupMenu::HideAll()
 {
-	m_state = sHide;
-	m_bHiding = true;
+	LTK_D(PopupMenu);
+	d->state = PopupMenuPrivate::sHide;
+	d->bHiding = true;
 	if (GetParent()) {
 		GetParent()->RemoveChild(this);
 		// Invalidate(); // because GetWindow() will return null, this does not work.
 	}
-	if (m_parent) {
-		m_parent->HideAll();
+	if (d->parent) {
+		d->parent->HideAll();
 	}
-	if (m_menuBar) {
-		m_menuBar->OnMenuHide();
+	if (d->menuBar) {
+		d->menuBar->OnMenuHide();
 	}
-	m_bHiding = false;
+	d->bHiding = false;
 }
 
 void PopupMenu::OnThemeChanged()
 {
+	LTK_D(PopupMenu);
 	auto sm = StyleManager::Instance();
-	m_format = sm->GetTextFormat(this->TextFormat);
-	m_textColor = sm->GetColor(this->TextColor);
-	m_hoverColor = sm->GetColor(this->HoverColor);
-	m_background = sm->GetBackground(this->Background);
+	d->format = sm->GetTextFormat(d->TextFormat);
+	d->textColor = sm->GetColor(d->TextColor);
+	d->hoverColor = sm->GetColor(d->HoverColor);
+	d->background = sm->GetBackground(d->Background);
 
-	for (auto item : m_vecItems) {
+	for (auto item : d->vecItems) {
 		if (item->sub_menu) {
 			item->sub_menu->OnThemeChanged();
 		}
@@ -141,50 +167,52 @@ void PopupMenu::OnThemeChanged()
 
 void PopupMenu::OnParentChanged(Sprite* old, Sprite* new_)
 {
-	m_hoverIdx = -1;
+	LTK_D(PopupMenu);
+	d->hoverIdx = -1;
 }
 
 bool PopupMenu::OnPaint(PaintEvent *ev)
 {
+	LTK_D(PopupMenu);
 	auto rcbg = this->GetClientRect();
 	rcbg.Inflate(7, 7);
 
 	float slide_h = 0.f;
-	if (m_state == sSlideIn) {
-		m_aniProgress += (TickCount() - m_lastTick) * AniDelta;
-		m_aniProgress = min(1.0f, m_aniProgress);
-		slide_h = -this->GetHeight() + this->GetHeight() * m_aniProgress;
+	if (d->state == PopupMenuPrivate::sSlideIn) {
+		d->aniProgress += (TickCount() - d->lastTick) * AniDelta;
+		d->aniProgress = min(1.0f, d->aniProgress);
+		slide_h = -this->GetHeight() + this->GetHeight() * d->aniProgress;
 		ev->target->PushAxisAlignedClip(ltk::D2D1RectF(rcbg),
 			D2D1_ANTIALIAS_MODE_ALIASED);
 		ltk::TranslateTransform(ev->target, 0.f, slide_h);
 	}
 
-	m_background->Draw(GetWindow(), ev->target,
+	d->background->Draw(GetWindow(), ev->target,
 		rcbg, 
 		AbstractBackground::Normal, 1.f);
 	float y = 0;
 	auto brush = GetWindow()->GetStockBrush();
-	if (m_hoverIdx >= 0) {
-		brush->SetColor(m_hoverColor);
-		ev->target->FillRectangle(ltk::D2D1RectF(RectF(0.f, m_hoverIdx * ITEM_HEIGHT,
+	if (d->hoverIdx >= 0) {
+		brush->SetColor(d->hoverColor);
+		ev->target->FillRectangle(ltk::D2D1RectF(RectF(0.f, d->hoverIdx * ITEM_HEIGHT,
 			this->GetWidth(), ITEM_HEIGHT)), brush);
 	}
-	brush->SetColor(m_textColor);
-	for (auto item : m_vecItems) {
-		ev->target->DrawText(item->text.c_str(), item->text.size(), m_format,
+	brush->SetColor(d->textColor);
+	for (auto item : d->vecItems) {
+		ev->target->DrawText(item->text.c_str(), item->text.size(), d->format,
 			D2D1::RectF(PADDING + ICON_WIDTH, y, this->GetWidth(), y + ITEM_HEIGHT),
 			brush);
 		y += ITEM_HEIGHT;
 	}
 
-	if (m_state == sSlideIn) {
+	if (d->state == PopupMenuPrivate::sSlideIn) {
 		ltk::TranslateTransform(ev->target, 0.f, -slide_h);
 		ev->target->PopAxisAlignedClip();
-		m_lastTick = TickCount();
-		//LTK_LOG("m_aniProgress: %.2f", m_aniProgress);
-		if (m_aniProgress >= 1.f) {
+		d->lastTick = TickCount();
+		//LTK_LOG("d->aniProgress: %.2f", d->aniProgress);
+		if (d->aniProgress >= 1.f) {
 			EndAnimation();
-			m_state = sShow;
+			d->state = PopupMenuPrivate::sShow;
 		}
 	}
 	return false;
@@ -192,13 +220,14 @@ bool PopupMenu::OnPaint(PaintEvent *ev)
 
 bool PopupMenu::OnKillFocus(FocusEvent* ev)
 {
+	LTK_D(PopupMenu);
 	Invalidate();
-	if (m_trackingIdx < 0 && !m_bHiding) {
+	if (d->trackingIdx < 0 && !d->bHiding) {
 		this->Hide();
-		auto menu = m_parent;
+		auto menu = d->parent;
 		while (menu) {
 			menu->Hide();
-			menu = menu->m_parent;
+			menu = menu->d_func()->parent;
 		}
 	}
 	return false;
@@ -206,24 +235,25 @@ bool PopupMenu::OnKillFocus(FocusEvent* ev)
 
 bool PopupMenu::OnLBtnDown(MouseEvent* ev)
 {
+	LTK_D(PopupMenu);
 	auto wnd = GetWindow();
 	wnd->DisableFocusChange();
 	int hit = (int)(ev->y / ITEM_HEIGHT);
-	if (hit < 0 || hit >= (int)m_vecItems.size()) {
+	if (hit < 0 || hit >= (int)d->vecItems.size()) {
 		return false;
 	}
-	if (hit == m_trackingIdx) {
+	if (hit == d->trackingIdx) {
 		return false;
 	}
-	auto item = m_vecItems[hit];
+	auto item = d->vecItems[hit];
 	if (!item->sub_menu) {
 		item->ClickedEvent.Invoke();
 	}
-	int tracking = m_trackingIdx;
+	int tracking = d->trackingIdx;
 	PopupMenu* menu = this;
 	while (tracking >= 0) {
-		menu = menu->m_vecItems[tracking]->sub_menu;
-		tracking = menu->m_trackingIdx;
+		menu = menu->d_func()->vecItems[tracking]->sub_menu;
+		tracking = menu->d_func()->trackingIdx;
 	}
 	menu->HideAll();
 	::InvalidateRect(wnd->Handle(), NULL, FALSE);
@@ -232,9 +262,10 @@ bool PopupMenu::OnLBtnDown(MouseEvent* ev)
 
 void PopupMenu::TrackPopupMenu(UINT idx)
 {
-	auto menu = m_vecItems[idx]->sub_menu;
+	LTK_D(PopupMenu);
+	auto menu = d->vecItems[idx]->sub_menu;
 	if (menu) {
-		m_trackingIdx = idx;
+		d->trackingIdx = idx;
 		auto arc = this->GetAbsRect();
 		menu->Show(GetWindow(), RectF(
 			arc.X + this->GetWidth(), arc.Y + idx * ITEM_HEIGHT,
@@ -245,27 +276,29 @@ void PopupMenu::TrackPopupMenu(UINT idx)
 
 bool PopupMenu::OnMouseMove(MouseEvent* ev)
 {
+	LTK_D(PopupMenu);
 	TrackMouseLeave();
 	int hover = (int)(ev->y / ITEM_HEIGHT);
-	if (hover != m_hoverIdx) {
-		m_hoverIdx = hover;
+	if (hover != d->hoverIdx) {
+		d->hoverIdx = hover;
 		Invalidate();
-		m_hoverTimer = ltk::SetOnceTimer(0, m_hoverTimer, [this, hover]() {
+		d->hoverTimer = ltk::SetOnceTimer(0, d->hoverTimer, [this, hover, d]() {
 			//LTK_LOG("hover %d", hover);
-			if (m_trackingIdx >= 0 && m_trackingIdx != hover) {
-				auto sub_menu = m_vecItems[m_trackingIdx]->sub_menu;
+			if (d->trackingIdx >= 0 && d->trackingIdx != hover) {
+				auto sub_menu = d->vecItems[d->trackingIdx]->sub_menu;
 				sub_menu->Hide();
-				m_trackingIdx = -1;
+				d->trackingIdx = -1;
 				this->TrackPopupMenu(hover);
 				this->Invalidate();
-			} else if (m_trackingIdx < 0){
+			}
+			else if (d->trackingIdx < 0){
 				this->TrackPopupMenu(hover);
 			}
-			m_hoverTimer = 0;
+			d->hoverTimer = 0;
 		});
-		if (m_parent) {
-			ltk::KillTimer(m_parent->m_hoverTimer);
-			m_parent->m_hoverTimer = 0;
+		if (d->parent) {
+			ltk::KillTimer(d->parent->d_func()->hoverTimer);
+			d->parent->d_func()->hoverTimer = 0;
 		}
 	}
 	return true;
@@ -273,7 +306,8 @@ bool PopupMenu::OnMouseMove(MouseEvent* ev)
 
 bool PopupMenu::OnMouseLeave(MouseEvent* ev)
 {
-	m_hoverIdx = -1;
+	LTK_D(PopupMenu);
+	d->hoverIdx = -1;
 	Invalidate();
 	return false;
 }
