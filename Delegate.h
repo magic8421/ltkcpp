@@ -6,10 +6,9 @@
 //////////////////////////////////////////////////////////////////////////
 
 #pragma once
+#include "Common.h"
 
 namespace ltk {
-
-typedef void* Cookie;
 
 template<typename T>
 struct DelegateNode

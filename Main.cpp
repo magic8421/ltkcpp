@@ -224,13 +224,6 @@ int CALLBACK WinMain(
 
     ltk::LtkInitialize();
 
-    //StyleManager::NewTheme("rect");
-    //SetupVectorStyle1();
-
-    //StyleManager::NewTheme("pixel");
-    ////StyleManager::Instance()->LoadFromXml("res\\style.xml");
-    //SetupPixelStyle1();
-
 	auto wnd = new Window;
     wnd->SetCaption(L"LTK²âÊÔ´°¿Ú");
 	//wnd->EnableShadow(false);
@@ -247,9 +240,9 @@ int CALLBACK WinMain(
 
 	ltk::RunMessageLoop();
 
-	auto ob = ToPtr(wnd);
+	//auto ob = ToPtr(wnd);
 	delete wnd;
-	LTK_ASSERT(ob.Get() == nullptr);
+	//LTK_ASSERT(ob.Get() == nullptr);
 
     LTK_LOG("MessageLoop END");
     ::Sleep(2000);

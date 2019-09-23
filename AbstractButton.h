@@ -7,7 +7,7 @@
 #pragma once
 #include "Sprite.h"
 #include "StyleManager.h"
-#include "Delegate.h"
+#include "Common.h"
 
 namespace ltk {
 

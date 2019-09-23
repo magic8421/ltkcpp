@@ -20,33 +20,23 @@ Object::Object()
 {
 	//LTK_ASSERT(false);
 	d_ptr = new ObjectPrivate;
-	m_obctrl = new ObserverCtrl(this);
 }
 
 Object::Object(ObjectPrivate *pp)
 {
 	d_ptr = pp;
-	m_obctrl = new ObserverCtrl(this);
 }
 
 Object::~Object() 
 {
-	m_obctrl->Set(nullptr);
-	m_obctrl->Release();
 	delete d_ptr;
-}
-
-
-void Object::SetInvalid()
-{
-	m_obctrl->Set(nullptr);
 }
 
 void Object::CheckThread()
 {
 	auto current = ::GetCurrentThreadId();
 	if (d_ptr->thread_id != current) {
-		LTK_LOG("Ltk API called in wrong thread. %d %d",
+		LTK_LOG("Ltk API was called in a non-gui thread: %d, %d",
 			d_ptr->thread_id, current);
 		LTK_ASSERT(false);
 	}

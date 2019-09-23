@@ -221,6 +221,9 @@
     <ClInclude Include="Label_p.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="BoxLayout_p.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />

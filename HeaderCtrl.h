@@ -7,6 +7,7 @@
 
 #pragma once
 
+#include "Delegate.h"
 #include "Button.h"
 
 namespace ltk {

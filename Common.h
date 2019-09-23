@@ -26,12 +26,12 @@ EXTERN_C IMAGE_DOS_HEADER __ImageBase;
 
 #define LTK_DECLARE_PRIVATE(Class)\
     inline Class##Private* d_func() {\
-        return (Class##Private*)(d_ptr);\
+        return reinterpret_cast<Class##Private*>(d_ptr);\
     }\
 	friend class Class##Private;
 
 #define LTK_DECLARE_PUBLIC(Class)\
-    inline Class* q_func() { return static_cast<Class *>(q_ptr); }\
+    inline Class* q_func() { return reinterpret_cast<Class *>(q_ptr); }\
     friend class Class;
 
 
@@ -54,6 +54,8 @@ void LTK_API LtkInitialize();
 void LTK_API LtkUninitialize();
 
 namespace ltk {
+
+typedef void* Cookie;
 
 void LTK_API RunMessageLoop();
 
