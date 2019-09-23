@@ -6,8 +6,8 @@
 
 #pragma once
 #include "Event.h"
-#include "Delegate.h"
 #include "Object.h"
+#include "Delegate/Delegate.h"
 
 namespace ltk {
 
@@ -86,8 +86,8 @@ public:
     virtual void OnThemeChanged() {}
 
 public:
-	Cookie AttachCloseDelegate(const std::function<void(bool &)> &cb);
-	void RemoveCloseDelegate(Cookie c);
+	Cookie AttachCloseDelegate(const Delegate1<bool&> &cb);
+	void RemoveCloseDelegate(const Delegate1<bool&> &cb);
 
 private:
 	LTK_DECLARE_PRIVATE(Window);

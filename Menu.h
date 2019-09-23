@@ -11,7 +11,7 @@ namespace ltk {
 
 class PopupMenuPrivate;
 
-class PopupMenu : public Sprite
+class LTK_API PopupMenu : public Sprite
 {
 public:
 	PopupMenu();
@@ -51,7 +51,7 @@ protected:
 
 class MenuBarPrivate;
 
-class MenuBar : public Sprite
+class LTK_API MenuBar : public Sprite
 {
 public:
 	MenuBar();

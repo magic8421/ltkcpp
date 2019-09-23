@@ -222,6 +222,11 @@ void BuildSplitterTest(Window *wnd)
 	spitter1->DoLayout();
 }
 
+static void OnDemoWindowClose(bool &)
+{
+	::PostQuitMessage(0);
+}
+
 int CALLBACK WinMain(
 	_In_ HINSTANCE hInstance,
 	_In_opt_ HINSTANCE hPrevInstance,
@@ -237,10 +242,11 @@ int CALLBACK WinMain(
 	//wnd->EnableShadow(false);
 	wnd->SetBackground("window_bg");
     wnd->Create(nullptr, SizeF(600, 500));
-	wnd->AttachCloseDelegate([](bool &proceed) {
-        //proceed = false;
-        ::PostQuitMessage(0);
-    });
+	wnd->AttachCloseDelegate(MakeDelegate(OnDemoWindowClose));
+	//wnd->AttachCloseDelegate([](bool &proceed) {
+ //       //proceed = false;
+ //       ::PostQuitMessage(0);
+ //   });
 
 	BuildDemoWindow(wnd);
 	//BuildSplitterTest(wnd);

@@ -677,7 +677,7 @@ bool Window::OnClose(bool &proceed)
 {
 	LTK_D(Window);
 	proceed = true;
-    d->CloseDelegate.Invoke(std::ref(proceed));
+    d->CloseDelegate(std::ref(proceed));
     return proceed;
 }
 
@@ -954,16 +954,17 @@ void Window::UpdateTheme()
 	}
 }
 
-Cookie Window::AttachCloseDelegate(const std::function<void(bool &)> &cb)
+Cookie Window::AttachCloseDelegate(const Delegate1<bool&> &cb)
 {
 	LTK_D(Window);
-	return d->CloseDelegate.Attach(cb);
+	d->CloseDelegate += cb;
+	return 0;
 }
 
-void Window::RemoveCloseDelegate(Cookie c)
+void Window::RemoveCloseDelegate(const Delegate1<bool&> &cb)
 {
 	LTK_D(Window);
-	d->CloseDelegate.Remove(c);
+	d->CloseDelegate -= cb;
 }
 
 void WindowPrivate::ShowShadowFrame(bool show)

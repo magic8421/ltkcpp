@@ -5,6 +5,8 @@
 
 namespace ltk {
 
+static __declspec(thread) RTTI * sDelegateInvoker = nullptr;
+
 ObjectPrivate::ObjectPrivate() : ObjectPrivate(nullptr)
 {
 }
@@ -45,6 +47,21 @@ void Object::CheckThread()
 void Object::MoveToThread(DWORD id)
 {
 	d_ptr->thread_id = id;
+}
+
+void Object::Delete()
+{
+	delete this;
+}
+
+void Object::SetDelegeteInvoker(RTTI *sender)
+{
+	sDelegateInvoker = sender;
+}
+
+RTTI * Object::GetDelegateInvoker()
+{
+	return sDelegateInvoker;
 }
 
 } // namespace ltk

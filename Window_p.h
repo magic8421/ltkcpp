@@ -4,6 +4,7 @@
 #include "WindowLayout.h"
 #include "ShadowFrame.h"
 #include "ImeInput.h"
+#include "Delegate/MulticastDelegate.h"
 
 namespace ltk {
 
@@ -47,7 +48,8 @@ public:
 	AbstractBackground *background = nullptr;
 	std::string styleName;
 
-	Delegate<void(bool &)> CloseDelegate;
+	//Delegate<void(bool &)> CloseDelegate;
+	MulticastDelegate1<bool &> CloseDelegate;
 
 	void HandleMouseMessage(UINT message, WPARAM wparam, LPARAM lparam);
 	void HandleMouseLeave();

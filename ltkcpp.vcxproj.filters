@@ -13,6 +13,15 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Delegate">
+      <UniqueIdentifier>{771a39a1-8839-4f1b-8371-7372e7a9f678}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Delegate\Header">
+      <UniqueIdentifier>{0aa24000-a974-4138-9412-9949c4f9d32d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Delegate\Source">
+      <UniqueIdentifier>{6db70b55-57c0-4c5e-9f92-13e0b7400754}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -101,6 +110,27 @@
     </ClCompile>
     <ClCompile Include="Menu.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Delegate\WorkerThreadWin.cpp">
+      <Filter>Delegate\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Delegate\Allocator.cpp">
+      <Filter>Delegate\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Delegate\LockGuard.cpp">
+      <Filter>Delegate\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Delegate\MulticastDelegateBase.cpp">
+      <Filter>Delegate\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Delegate\ThreadWin.cpp">
+      <Filter>Delegate\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Delegate\Fault.cpp">
+      <Filter>Delegate\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Delegate\Semaphore.cpp">
+      <Filter>Delegate\Source</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -226,6 +256,75 @@
     </ClInclude>
     <ClInclude Include="Menu_p.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Delegate\DelegateAsyncWait.h">
+      <Filter>Delegate</Filter>
+    </ClInclude>
+    <ClInclude Include="Delegate\DelegateInvoker.h">
+      <Filter>Delegate</Filter>
+    </ClInclude>
+    <ClInclude Include="Delegate\DelegateLib.h">
+      <Filter>Delegate</Filter>
+    </ClInclude>
+    <ClInclude Include="Delegate\DelegateMsg.h">
+      <Filter>Delegate</Filter>
+    </ClInclude>
+    <ClInclude Include="Delegate\DelegateOpt.h">
+      <Filter>Delegate</Filter>
+    </ClInclude>
+    <ClInclude Include="Delegate\DelegateSp.h">
+      <Filter>Delegate</Filter>
+    </ClInclude>
+    <ClInclude Include="Delegate\DelegateSpAsync.h">
+      <Filter>Delegate</Filter>
+    </ClInclude>
+    <ClInclude Include="Delegate\DelegateThread.h">
+      <Filter>Delegate</Filter>
+    </ClInclude>
+    <ClInclude Include="Delegate\Fault.h">
+      <Filter>Delegate</Filter>
+    </ClInclude>
+    <ClInclude Include="Delegate\LockGuard.h">
+      <Filter>Delegate</Filter>
+    </ClInclude>
+    <ClInclude Include="Delegate\MulticastDelegate.h">
+      <Filter>Delegate</Filter>
+    </ClInclude>
+    <ClInclude Include="Delegate\MulticastDelegateBase.h">
+      <Filter>Delegate</Filter>
+    </ClInclude>
+    <ClInclude Include="Delegate\MulticastDelegateSafe.h">
+      <Filter>Delegate</Filter>
+    </ClInclude>
+    <ClInclude Include="Delegate\Semaphore.h">
+      <Filter>Delegate</Filter>
+    </ClInclude>
+    <ClInclude Include="Delegate\SinglecastDelegate.h">
+      <Filter>Delegate</Filter>
+    </ClInclude>
+    <ClInclude Include="Delegate\ThreadMsg.h">
+      <Filter>Delegate</Filter>
+    </ClInclude>
+    <ClInclude Include="Delegate\ThreadWin.h">
+      <Filter>Delegate</Filter>
+    </ClInclude>
+    <ClInclude Include="Delegate\UserMsgs.h">
+      <Filter>Delegate</Filter>
+    </ClInclude>
+    <ClInclude Include="Delegate\WorkerThreadWin.h">
+      <Filter>Delegate</Filter>
+    </ClInclude>
+    <ClInclude Include="Delegate\Allocator.h">
+      <Filter>Delegate</Filter>
+    </ClInclude>
+    <ClInclude Include="Delegate\DataTypes.h">
+      <Filter>Delegate</Filter>
+    </ClInclude>
+    <ClInclude Include="Delegate\Delegate.h">
+      <Filter>Delegate</Filter>
+    </ClInclude>
+    <ClInclude Include="Delegate\DelegateAsync.h">
+      <Filter>Delegate</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -18,8 +18,10 @@ public:
 	void CheckThread();
 	void MoveToThread(DWORD id);
 
-	virtual void OnDeleted(Object *sender) {}
-	virtual void OnDeleted(UINT member_id) {}
+	void Delete();
+
+	static void SetDelegeteInvoker(RTTI *sender);
+	static RTTI *GetDelegateInvoker();
 
 private:
 	DISALLOW_COPY_AND_ASSIGN(Object);

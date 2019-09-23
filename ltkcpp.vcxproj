@@ -32,7 +32,7 @@
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v120</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
@@ -89,7 +89,6 @@
       <PreprocessorDefinitions>WIN32;LTK_EXPORTS;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <DisableSpecificWarnings>4100;4189</DisableSpecificWarnings>
-      <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -152,6 +151,34 @@
     <ClCompile Include="BoxLayout.cpp" />
     <ClCompile Include="Button.cpp" />
     <ClCompile Include="Common.cpp" />
+    <ClCompile Include="Delegate\Allocator.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="Delegate\Fault.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="Delegate\LockGuard.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="Delegate\MulticastDelegateBase.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="Delegate\Semaphore.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="Delegate\ThreadWin.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="Delegate\WorkerThreadWin.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="HeaderCtrl.cpp" />
     <ClCompile Include="ImageSprite.cpp" />
     <ClCompile Include="ImeInput.cpp" />
@@ -191,6 +218,29 @@
     <ClInclude Include="Common.h" />
     <ClInclude Include="Container.h" />
     <ClInclude Include="Delegate.h" />
+    <ClInclude Include="Delegate\Allocator.h" />
+    <ClInclude Include="Delegate\DataTypes.h" />
+    <ClInclude Include="Delegate\Delegate.h" />
+    <ClInclude Include="Delegate\DelegateAsync.h" />
+    <ClInclude Include="Delegate\DelegateAsyncWait.h" />
+    <ClInclude Include="Delegate\DelegateInvoker.h" />
+    <ClInclude Include="Delegate\DelegateLib.h" />
+    <ClInclude Include="Delegate\DelegateMsg.h" />
+    <ClInclude Include="Delegate\DelegateOpt.h" />
+    <ClInclude Include="Delegate\DelegateSp.h" />
+    <ClInclude Include="Delegate\DelegateSpAsync.h" />
+    <ClInclude Include="Delegate\DelegateThread.h" />
+    <ClInclude Include="Delegate\Fault.h" />
+    <ClInclude Include="Delegate\LockGuard.h" />
+    <ClInclude Include="Delegate\MulticastDelegate.h" />
+    <ClInclude Include="Delegate\MulticastDelegateBase.h" />
+    <ClInclude Include="Delegate\MulticastDelegateSafe.h" />
+    <ClInclude Include="Delegate\Semaphore.h" />
+    <ClInclude Include="Delegate\SinglecastDelegate.h" />
+    <ClInclude Include="Delegate\ThreadMsg.h" />
+    <ClInclude Include="Delegate\ThreadWin.h" />
+    <ClInclude Include="Delegate\UserMsgs.h" />
+    <ClInclude Include="Delegate\WorkerThreadWin.h" />
     <ClInclude Include="HeaderCtrl.h" />
     <ClInclude Include="ImageSprite.h" />
     <ClInclude Include="ImeInput.h" />

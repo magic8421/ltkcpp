@@ -281,7 +281,7 @@ bool PopupMenu::OnMouseMove(MouseEvent* ev)
 	if (hover != d->hoverIdx) {
 		d->hoverIdx = hover;
 		Invalidate();
-		d->hoverTimer = ltk::SetOnceTimer(0, d->hoverTimer, [this, hover, d]() {
+		//d->hoverTimer = ltk::SetOnceTimer(0, d->hoverTimer, [this, hover, d]() {
 			//LTK_LOG("hover %d", hover);
 			if (d->trackingIdx >= 0 && d->trackingIdx != hover) {
 				auto sub_menu = d->vecItems[d->trackingIdx]->sub_menu;
@@ -294,7 +294,7 @@ bool PopupMenu::OnMouseMove(MouseEvent* ev)
 				d->TrackPopupMenu(hover);
 			}
 			d->hoverTimer = 0;
-		});
+		//});
 		if (d->parent) {
 			ltk::KillTimer(d->parent->d_func()->hoverTimer);
 			d->parent->d_func()->hoverTimer = 0;
