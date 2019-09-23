@@ -1,5 +1,8 @@
 #pragma once
 #include "Sprite_p.h"
+#include "Delegate.h"
+#include "ImmutableString.h"
+#include "ltk.h"
 
 namespace ltk {
 
@@ -22,6 +25,8 @@ public:
 private:
 	DISALLOW_COPY_AND_ASSIGN(MenuItem)
 };
+
+class AbstractBackground;
 
 class PopupMenuPrivate : public SpritePrivate
 {
@@ -55,6 +60,34 @@ public:
 	ImmutableString HoverColor;
 	ImmutableString TextFormat;
 	ImmutableString Background;
+
+	void SetMenuBar(MenuBar*);
+	void Hide();
+	void HideAll();
+	void TrackPopupMenu(UINT idx);
+};
+
+class Button;
+
+struct MenuButtonParam {
+	Button *button = nullptr;
+	PopupMenu *sub_menu = nullptr;
+};
+
+class MenuBarPrivate : public SpritePrivate
+{
+public:
+	LTK_DECLARE_PUBLIC(MenuBar);
+
+	MenuBarPrivate(MenuBar *q) : SpritePrivate(q) {}
+	virtual ~MenuBarPrivate();
+
+	std::vector<MenuButtonParam> vecMenuItems;
+	int trackingIdx = -1;
+
+	void OnMenuHide();
+	void OnButtonMouseEvent(Button* btn, MouseEvent* ev, bool& bHandled);
+	void OnMenuBtnClicked(UINT idx);
 };
 
 

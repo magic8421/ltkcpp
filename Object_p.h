@@ -12,6 +12,9 @@ public:
 
 	DWORD thread_id = 0;
 	Object *q_ptr = nullptr;
+
+private:
+	DISALLOW_COPY_AND_ASSIGN(ObjectPrivate);
 };
 
 } // namespace ltk

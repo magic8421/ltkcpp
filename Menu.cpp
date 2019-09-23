@@ -89,10 +89,9 @@ void PopupMenu::SetSubMenu(UINT idx, PopupMenu *popup)
 	d->vecItems[idx]->sub_menu = popup;
 }
 
-void PopupMenu::SetMenuBar(MenuBar *b)
+void PopupMenuPrivate::SetMenuBar(MenuBar *b)
 {
-	LTK_D(PopupMenu);
-	d->menuBar = b;
+	this->menuBar = b;
 }
 
 void PopupMenu::Show(Window* wnd, const RectF& rc)
@@ -113,40 +112,40 @@ void PopupMenu::Show(Window* wnd, const RectF& rc)
 	BeginAnimation();
 }
 
-void PopupMenu::Hide()
+void PopupMenuPrivate::Hide()
 {
-	LTK_D(PopupMenu);
-	d->state = PopupMenuPrivate::sHide;
-	d->bHiding = true;
-	if (GetParent()) {
-		GetParent()->RemoveChild(this);
+	LTK_Q(PopupMenu);
+	this->state = PopupMenuPrivate::sHide;
+	this->bHiding = true;
+	if (q->GetParent()) {
+		q->GetParent()->RemoveChild(q);
 		// Invalidate(); // because GetWindow() will return null, this does not work.
 	}
-	if (d->parent) {
-		d->parent->SetFocus();
+	if (this->parent) {
+		this->parent->SetFocus();
 	}
-	if (d->menuBar) {
-		d->menuBar->OnMenuHide();
+	if (this->menuBar) {
+		this->menuBar->d_func()->OnMenuHide();
 	}
-	d->bHiding = false;
+	this->bHiding = false;
 }
 
-void PopupMenu::HideAll()
+void PopupMenuPrivate::HideAll()
 {
-	LTK_D(PopupMenu);
-	d->state = PopupMenuPrivate::sHide;
-	d->bHiding = true;
-	if (GetParent()) {
-		GetParent()->RemoveChild(this);
+	LTK_Q(PopupMenu);
+	this->state = PopupMenuPrivate::sHide;
+	this->bHiding = true;
+	if (q->GetParent()) {
+		q->GetParent()->RemoveChild(q);
 		// Invalidate(); // because GetWindow() will return null, this does not work.
 	}
-	if (d->parent) {
-		d->parent->HideAll();
+	if (this->parent) {
+		this->parent->d_func()->HideAll();
 	}
-	if (d->menuBar) {
-		d->menuBar->OnMenuHide();
+	if (this->menuBar) {
+		this->menuBar->d_func()->OnMenuHide();
 	}
-	d->bHiding = false;
+	this->bHiding = false;
 }
 
 void PopupMenu::OnThemeChanged()
@@ -223,10 +222,10 @@ bool PopupMenu::OnKillFocus(FocusEvent* ev)
 	LTK_D(PopupMenu);
 	Invalidate();
 	if (d->trackingIdx < 0 && !d->bHiding) {
-		this->Hide();
+		d->Hide();
 		auto menu = d->parent;
 		while (menu) {
-			menu->Hide();
+			menu->d_func()->Hide();
 			menu = menu->d_func()->parent;
 		}
 	}
@@ -255,22 +254,22 @@ bool PopupMenu::OnLBtnDown(MouseEvent* ev)
 		menu = menu->d_func()->vecItems[tracking]->sub_menu;
 		tracking = menu->d_func()->trackingIdx;
 	}
-	menu->HideAll();
+	menu->d_func()->HideAll();
 	::InvalidateRect(wnd->Handle(), NULL, FALSE);
 	return true;
 }
 
-void PopupMenu::TrackPopupMenu(UINT idx)
+void PopupMenuPrivate::TrackPopupMenu(UINT idx)
 {
-	LTK_D(PopupMenu);
-	auto menu = d->vecItems[idx]->sub_menu;
+	LTK_Q(PopupMenu);
+	auto menu = this->vecItems[idx]->sub_menu;
 	if (menu) {
-		d->trackingIdx = idx;
-		auto arc = this->GetAbsRect();
-		menu->Show(GetWindow(), RectF(
-			arc.X + this->GetWidth(), arc.Y + idx * ITEM_HEIGHT,
+		this->trackingIdx = idx;
+		auto arc = q->GetAbsRect();
+		menu->Show(q->GetWindow(), RectF(
+			arc.X + q->GetWidth(), arc.Y + idx * ITEM_HEIGHT,
 			menu->GetWidth(), menu->GetChildCount() * ITEM_HEIGHT));
-		Invalidate();
+		q->Invalidate();
 	}
 }
 
@@ -286,13 +285,13 @@ bool PopupMenu::OnMouseMove(MouseEvent* ev)
 			//LTK_LOG("hover %d", hover);
 			if (d->trackingIdx >= 0 && d->trackingIdx != hover) {
 				auto sub_menu = d->vecItems[d->trackingIdx]->sub_menu;
-				sub_menu->Hide();
+				sub_menu->d_func()->Hide();
 				d->trackingIdx = -1;
-				this->TrackPopupMenu(hover);
+				d->TrackPopupMenu(hover);
 				this->Invalidate();
 			}
 			else if (d->trackingIdx < 0){
-				this->TrackPopupMenu(hover);
+				d->TrackPopupMenu(hover);
 			}
 			d->hoverTimer = 0;
 		});
@@ -316,20 +315,28 @@ bool PopupMenu::OnMouseLeave(MouseEvent* ev)
 
 //////////////////////////////////////////////////////////////////////////
 
-MenuBar::MenuBar()
+MenuBar::MenuBar() : Sprite(new MenuBarPrivate(this))
+{
+}
+
+MenuBar::MenuBar(MenuBarPrivate *d) : Sprite(d)
 {
 }
 
 MenuBar::~MenuBar()
 {
-	for (auto &item : m_vecMenuItems) {
+}
+
+MenuBarPrivate::~MenuBarPrivate()
+{
+	for (auto &item : this->vecMenuItems) {
 		delete item.sub_menu;
 	}
 }
 
-
 void MenuBar::AddItem(LPCWSTR text)
 {
+	LTK_D(MenuBar);
 	Button *btn = new Button;
 	btn->SetText(text);
 	btn->SetBackground("menu_bar_btn_bg");
@@ -337,58 +344,61 @@ void MenuBar::AddItem(LPCWSTR text)
 	this->AddChild(btn);
 	MenuButtonParam param;
 	param.button = btn;
-	m_vecMenuItems.push_back(param);
-	UINT idx = m_vecMenuItems.size() - 1;
-	btn->AttachClickedDelegate([this, idx]() { // TODO  包btn比较好 插入删除不会错
-		this->OnMenuBtnClicked(idx);
+	d->vecMenuItems.push_back(param);
+	UINT idx = d->vecMenuItems.size() - 1;
+	btn->AttachClickedDelegate([d, idx]() { // TODO  包btn比较好 插入删除不会错
+		d->OnMenuBtnClicked(idx);
 	});
-	btn->AttachMouseEventDelegate([this, btn](MouseEvent *ev, bool &bHandled) {
-		this->OnButtonMouseEvent(btn, ev, bHandled);
+	btn->AttachMouseEventDelegate([d, btn](MouseEvent *ev, bool &bHandled) {
+		d->OnButtonMouseEvent(btn, ev, bHandled);
 	});
 }
 
 void MenuBar::SetPopupMenu(UINT idx, PopupMenu *menu)
 {
-	LTK_ASSERT(m_vecMenuItems[idx].sub_menu == nullptr);
+	LTK_D(MenuBar);
+	LTK_ASSERT(d->vecMenuItems[idx].sub_menu == nullptr);
 	menu->OnThemeChanged();
-	m_vecMenuItems[idx].sub_menu = menu;
-	menu->SetMenuBar(this);
+	d->vecMenuItems[idx].sub_menu = menu;
+	menu->d_func()->SetMenuBar(this);
 }
 
-void MenuBar::OnMenuBtnClicked(UINT idx)
+void MenuBarPrivate::OnMenuBtnClicked(UINT idx)
 {
-	LTK_ASSERT(idx < m_vecMenuItems.size());
-	auto menu = m_vecMenuItems[idx].sub_menu;
+	LTK_Q(MenuBar);
+	LTK_ASSERT(idx < this->vecMenuItems.size());
+	auto menu = this->vecMenuItems[idx].sub_menu;
 	if (!menu) {
 		return;
 	}
-	auto arc = m_vecMenuItems[idx].button->GetAbsRect();
+	auto arc = this->vecMenuItems[idx].button->GetAbsRect();
 
-	menu->Show(GetWindow(), RectF(arc.X, arc.Y + arc.Height,
-		m_vecMenuItems[idx].sub_menu->GetWidth(), menu->GetChildCount() * ITEM_HEIGHT));
-	m_trackingIdx = idx;
+	menu->Show(q->GetWindow(), RectF(arc.X, arc.Y + arc.Height,
+		this->vecMenuItems[idx].sub_menu->GetWidth(), menu->GetChildCount() * ITEM_HEIGHT));
+	this->trackingIdx = idx;
 }
 
-void MenuBar::OnButtonMouseEvent(Button* btn, MouseEvent* ev, bool& bHandled)
+void MenuBarPrivate::OnButtonMouseEvent(Button* btn, MouseEvent* ev, bool& bHandled)
 {
-	if (ev->id == eMouseMove && m_trackingIdx >= 0) {
+	if (ev->id == eMouseMove && this->trackingIdx >= 0) {
 		size_t idx = 0;
-		for (; idx < m_vecMenuItems.size(); idx++) {
-			if (m_vecMenuItems[idx].button == btn) {
+		for (; idx < this->vecMenuItems.size(); idx++) {
+			if (this->vecMenuItems[idx].button == btn) {
 				break;
 			}
 		}
-		if (m_trackingIdx != (int)idx) {
-			OnMenuBtnClicked(idx);
+		if (this->trackingIdx != (int)idx) {
+			this->OnMenuBtnClicked(idx);
 		}
 	}
 }
 
 void MenuBar::DoLayout()
 {
+	LTK_D(MenuBar);
 	float x = 0;
-	for (UINT i = 0; i < m_vecMenuItems.size(); i ++) {
-		auto param = m_vecMenuItems[i];
+	for (UINT i = 0; i < d->vecMenuItems.size(); i++) {
+		auto param = d->vecMenuItems[i];
 		SizeF size = param.button->GetPreferredSize();
 		RectF rc(x, 0.f, size.Width, this->GetHeight());
 		//LTK_LOG("menu_btn: %.1f,%.1f,%.1f,%.1f", rc.X, rc.Y, rc.Width, rc.Height);
@@ -397,9 +407,9 @@ void MenuBar::DoLayout()
 	}
 }
 
-void MenuBar::OnMenuHide()
+void MenuBarPrivate::OnMenuHide()
 {
-	m_trackingIdx = -1;
+	this->trackingIdx = -1;
 }
 
 bool MenuBar::OnSize(SizeEvent *ev)
@@ -410,7 +420,8 @@ bool MenuBar::OnSize(SizeEvent *ev)
 
 void MenuBar::OnThemeChanged()
 {
-	for (auto &item : m_vecMenuItems) {
+	LTK_D(MenuBar);
+	for (auto &item : d->vecMenuItems) {
 		if (item.sub_menu) {
 			item.sub_menu->OnThemeChanged();
 		}
