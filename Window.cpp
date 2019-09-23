@@ -14,7 +14,7 @@
 #include "ltk.h"
 #include "StyleManager.h"
 #include "WindowLayout.h"
-#include "MenuBar.h"
+#include "Menu.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW 

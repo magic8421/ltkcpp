@@ -93,13 +93,13 @@
     <ClCompile Include="AbstractButton.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="MenuBar.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Object.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Splitter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Menu.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -185,9 +185,6 @@
     <ClInclude Include="AbstractButton.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="MenuBar.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Splitter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -222,6 +219,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="BoxLayout_p.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Menu.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

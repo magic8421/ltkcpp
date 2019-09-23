@@ -7,7 +7,7 @@
 
 
 #include "stdafx.h"
-#include "MenuBar.h"
+#include "Menu.h"
 #include "Button.h"
 #include "Window.h"
 #include "TimerManager.h"

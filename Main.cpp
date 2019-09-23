@@ -16,7 +16,7 @@
 #include "SetupStyles.h"
 #include "BoxLayout.h"
 #include "HeaderCtrl.h"
-#include "MenuBar.h"
+#include "Menu.h"
 #include "Splitter.h"
 
 #ifdef _DEBUG

@@ -11,7 +11,7 @@
 #include "Window.h"
 #include "WindowLayout.h"
 #include "StyleManager.h"
-#include "MenuBar.h"
+#include "Menu.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW 
