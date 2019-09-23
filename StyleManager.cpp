@@ -489,11 +489,41 @@ void RectangleBackground::Draw(Window *wnd, ID2D1RenderTarget *targe, const Rect
     rc2.Y += 0.5f;
     rc2.Width -= 1.0f;
     rc2.Height -= 1.0f;
-    targe->FillRectangle(D2D1RectF(rc2), brush);
-    if (this->hasBorder) {
-        brush->SetColor(clrBorder);
-        targe->DrawRectangle(D2D1RectF(rc2), brush);
+
+	rc2.X += this->margin.left;
+	rc2.Y += this->margin.top;
+	rc2.Width -= this->margin.left + this->margin.right;
+	rc2.Height -= this->margin.top + this->margin.bottom;
+
+
+	if (this->roundCorner >= 0.f) {
+		D2D1_ROUNDED_RECT rrc;
+		rrc.radiusX = this->roundCorner;
+		rrc.radiusY = this->roundCorner;
+		rrc.rect = D2D1RectF(rc2);
+		targe->SetAntialiasMode(D2D1_ANTIALIAS_MODE_PER_PRIMITIVE);
+		targe->FillRoundedRectangle(&rrc, brush);
+		if (this->hasBorder) {
+			brush->SetColor(clrBorder);
+			targe->DrawRoundedRectangle(&rrc, brush);
+		}
+		targe->SetAntialiasMode(D2D1_ANTIALIAS_MODE_ALIASED);
+	}
+	else {
+		targe->FillRectangle(D2D1RectF(rc2), brush);
+		if (this->hasBorder) {
+			brush->SetColor(clrBorder);
+			targe->DrawRectangle(D2D1RectF(rc2), brush);
+		}
     }
+}
+
+void RectangleBackground::SetMargin(float left, float top, float right, float bottom)
+{
+	this->margin.left = left;
+	this->margin.top = top;
+	this->margin.right = right;
+	this->margin.bottom = bottom;
 }
 
 void FourStateColor::SetColor(LPCSTR normal, LPCSTR hover, LPCSTR pressed, LPCSTR disable)

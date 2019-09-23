@@ -334,7 +334,10 @@ namespace ltk {
         Window::RegisterWndClass();
 
 		StyleManager::NewTheme("rect");
-		SetupVectorStyle1();
+		SetupVectorStyleDark();
+
+		StyleManager::NewTheme("light");
+		SetupVectorStyleLight();
 
 		StyleManager::NewTheme("pixel");
 		SetupPixelStyle1();

@@ -8,4 +8,5 @@
 #pragma once
 
 void SetupPixelStyle1();
-void SetupVectorStyle1();
+void SetupVectorStyleDark();
+void SetupVectorStyleLight();

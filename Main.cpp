@@ -89,7 +89,7 @@ void BuildDemoWindow(Window *wnd)
 	vboxRightPanel->AddLayoutItem(hboxTimerTest, 30, 0.0f);
 
 	Button *btnRepeatTimer = new Button;
-	UINT cookie1 = 0;
+	static UINT cookie1 = 0;
 	btnRepeatTimer->SetText(L"循环定时器");
 	btnRepeatTimer->AttachClickedDelegate([&]() {
 		cookie1 = ltk::SetTimer(1000, cookie1, [&]() {
@@ -109,7 +109,7 @@ void BuildDemoWindow(Window *wnd)
 	hboxTimerTest->AddLayoutItem(btnStopRepeatTimer, 0, 1);
 
 	Button *btnOnceTimer = new Button;
-	UINT cookie2 = 0;
+	static UINT cookie2 = 0;
 	btnOnceTimer->SetText(L"单次定时器");
 	btnOnceTimer->AttachClickedDelegate([&]() {
 		cookie2 = ltk::SetOnceTimer(1000, cookie2, [&]() {
@@ -142,9 +142,17 @@ void BuildDemoWindow(Window *wnd)
 
 	Button *btnRectTheme = new Button;
 	hboxTheme->AddLayoutItem(btnRectTheme, 100);
-	btnRectTheme->SetText(L"纯色1");
+	btnRectTheme->SetText(L"暗色");
 	btnRectTheme->AttachClickedDelegate([wnd]() {
 		StyleManager::SetCurrentTheme("rect");
+		wnd->UpdateTheme();
+	});
+
+	Button *btnRectThemeLight = new Button;
+	hboxTheme->AddLayoutItem(btnRectThemeLight, 100);
+	btnRectThemeLight->SetText(L"亮色");
+	btnRectThemeLight->AttachClickedDelegate([wnd]() {
+		StyleManager::SetCurrentTheme("light");
 		wnd->UpdateTheme();
 	});
 

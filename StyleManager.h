@@ -137,13 +137,14 @@ public:
 
     FourStateColor &BorderColor() { return borderColors; }
     FourStateColor &InnerColor() { return innerColors; }
+	void SetMargin(float left, float top, float right, float bottom);
 
-private:
     FourStateColor borderColors;
     FourStateColor innerColors;
     // TODO add Gradient
     bool hasBorder = true;
     float roundCorner = -1.0f;
+	Margin margin;
 };
 
 struct WindowStyle
