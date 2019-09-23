@@ -51,6 +51,10 @@ Window::Window() : Object(new WindowPrivate(this))
 {
 }
 
+Window::Window(WindowPrivate *q) : Object(q)
+{
+}
+
 Window::~Window(void)
 {
 	LTK_D(Window);

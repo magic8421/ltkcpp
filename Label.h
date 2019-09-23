@@ -12,25 +12,29 @@
 
 namespace ltk {
 
+class LabelPrivate;
+
 class Label : public Sprite
 {
 public:
     Label();
     virtual ~Label();
-    virtual bool OnPaint(PaintEvent *ev) override;
-    virtual void OnThemeChanged() override;
-
 
     LPCWSTR GetText();
     void SetText(LPCWSTR text);
-    
-	ImmutableString TextFormat;
-	ImmutableString TextColor;
 
+	void SetTextFormat(LPCSTR name);
+	void SetTextColor(LPCSTR name);
+
+protected:
+	virtual bool OnPaint(PaintEvent *ev) override;
+	virtual void OnThemeChanged() override;
+    
 private:
-	std::wstring m_text;
-	IDWriteTextFormat *m_textFormat = nullptr;
-	D2D1_COLOR_F m_color;
+	LTK_DECLARE_PRIVATE(Label);
+
+protected:
+	Label(LabelPrivate *q);
 };
 
 } // namespace ltk

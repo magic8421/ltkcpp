@@ -138,6 +138,8 @@ public:
 	void CheckThread();
 	void MoveToThread(DWORD id);
 
+	virtual void OnDeleted(Object *sender) {}
+
 private:
 	ObserverCtrl *m_obctrl = nullptr;
 	DISALLOW_COPY_AND_ASSIGN(Object);

@@ -7,6 +7,7 @@
 
 #include "stdafx.h"
 #include "Label.h"
+#include "Label_p.h"
 #include "ltk.h"
 #include "StyleManager.h"
 #include "Window.h"
@@ -17,45 +18,65 @@
 
 namespace ltk {
 
-Label::Label() :
-	TextColor("default_label_clr"),
-	TextFormat("default_label_fmt")
+Label::Label() : Sprite(new LabelPrivate(this))
 {}
 
 Label::~Label()
 {
 }
 
+LabelPrivate::LabelPrivate(Label *q) : SpritePrivate(q) ,
+	TextColor("default_label_clr"),
+	TextFormat("default_label_fmt")
+{
+}
+
 bool Label::OnPaint(PaintEvent *ev)
 {
-    if (m_text.length() == 0) {
+	LTK_D(Label);
+    if (d->text.length() == 0) {
         return true;
     }
     RectF rc = this->GetClientRect();
 
     auto brush = this->GetWindow()->GetStockBrush();
-    brush->SetColor(m_color);
-    ev->target->DrawText(m_text.c_str(), (UINT32)m_text.length(), m_textFormat,
+	brush->SetColor(d->color);
+	ev->target->DrawText(d->text.c_str(), (UINT32)d->text.length(), d->textFormat,
         ltk::D2D1RectF(rc), brush);
     return true;
 }
 
 LPCWSTR Label::GetText()
 {
-    return m_text.c_str();
+	LTK_D(Label);
+	return d->text.c_str();
 }
 
 void Label::SetText(LPCWSTR t)
 {
-    m_text = t;
+	LTK_D(Label);
+	d->text = t;
     this->Invalidate();
+}
+
+void Label::SetTextFormat(LPCSTR name)
+{
+	LTK_D(Label);
+	d->TextFormat = name;
+}
+
+void Label::SetTextColor(LPCSTR name)
+{
+	LTK_D(Label);
+	d->TextColor = name;
 }
 
 void Label::OnThemeChanged()
 {
+	LTK_D(Label);
 	auto sm = StyleManager::Instance();
-    m_textFormat = sm->GetTextFormat(TextFormat);
-	m_color = sm->GetColor(TextColor);
+	d->textFormat = sm->GetTextFormat(d->TextFormat);
+	d->color = sm->GetColor(d->TextColor);
 }
 
 } // namespace ltk

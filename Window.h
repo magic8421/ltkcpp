@@ -91,6 +91,9 @@ public:
 
 private:
 	LTK_DECLARE_PRIVATE(Window);
+
+protected:
+	Window(WindowPrivate *q);
 };
 
 } // namespace ltk

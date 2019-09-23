@@ -32,8 +32,8 @@ WindowLayout::WindowLayout()
 	m_closeBtn->SetBackground("close_btn_bg");
     this->AddChild(m_closeBtn);
     m_caption = new Label;
-	m_caption->TextFormat = "caption_fmt";
-	m_caption->TextColor = "caption_clr";
+	m_caption->SetTextFormat("caption_fmt");
+	m_caption->SetTextColor("caption_clr");
     this->AddChild(m_caption);
 }
 
