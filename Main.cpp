@@ -18,6 +18,7 @@
 #include "HeaderCtrl.h"
 #include "Menu.h"
 #include "Splitter.h"
+#include "Main.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW 
@@ -26,6 +27,11 @@
 using namespace ltk;
 
 static int node_count = 0;
+
+static void OnDemoWindowClose(bool &)
+{
+	::PostQuitMessage(0);
+}
 
 static void RecBuildNodes(TreeNode *parent, int depth)
 {
@@ -45,8 +51,22 @@ static void RecBuildNodes(TreeNode *parent, int depth)
     }
 }
 
-void BuildDemoWindow(Window *wnd)
+DemoWindow::DemoWindow()
 {
+	this->SetCaption(L"LTK²âÊÔ´°¿Ú");
+	//wnd->EnableShadow(false);
+	this->SetBackground("window_bg");
+	this->AttachCloseDelegate(MakeDelegate(OnDemoWindowClose));
+}
+
+void DemoWindow::Create()
+{
+	Window::Create(nullptr, SizeF(600, 500));
+}
+
+void DemoWindow::BuildDemoWindow()
+{
+	Window *wnd = this;
 	BoxLayout *hbox = new BoxLayout(BoxLayout::Horizontal);
 	wnd->SetClientSprite(hbox);
 
@@ -222,10 +242,6 @@ void BuildSplitterTest(Window *wnd)
 	spitter1->DoLayout();
 }
 
-static void OnDemoWindowClose(bool &)
-{
-	::PostQuitMessage(0);
-}
 
 int CALLBACK WinMain(
 	_In_ HINSTANCE hInstance,
@@ -237,18 +253,9 @@ int CALLBACK WinMain(
 
     ltk::LtkInitialize();
 
-	auto wnd = new Window;
-    wnd->SetCaption(L"LTK²âÊÔ´°¿Ú");
-	//wnd->EnableShadow(false);
-	wnd->SetBackground("window_bg");
-    wnd->Create(nullptr, SizeF(600, 500));
-	wnd->AttachCloseDelegate(MakeDelegate(OnDemoWindowClose));
-	//wnd->AttachCloseDelegate([](bool &proceed) {
- //       //proceed = false;
- //       ::PostQuitMessage(0);
- //   });
-
-	BuildDemoWindow(wnd);
+	auto wnd = new DemoWindow;
+	wnd->BuildDemoWindow();
+	wnd->Create();
 	//BuildSplitterTest(wnd);
 	wnd->UpdateTheme();
 
