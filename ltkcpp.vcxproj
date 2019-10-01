@@ -255,6 +255,7 @@
     <ClInclude Include="Object.h" />
     <ClInclude Include="Object_p.h" />
     <ClInclude Include="RTTI.h" />
+    <ClInclude Include="Animation_p.h" />
     <ClInclude Include="ScrollBar.h" />
     <ClInclude Include="ScrollBar_p.h" />
     <ClInclude Include="SetupStyles.h" />

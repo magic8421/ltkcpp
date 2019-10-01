@@ -2,11 +2,11 @@
 // Author:    Sara Chen
 // Email:     6659907@163.com
 // QQ:        314266265
-// License:   MIT license
 //////////////////////////////////////////////////////////////////////////
 
 #include "stdafx.h"
 #include "Animation.h"
+#include "Animation_p.h"
 #include "TimerManager.h"
 #include "ltk.h"
 
@@ -17,105 +17,138 @@
 namespace ltk
 {
 
-ScrollAnimation::ScrollAnimation()
+const float ItemHeight = 35.0f;
+const float ScrollVelocity = ItemHeight * 3 / 500.0f;
+
+ScrollAnimation::ScrollAnimation() : Object(new ScrollAnimationPrivate(this))
 {
-	m_timer = new Timer;
-	m_timer->SetInterval(350);
-	m_timer->AttatchTimeoutDelegate(MakeDelegate(this, &ScrollAnimation::OnNoInputTimer));
 }
+
+ScrollAnimation::ScrollAnimation(ScrollAnimationPrivate *d) : Object(d)
+{
+}
+
+ScrollAnimationPrivate::ScrollAnimationPrivate(ScrollAnimation *q) 
+	: ObjectPrivate(q)
+{
+	auto d = this;
+	d->timer = new Timer;
+	d->timer->SetInterval(350);
+	d->timer->AttatchTimeoutDelegate(MakeDelegate(d, &ScrollAnimationPrivate::OnNoInputTimer));
+}
+
+ScrollAnimationPrivate::~ScrollAnimationPrivate()
+{
+	auto d = this;
+	delete d->timer;
+}
+
 
 ScrollAnimation::~ScrollAnimation()
 {
-	delete m_timer;
 }
 
-void ScrollAnimation::OnNoInputTimer()
+void ScrollAnimationPrivate::OnNoInputTimer()
 {
 	LTK_LOG("OnNoInputTimer");
-	m_bInput = false;
-	m_timerId = 0;
+	this->bInput = false;
 }
 
 void ScrollAnimation::BeginScroll(float delta)
 {
-	m_bInput = true;
-	m_timer->StartOnce();
-	//m_timerId = ltk::SetOnceTimer(350, m_timerId, [this]() {
-	//	m_bInput = false;
-	//	m_timerId = 0;
-	//});
+	LTK_D(ScrollAnimation);
+	d->bInput = true;
+	d->timer->StartOnce();
     State new_state = stStop;
     if (delta > 0.0f) {
         new_state = stScrollUp;
     } else {
         new_state = stScrollDown;
     }
-    m_velocity += ScrollVelocity;
-    if (m_velocity > ScrollVelocity * 6) {
-        m_velocity = ScrollVelocity * 6;
+	d->velocity += ScrollVelocity;
+	if (d->velocity > ScrollVelocity * 6) {
+		d->velocity = ScrollVelocity * 6;
     }
-    if (m_state != stStop && new_state != m_state) {
-        m_velocity = 0.0f;
+	if (d->state != stStop && new_state != d->state) {
+		d->velocity = 0.0f;
     }
-    m_state = new_state;
-    m_lastTick = ltk::TickCount();
+	d->state = new_state;
+	d->lastTick = ltk::TickCount();
 }
 
 void ScrollAnimation::Stop()
 {
-    m_velocity = 0.0f;
-    m_state = stStop;
+	LTK_D(ScrollAnimation);
+	d->velocity = 0.0f;
+	d->state = stStop;
 }
 
 bool ScrollAnimation::UpdateScroll(float height)
 {
-    if (height < 0.0f) {
+	LTK_D(ScrollAnimation);
+	if (height < 0.0f) {
         return false;
     }
     DWORD now = ltk::TickCount();
-    if (m_state == stScrollUp) {
-        m_scroll -= m_velocity * (now - m_lastTick);
-    } else if (m_state == stScrollDown) {
-        m_scroll += m_velocity * (now - m_lastTick);
-    }
-	if (m_bInput) {
-		m_velocity -= ScrollVelocity / 500.0f * (now - m_lastTick);
-	} else {
-		if (m_velocity > ScrollVelocity * 3) {
-			m_velocity = ScrollVelocity * 3;
-		}
-		m_velocity -= ScrollVelocity / 100.0f * (now - m_lastTick);
+	if (d->state == stScrollUp) {
+		d->scroll -= d->velocity * (now - d->lastTick);
 	}
-    m_lastTick = now;
-    if (m_scroll < 0.0f) {
-        m_scroll = 0.0f;
-        m_velocity = 0.0f;
-        m_state = stStop;
+	else if (d->state == stScrollDown) {
+		d->scroll += d->velocity * (now - d->lastTick);
+    }
+	if (d->bInput) {
+		d->velocity -= ScrollVelocity / 500.0f * (now - d->lastTick);
+	} else {
+		if (d->velocity > ScrollVelocity * 3) {
+			d->velocity = ScrollVelocity * 3;
+		}
+		d->velocity -= ScrollVelocity / 100.0f * (now - d->lastTick);
+	}
+	d->lastTick = now;
+	if (d->scroll < 0.0f) {
+		d->scroll = 0.0f;
+		d->velocity = 0.0f;
+		d->state = stStop;
         return true;
-    } else if (m_scroll > height) {
-        m_scroll = height;// this->GetTotalHeight() - rcSprite.Height;
-		m_velocity = 0.0f;
-		m_state = stStop;
+	}
+	else if (d->scroll > height) {
+		d->scroll = height;// this->GetTotalHeight() - rcSprite.Height;
+		d->velocity = 0.0f;
+		d->state = stStop;
         return true;
     }
-    if (m_velocity < 0.0f) {
-        m_velocity = 0.0f;
-        m_state = stStop;
+	if (d->velocity < 0.0f) {
+		d->velocity = 0.0f;
+		d->state = stStop;
         return true;
     }
     return false;
 }
 
+float ScrollAnimation::GetScroll()
+{
+	LTK_D(ScrollAnimation);
+	return d->scroll;
+}
+
 void ScrollAnimation::SetScroll(float pos)
 {
-    m_state = stStop;
-    m_velocity = 0.0f;
-    m_scroll = pos;
+	LTK_D(ScrollAnimation);
+	d->state = stStop;
+	d->velocity = 0.0f;
+	d->scroll = pos;
 }
 
 bool ScrollAnimation::IsRunning()
 {
-    return m_state != stStop;
+	LTK_D(ScrollAnimation);
+	return d->state != stStop;
+}
+
+ltk::ScrollAnimation::State ScrollAnimation::GetState()
+{
+	LTK_D(ScrollAnimation);
+	return d->state;
 }
 
 } // namespace ltk

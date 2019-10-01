@@ -23,6 +23,19 @@ const float ScrollBar::SLIDER_MIN = 10.0f;
 ScrollBar::ScrollBar(Mode mode) : Sprite(new ScrollBarPrivate(this, mode))
 {
 	LTK_D(ScrollBar);
+	d->Init();
+}
+
+ScrollBar::ScrollBar(ScrollBarPrivate *d) : Sprite(d)
+{
+	d->Init();
+}
+
+
+void ScrollBarPrivate::Init()
+{
+	LTK_Q(ScrollBar);
+	auto d = this;
 	d->slider = new Button;
 	d->slider->EnableCapture(false);
 	d->slider->AttachMouseEventDelegate(MakeDelegate(
@@ -34,13 +47,8 @@ ScrollBar::ScrollBar(Mode mode) : Sprite(new ScrollBarPrivate(this, mode))
 	else {
 		d->slider->SetBackground("scrollbar_v");
 	}
-	AddChild(d->slider);
+	q->AddChild(d->slider);
 }
-
-ScrollBar::ScrollBar(ScrollBarPrivate *d) : Sprite(d)
-{
-}
-
 
 ScrollBarPrivate::ScrollBarPrivate(ScrollBar *q, ScrollBar::Mode m) : 
 	SpritePrivate(q),

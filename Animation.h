@@ -2,30 +2,23 @@
 // Author:    Sara Chen
 // Email:     6659907@163.com
 // QQ:        314266265
-// License:   MIT license
 //////////////////////////////////////////////////////////////////////////
 
 #pragma once
+#include "Object.h"
 
 namespace ltk {
 
-class AbstractAnimation
-{
-public:
-    virtual ~AbstractAnimation() {}
-    virtual bool IsRunning() = 0;
-};
-
 class Timer;
+class ScrollAnimationPrivate;
 
-class ScrollAnimation : public AbstractAnimation
+class ScrollAnimation : public Object
 {
 public:
     ScrollAnimation();
     ~ScrollAnimation();
 
-    enum State
-    {
+    enum State {
         stStop, stScrollUp, stScrollDown
     };
 
@@ -34,27 +27,18 @@ public:
     // return true if you have to call EndAnimation();
     bool UpdateScroll(float height);
     //
-    float GetScroll() { return m_scroll; }
+    float GetScroll();
     void SetScroll(float pos);
-    State GetState() { return m_state; }
+    State GetState();
 
-    virtual bool IsRunning() override;
+    bool IsRunning();
 
-	void OnNoInputTimer();
+
+protected:
+	ScrollAnimation(ScrollAnimationPrivate *d);
 
 private:
-    float m_scroll = 0.0f;
-    float m_velocity = 0.0f;
-    DWORD m_lastTick = 0;
-    State m_state = stStop;
-
-    const float ItemHeight = 35.0f;
-    const float ScrollVelocity = ItemHeight * 3 / 500.0f;
-
-	UINT m_timerId = 0;
-	bool m_bInput = false;
-
-	Timer *m_timer = nullptr;
+	LTK_DECLARE_PRIVATE(ScrollAnimation);
 };
 
 } // namespace ltk
