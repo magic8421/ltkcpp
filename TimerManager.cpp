@@ -6,14 +6,89 @@
 //////////////////////////////////////////////////////////////////////////
 
 #include "stdafx.h"
-#include "TimerManager.h"
 #include "Common.h"
+#include "TimerManager.h"
+#include "TimerManager_p.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW 
 #endif
 
 namespace ltk {
+
+Timer::Timer() : Object(new TimerPrivate(this))
+{
+}
+
+Timer::Timer(TimerPrivate *d) : Object(d)
+{
+}
+
+void Timer::SetInterval(UINT ms)
+{
+	LTK_D(Timer);
+	d->elapse = ms;
+}
+
+void Timer::Start()
+{
+	LTK_D(Timer);
+	d->bOnce = false;
+	TimerManager::Instance()->SetTimer(this);
+}
+
+void Timer::StartOnce()
+{
+	LTK_D(Timer);
+	d->bOnce = true;
+	TimerManager::Instance()->SetTimer(this);
+}
+
+void Timer::Stop()
+{
+	TimerManager::Instance()->KillTimer(this);
+}
+
+void Timer::Reset()
+{
+	TimerManager::Instance()->SetTimer(this);
+}
+
+UINT Timer::GetId()
+{
+	LTK_D(Timer);
+	return d->id;
+}
+
+void Timer::AttatchTimeoutDelegate(const Delegate0<> &cb)
+{
+	LTK_D(Timer);
+	d->delegateTrigerred += cb;
+}
+
+void Timer::RemoveTimeoutDelegate(const Delegate0<> &cb)
+{
+	LTK_D(Timer);
+	d->delegateTrigerred -= cb;
+}
+
+TimerPrivate::TimerPrivate(Timer *q) : ObjectPrivate(q)
+{
+}
+
+TimerPrivate::~TimerPrivate()
+{
+	TimerManager::Instance()->KillTimer(q_func());
+}
+
+
+void TimerPrivate::Triger()
+{
+	Object::SetDelegeteInvoker(q_func());
+	this->delegateTrigerred();
+}
+
+//////////////////////////////////////////////////////////////////////////
 
 TimerManager *TimerManager::m_instance = nullptr;
 
@@ -79,9 +154,13 @@ void TimerManager::OnTimer(UINT id)
     auto iter = m_mapCallback.find(id);
     if (iter != m_mapCallback.end()) {
         TimerNode *node = iter->second;
-        node->callback();
+        //node->callback();
+		TimerPrivate *d = node->timer->d_func();
+		LTK_ASSERT(d->id == id);
+		d->Triger();
         if (node->isOnceTimer) {
-            ::KillTimer(m_hwnd, iter->first);
+			d->id = 0;
+            ::KillTimer(m_hwnd, id);
             delete node;
             m_mapCallback.erase(iter);
         }
@@ -90,8 +169,13 @@ void TimerManager::OnTimer(UINT id)
     }
 }
 
-UINT TimerManager::SetTimer(UINT id, const std::function<void()>&cb, UINT elapse, bool bOnce)
+//UINT TimerManager::SetTimer(UINT id, const std::function<void()>&cb, UINT elapse, bool bOnce)
+UINT TimerManager::SetTimer(Timer *timer)
 {
+	UINT id = timer->d_func()->id;
+	bool bOnce = timer->d_func()->bOnce;
+	UINT elapse = timer->d_func()->elapse;
+
     if (id == 0) {
         auto iter = m_mapCallback.end();
         do {
@@ -99,15 +183,18 @@ UINT TimerManager::SetTimer(UINT id, const std::function<void()>&cb, UINT elapse
             iter = m_mapCallback.find(id);
         } while (iter != m_mapCallback.end());
         auto node = new TimerNode;
-        node->callback = cb;
+		node->timer = timer;
+        //node->callback = cb;
         node->isOnceTimer = bOnce;
         m_mapCallback[id] = node;
         ::SetTimer(m_hwnd, id, elapse, NULL);
+		timer->d_func()->id = id;
     } else {
         auto iter = m_mapCallback.find(id);
         if (iter != m_mapCallback.end()) {
             iter->second->isOnceTimer = bOnce;
-			iter->second->callback = cb;
+			iter->second->timer = timer;
+			//iter->second->callback = cb;
             ::SetTimer(m_hwnd, id, elapse, NULL); // refresh the timer.
         } else {
             LTK_ASSERT(false);
@@ -116,8 +203,10 @@ UINT TimerManager::SetTimer(UINT id, const std::function<void()>&cb, UINT elapse
     return id;
 }
 
-void TimerManager::KillTimer(UINT id)
+void TimerManager::KillTimer(Timer *timer)
 {
+	UINT id = timer->d_func()->id;
+
 	if (id == 0) {
 		return; // TODO [0] cannot be searched by stl hash table?
 	}
@@ -127,21 +216,6 @@ void TimerManager::KillTimer(UINT id)
         ::KillTimer(m_hwnd, id);
         m_mapCallback.erase(iter);
     }
-}
-
-UINT SetTimer(UINT elapse, UINT id, const std::function<void()>&cb)
-{
-    return TimerManager::Instance()->SetTimer(id, cb, elapse, false);
-}
-
-UINT SetOnceTimer(UINT elapse, UINT id, const std::function<void()>&cb)
-{
-    return TimerManager::Instance()->SetTimer(id, cb, elapse, true);
-}
-
-void KillTimer(UINT id)
-{
-    TimerManager::Instance()->KillTimer(id);
 }
 
 } // namespace ltk

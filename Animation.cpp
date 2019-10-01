@@ -17,13 +17,33 @@
 namespace ltk
 {
 
+ScrollAnimation::ScrollAnimation()
+{
+	m_timer = new Timer;
+	m_timer->SetInterval(350);
+	m_timer->AttatchTimeoutDelegate(MakeDelegate(this, &ScrollAnimation::OnNoInputTimer));
+}
+
+ScrollAnimation::~ScrollAnimation()
+{
+	delete m_timer;
+}
+
+void ScrollAnimation::OnNoInputTimer()
+{
+	LTK_LOG("OnNoInputTimer");
+	m_bInput = false;
+	m_timerId = 0;
+}
+
 void ScrollAnimation::BeginScroll(float delta)
 {
 	m_bInput = true;
-	m_timerId = ltk::SetOnceTimer(350, m_timerId, [this]() {
-		m_bInput = false;
-		m_timerId = 0;
-	});
+	m_timer->StartOnce();
+	//m_timerId = ltk::SetOnceTimer(350, m_timerId, [this]() {
+	//	m_bInput = false;
+	//	m_timerId = 0;
+	//});
     State new_state = stStop;
     if (delta > 0.0f) {
         new_state = stScrollUp;

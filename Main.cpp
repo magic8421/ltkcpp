@@ -57,6 +57,18 @@ DemoWindow::DemoWindow()
 	//wnd->EnableShadow(false);
 	this->SetBackground("window_bg");
 	this->AttachCloseDelegate(MakeDelegate(OnDemoWindowClose));
+
+	m_timer = new Timer;
+	m_timer->SetInterval(1000);
+
+	m_onceTimer = new Timer;
+	m_onceTimer->SetInterval(1000);
+}
+
+DemoWindow::~DemoWindow()
+{
+	delete m_timer;
+	delete m_onceTimer;
 }
 
 void DemoWindow::Create()
@@ -109,43 +121,30 @@ void DemoWindow::BuildDemoWindow()
 	vboxRightPanel->AddLayoutItem(hboxTimerTest, 30, 0.0f);
 
 	Button *btnRepeatTimer = new Button;
-	static UINT cookie1 = 0;
 	btnRepeatTimer->SetText(L"循环定时器");
 	btnRepeatTimer->AttachClickedDelegate([&]() {
-		cookie1 = ltk::SetTimer(1000, cookie1, [&]() {
-			LTK_LOG("tick: %d", cookie1);
-		});
-		//wnd->CloseWindow(); // WTF, with [&] you can capture unique_ptr
-		//::PostQuitMessage(0);
+		m_timer->Start();
 	});
 	hboxTimerTest->AddLayoutItem(btnRepeatTimer, 0, 1);
 
 	Button *btnStopRepeatTimer = new Button;
 	btnStopRepeatTimer->SetText(L"停止");
 	btnStopRepeatTimer->AttachClickedDelegate([&]() {
-		ltk::KillTimer(cookie1);
-		cookie1 = 0;
+		m_timer->Stop();
 	});
 	hboxTimerTest->AddLayoutItem(btnStopRepeatTimer, 0, 1);
 
 	Button *btnOnceTimer = new Button;
-	static UINT cookie2 = 0;
 	btnOnceTimer->SetText(L"单次定时器");
 	btnOnceTimer->AttachClickedDelegate([&]() {
-		cookie2 = ltk::SetOnceTimer(1000, cookie2, [&]() {
-			LTK_LOG("tick: %d", cookie2);
-			cookie2 = 0;
-		});
-		//wnd->CloseWindow(); // WTF, with [&] you can capture unique_ptr
-		//::PostQuitMessage(0);
+		m_onceTimer->StartOnce();
 	});
 	hboxTimerTest->AddLayoutItem(btnOnceTimer, 0, 1);
 
 	Button *btnStopOnceTimer = new Button;
 	btnStopOnceTimer->SetText(L"停止");
 	btnStopOnceTimer->AttachClickedDelegate([&]() {
-		ltk::KillTimer(cookie2);
-		cookie2 = 0;
+		m_onceTimer->Stop();
 	});
 	hboxTimerTest->AddLayoutItem(btnStopOnceTimer, 0, 1);
 
@@ -224,6 +223,16 @@ void DemoWindow::BuildDemoWindow()
 	menu_bar->SetPopupMenu(3, popup);
 
 	vboxRightPanel->AddSpaceItem(5, 0);
+}
+
+void DemoWindow::OnTimer()
+{
+	LTK_LOG("tick: %d", m_timer->GetId());
+}
+
+void DemoWindow::OnOnceTimer()
+{
+	LTK_LOG("tick: %d", m_onceTimer->GetId());
 }
 
 void BuildSplitterTest(Window *wnd)

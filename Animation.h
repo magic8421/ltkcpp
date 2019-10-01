@@ -16,11 +16,13 @@ public:
     virtual bool IsRunning() = 0;
 };
 
+class Timer;
+
 class ScrollAnimation : public AbstractAnimation
 {
 public:
-    ScrollAnimation() {}
-    ~ScrollAnimation() {}
+    ScrollAnimation();
+    ~ScrollAnimation();
 
     enum State
     {
@@ -38,6 +40,8 @@ public:
 
     virtual bool IsRunning() override;
 
+	void OnNoInputTimer();
+
 private:
     float m_scroll = 0.0f;
     float m_velocity = 0.0f;
@@ -49,6 +53,8 @@ private:
 
 	UINT m_timerId = 0;
 	bool m_bInput = false;
+
+	Timer *m_timer = nullptr;
 };
 
 } // namespace ltk

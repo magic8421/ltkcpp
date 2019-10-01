@@ -267,6 +267,7 @@
     <ClInclude Include="TextEdit.h" />
     <ClInclude Include="ThreadHelper.h" />
     <ClInclude Include="TimerManager.h" />
+    <ClInclude Include="TimerManager_p.h" />
     <ClInclude Include="TreeView.h" />
     <ClInclude Include="UniConversion.h" />
     <ClInclude Include="Window.h" />

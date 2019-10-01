@@ -6,37 +6,35 @@
 //////////////////////////////////////////////////////////////////////////
 
 #pragma once
+#include "Object.h"
+#include "Delegate/Delegate.h"
 
 namespace ltk {
 
-struct TimerNode {
-    std::function<void()> callback;
-    bool isOnceTimer = true;
-};
+class Timer;
+class TimerPrivate;
 
-class TimerManager
+class Timer : public Object
 {
 public:
-    static TimerManager *Instance();
-    static void Free();
+	Timer();
 
-    UINT SetTimer(UINT id, const std::function<void()>&cb, UINT elapse, bool bOnce);
-    void KillTimer(UINT id);
+	void SetInterval(UINT ms);
+	void Start();
+	void StartOnce();
+	void Stop();
+	void Reset();
+	UINT GetId();
+
+	void AttatchTimeoutDelegate(const Delegate0<> &cb);
+	void RemoveTimeoutDelegate(const Delegate0<> &cb);
 
 private:
-    TimerManager();
-    ~TimerManager();
-    static TimerManager *m_instance;
+	LTK_DECLARE_PRIVATE(Timer);
+	friend class TimerManager;
 
-    static LRESULT CALLBACK MyWndProc(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam);
-    void OnTimer(UINT id);
-
-    HWND m_hwnd = 0;
-    std::unordered_map<UINT, TimerNode *> m_mapCallback;
+protected:
+	Timer(TimerPrivate *d);
 };
-
-UINT SetTimer(UINT elapse, UINT id, const std::function<void()>&cb);
-UINT SetOnceTimer(UINT elapse, UINT id, const std::function<void()>&cb);
-void KillTimer(UINT id);
 
 } // namespace ltk

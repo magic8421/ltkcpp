@@ -458,7 +458,7 @@ LRESULT Window::WndProc(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam)
 			d->spFocus->OnEvent(&ev);
         }
         LTK_LOG("WM_KILLFOCUS KillTimer");
-		KillTimer(hwnd, TIMER_ANIMATION);
+		::KillTimer(hwnd, TIMER_ANIMATION);
 		d->setAnimation.clear();
         ::ReleaseCapture();
         return 0;

@@ -1,13 +1,21 @@
 #pragma once
 #include "Window.h"
+#include "TimerManager.h"
 
 class DemoWindow : public ltk::Window
 {
 public:
 	DemoWindow();
+	~DemoWindow();
+
 	void Create();
 	void BuildDemoWindow();
-protected:
+
+	void OnTimer();
+	void OnOnceTimer();
+
 private:
+	ltk::Timer *m_timer = nullptr;
+	ltk::Timer *m_onceTimer = nullptr;
 };
 

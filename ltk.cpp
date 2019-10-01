@@ -15,6 +15,7 @@
 #include "RefCounted.h"
 #include "Sprite.h"
 #include "TimerManager.h"
+#include "TimerManager_p.h"
 #include "SetupStyles.h"
 
 #ifdef _DEBUG

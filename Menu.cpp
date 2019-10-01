@@ -36,7 +36,7 @@ PopupMenu::~PopupMenu()
 
 PopupMenuPrivate::~PopupMenuPrivate()
 {
-	ltk::KillTimer(this->hoverTimer);
+	//ltk::KillTimer(this->hoverTimer);
 
 	for (auto item : this->vecItems) {
 		delete item->sub_menu;
@@ -296,7 +296,7 @@ bool PopupMenu::OnMouseMove(MouseEvent* ev)
 			d->hoverTimer = 0;
 		//});
 		if (d->parent) {
-			ltk::KillTimer(d->parent->d_func()->hoverTimer);
+			//ltk::KillTimer(d->parent->d_func()->hoverTimer);
 			d->parent->d_func()->hoverTimer = 0;
 		}
 	}
