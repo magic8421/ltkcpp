@@ -27,8 +27,8 @@ public:
 	void AttachClickedDelegate(const Delegate0<> &cb);
 	void RemoveClickedDelegate(const Delegate0<> &cb);
 
-	Cookie AttachMouseEventDelegate(const std::function<void(MouseEvent*, bool&)> &cb);
-	void RemoveMouseEventDelegate(Cookie c);
+	void AttachMouseEventDelegate(const Delegate2<MouseEvent*, bool&> &cb);
+	void RemoveMouseEventDelegate(const Delegate2<MouseEvent*, bool&> &cb);
 
     virtual bool OnEvent(Event *ev) override;
     virtual bool OnMouseMove(MouseEvent *ev) override;

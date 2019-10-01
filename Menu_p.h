@@ -84,12 +84,12 @@ public:
 
 	std::vector<MenuButtonParam> vecMenuItems;
 	int trackingIdx = -1;
-	int clickedIdx = -1;
+
+	int FindMenuButtonIdx(Button *btn);
 
 	void OnMenuHide();
-	void OnButtonMouseEvent(Button* btn, MouseEvent* ev, bool& bHandled);
+	void OnButtonMouseEvent(MouseEvent* ev, bool& bHandled);
 	void OnMenuBtnClicked();
 };
-
 
 } // namespace

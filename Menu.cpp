@@ -346,11 +346,8 @@ void MenuBar::AddItem(LPCWSTR text)
 	param.button = btn;
 	d->vecMenuItems.push_back(param);
 	UINT idx = d->vecMenuItems.size() - 1;
-	d->clickedIdx = idx;
 	btn->AttachClickedDelegate(MakeDelegate(d, &MenuBarPrivate::OnMenuBtnClicked));
-	btn->AttachMouseEventDelegate([d, btn](MouseEvent *ev, bool &bHandled) {
-		d->OnButtonMouseEvent(btn, ev, bHandled);
-	});
+	btn->AttachMouseEventDelegate(MakeDelegate(d, &MenuBarPrivate::OnButtonMouseEvent));
 }
 
 void MenuBar::SetPopupMenu(UINT idx, PopupMenu *menu)
@@ -365,8 +362,9 @@ void MenuBar::SetPopupMenu(UINT idx, PopupMenu *menu)
 void MenuBarPrivate::OnMenuBtnClicked()
 {
 	LTK_Q(MenuBar);
-	UINT idx = this->clickedIdx;
-	LTK_ASSERT(idx < this->vecMenuItems.size());
+	Button* btn = Object::GetDelegateInvoker()->As<Button>();
+	int idx = this->FindMenuButtonIdx(btn);
+	LTK_ASSERT(idx < (int)this->vecMenuItems.size());
 	auto menu = this->vecMenuItems[idx].sub_menu;
 	if (!menu) {
 		return;
@@ -378,17 +376,25 @@ void MenuBarPrivate::OnMenuBtnClicked()
 	this->trackingIdx = idx;
 }
 
-void MenuBarPrivate::OnButtonMouseEvent(Button* btn, MouseEvent* ev, bool& bHandled)
+int MenuBarPrivate::FindMenuButtonIdx(Button *btn)
 {
-	if (ev->id == eMouseMove && this->trackingIdx >= 0) {
-		size_t idx = 0;
-		for (; idx < this->vecMenuItems.size(); idx++) {
-			if (this->vecMenuItems[idx].button == btn) {
-				break;
-			}
+	int idx = -1;
+	for (size_t i = 0; i < this->vecMenuItems.size(); i++) {
+		if (this->vecMenuItems[i].button == btn) {
+			idx = i;
+			break;
 		}
+	}
+	return idx;
+}
+
+void MenuBarPrivate::OnButtonMouseEvent(MouseEvent* ev, bool& bHandled)
+{
+	Button* btn = Object::GetDelegateInvoker()->As<Button>();
+
+	if (ev->id == eMouseMove && this->trackingIdx >= 0) {
+		int idx = this->FindMenuButtonIdx(btn);
 		if (this->trackingIdx != (int)idx) {
-			this->clickedIdx = (int)idx;
 			this->OnMenuBtnClicked();
 		}
 	}

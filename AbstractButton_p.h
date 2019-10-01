@@ -22,7 +22,7 @@ public:
 	DWORD lastTick = 0;
 
 	MulticastDelegate0 clickedDelegate;
-	Delegate<void(MouseEvent*, bool&)> mouseEventDelegate;
+	MulticastDelegate2<MouseEvent*, bool&> mouseEventDelegate;
 };
 
 }

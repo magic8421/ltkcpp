@@ -80,18 +80,20 @@ void AbstractButton::RemoveClickedDelegate(const Delegate0<> &cb)
 	d->clickedDelegate -= cb;
 }
 
-Cookie AbstractButton::AttachMouseEventDelegate(const std::function<void(MouseEvent*, bool&)> &cb)
+void AbstractButton::AttachMouseEventDelegate(
+	const Delegate2<MouseEvent*, bool&> &cb)
 {
 	LTK_CHECK_THREAD;
 	LTK_D(AbstractButton);
-	return d->mouseEventDelegate.Attach(cb);
+	return d->mouseEventDelegate += cb;
 }
 
-void AbstractButton::RemoveMouseEventDelegate(Cookie c)
+void AbstractButton::RemoveMouseEventDelegate(
+	const Delegate2<MouseEvent*, bool&> &cb)
 {
 	LTK_CHECK_THREAD;
 	LTK_D(AbstractButton);
-	d->mouseEventDelegate.Remove(c);
+	d->mouseEventDelegate -= cb;
 }
 
 bool AbstractButton::OnEvent(Event *ev)
@@ -99,8 +101,9 @@ bool AbstractButton::OnEvent(Event *ev)
 	LTK_D(AbstractButton);
 	bool bHandled = false;
     if (ev->id > eMouseFirst && ev->id < eMouseLast) {
-        d->mouseEventDelegate.Invoke(
-            static_cast<MouseEvent *>(ev), std::ref(bHandled));
+		Object::SetDelegeteInvoker(this);
+        d->mouseEventDelegate(
+            static_cast<MouseEvent *>(ev), bHandled);
     }
     if (!bHandled) {
         return Sprite::OnEvent(ev);
