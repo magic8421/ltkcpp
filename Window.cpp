@@ -58,6 +58,7 @@ Window::Window(WindowPrivate *q) : Object(q)
 Window::~Window(void)
 {
 	LTK_D(Window);
+	::DestroyWindow(d->hwnd);
 
     if (d->sprite) {
         delete d->sprite;
@@ -81,8 +82,6 @@ Window::~Window(void)
 		d->atlas->Release();
     }
 	d->atlas = INVALID_POINTER(ID2D1Bitmap);
-
-	::DestroyWindow(d->hwnd);
 }
 
 void Window::Create(Window *parent, RectF rc)

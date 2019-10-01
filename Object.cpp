@@ -24,9 +24,9 @@ Object::Object()
 	d_ptr = new ObjectPrivate;
 }
 
-Object::Object(ObjectPrivate *pp)
+Object::Object(ObjectPrivate *d)
 {
-	d_ptr = pp;
+	d_ptr = d;
 }
 
 Object::~Object() 

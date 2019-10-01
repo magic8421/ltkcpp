@@ -96,7 +96,7 @@ protected:
 	friend class WindowPrivate;
 
 protected:
-	Sprite(SpritePrivate *pp);
+	Sprite(SpritePrivate *d);
 
 private:
 	LTK_DECLARE_PRIVATE(Sprite)

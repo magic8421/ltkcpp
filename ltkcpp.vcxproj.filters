@@ -332,6 +332,9 @@
     <ClInclude Include="TimerManager_p.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ScrollBar_p.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />

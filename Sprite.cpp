@@ -40,7 +40,7 @@ Sprite::Sprite() : Object(new SpritePrivate(this))
 {
 }
 
-Sprite::Sprite(SpritePrivate *pp) : Object(pp)
+Sprite::Sprite(SpritePrivate *d) : Object(d)
 {
 }
 

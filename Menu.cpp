@@ -69,6 +69,12 @@ UINT PopupMenu::GetChildCount()
 	return d->vecItems.size();
 }
 
+void PopupMenu::AttachItemClickedDelegate(UINT idx, const Delegate0<> &cb)
+{
+	LTK_D(PopupMenu);
+	d->vecItems[idx]->clickedDelegate += cb;
+}
+
 void PopupMenu::SetWidth(float w)
 {
 	LTK_D(PopupMenu);
@@ -246,7 +252,7 @@ bool PopupMenu::OnLBtnDown(MouseEvent* ev)
 	}
 	auto item = d->vecItems[hit];
 	if (!item->sub_menu) {
-		item->ClickedEvent.Invoke();
+		item->clickedDelegate();
 	}
 	int tracking = d->trackingIdx;
 	PopupMenu* menu = this;

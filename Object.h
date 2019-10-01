@@ -28,7 +28,7 @@ private:
 
 protected:
 	ObjectPrivate *d_ptr = nullptr;
-	Object(ObjectPrivate *pp);
+	Object(ObjectPrivate *d);
 };
 
 } // namespace ltk

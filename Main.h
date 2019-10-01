@@ -17,6 +17,7 @@ public:
 	void OnPixelThemeClicked();
 	void OnDarkThemeClicked();
 	void OnLightThemeClicked();
+	void OnExitClicked();
 
 private:
 	ltk::Timer *m_timer = nullptr;

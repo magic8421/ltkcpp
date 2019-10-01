@@ -6,6 +6,7 @@
 
 #pragma once
 #include "Sprite.h"
+#include "Delegate/Delegate.h"
 
 namespace ltk {
 
@@ -19,6 +20,7 @@ public:
 
 	void AddItem(LPCWSTR text);
 	UINT GetChildCount();
+	void AttachItemClickedDelegate(UINT idx, const Delegate0<> &cb);
 	
 	void SetWidth(float);
 	float GetWidth();

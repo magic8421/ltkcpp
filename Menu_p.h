@@ -1,8 +1,8 @@
 #pragma once
 #include "Sprite_p.h"
-#include "Delegate.h"
 #include "ImmutableString.h"
 #include "ltk.h"
+#include "Delegate/MulticastDelegate.h"
 
 namespace ltk {
 
@@ -20,7 +20,7 @@ public:
 	ltk::IconInfo icon;
 	PopupMenu* sub_menu = nullptr;
 
-	Delegate<void()> ClickedEvent;
+	MulticastDelegate0 clickedDelegate;
 
 private:
 	DISALLOW_COPY_AND_ASSIGN(MenuItem)

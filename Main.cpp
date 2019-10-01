@@ -182,6 +182,8 @@ void DemoWindow::BuildDemoWindow()
 	popup->AddItem(L"±£´æ");
 	popup->AddItem(L"Áí´æÎª");
 	popup->AddItem(L"ÍË³ö");
+	popup->AttachItemClickedDelegate(5, MakeDelegate(
+		this, &DemoWindow::OnExitClicked));
 	menu_bar->SetPopupMenu(0, popup);
 
 	PopupMenu *popup2 = new PopupMenu;
@@ -243,6 +245,11 @@ void DemoWindow::OnLightThemeClicked()
 {
 	StyleManager::SetCurrentTheme("light");
 	Window::UpdateTheme();
+}
+
+void DemoWindow::OnExitClicked()
+{
+	::PostQuitMessage(0);
 }
 
 void BuildSplitterTest(Window *wnd)

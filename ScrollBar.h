@@ -2,7 +2,6 @@
 // Author:    Sara Chen
 // Email:     6659907@163.com
 // QQ:        314266265
-// License:   MIT license
 //////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -13,6 +12,7 @@
 namespace ltk {
 
 class Button;
+class ScrollBarPrivate;
 
 class ScrollBar : public Sprite
 {
@@ -24,15 +24,13 @@ public:
     explicit ScrollBar(Mode mode);
     ~ScrollBar();
 
-    float GetValue() { return m_position; }
+    float GetValue();
 
     void SetContentSize(float size);
 
     void SetPosition(float pos);
 
     void Update();
-
-    void OnSilderEvent(MouseEvent *ev, bool &bHandled);
 
     static const float SLIDER_MIN;
 
@@ -48,14 +46,10 @@ public:
     Delegate<void(float)> ValueChangedEvent;
 
 private:
-    Mode m_mode;
-    Button *m_slider = nullptr;
-    float m_contentSize = 100.0f;
-    float m_position = 0.0f;
-    bool m_bDrag = false;
-    float m_deltaX = 0.0f;
-    float m_deltaY = 0.0f;
-    ID2D1SolidColorBrush *m_brush = nullptr;
+	LTK_DECLARE_PRIVATE(ScrollBar);
+
+protected:
+	ScrollBar(ScrollBarPrivate *d);
 };
 
 }
