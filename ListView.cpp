@@ -68,7 +68,8 @@ bool ListView::OnPaint(PaintEvent *ev)
     ID2D1RenderTarget *target = ev->target;
 
     RectF rcSprite = this->GetRect();
-    if (m_scroll.UpdateScroll(this->GetTotalHeight() - rcSprite.Height)) {
+	m_scroll.UpdateScroll(this->GetTotalHeight() - rcSprite.Height);
+	if (!m_scroll.IsRunning()) {
         this->EndAnimation();
     }
     m_vsb->SetPosition(m_scroll.GetScroll());

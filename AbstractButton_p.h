@@ -1,7 +1,6 @@
 #pragma once
 #include "AbstractButton.h"
 #include "Sprite_p.h"
-#include "Delegate.h"
 #include "Delegate/MulticastDelegate.h"
 
 namespace ltk {

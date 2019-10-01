@@ -24,9 +24,7 @@ public:
 
     void BeginScroll(float delta);
     void Stop();
-    // return true if you have to call EndAnimation();
-    bool UpdateScroll(float height);
-    //
+    void UpdateScroll(float height);
     float GetScroll();
     void SetScroll(float pos);
     State GetState();

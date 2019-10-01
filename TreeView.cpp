@@ -192,9 +192,10 @@ TreeNode * TreeView::GetRootNode()
 bool TreeView::OnPaint(PaintEvent *ev)
 {
     auto rc = this->GetClientRect();
-    if (m_scrollAni.UpdateScroll(m_maxHeight - rc.Height)) {
-        this->EndAnimation();
-    }
+	m_scrollAni.UpdateScroll(m_maxHeight - rc.Height);
+	if (!m_scrollAni.IsRunning()) {
+		this->EndAnimation();
+	}
     m_vsb->SetPosition(m_scrollAni.GetScroll());
 
     TraverseTree(&m_root, 0, [&, this](TreeNode *node, int) {

@@ -83,11 +83,11 @@ void ScrollAnimation::Stop()
 	d->state = stStop;
 }
 
-bool ScrollAnimation::UpdateScroll(float height)
+void ScrollAnimation::UpdateScroll(float height)
 {
 	LTK_D(ScrollAnimation);
 	if (height < 0.0f) {
-        return false;
+        return;
     }
     DWORD now = ltk::TickCount();
 	if (d->state == stScrollUp) {
@@ -109,20 +109,19 @@ bool ScrollAnimation::UpdateScroll(float height)
 		d->scroll = 0.0f;
 		d->velocity = 0.0f;
 		d->state = stStop;
-        return true;
+        return;
 	}
 	else if (d->scroll > height) {
 		d->scroll = height;// this->GetTotalHeight() - rcSprite.Height;
 		d->velocity = 0.0f;
 		d->state = stStop;
-        return true;
+        return;
     }
 	if (d->velocity < 0.0f) {
 		d->velocity = 0.0f;
 		d->state = stStop;
-        return true;
+        return ;
     }
-    return false;
 }
 
 float ScrollAnimation::GetScroll()

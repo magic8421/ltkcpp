@@ -50,10 +50,10 @@ bool TextEdit::OnPaint(PaintEvent *ev)
     DWRITE_TEXT_METRICS textMetrics;
     hr = m_layout->GetMetrics(&textMetrics);
     LTK_ASSERT(SUCCEEDED(hr));
-    if (m_scrollAni.UpdateScroll(textMetrics.height - rc.Height)) {
-        this->EndAnimation();
-        //this->UpdateCursor(false);
-    }
+	m_scrollAni.UpdateScroll(textMetrics.height - rc.Height);
+	if (!m_scrollAni.IsRunning()) {
+		this->EndAnimation();
+	}
     m_vsb->SetPosition(m_scrollAni.GetScroll());
     //LTK_LOG("scroll: %f", m_scrollAni.GetScroll());
 
