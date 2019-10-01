@@ -346,9 +346,8 @@ void MenuBar::AddItem(LPCWSTR text)
 	param.button = btn;
 	d->vecMenuItems.push_back(param);
 	UINT idx = d->vecMenuItems.size() - 1;
-	btn->AttachClickedDelegate([d, idx]() { // TODO  包btn比较好 插入删除不会错
-		d->OnMenuBtnClicked(idx);
-	});
+	d->clickedIdx = idx;
+	btn->AttachClickedDelegate(MakeDelegate(d, &MenuBarPrivate::OnMenuBtnClicked));
 	btn->AttachMouseEventDelegate([d, btn](MouseEvent *ev, bool &bHandled) {
 		d->OnButtonMouseEvent(btn, ev, bHandled);
 	});
@@ -363,9 +362,10 @@ void MenuBar::SetPopupMenu(UINT idx, PopupMenu *menu)
 	menu->d_func()->SetMenuBar(this);
 }
 
-void MenuBarPrivate::OnMenuBtnClicked(UINT idx)
+void MenuBarPrivate::OnMenuBtnClicked()
 {
 	LTK_Q(MenuBar);
+	UINT idx = this->clickedIdx;
 	LTK_ASSERT(idx < this->vecMenuItems.size());
 	auto menu = this->vecMenuItems[idx].sub_menu;
 	if (!menu) {
@@ -388,7 +388,8 @@ void MenuBarPrivate::OnButtonMouseEvent(Button* btn, MouseEvent* ev, bool& bHand
 			}
 		}
 		if (this->trackingIdx != (int)idx) {
-			this->OnMenuBtnClicked(idx);
+			this->clickedIdx = (int)idx;
+			this->OnMenuBtnClicked();
 		}
 	}
 }

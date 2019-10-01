@@ -2,6 +2,7 @@
 #include "AbstractButton.h"
 #include "Sprite_p.h"
 #include "Delegate.h"
+#include "Delegate/MulticastDelegate.h"
 
 namespace ltk {
 
@@ -20,7 +21,7 @@ public:
 	int aniCounter = 0;
 	DWORD lastTick = 0;
 
-	Delegate<void()> clickedDelegate;
+	MulticastDelegate0 clickedDelegate;
 	Delegate<void(MouseEvent*, bool&)> mouseEventDelegate;
 };
 

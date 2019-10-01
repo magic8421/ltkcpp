@@ -8,6 +8,7 @@
 #include "Sprite.h"
 #include "StyleManager.h"
 #include "Common.h"
+#include "Delegate/Delegate.h"
 
 namespace ltk {
 
@@ -23,8 +24,8 @@ public:
 
 	void EnableCapture(bool);
 
-	Cookie AttachClickedDelegate(const std::function<void()> &cb);
-	void RemoveClickedDelegate(Cookie c);
+	void AttachClickedDelegate(const Delegate0<> &cb);
+	void RemoveClickedDelegate(const Delegate0<> &cb);
 
 	Cookie AttachMouseEventDelegate(const std::function<void(MouseEvent*, bool&)> &cb);
 	void RemoveMouseEventDelegate(Cookie c);

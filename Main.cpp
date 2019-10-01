@@ -60,9 +60,11 @@ DemoWindow::DemoWindow()
 
 	m_timer = new Timer;
 	m_timer->SetInterval(1000);
+	m_timer->AttatchTimeoutDelegate(MakeDelegate(this, &DemoWindow::OnTimer));
 
 	m_onceTimer = new Timer;
 	m_onceTimer->SetInterval(1000);
+	m_onceTimer->AttatchTimeoutDelegate(MakeDelegate(this, &DemoWindow::OnOnceTimer));
 }
 
 DemoWindow::~DemoWindow()
@@ -122,30 +124,26 @@ void DemoWindow::BuildDemoWindow()
 
 	Button *btnRepeatTimer = new Button;
 	btnRepeatTimer->SetText(L"循环定时器");
-	btnRepeatTimer->AttachClickedDelegate([&]() {
-		m_timer->Start();
-	});
+	btnRepeatTimer->AttachClickedDelegate(MakeDelegate(
+		m_timer, &Timer::Start));
 	hboxTimerTest->AddLayoutItem(btnRepeatTimer, 0, 1);
 
 	Button *btnStopRepeatTimer = new Button;
 	btnStopRepeatTimer->SetText(L"停止");
-	btnStopRepeatTimer->AttachClickedDelegate([&]() {
-		m_timer->Stop();
-	});
+	btnStopRepeatTimer->AttachClickedDelegate(MakeDelegate(
+		m_timer, &Timer::Stop));
 	hboxTimerTest->AddLayoutItem(btnStopRepeatTimer, 0, 1);
 
 	Button *btnOnceTimer = new Button;
 	btnOnceTimer->SetText(L"单次定时器");
-	btnOnceTimer->AttachClickedDelegate([&]() {
-		m_onceTimer->StartOnce();
-	});
+	btnOnceTimer->AttachClickedDelegate(MakeDelegate(
+		m_onceTimer, &Timer::StartOnce));
 	hboxTimerTest->AddLayoutItem(btnOnceTimer, 0, 1);
 
 	Button *btnStopOnceTimer = new Button;
 	btnStopOnceTimer->SetText(L"停止");
-	btnStopOnceTimer->AttachClickedDelegate([&]() {
-		m_onceTimer->Stop();
-	});
+	btnStopOnceTimer->AttachClickedDelegate(MakeDelegate(
+		m_onceTimer, &Timer::Stop));
 	hboxTimerTest->AddLayoutItem(btnStopOnceTimer, 0, 1);
 
 	auto hboxTheme = new BoxLayout(BoxLayout::Horizontal);
@@ -154,26 +152,20 @@ void DemoWindow::BuildDemoWindow()
 	Button *btnPixelTheme = new Button;
 	hboxTheme->AddLayoutItem(btnPixelTheme, 100);
 	btnPixelTheme->SetText(L"位图资源");
-	btnPixelTheme->AttachClickedDelegate([wnd]() {
-		StyleManager::SetCurrentTheme("pixel");
-		wnd->UpdateTheme();
-	});
+	btnPixelTheme->AttachClickedDelegate(MakeDelegate(
+		this, &DemoWindow::OnPixelThemeClicked));
 
 	Button *btnRectTheme = new Button;
 	hboxTheme->AddLayoutItem(btnRectTheme, 100);
 	btnRectTheme->SetText(L"暗色");
-	btnRectTheme->AttachClickedDelegate([wnd]() {
-		StyleManager::SetCurrentTheme("rect");
-		wnd->UpdateTheme();
-	});
+	btnRectTheme->AttachClickedDelegate(MakeDelegate(
+		this, &DemoWindow::OnDarkThemeClicked));
 
 	Button *btnRectThemeLight = new Button;
 	hboxTheme->AddLayoutItem(btnRectThemeLight, 100);
 	btnRectThemeLight->SetText(L"亮色");
-	btnRectThemeLight->AttachClickedDelegate([wnd]() {
-		StyleManager::SetCurrentTheme("light");
-		wnd->UpdateTheme();
-	});
+	btnRectThemeLight->AttachClickedDelegate(MakeDelegate(
+		this, &DemoWindow::OnLightThemeClicked));
 
 	MenuBar *menu_bar = new MenuBar;
 	wnd->SetMenu(menu_bar);
@@ -233,6 +225,24 @@ void DemoWindow::OnTimer()
 void DemoWindow::OnOnceTimer()
 {
 	LTK_LOG("tick: %d", m_onceTimer->GetId());
+}
+
+void DemoWindow::OnPixelThemeClicked()
+{
+	StyleManager::SetCurrentTheme("pixel");
+	Window::UpdateTheme();
+}
+
+void DemoWindow::OnDarkThemeClicked()
+{
+	StyleManager::SetCurrentTheme("rect");
+	Window::UpdateTheme();
+}
+
+void DemoWindow::OnLightThemeClicked()
+{
+	StyleManager::SetCurrentTheme("light");
+	Window::UpdateTheme();
 }
 
 void BuildSplitterTest(Window *wnd)

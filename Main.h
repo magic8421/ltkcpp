@@ -14,6 +14,10 @@ public:
 	void OnTimer();
 	void OnOnceTimer();
 
+	void OnPixelThemeClicked();
+	void OnDarkThemeClicked();
+	void OnLightThemeClicked();
+
 private:
 	ltk::Timer *m_timer = nullptr;
 	ltk::Timer *m_onceTimer = nullptr;

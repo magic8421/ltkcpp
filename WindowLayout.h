@@ -43,9 +43,6 @@ private:
     Button *m_closeBtn = nullptr;
 	MenuBar *m_menu = nullptr;
     
-    Cookie m_minTrack = 0;
-    Cookie m_maxTrack = 0;
-    Cookie m_closeTrack = 0;
     Label *m_caption = nullptr;
 };
 

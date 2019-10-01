@@ -212,6 +212,7 @@ void TimerManager::KillTimer(Timer *timer)
 	}
     auto iter = m_mapCallback.find(id);
     if (iter != m_mapCallback.end()) {
+		timer->d_func()->id = 0;
         delete iter->second;
         ::KillTimer(m_hwnd, id);
         m_mapCallback.erase(iter);

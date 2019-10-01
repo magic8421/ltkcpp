@@ -66,18 +66,18 @@ float AbstractButton::GetBlend()
 	return (float)d->aniCounter / AniDuration;
 }
 
-Cookie AbstractButton::AttachClickedDelegate(const std::function<void()> &cb)
+void AbstractButton::AttachClickedDelegate(const Delegate0<> &cb)
 {
 	LTK_CHECK_THREAD;
 	LTK_D(AbstractButton);
-	return d->clickedDelegate.Attach(cb);
+	return d->clickedDelegate += cb;
 }
 
-void AbstractButton::RemoveClickedDelegate(Cookie c)
+void AbstractButton::RemoveClickedDelegate(const Delegate0<> &cb)
 {
 	LTK_CHECK_THREAD;
 	LTK_D(AbstractButton);
-	d->clickedDelegate.Remove(c);
+	d->clickedDelegate -= cb;
 }
 
 Cookie AbstractButton::AttachMouseEventDelegate(const std::function<void(MouseEvent*, bool&)> &cb)
@@ -164,7 +164,8 @@ bool AbstractButton::OnLBtnUp(MouseEvent *ev)
 void AbstractButton::OnClicked()
 {
 	LTK_D(AbstractButton);
-	d->clickedDelegate.Invoke();
+	Object::SetDelegeteInvoker(this);
+	d->clickedDelegate();
 }
 
 

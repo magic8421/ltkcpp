@@ -128,22 +128,17 @@ void WindowLayout::DoLayout()
 
 void WindowLayout::SetWindow( Window *wnd )
 {
+	Window *old_wnd = Sprite::GetWindow();
     Sprite::SetWindow(wnd);
 
-    m_minBtn->RemoveClickedDelegate(m_minTrack);
-    m_minTrack = m_minBtn->AttachClickedDelegate([=]() {
-        wnd->Minimize();
-    });
+	m_minBtn->RemoveClickedDelegate(MakeDelegate(old_wnd, &Window::Minimize));
+	m_minBtn->AttachClickedDelegate(MakeDelegate(wnd, &Window::Minimize));
 
-	m_maxBtn->RemoveClickedDelegate(m_maxTrack);
-	m_maxTrack = m_maxBtn->AttachClickedDelegate([=]() {
-        wnd->Maximize();
-    });
+	m_maxBtn->RemoveClickedDelegate(MakeDelegate(old_wnd, &Window::Maximize));
+	m_maxBtn->AttachClickedDelegate(MakeDelegate(wnd, &Window::Maximize));
 
-	m_closeBtn->RemoveClickedDelegate(m_closeTrack);
-	m_closeTrack = m_closeBtn->AttachClickedDelegate([=]() {
-        wnd->CloseWindow();
-    });
+	m_closeBtn->RemoveClickedDelegate(MakeDelegate(old_wnd, &Window::CloseWindow));
+	m_closeBtn->AttachClickedDelegate(MakeDelegate(wnd, &Window::CloseWindow));
 }
 
 bool WindowLayout::OnSize(SizeEvent *ev)
