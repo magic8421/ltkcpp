@@ -154,6 +154,8 @@
     <ClCompile Include="Delegate\Allocator.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">4100;4189;4995;4512</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">4100;4189;4512</DisableSpecificWarnings>
     </ClCompile>
     <ClCompile Include="Delegate\Fault.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
@@ -162,6 +164,8 @@
     <ClCompile Include="Delegate\LockGuard.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">4100;4189;4127</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">4100;4189;4995;4127</DisableSpecificWarnings>
     </ClCompile>
     <ClCompile Include="Delegate\MulticastDelegateBase.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
@@ -170,14 +174,20 @@
     <ClCompile Include="Delegate\Semaphore.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">4100;4189;4127</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">4100;4189;4127</DisableSpecificWarnings>
     </ClCompile>
     <ClCompile Include="Delegate\ThreadWin.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">4100;4189;4127;4505</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">4100;4189;4127;4505</DisableSpecificWarnings>
     </ClCompile>
     <ClCompile Include="Delegate\WorkerThreadWin.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">4100;4189;4127;4505</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">4100;4189;4127;4505</DisableSpecificWarnings>
     </ClCompile>
     <ClCompile Include="HeaderCtrl.cpp" />
     <ClCompile Include="ImageSprite.cpp" />
@@ -217,7 +227,6 @@
     <ClInclude Include="Button_p.h" />
     <ClInclude Include="Common.h" />
     <ClInclude Include="Container.h" />
-    <ClInclude Include="Delegate.h" />
     <ClInclude Include="Delegate\Allocator.h" />
     <ClInclude Include="Delegate\DataTypes.h" />
     <ClInclude Include="Delegate\Delegate.h" />

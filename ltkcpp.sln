@@ -5,8 +5,6 @@ VisualStudioVersion = 12.0.40629.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ltkcpp", "ltkcpp.vcxproj", "{DD00600A-C7C5-4DE8-8E5F-85650A6B966A}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LtkCDemo", "LtkCDemo\LtkCDemo.vcxproj", "{5879586C-5F1F-435A-8DDF-654C0043B163}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{0D97FEC4-3D2B-4A55-A999-E90C658147FA}"
 	ProjectSection(SolutionItems) = preProject
 		Performance1.psess = Performance1.psess
@@ -29,14 +27,6 @@ Global
 		{DD00600A-C7C5-4DE8-8E5F-85650A6B966A}.Release|x64.Build.0 = Release|x64
 		{DD00600A-C7C5-4DE8-8E5F-85650A6B966A}.Release|x86.ActiveCfg = Release|Win32
 		{DD00600A-C7C5-4DE8-8E5F-85650A6B966A}.Release|x86.Build.0 = Release|Win32
-		{5879586C-5F1F-435A-8DDF-654C0043B163}.Debug|x64.ActiveCfg = Debug|x64
-		{5879586C-5F1F-435A-8DDF-654C0043B163}.Debug|x64.Build.0 = Debug|x64
-		{5879586C-5F1F-435A-8DDF-654C0043B163}.Debug|x86.ActiveCfg = Debug|Win32
-		{5879586C-5F1F-435A-8DDF-654C0043B163}.Debug|x86.Build.0 = Debug|Win32
-		{5879586C-5F1F-435A-8DDF-654C0043B163}.Release|x64.ActiveCfg = Release|x64
-		{5879586C-5F1F-435A-8DDF-654C0043B163}.Release|x64.Build.0 = Release|x64
-		{5879586C-5F1F-435A-8DDF-654C0043B163}.Release|x86.ActiveCfg = Release|Win32
-		{5879586C-5F1F-435A-8DDF-654C0043B163}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
