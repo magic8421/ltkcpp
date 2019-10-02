@@ -20,32 +20,34 @@ namespace ltk {
 
 SpritePrivate::SpritePrivate(Sprite *q) : ObjectPrivate(q)
 {
-	rect.X = 0;
-	rect.Y = 0;
-	rect.Width = 10;
-	rect.Height = 10;
-
-	bVisible = true;
-	bClipChildren = false;
 }
 
 SpritePrivate::~SpritePrivate()
 {
-	for (size_t i = 0; i < this->children.size(); i++) {
-		delete this->children[i];
-	}
 }
 
 Sprite::Sprite() : Object(new SpritePrivate(this))
 {
+	d_func()->Init();
 }
 
 Sprite::Sprite(SpritePrivate *d) : Object(d)
 {
+	d->Init();
 }
 
 Sprite::~Sprite(void)
 {
+}
+
+void SpritePrivate::Init()
+{
+	auto d = this;
+	d->rect.X = 0;
+	d->rect.Y = 0;
+	d->rect.Width = 10;
+	d->rect.Height = 10;
+	d->isSpriteType = true;
 }
 
 RectF Sprite::GetRect()
@@ -68,14 +70,14 @@ RectF Sprite::GetAbsRect()
 {
 	LTK_CHECK_THREAD;
 	LTK_D(Sprite);
-	Sprite *sp = d->parent;
+	Sprite *sp = GetParentSprite();
 	RectF rcSelf = GetRect();
 	RectF rcParent;
 	while(sp)
 	{
 		rcParent = sp->GetRect();
 		rcSelf.Offset(rcParent.X, rcParent.Y);
-		sp = sp->d_func()->parent;
+		sp = sp->GetParentSprite();
 	}
 	return rcSelf;
 }
@@ -139,7 +141,10 @@ void Sprite::SetWindow( Window *wnd )
 
 void SpritePrivate::HandlePaint(ID2D1RenderTarget *target)
 {
-	if (!this->bVisible)
+	LTK_Q(Sprite);
+	auto d = this;
+
+	if (!d->bVisible)
 	{
 		return; // 子节点也不会被绘制
 	}
@@ -150,7 +155,7 @@ void SpritePrivate::HandlePaint(ID2D1RenderTarget *target)
 	//	LOGW(<<L"Orignal Size 10 10"); // 检查下有没有多余的重绘
 	//}
 
-	if (this->bClipChildren)
+	if (d->bClipChildren)
 	{
         auto rcSprite = q_func()->GetClientRect();
         D2D1_RECT_F rcClip = D2D1RectF(rcSprite);
@@ -161,39 +166,22 @@ void SpritePrivate::HandlePaint(ID2D1RenderTarget *target)
     ev.target = target;
 	q_func()->OnPaint(&ev);
 
-    for (size_t i = 0; i < this->children.size(); i++) {
-        auto sp = this->children[i];
-		RectF rc2 = sp->GetRect();
+    for (size_t i = 0; i < q->GetChildCount(); i++) {
+        auto obj = q->GetChildAt(i);
+		if (obj->IsSpriteType()) {
+			auto sp = static_cast<Sprite *>(obj);
+			RectF rc2 = sp->GetRect();
 
-		TranslateTransform(target, rc2.X, rc2.Y);
-		sp->d_func()->HandlePaint(target);
-		TranslateTransform(target, -rc2.X, -rc2.Y);
+			TranslateTransform(target, rc2.X, rc2.Y);
+			sp->d_func()->HandlePaint(target);
+			TranslateTransform(target, -rc2.X, -rc2.Y);
+		}
 	}
 
-	if (this->bClipChildren)
+	if (d->bClipChildren)
 	{
         target->PopAxisAlignedClip();
 	}
-}
-
-void Sprite::AddChild(Sprite *sp)
-{
-	LTK_CHECK_THREAD;
-	LTK_D(Sprite);
-	for (UINT i = d->children.size(); i > 0; i--) {
-        if (d->children[i - 1] == sp) {
-			//LTK_ASSERT(false);
-			return;
-        }
-    }
-	//sp->SetWindow(d->window);
-    if (sp->d_func()->parent) {
-        // if sp already has a parent, remove it first.
-        sp->d_func()->parent->RemoveChild(sp);
-    }
-	d->children.push_back(sp);
-	sp->OnParentChanged(sp->d_func()->parent, this);
-	sp->d_func()->parent = this;
 }
 
 void SpritePrivate::HandleKeyEvent(UINT message, DWORD keyCode, DWORD flag)
@@ -233,9 +221,9 @@ Window * Sprite::GetWindow()
 	LTK_CHECK_THREAD;
 	LTK_D(Sprite);
 	Sprite *sp = this;
-	while (sp->d_func()->parent)
+	while (sp->GetParentSprite())
 	{
-		sp = sp->d_func()->parent;
+		sp = sp->GetParentSprite();
 	}
 	return sp->d_func()->window;
 }
@@ -316,20 +304,24 @@ bool Sprite::IsClipChildren()
 
 bool SpritePrivate::DispatchMouseEvent(MouseEvent *ev)
 {
+	LTK_Q(Sprite);
 	if (!this->bVisible) {
 		return false;
 	}
-    for (auto i = this->children.size(); i > 0; i--) {
-        auto sp = this->children[i - 1];
-        auto rc = sp->GetRect();
-        if (rc.Contains(ev->x, ev->y)) {
-            MouseEvent ev2 = *ev;
-            ev2.x -= rc.X;
-            ev2.y -= rc.Y;
-            if (sp->d_func()->DispatchMouseEvent(&ev2)) {
-                return true;
-            }
-        }
+    for (auto i = q->GetChildCount(); i > 0; i--) {
+        auto obj = q->GetChildAt(i - 1);
+		if (obj->IsSpriteType()) {
+			auto sp = static_cast<Sprite *>(obj);
+			auto rc = sp->GetRect();
+			if (rc.Contains(ev->x, ev->y)) {
+				MouseEvent ev2 = *ev;
+				ev2.x -= rc.X;
+				ev2.y -= rc.Y;
+				if (sp->d_func()->DispatchMouseEvent(&ev2)) {
+					return true;
+				}
+			}
+		}
     }
 	return q_func()->OnEvent(ev);
 }
@@ -339,18 +331,22 @@ Sprite * Sprite::GetAncestor()
 	LTK_CHECK_THREAD;
 	LTK_D(Sprite);
 	Sprite *sp = this;
-	while (sp->d_func()->parent)
+	while (sp->GetParentSprite())
 	{
-		sp = sp->d_func()->parent;
+		sp = sp->GetParentSprite();
 	}
 	return sp;
 }
 
-Sprite * Sprite::GetParent()
+Sprite *Sprite::GetParentSprite()
 {
-	LTK_CHECK_THREAD;
 	LTK_D(Sprite);
-	return d->parent;
+	if (GetParent() && GetParent()->IsSpriteType()) {
+		return static_cast<Sprite *>(GetParent());
+	}
+	else {
+		return nullptr;
+	}
 }
 
 void Sprite::TrackMouseLeave()
@@ -361,25 +357,6 @@ void Sprite::TrackMouseLeave()
 	{
 		wnd->TrackMouseLeave(this);
 	}
-}
-
-void Sprite::RemoveChild( Sprite *sp )
-{
-	LTK_CHECK_THREAD;
-	LTK_D(Sprite);
-	// maybe searh from the end is better, because we always push to the end.
-    for (int i = d->children.size() - 1; i >= 0; i--) {
-        auto sp2 = d->children[i];
-        if (sp2 == sp) {
-            //sp2->Release();
-			sp2->d_func()->parent = nullptr;
-            for (int j = i + 1; j < (int)d->children.size(); j++) {
-                d->children[j - 1] = d->children[j];
-            }
-            d->children.pop_back();
-            i--;
-        }
-    }
 }
 
 void Sprite::ShowCaret()
@@ -469,18 +446,28 @@ bool Sprite::OnEvent(Event *ev)
 
 void SpritePrivate::HandleRecreateResouce(ID2D1RenderTarget *target)
 {
-	for (size_t i = 0; i < this->children.size(); i++) {
-        auto sp = this->children[i];
-        sp->d_func()->HandleRecreateResouce(target);
+	LTK_Q(Sprite);
+
+	for (size_t i = 0; i < q->GetChildCount(); i++) {
+		auto obj = q->GetChildAt(i);
+		if (obj->IsSpriteType()) {
+			auto sp = static_cast<Sprite *>(obj);
+			sp->d_func()->HandleRecreateResouce(target);
+		}
     }
-	q_func()->OnRecreateResouce(target);
+	q->OnRecreateResouce(target);
 }
 
 void SpritePrivate::HandleThemeChange()
 {
-	q_func()->OnThemeChanged();
-    for (auto sp : this->children) {
-        sp->d_func()->HandleThemeChange();
+	LTK_Q(Sprite);
+	q->OnThemeChanged();
+	for (size_t i = 0; i < q->GetChildCount(); i++) {
+		auto obj = q->GetChildAt(i);
+		if (obj->IsSpriteType()) {
+			auto sp = static_cast<Sprite *>(obj);
+			sp->d_func()->HandleThemeChange();
+		}
     }
 }
 

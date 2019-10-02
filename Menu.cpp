@@ -123,8 +123,8 @@ void PopupMenuPrivate::Hide()
 	LTK_Q(PopupMenu);
 	this->state = PopupMenuPrivate::sHide;
 	this->bHiding = true;
-	if (q->GetParent()) {
-		q->GetParent()->RemoveChild(q);
+	if (q->GetParentSprite()) {
+		q->GetParentSprite()->RemoveChild(q);
 		// Invalidate(); // because GetWindow() will return null, this does not work.
 	}
 	if (this->parent) {
@@ -141,8 +141,8 @@ void PopupMenuPrivate::HideAll()
 	LTK_Q(PopupMenu);
 	this->state = PopupMenuPrivate::sHide;
 	this->bHiding = true;
-	if (q->GetParent()) {
-		q->GetParent()->RemoveChild(q);
+	if (q->GetParentSprite()) {
+		q->GetParentSprite()->RemoveChild(q);
 		// Invalidate(); // because GetWindow() will return null, this does not work.
 	}
 	if (this->parent) {

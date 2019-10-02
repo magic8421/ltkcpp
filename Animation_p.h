@@ -9,6 +9,7 @@ public:
 	ScrollAnimationPrivate(ScrollAnimation *q);
 	virtual ~ScrollAnimationPrivate();
 
+	void Init();
 	void OnNoInputTimer();
 
 	float scroll = 0.0f;

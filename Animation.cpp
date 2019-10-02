@@ -22,25 +22,31 @@ const float ScrollVelocity = ItemHeight * 3 / 500.0f;
 
 ScrollAnimation::ScrollAnimation() : Object(new ScrollAnimationPrivate(this))
 {
+	d_func()->Init();
 }
 
 ScrollAnimation::ScrollAnimation(ScrollAnimationPrivate *d) : Object(d)
 {
+	d->Init();
+}
+
+void ScrollAnimationPrivate::Init()
+{
+	auto d = this;
+	auto q = q_func();
+	d->timer = new Timer;
+	d->timer->SetParent(q);
+	d->timer->SetInterval(350);
+	d->timer->AttatchTimeoutDelegate(MakeDelegate(d, &ScrollAnimationPrivate::OnNoInputTimer));
 }
 
 ScrollAnimationPrivate::ScrollAnimationPrivate(ScrollAnimation *q) 
 	: ObjectPrivate(q)
 {
-	auto d = this;
-	d->timer = new Timer;
-	d->timer->SetInterval(350);
-	d->timer->AttatchTimeoutDelegate(MakeDelegate(d, &ScrollAnimationPrivate::OnNoInputTimer));
 }
 
 ScrollAnimationPrivate::~ScrollAnimationPrivate()
 {
-	auto d = this;
-	delete d->timer;
 }
 
 

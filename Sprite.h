@@ -41,9 +41,6 @@ public:
 	void SetVisible( bool );
 	bool GetVisible();
 
-	void AddChild( Sprite *sp );
-	void RemoveChild(Sprite* sp);
-
 	void SetCapture();
 	void ReleaseCapture();
     bool IsCapturing();
@@ -56,7 +53,7 @@ public:
 	void TrackMouseLeave();
 
 	Sprite *GetAncestor();
-	Sprite *GetParent();
+	Sprite *GetParentSprite();
 
     void ShowCaret();
     void SetCaretPos(RectF rc);

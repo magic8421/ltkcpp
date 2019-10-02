@@ -12,6 +12,7 @@ public:
 
 	LTK_DECLARE_PUBLIC(Sprite);
 
+	void Init();
 	bool DispatchMouseEvent(MouseEvent *ev);
 	void HandlePaint(ID2D1RenderTarget *target);
 	void HandleKeyEvent(UINT message, DWORD keyCode, DWORD flag);
@@ -19,14 +20,11 @@ public:
 	void HandleRecreateResouce(ID2D1RenderTarget *target);
 	void HandleThemeChange();
 
-	bool bVisible;
-	bool bClipChildren; // TODO this one is useless
+	bool bVisible = true;
+	bool bClipChildren = false; // TODO this one is useless
 
 	RectF rect;
 	Window *window = nullptr;
-
-	std::vector<Sprite *> children;
-	Sprite *parent = nullptr;
 	ImmutableString name;
 };
 

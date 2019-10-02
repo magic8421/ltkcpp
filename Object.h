@@ -23,12 +23,22 @@ public:
 	static void SetDelegeteInvoker(RTTI *sender);
 	static RTTI *GetDelegateInvoker();
 
+	void AddChild(Object *child);
+	void RemoveChild(Object *child);
+	void SetParent(Object *parent);
+	Object *GetParent();
+	UINT GetChildCount();
+	Object *GetChildAt(UINT idx);
+
+	bool IsSpriteType();
+
 private:
 	DISALLOW_COPY_AND_ASSIGN(Object);
 
 protected:
 	ObjectPrivate *d_ptr = nullptr;
 	Object(ObjectPrivate *d);
+	//friend class Sprite;
 };
 
 } // namespace ltk

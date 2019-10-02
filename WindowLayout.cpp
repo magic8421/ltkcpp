@@ -126,7 +126,7 @@ void WindowLayout::DoLayout()
 
 }
 
-void WindowLayout::SetWindow( Window *wnd )
+void WindowLayout::SetWindow( Window *wnd ) // 这里应该在构造函数里传入Window 而且永远也不能改
 {
 	Window *old_wnd = Sprite::GetWindow();
     Sprite::SetWindow(wnd);
