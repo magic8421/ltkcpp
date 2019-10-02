@@ -1,8 +1,12 @@
 #pragma once
 #include "ListView.h"
+#include "ImmutableString.h"
 #include "Sprite_p.h"
 
 namespace ltk {
+
+class ScrollBar;
+class HeaderCtrl;
 
 struct LineData
 {
@@ -18,6 +22,8 @@ public:
 	void Init();
 	void HandleVScrollBar(float pos);
 	void HandleHScrollBar(float pos);
+	void OnHeaderDelete();
+	void RemoveHeaderDelegates();
 
 	ImmutableString TextColor;
 	ImmutableString HoverColor;
@@ -41,9 +47,6 @@ public:
 	std::vector<float> vecColumns;
 	float hscroll = 0.0f;
 	float accumulateVScroll = 0.f; // for high precision trackpad
-
-	Cookie columnResizeTracker = 0;
-	Cookie headerDeletedTracker = 0;
 
 protected:
 	D2D1_COLOR_F textColor;

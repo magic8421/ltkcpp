@@ -63,10 +63,7 @@ void ListViewPrivate::Init()
 ListViewPrivate::~ListViewPrivate()
 {
 	auto d = this;
-	if (d->header) {
-		d->header->ResizingEvent.Remove(d->columnResizeTracker);
-		d->header->DeleteEvent.Remove(d->headerDeletedTracker);
-    }
+	d->RemoveHeaderDelegates();
 }
 
 void ListView::OnThemeChanged()
@@ -340,25 +337,42 @@ void ListView::UpdateColumnWidth()
     this->SetColumns(cols);
 }
 
+
+void ListViewPrivate::OnHeaderDelete()
+{
+	this->header = nullptr;
+}
+
+void ListViewPrivate::RemoveHeaderDelegates()
+{
+	auto d = this;
+	LTK_Q(ListView);
+
+	if (d->header) {
+		LTK_LOG("the ListView already has a HeadCtrl");
+		d->header->RemoveResizingDelegate(MakeDelegate(
+			q, &ListView::UpdateColumnWidth));
+		d->header->RemoveResizeEndDelegate(MakeDelegate(
+			q, &ListView::HandleResizeEnd));
+		d->header->RemoveDeleteDelegate(MakeDelegate(
+			d, &ListViewPrivate::OnHeaderDelete));
+	}
+}
+
 void ListView::SetHeaderCtrl(HeaderCtrl *head)
 {
 	LTK_D(ListView);
 
-	if (d->header) {
-        LTK_LOG("the ListView already has a HeadCtrl");
-		d->header->ResizingEvent.Remove(d->columnResizeTracker);
-    }
+	d->RemoveHeaderDelegates();
 	d->header = head;
-	d->columnResizeTracker = d->header->ResizingEvent.Attach([this]() {
-        this->UpdateColumnWidth();
-    });
-	d->headerDeletedTracker = d->header->DeleteEvent.Attach([d]() {
-		d->header = nullptr;
-    });
-    this->UpdateColumnWidth();
-	d->header->ResizeEndEvent.Attach([this]() {
-		HandleResizeEnd();
-	});
+
+	d->header->AttachResizingDelegate(MakeDelegate(
+		this, &ListView::UpdateColumnWidth));
+	d->header->AttachResizeEndDelegate(MakeDelegate(
+		this, &ListView::HandleResizeEnd));
+	d->header->AttachDeleteDelegate(MakeDelegate(
+		d, &ListViewPrivate::OnHeaderDelete));
+	this->UpdateColumnWidth();
 }
 
 void ListView::HandleResizeEnd()

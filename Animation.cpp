@@ -50,7 +50,7 @@ ScrollAnimation::~ScrollAnimation()
 
 void ScrollAnimationPrivate::OnNoInputTimer()
 {
-	LTK_LOG("OnNoInputTimer");
+	//LTK_LOG("OnNoInputTimer");
 	this->bInput = false;
 }
 

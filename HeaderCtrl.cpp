@@ -31,7 +31,7 @@ HeaderCtrl::HeaderCtrl()
 
 HeaderCtrl::~HeaderCtrl()
 {
-    this->DeleteEvent.Invoke();
+    this->DeleteDelegate();
 }
 
 void HeaderCtrl::GetColumnWidth(std::vector<float> &vecColumns)
@@ -86,6 +86,36 @@ void HeaderCtrl::OnColumnResizeBegin(HeaderButton *btn, PointF pt)
     this->SetCapture();
 }
 
+void HeaderCtrl::AttachResizingDelegate(const Delegate0<> &cb)
+{
+	this->ResizingDelegate += cb;
+}
+
+void HeaderCtrl::RemoveResizingDelegate(const Delegate0<> &cb)
+{
+	this->ResizingDelegate -= cb;
+}
+
+void HeaderCtrl::AttachResizeEndDelegate(const Delegate0<> &cb)
+{
+	this->ResizeEndDelegate += cb;
+}
+
+void HeaderCtrl::RemoveResizeEndDelegate(const Delegate0<> &cb)
+{
+	this->ResizeEndDelegate -= cb;
+}
+
+void HeaderCtrl::AttachDeleteDelegate(const Delegate0<> &cb)
+{
+	this->DeleteDelegate += cb;
+}
+
+void HeaderCtrl::RemoveDeleteDelegate(const Delegate0<> &cb)
+{
+	this->DeleteDelegate -= cb;
+}
+
 bool HeaderCtrl::OnMouseMove(MouseEvent *ev)
 {
     if (m_resizingCol >= 0) {
@@ -98,7 +128,7 @@ bool HeaderCtrl::OnMouseMove(MouseEvent *ev)
         x = max(30.0f, x);
         m_vecColumns[m_resizingCol].width = x;
         this->DoLayout();
-        this->ResizingEvent.Invoke();
+        this->ResizingDelegate();
     }
     return false;
 }
@@ -107,7 +137,7 @@ bool HeaderCtrl::OnLBtnUp(MouseEvent *ev)
 {
     m_resizingCol = -1;
     this->ReleaseCapture();
-	this->ResizeEndEvent.Invoke();
+	this->ResizeEndDelegate();
     return false;
 }
 

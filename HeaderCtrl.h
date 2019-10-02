@@ -7,7 +7,7 @@
 
 #pragma once
 
-#include "Delegate.h"
+#include "Delegate/MulticastDelegate.h"
 #include "Button.h"
 
 namespace ltk {
@@ -35,9 +35,18 @@ public:
 
     void OnColumnResizeBegin(HeaderButton *btn, PointF pt);
 
-    Delegate<void()> ResizingEvent;
-	Delegate<void()> ResizeEndEvent;
-	Delegate<void()> DeleteEvent;
+	void AttachResizingDelegate(const Delegate0<> &cb);
+	void RemoveResizingDelegate(const Delegate0<> &cb);
+
+	void AttachResizeEndDelegate(const Delegate0<> &cb);
+	void RemoveResizeEndDelegate(const Delegate0<> &cb);
+
+	void AttachDeleteDelegate(const Delegate0<> &cb);
+	void RemoveDeleteDelegate(const Delegate0<> &cb);
+
+    //Delegate<void()> ResizingEvent;
+	//Delegate<void()> ResizeEndEvent;
+	//Delegate<void()> DeleteEvent;
 
     virtual bool OnSize(SizeEvent *ev) override;
     virtual bool OnMouseMove(MouseEvent *ev) override;
@@ -50,6 +59,10 @@ private:
     int m_resizingCol = -1;
     float m_hscroll = 0.0f;
 	static const float DummyButtonWidth;
+
+	MulticastDelegate0 ResizingDelegate;
+	MulticastDelegate0 ResizeEndDelegate;
+	MulticastDelegate0 DeleteDelegate;
 };
 
 class HeaderButton : public Button

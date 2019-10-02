@@ -9,12 +9,9 @@
 
 #include "Sprite.h"
 #include "Animation.h"
-#include "ImmutableString.h"
-
 
 namespace ltk {
 
-class ScrollBar;
 class HeaderCtrl;
 class ListViewPrivate;
 
