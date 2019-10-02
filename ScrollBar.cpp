@@ -179,12 +179,25 @@ bool ScrollBar::OnLBtnUp(MouseEvent *ev)
 bool ScrollBar::OnValueChanged(float pos)
 {
 	LTK_D(ScrollBar);
-	this->ValueChangedEvent.Invoke(pos);
+	Object::SetDelegeteInvoker(this);
+	d->valueChangedDelegate(pos);
     return false;
 }
 
 void ScrollBar::OnRecreateResouce(ID2D1RenderTarget *target)
 {
+}
+
+void ScrollBar::AttachValueChangedDelegate(const Delegate1<float> &cb)
+{
+	LTK_D(ScrollBar);
+	d->valueChangedDelegate += cb;
+}
+
+void ScrollBar::RemoveValueChangedDelegate(const Delegate1<float> &cb)
+{
+	LTK_D(ScrollBar);
+	d->valueChangedDelegate -= cb;
 }
 
 void ScrollBarPrivate::OnSilderEvent(MouseEvent *ev, bool &bHandled)

@@ -7,7 +7,7 @@
 #pragma once
 
 #include "Sprite.h"
-#include "Delegate.h"
+#include "Delegate\Delegate.h"
 
 namespace ltk {
 
@@ -43,7 +43,8 @@ public:
 
     virtual void OnRecreateResouce(ID2D1RenderTarget *target);
 
-    Delegate<void(float)> ValueChangedEvent;
+	void AttachValueChangedDelegate(const Delegate1<float> &cb);
+	void RemoveValueChangedDelegate(const Delegate1<float> &cb);
 
 private:
 	LTK_DECLARE_PRIVATE(ScrollBar);

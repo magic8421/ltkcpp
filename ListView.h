@@ -16,20 +16,18 @@ namespace ltk {
 
 class ScrollBar;
 class HeaderCtrl;
+class ListViewPrivate;
 
 class ListView : public Sprite
 {
 public:
     ListView();
-    virtual ~ListView();
-
-    void HandleVScrollBar(float pos);
-    void HandleHScrollBar(float pos);
+	virtual ~ListView() {}
 
     void AddItem(LPCWSTR text);
     bool SetSubItemText(UINT row, UINT col, LPCWSTR text);
     float GetTotalHeight();
-    int GetSelectedItem() { return m_selectedItem; }
+    int GetSelectedItem();
     void RemoveItem(int row);
     LPCWSTR GetItemText(int row);
     void ScrollToBottom();
@@ -38,12 +36,6 @@ public:
     //void ShowHeader(bool show);
     void SetHeaderCtrl(HeaderCtrl *head);
 	void HandleResizeEnd();
-
-	ImmutableString TextColor;
-	ImmutableString HoverColor;
-	ImmutableString SelectedColor;
-	ImmutableString SelectedTextColor;
-	ImmutableString TextFormat;
 
 	virtual bool OnPaint(PaintEvent *ev) override;
 	virtual bool OnLBtnDown(MouseEvent *ev) override;
@@ -54,37 +46,10 @@ public:
 	virtual void OnRecreateResouce(ID2D1RenderTarget *target) override;
 	virtual void OnThemeChanged() override;
 
-private:
-    struct LineData
-    {
-        std::vector<std::wstring> cells;
-    };
-    enum State
-    {
-        stStop, stScrollUp, stScrollDown
-    };
-    std::vector<LineData> m_vecData;
-    ID2D1SolidColorBrush *m_brush = nullptr;
-    IDWriteTextFormat *m_textFormat = nullptr;
-    ScrollAnimation m_scroll;
-    ScrollBar *m_vsb = nullptr;
-    ScrollBar *m_hsb = nullptr;
-    HeaderCtrl *m_header = nullptr;
-    int m_hoverItem = -1;
-    int m_selectedItem = -1;
-    std::vector<float> m_vecColumns;
-    float m_hscroll = 0.0f;
-
-    const float ItemHeight = 25.0f;
-
-    Cookie m_columnResizeTracker = 0;
-    Cookie m_headerDeletedTracker = 0;
-
 protected:
-	D2D1_COLOR_F m_textColor;
-	D2D1_COLOR_F m_hoverColor;
-	D2D1_COLOR_F m_selectedColor;
-	D2D1_COLOR_F m_selectedTextColor;
+	ListView(ListViewPrivate *d);
+private:
+	LTK_DECLARE_PRIVATE(ListView);
 };
 
 } // namespace ltk

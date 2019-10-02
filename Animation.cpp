@@ -54,6 +54,7 @@ void ScrollAnimationPrivate::OnNoInputTimer()
 	this->bInput = false;
 }
 
+// TODO enum Direction { Up, Down }
 void ScrollAnimation::BeginScroll(float delta)
 {
 	LTK_D(ScrollAnimation);

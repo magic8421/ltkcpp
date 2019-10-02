@@ -1,5 +1,6 @@
 #pragma once
 #include "Sprite_p.h"
+#include "Delegate\MulticastDelegate.h"
 
 namespace ltk {
 
@@ -16,6 +17,8 @@ public:
 	bool bDrag = false;
 	float deltaX = 0.0f;
 	float deltaY = 0.0f;
+
+	MulticastDelegate1<float> valueChangedDelegate;
 
 	void Init();
 	void OnSilderEvent(MouseEvent *ev, bool &bHandled);

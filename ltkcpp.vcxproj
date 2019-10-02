@@ -248,6 +248,7 @@
     <ClInclude Include="Label.h" />
     <ClInclude Include="Label_p.h" />
     <ClInclude Include="ListView.h" />
+    <ClInclude Include="ListView_p.h" />
     <ClInclude Include="ltk.h" />
     <ClInclude Include="Main.h" />
     <ClInclude Include="Menu.h" />
