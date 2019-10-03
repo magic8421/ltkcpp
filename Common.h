@@ -21,8 +21,8 @@ EXTERN_C IMAGE_DOS_HEADER __ImageBase;
 #define LTK_ASSERT(expr) (void)(expr)
 #endif
 
-#define LTK_D(Class) Class##Private * const d = d_func(); Class * const q = this
-#define LTK_Q(Class) Class * const q = q_func(); Class##Private * const d = this
+#define LTK_PUBLIC_DQ(Class) Class##Private * const d = d_func(); Class * const q = this
+#define LTK_PRIVATE_DQ(Class) Class * const q = q_func(); Class##Private * const d = this
 
 #define LTK_DECLARE_PRIVATE(Class)\
     inline Class##Private* d_func() {\

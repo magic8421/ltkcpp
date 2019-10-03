@@ -65,7 +65,7 @@ void TextEditPrivate::Init()
 
 bool TextEdit::OnPaint(PaintEvent *ev)
 {
-	LTK_D(TextEdit);
+	LTK_PUBLIC_DQ(TextEdit);
     auto target = ev->target;
     auto rc = this->GetClientRect();
 
@@ -148,7 +148,7 @@ void TextEditPrivate::DeleteSelected()
 
 bool TextEdit::OnChar(KeyEvent *ev)
 {
-	LTK_D(TextEdit);
+	LTK_PUBLIC_DQ(TextEdit);
 
     wchar_t ch = (wchar_t)ev->keyCode;
     if (ch == VK_BACK) {
@@ -176,7 +176,7 @@ bool TextEdit::OnChar(KeyEvent *ev)
 
 bool TextEdit::OnKeyDown(KeyEvent *ev)
 {
-	LTK_D(TextEdit);
+	LTK_PUBLIC_DQ(TextEdit);
 
     wchar_t ch = (wchar_t)ev->keyCode;
     HRESULT hr = S_OK;
@@ -221,7 +221,7 @@ bool TextEdit::OnKeyDown(KeyEvent *ev)
 
 bool TextEdit::OnImeInput(ImeEvent *ev)
 {
-	LTK_D(TextEdit);
+	LTK_PUBLIC_DQ(TextEdit);
 
 	if (d->selection >= 0) {
         d->DeleteSelected();
@@ -235,7 +235,7 @@ bool TextEdit::OnImeInput(ImeEvent *ev)
 
 void TextEdit::RecreateLayout()
 {
-	LTK_D(TextEdit);
+	LTK_PUBLIC_DQ(TextEdit);
 
 	SAFE_RELEASE(d->layout);
     auto rc = this->GetClientRect();
@@ -270,7 +270,7 @@ void TextEdit::RecreateLayout()
 
 void TextEdit::UpdateCursor(bool bEnsureVisible)
 {
-	LTK_D(TextEdit);
+	LTK_PUBLIC_DQ(TextEdit);
 
     HRESULT hr = S_OK;
     float x = 0.0f;
@@ -305,7 +305,7 @@ void TextEdit::UpdateCursor(bool bEnsureVisible)
 
 bool TextEdit::OnMouseWheel(MouseEvent *ev)
 {
-	LTK_D(TextEdit);
+	LTK_PUBLIC_DQ(TextEdit);
 
 	//LTK_LOG("delta %.2f", ev->delta);
 	d->scrollAni.BeginScroll(ev->delta);
@@ -342,7 +342,7 @@ int TextEditPrivate::HitTest(float x, float y)
 
 bool TextEdit::OnLBtnDown(MouseEvent *ev)
 {
-	LTK_D(TextEdit);
+	LTK_PUBLIC_DQ(TextEdit);
 
 	ev->x -= d->padding;
 	d->scrollAni.Stop();
@@ -363,7 +363,7 @@ bool TextEdit::OnLBtnDown(MouseEvent *ev)
 
 bool TextEdit::OnLBtnUp(MouseEvent *ev)
 {
-	LTK_D(TextEdit);
+	LTK_PUBLIC_DQ(TextEdit);
 
 	d->bCapture = false;
     this->ReleaseCapture();
@@ -372,7 +372,7 @@ bool TextEdit::OnLBtnUp(MouseEvent *ev)
 
 bool TextEdit::OnMouseMove(MouseEvent *ev)
 {
-	LTK_D(TextEdit);
+	LTK_PUBLIC_DQ(TextEdit);
 
 	if (!d->bCapture) {
         return false;
@@ -388,7 +388,7 @@ bool TextEdit::OnMouseMove(MouseEvent *ev)
 
 bool TextEdit::OnSize(SizeEvent *ev)
 {
-	LTK_D(TextEdit);
+	LTK_PUBLIC_DQ(TextEdit);
 
     this->RecreateLayout();
 
@@ -399,7 +399,7 @@ bool TextEdit::OnSize(SizeEvent *ev)
 
 void TextEdit::OnRecreateResouce(ID2D1RenderTarget *target)
 {
-	LTK_D(TextEdit);
+	LTK_PUBLIC_DQ(TextEdit);
 
 	SAFE_RELEASE(d->brushSelectedText);
     auto textColor = StyleManager::ColorFromString("#ffffff");

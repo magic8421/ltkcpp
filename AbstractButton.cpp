@@ -25,19 +25,19 @@ AbstractButton::~AbstractButton()
 
 AbstractButton::State AbstractButton::GetState()
 {
-	LTK_D(AbstractButton);
+	LTK_PUBLIC_DQ(AbstractButton);
     return d->state;
 }
 
 void AbstractButton::EnableCapture(bool v)
 {
-	LTK_D(AbstractButton);
+	LTK_PUBLIC_DQ(AbstractButton);
 	d->bCaptureMouse = v;
 }
 
 void AbstractButton::Update()
 {
-	LTK_D(AbstractButton);
+	LTK_PUBLIC_DQ(AbstractButton);
 	DWORD timeDiff = ltk::TickCount() - d->lastTick;
     //LTK_LOG("timeDiff: %d", timeDiff);
     d->lastTick = ltk::TickCount();
@@ -62,21 +62,21 @@ void AbstractButton::Update()
 
 float AbstractButton::GetBlend()
 {
-	LTK_D(AbstractButton);
+	LTK_PUBLIC_DQ(AbstractButton);
 	return (float)d->aniCounter / AniDuration;
 }
 
 void AbstractButton::AttachClickedDelegate(const Delegate0<> &cb)
 {
 	LTK_CHECK_THREAD;
-	LTK_D(AbstractButton);
+	LTK_PUBLIC_DQ(AbstractButton);
 	return d->clickedDelegate += cb;
 }
 
 void AbstractButton::RemoveClickedDelegate(const Delegate0<> &cb)
 {
 	LTK_CHECK_THREAD;
-	LTK_D(AbstractButton);
+	LTK_PUBLIC_DQ(AbstractButton);
 	d->clickedDelegate -= cb;
 }
 
@@ -84,7 +84,7 @@ void AbstractButton::AttachMouseEventDelegate(
 	const Delegate2<MouseEvent*, bool&> &cb)
 {
 	LTK_CHECK_THREAD;
-	LTK_D(AbstractButton);
+	LTK_PUBLIC_DQ(AbstractButton);
 	return d->mouseEventDelegate += cb;
 }
 
@@ -92,13 +92,13 @@ void AbstractButton::RemoveMouseEventDelegate(
 	const Delegate2<MouseEvent*, bool&> &cb)
 {
 	LTK_CHECK_THREAD;
-	LTK_D(AbstractButton);
+	LTK_PUBLIC_DQ(AbstractButton);
 	d->mouseEventDelegate -= cb;
 }
 
 bool AbstractButton::OnEvent(Event *ev)
 {
-	LTK_D(AbstractButton);
+	LTK_PUBLIC_DQ(AbstractButton);
 	bool bHandled = false;
     if (ev->id > eMouseFirst && ev->id < eMouseLast) {
 		Object::SetDelegeteInvoker(this);
@@ -113,7 +113,7 @@ bool AbstractButton::OnEvent(Event *ev)
 
 bool AbstractButton::OnMouseMove(MouseEvent *ev)
 {
-	LTK_D(AbstractButton);
+	LTK_PUBLIC_DQ(AbstractButton);
 	if (!d->bMouseIn) {
 		//LTK_LOG("OnMouseMove");
 		d->bMouseIn = true;
@@ -127,7 +127,7 @@ bool AbstractButton::OnMouseMove(MouseEvent *ev)
 
 bool AbstractButton::OnMouseLeave(MouseEvent *ev)
 {
-	LTK_D(AbstractButton);
+	LTK_PUBLIC_DQ(AbstractButton);
 	//LTK_LOG("OnMouseLeave");
 	d->bMouseIn = false;
     this->BeginAnimation();
@@ -138,7 +138,7 @@ bool AbstractButton::OnMouseLeave(MouseEvent *ev)
 
 bool AbstractButton::OnLBtnDown(MouseEvent *ev)
 {
-	LTK_D(AbstractButton);
+	LTK_PUBLIC_DQ(AbstractButton);
     d->state = State::Pressed;
     if (d->bCaptureMouse) {
         this->SetCapture();
@@ -149,7 +149,7 @@ bool AbstractButton::OnLBtnDown(MouseEvent *ev)
 
 bool AbstractButton::OnLBtnUp(MouseEvent *ev)
 {
-	LTK_D(AbstractButton);
+	LTK_PUBLIC_DQ(AbstractButton);
 	d->state = State::Hover;
     if (d->bCaptureMouse) {
         this->ReleaseCapture();
@@ -166,7 +166,7 @@ bool AbstractButton::OnLBtnUp(MouseEvent *ev)
 
 void AbstractButton::OnClicked()
 {
-	LTK_D(AbstractButton);
+	LTK_PUBLIC_DQ(AbstractButton);
 	Object::SetDelegeteInvoker(this);
 	d->clickedDelegate();
 }

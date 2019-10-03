@@ -22,7 +22,7 @@ const float ScrollBar::SLIDER_MIN = 10.0f;
 
 ScrollBar::ScrollBar(Mode mode) : Sprite(new ScrollBarPrivate(this, mode))
 {
-	LTK_D(ScrollBar);
+	LTK_PUBLIC_DQ(ScrollBar);
 	d->Init();
 }
 
@@ -34,7 +34,7 @@ ScrollBar::ScrollBar(ScrollBarPrivate *d) : Sprite(d)
 
 void ScrollBarPrivate::Init()
 {
-	LTK_Q(ScrollBar);
+	LTK_PRIVATE_DQ(ScrollBar);
 	d->slider = new Button;
 	d->slider->EnableCapture(false);
 	d->slider->AttachMouseEventDelegate(MakeDelegate(
@@ -61,25 +61,25 @@ ScrollBar::~ScrollBar()
 
 float ScrollBar::GetValue()
 {
-	LTK_D(ScrollBar);
+	LTK_PUBLIC_DQ(ScrollBar);
 	return d->position;
 }
 
 void ScrollBar::SetContentSize(float size)
 {
-	LTK_D(ScrollBar);
+	LTK_PUBLIC_DQ(ScrollBar);
 	d->contentSize = size;
 }
 
 void ScrollBar::SetPosition(float pos)
 {
-	LTK_D(ScrollBar);
+	LTK_PUBLIC_DQ(ScrollBar);
 	d->position = pos;
 }
 
 void ScrollBar::Update()
 {
-	LTK_D(ScrollBar);
+	LTK_PUBLIC_DQ(ScrollBar);
 	auto rc = this->GetRect();
 
     float view_size;
@@ -124,7 +124,7 @@ void ScrollBar::Update()
 
 bool ScrollBar::OnPaint(PaintEvent *ev)
 {
-	LTK_D(ScrollBar);
+	LTK_PUBLIC_DQ(ScrollBar);
 	if (d->mode != Horizontal) {
     }
 	if (!d->bDrag) {
@@ -135,7 +135,7 @@ bool ScrollBar::OnPaint(PaintEvent *ev)
 
 bool ScrollBar::OnMouseMove(MouseEvent *ev)
 {
-	LTK_D(ScrollBar);
+	LTK_PUBLIC_DQ(ScrollBar);
 	//LTK_LOG("OnMouseMove %f %f", ev->x, ev->y);
 	if (d->bDrag) {
 		float x = ev->x - d->deltaX;
@@ -166,7 +166,7 @@ bool ScrollBar::OnMouseMove(MouseEvent *ev)
 
 bool ScrollBar::OnLBtnUp(MouseEvent *ev)
 {
-	LTK_D(ScrollBar);
+	LTK_PUBLIC_DQ(ScrollBar);
 	LTK_LOG("OnLBtnUp");
 	d->bDrag = false;
     this->ReleaseCapture();
@@ -177,7 +177,7 @@ bool ScrollBar::OnLBtnUp(MouseEvent *ev)
 
 bool ScrollBar::OnValueChanged(float pos)
 {
-	LTK_D(ScrollBar);
+	LTK_PUBLIC_DQ(ScrollBar);
 	Object::SetDelegeteInvoker(this);
 	d->valueChangedDelegate(pos);
     return false;
@@ -189,19 +189,19 @@ void ScrollBar::OnRecreateResouce(ID2D1RenderTarget *target)
 
 void ScrollBar::AttachValueChangedDelegate(const Delegate1<float> &cb)
 {
-	LTK_D(ScrollBar);
+	LTK_PUBLIC_DQ(ScrollBar);
 	d->valueChangedDelegate += cb;
 }
 
 void ScrollBar::RemoveValueChangedDelegate(const Delegate1<float> &cb)
 {
-	LTK_D(ScrollBar);
+	LTK_PUBLIC_DQ(ScrollBar);
 	d->valueChangedDelegate -= cb;
 }
 
 void ScrollBarPrivate::OnSilderEvent(MouseEvent *ev, bool &bHandled)
 {
-	LTK_Q(ScrollBar);
+	LTK_PRIVATE_DQ(ScrollBar);
 	switch (ev->id) {
     case eLBtnDown:
         LTK_LOG("eLBtnDown %f %f", ev->x, ev->y);

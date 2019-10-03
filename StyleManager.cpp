@@ -454,7 +454,8 @@ static D2D1_COLOR_F operator+(const D2D1_COLOR_F&lhs, const D2D1_COLOR_F&rhs)
     return ret;
 }
 
-void RectangleBackground::Draw(Window *wnd, ID2D1RenderTarget *targe, const RectF &rc, State state, float blend)
+void RectangleBackground::Draw(Window *wnd, ID2D1RenderTarget *target,
+	const RectF &rc, State state, float blend)
 {
     auto brush = wnd->GetStockBrush();
     D2D1_COLOR_F clrInner;
@@ -495,27 +496,29 @@ void RectangleBackground::Draw(Window *wnd, ID2D1RenderTarget *targe, const Rect
 	rc2.Width -= this->margin.left + this->margin.right;
 	rc2.Height -= this->margin.top + this->margin.bottom;
 
+	auto old_mode = target->GetAntialiasMode();
 
 	if (this->roundCorner >= 0.f) {
 		D2D1_ROUNDED_RECT rrc;
 		rrc.radiusX = this->roundCorner;
 		rrc.radiusY = this->roundCorner;
 		rrc.rect = D2D1RectF(rc2);
-		targe->SetAntialiasMode(D2D1_ANTIALIAS_MODE_PER_PRIMITIVE);
-		targe->FillRoundedRectangle(&rrc, brush);
+		target->SetAntialiasMode(D2D1_ANTIALIAS_MODE_PER_PRIMITIVE);
+		target->FillRoundedRectangle(&rrc, brush);
 		if (this->hasBorder) {
 			brush->SetColor(clrBorder);
-			targe->DrawRoundedRectangle(&rrc, brush);
+			target->DrawRoundedRectangle(&rrc, brush);
 		}
-		targe->SetAntialiasMode(D2D1_ANTIALIAS_MODE_ALIASED);
 	}
 	else {
-		targe->FillRectangle(D2D1RectF(rc2), brush);
+		target->SetAntialiasMode(D2D1_ANTIALIAS_MODE_ALIASED);
+		target->FillRectangle(D2D1RectF(rc2), brush);
 		if (this->hasBorder) {
 			brush->SetColor(clrBorder);
-			targe->DrawRectangle(D2D1RectF(rc2), brush);
+			target->DrawRectangle(D2D1RectF(rc2), brush);
 		}
     }
+	target->SetAntialiasMode(old_mode);
 }
 
 void RectangleBackground::SetMargin(float left, float top, float right, float bottom)

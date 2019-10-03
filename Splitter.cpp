@@ -12,7 +12,7 @@ Splitter::Splitter(Mode m) : Sprite(new SplitterPrivate(this, m))
 
 void Splitter::AddClient(Sprite *sp)
 {
-	LTK_D(Splitter);
+	LTK_PUBLIC_DQ(Splitter);
 	SplitterItem item;
 	item.client = sp;
 	this->AddChild(sp);
@@ -21,13 +21,13 @@ void Splitter::AddClient(Sprite *sp)
 
 void Splitter::SetClientSize(UINT idx, float size)
 {
-	LTK_D(Splitter);
+	LTK_PUBLIC_DQ(Splitter);
 	d->vecItems[idx].size = size;
 }
 
 void Splitter::DoLayout()
 {
-	LTK_D(Splitter);
+	LTK_PUBLIC_DQ(Splitter);
 	if (d->vecItems.size() == 0) {
 		return;
 	}
@@ -84,7 +84,7 @@ int SplitterPrivate::HitTest(float x, float y)
 
 bool Splitter::OnLBtnDown(MouseEvent *ev)
 {
-	LTK_D(Splitter);
+	LTK_PUBLIC_DQ(Splitter);
 	d->dragIdx = d->HitTest(ev->x, ev->y);
 	if (d->dragIdx >= 0) {
 		this->SetCapture();
@@ -96,7 +96,7 @@ bool Splitter::OnLBtnDown(MouseEvent *ev)
 
 bool Splitter::OnLBtnUp(MouseEvent *ev)
 {
-	LTK_D(Splitter);
+	LTK_PUBLIC_DQ(Splitter);
 	if (d->bCapture) {
 		d->dragPos = 0.f;
 		d->dragIdx = -1;
@@ -125,7 +125,7 @@ float SplitterPrivate::PosFromIdx(UINT idx)
 
 bool Splitter::OnMouseMove(MouseEvent *ev)
 {
-	LTK_D(Splitter);
+	LTK_PUBLIC_DQ(Splitter);
 	if (!d->bCapture) {
 		auto idx = d->HitTest(ev->x, ev->y);
 		if (idx >= 0) {

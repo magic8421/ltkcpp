@@ -35,7 +35,7 @@ BoxLayoutPrivate::BoxLayoutPrivate(BoxLayout *q, BoxLayout::Mode m):
 
 void BoxLayout::AddLayoutItem(Sprite *item, float preferedSize, float growFactor)
 {
-	LTK_D(BoxLayout);
+	LTK_PUBLIC_DQ(BoxLayout);
 	Sprite::AddChild(item);
     //item->AddRef();
     BoxLayoutParam param;
@@ -47,7 +47,7 @@ void BoxLayout::AddLayoutItem(Sprite *item, float preferedSize, float growFactor
 }
 void BoxLayout::InsertLayoutItem(UINT before, Sprite *item, float preferedSize, float growFactor)
 {
-	LTK_D(BoxLayout);
+	LTK_PUBLIC_DQ(BoxLayout);
 	Sprite::AddChild(item);
     //item->AddRef();
     BoxLayoutParam param;
@@ -60,7 +60,7 @@ void BoxLayout::InsertLayoutItem(UINT before, Sprite *item, float preferedSize, 
 
 void BoxLayout::AddSpaceItem(float preferedSize, float growFactor)
 {
-	LTK_D(BoxLayout);
+	LTK_PUBLIC_DQ(BoxLayout);
 	BoxLayoutParam param;
     param.size = preferedSize;
     param.growFactor = growFactor;
@@ -69,7 +69,7 @@ void BoxLayout::AddSpaceItem(float preferedSize, float growFactor)
 
 bool BoxLayout::OnSize(SizeEvent *ev)
 {
-	LTK_D(BoxLayout);
+	LTK_PUBLIC_DQ(BoxLayout);
     // TODO rename this function
     float sum_size = 0.0f;
     float sum_factor = 0.0f;
@@ -127,7 +127,7 @@ bool BoxLayout::OnSize(SizeEvent *ev)
 
 void BoxLayout::SetSpacing(float spacing)
 {
-	LTK_D(BoxLayout);
+	LTK_PUBLIC_DQ(BoxLayout);
 	d->spacing = spacing;
 }
 

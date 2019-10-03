@@ -53,10 +53,11 @@ namespace ltk {
 		#pragma warning(push)
 		#pragma warning(disable:4996)
 		#pragma warning(disable:28159)
-        float dpi_x = 0.0f;
-        float dpi_y = 0.0f;
-        g_d2d_factory->GetDesktopDpi(&dpi_x, &dpi_y); // wtf? non-square pixel?
-
+        static float dpi_x = 0.0f;
+        static float dpi_y = 0.0f;
+		if (dpi_x == 0.0f) {
+			g_d2d_factory->GetDesktopDpi(&dpi_x, &dpi_y); // wtf? non-square pixel?
+		}
         x = x * 96.0f / dpi_x;
         y = y * 96.0f / dpi_y;
 		#pragma warning(pop)
@@ -109,8 +110,11 @@ namespace ltk {
         Margin dMargin;
         float scale = 1.0f;
         float scale2 = 1.0f;
+		ScreenCoordToDip(scale, scale2);
 
-        ScreenCoordToDip(scale, scale2);
+		auto old_mode = target->GetAntialiasMode();
+		target->SetAntialiasMode(D2D1_ANTIALIAS_MODE_ALIASED);
+
         dMargin.left = margin.left * scale;
         dMargin.top = margin.top * scale;
         dMargin.right = margin.right * scale;
@@ -223,6 +227,8 @@ namespace ltk {
         dst.bottom = dst2.Y + dst2.Height;
         AdjustRect(src, dst, scale);
         target->DrawBitmap(bitmap, dst, opacity, interp_mode, src);
+
+		target->SetAntialiasMode(old_mode);
     }
 
 	void DrawTextureThreePatchHorizontal(ID2D1RenderTarget *target, ID2D1Bitmap *bitmap,

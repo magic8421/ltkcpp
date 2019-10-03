@@ -53,7 +53,7 @@ void SpritePrivate::Init()
 RectF Sprite::GetRect()
 {
 	LTK_CHECK_THREAD;
-	LTK_D(Sprite);
+	LTK_PUBLIC_DQ(Sprite);
 	return d->rect;
 }
 
@@ -69,7 +69,7 @@ RectF Sprite::GetClientRect()
 RectF Sprite::GetAbsRect()
 {
 	LTK_CHECK_THREAD;
-	LTK_D(Sprite);
+	LTK_PUBLIC_DQ(Sprite);
 	Sprite *sp = GetParentSprite();
 	RectF rcSelf = GetRect();
 	RectF rcParent;
@@ -84,20 +84,20 @@ RectF Sprite::GetAbsRect()
 
 float Sprite::GetWidth()
 {
-	LTK_D(Sprite);
+	LTK_PUBLIC_DQ(Sprite);
 	return d->rect.Width;
 }
 
 float Sprite::GetHeight()
 {
-	LTK_D(Sprite);
+	LTK_PUBLIC_DQ(Sprite);
 	return d->rect.Height;
 }
 
 void Sprite::SetRect( RectF rect )
 {
 	LTK_CHECK_THREAD;
-	LTK_D(Sprite);
+	LTK_PUBLIC_DQ(Sprite);
 	// 检查下宽高是否小于0 是则设为0 然后0宽或0高要在OnDraw这些里面特殊处理一下
 	rect.Width = max(0.0f, rect.Width);
 	rect.Height = max(0.0f, rect.Height);
@@ -134,14 +134,14 @@ void Sprite::Invalidate()
 void Sprite::SetWindow( Window *wnd )
 {
 	LTK_CHECK_THREAD;
-	LTK_D(Sprite);
+	LTK_PUBLIC_DQ(Sprite);
 	//LTK_LOG("SetWindow: %08x", wnd);
 	d->window = wnd;
 }
 
 void SpritePrivate::HandlePaint(ID2D1RenderTarget *target)
 {
-	LTK_Q(Sprite);
+	LTK_PRIVATE_DQ(Sprite);
 
 	if (!d->bVisible)
 	{
@@ -218,7 +218,7 @@ void SpritePrivate::HandleImeInput(LPCTSTR text)
 Window * Sprite::GetWindow()
 {
 	LTK_CHECK_THREAD;
-	LTK_D(Sprite);
+	LTK_PUBLIC_DQ(Sprite);
 	Sprite *sp = this;
 	while (sp->GetParentSprite())
 	{
@@ -268,7 +268,7 @@ void Sprite::BringToFront()
 void Sprite::SetVisible( bool v )
 {
 	LTK_CHECK_THREAD;
-	LTK_D(Sprite);
+	LTK_PUBLIC_DQ(Sprite);
 	if (d->bVisible != v)
 	{
 		Invalidate();
@@ -279,14 +279,14 @@ void Sprite::SetVisible( bool v )
 bool Sprite::GetVisible()
 {
 	LTK_CHECK_THREAD;
-	LTK_D(Sprite);
+	LTK_PUBLIC_DQ(Sprite);
 	return d->bVisible;
 }
 
 void Sprite::EnableClipChildren( bool bClip )
 {
 	LTK_CHECK_THREAD;
-	LTK_D(Sprite);
+	LTK_PUBLIC_DQ(Sprite);
 	if (d->bClipChildren != bClip)
 	{
 		d->bClipChildren = bClip;
@@ -297,13 +297,13 @@ void Sprite::EnableClipChildren( bool bClip )
 bool Sprite::IsClipChildren()
 {
 	LTK_CHECK_THREAD;
-	LTK_D(Sprite);
+	LTK_PUBLIC_DQ(Sprite);
 	return d->bClipChildren;
 }
 
 bool SpritePrivate::DispatchMouseEvent(MouseEvent *ev)
 {
-	LTK_Q(Sprite);
+	LTK_PRIVATE_DQ(Sprite);
 	if (!this->bVisible) {
 		return false;
 	}
@@ -328,7 +328,7 @@ bool SpritePrivate::DispatchMouseEvent(MouseEvent *ev)
 Sprite * Sprite::GetAncestor()
 {
 	LTK_CHECK_THREAD;
-	LTK_D(Sprite);
+	LTK_PUBLIC_DQ(Sprite);
 	Sprite *sp = this;
 	while (sp->GetParentSprite())
 	{
@@ -339,7 +339,7 @@ Sprite * Sprite::GetAncestor()
 
 Sprite *Sprite::GetParentSprite()
 {
-	LTK_D(Sprite);
+	LTK_PUBLIC_DQ(Sprite);
 	if (GetParent() && GetParent()->IsSpriteType()) {
 		return static_cast<Sprite *>(GetParent());
 	}
@@ -445,7 +445,7 @@ bool Sprite::OnEvent(Event *ev)
 
 void SpritePrivate::HandleRecreateResouce(ID2D1RenderTarget *target)
 {
-	LTK_Q(Sprite);
+	LTK_PRIVATE_DQ(Sprite);
 
 	for (size_t i = 0; i < q->GetChildCount(); i++) {
 		auto obj = q->GetChildAt(i);
@@ -459,7 +459,7 @@ void SpritePrivate::HandleRecreateResouce(ID2D1RenderTarget *target)
 
 void SpritePrivate::HandleThemeChange()
 {
-	LTK_Q(Sprite);
+	LTK_PRIVATE_DQ(Sprite);
 	q->OnThemeChanged();
 	for (size_t i = 0; i < q->GetChildCount(); i++) {
 		auto obj = q->GetChildAt(i);
@@ -512,14 +512,14 @@ void Sprite::KillFocus()
 LPCSTR Sprite::GetName()
 {
 	LTK_CHECK_THREAD;
-	LTK_D(Sprite);
+	LTK_PUBLIC_DQ(Sprite);
 	return d->name;
 }
 
 void Sprite::SetName(LPCSTR n)
 {
 	LTK_CHECK_THREAD;
-	LTK_D(Sprite);
+	LTK_PUBLIC_DQ(Sprite);
 	d->name = n;
 }
 

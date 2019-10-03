@@ -40,13 +40,13 @@ TreeNodePrivate::~TreeNodePrivate()
 
 void TreeNode::SetTreeView(TreeView *tree)
 {
-	LTK_D(TreeNode);
+	LTK_PUBLIC_DQ(TreeNode);
     d->treeView = tree;
 }
 
 void TreeNode::AddChild(TreeNode *node)
 {
-	LTK_D(TreeNode);
+	LTK_PUBLIC_DQ(TreeNode);
 
 	node->d_func()->treeView = d->treeView;
 	Object::AddChild(node);
@@ -54,7 +54,7 @@ void TreeNode::AddChild(TreeNode *node)
 
 void TreeNode::SetRect(const RectF &rc)
 {
-	LTK_D(TreeNode);
+	LTK_PUBLIC_DQ(TreeNode);
 
 	d->rect = rc;
 	d->rcExpandBtn = RectF(rc.X + PADDING, rc.Y + (rc.Height - BTN_SIZE) / 2.0f,
@@ -63,31 +63,31 @@ void TreeNode::SetRect(const RectF &rc)
 
 RectF TreeNode::GetRect()
 {
-	LTK_D(TreeNode);
+	LTK_PUBLIC_DQ(TreeNode);
 	return d->rect;
 }
 
 LPCWSTR TreeNode::GetText()
 {
-	LTK_D(TreeNode);
+	LTK_PUBLIC_DQ(TreeNode);
 	return d->text.c_str();
 }
 
 void TreeNode::SetText(LPCWSTR t)
 {
-	LTK_D(TreeNode);
+	LTK_PUBLIC_DQ(TreeNode);
 	d->text = t;
 }
 
 bool TreeNode::IsExpand()
 {
-	LTK_D(TreeNode);
+	LTK_PUBLIC_DQ(TreeNode);
 	return d->bExpand;
 }
 
 void TreeNode::OnPaint(ID2D1RenderTarget *target, float scroll)
 {
-	LTK_D(TreeNode);
+	LTK_PUBLIC_DQ(TreeNode);
 	auto rcItem = d->rect;
     rcItem.Y -= scroll;
 	auto rcSprite = d->treeView->GetClientRect();
@@ -120,7 +120,7 @@ void TreeNode::OnPaint(ID2D1RenderTarget *target, float scroll)
 
 void TreeNode::OnLBtnDown(PointF pt)
 {
-	LTK_D(TreeNode);
+	LTK_PUBLIC_DQ(TreeNode);
 
 	if (d->rcExpandBtn.Contains(pt)) {
 		d->bExpand = !d->bExpand;
@@ -154,7 +154,7 @@ TreeViewPrivate::TreeViewPrivate(TreeView *q) : SpritePrivate(q),
 
 void TreeViewPrivate::Init()
 {
-	LTK_Q(TreeView);
+	LTK_PRIVATE_DQ(TreeView);
 	q->EnableClipChildren(true);
 	d->root.SetTreeView(q);
 	d->vsb = new ScrollBar(ScrollBar::Vertical);
@@ -164,7 +164,7 @@ void TreeViewPrivate::Init()
 
 void TreeView::DoLayout()
 {
-	LTK_D(TreeView);
+	LTK_PUBLIC_DQ(TreeView);
 
     float y = 0.0f;
     RectF rcSprite = GetClientRect();
@@ -212,28 +212,28 @@ ID2D1SolidColorBrush * TreeView::GetBrush()
 
 IDWriteTextFormat * TreeView::GetTextFormat()
 {
-	LTK_D(TreeView);
+	LTK_PUBLIC_DQ(TreeView);
 
 	return d->format;
 }
 
 TreeViewColors * TreeView::GetColorScheme()
 {
-	LTK_D(TreeView);
+	LTK_PUBLIC_DQ(TreeView);
 
 	return &d->colors;
 }
 
 TreeNode * TreeView::GetRootNode()
 {
-	LTK_D(TreeView);
+	LTK_PUBLIC_DQ(TreeView);
 
 	return &d->root;
 }
 
 bool TreeView::OnPaint(PaintEvent *ev)
 {
-	LTK_D(TreeView);
+	LTK_PUBLIC_DQ(TreeView);
 
     auto rc = this->GetClientRect();
 	d->scrollAni.UpdateScroll(d->maxHeight - rc.Height);
@@ -254,7 +254,7 @@ void TreeView::OnRecreateResouce(ID2D1RenderTarget *target)
 
 void TreeView::OnThemeChanged()
 {
-	LTK_D(TreeView);
+	LTK_PUBLIC_DQ(TreeView);
 
 	auto sm = StyleManager::Instance();
 	d->colors.TextColor = sm->GetColor(d->TextColor);
@@ -267,7 +267,7 @@ void TreeView::OnThemeChanged()
 
 bool TreeView::OnMouseWheel(MouseEvent *ev)
 {
-	LTK_D(TreeView);
+	LTK_PUBLIC_DQ(TreeView);
 
 	d->scrollAni.BeginScroll(ev->delta);
     this->BeginAnimation();
@@ -276,7 +276,7 @@ bool TreeView::OnMouseWheel(MouseEvent *ev)
 
 bool TreeView::OnLBtnDown(MouseEvent *ev)
 {
-	LTK_D(TreeView);
+	LTK_PUBLIC_DQ(TreeView);
 
 	auto scroll = d->scrollAni.GetScroll();
 	d->TraverseTree(&d->root, 0,
@@ -290,7 +290,7 @@ bool TreeView::OnLBtnDown(MouseEvent *ev)
 
 bool TreeView::OnSize(SizeEvent *ev)
 {
-	LTK_D(TreeView);
+	LTK_PUBLIC_DQ(TreeView);
 
     this->DoLayout();
 	d->vsb->SetRect(RectF(ev->width - 8, 0, 6, ev->height));

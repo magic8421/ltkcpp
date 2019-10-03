@@ -33,7 +33,7 @@ LabelPrivate::LabelPrivate(Label *q) : SpritePrivate(q) ,
 
 bool Label::OnPaint(PaintEvent *ev)
 {
-	LTK_D(Label);
+	LTK_PUBLIC_DQ(Label);
     if (d->text.length() == 0) {
         return true;
     }
@@ -48,32 +48,32 @@ bool Label::OnPaint(PaintEvent *ev)
 
 LPCWSTR Label::GetText()
 {
-	LTK_D(Label);
+	LTK_PUBLIC_DQ(Label);
 	return d->text.c_str();
 }
 
 void Label::SetText(LPCWSTR t)
 {
-	LTK_D(Label);
+	LTK_PUBLIC_DQ(Label);
 	d->text = t;
     this->Invalidate();
 }
 
 void Label::SetTextFormat(LPCSTR name)
 {
-	LTK_D(Label);
+	LTK_PUBLIC_DQ(Label);
 	d->TextFormat = name;
 }
 
 void Label::SetTextColor(LPCSTR name)
 {
-	LTK_D(Label);
+	LTK_PUBLIC_DQ(Label);
 	d->TextColor = name;
 }
 
 void Label::OnThemeChanged()
 {
-	LTK_D(Label);
+	LTK_PUBLIC_DQ(Label);
 	auto sm = StyleManager::Instance();
 	d->textFormat = sm->GetTextFormat(d->TextFormat);
 	d->color = sm->GetColor(d->TextColor);

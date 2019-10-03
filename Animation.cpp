@@ -63,7 +63,7 @@ void ScrollAnimationPrivate::OnNoInputTimer()
 // TODO enum Direction { Up, Down }
 void ScrollAnimation::BeginScroll(float delta)
 {
-	LTK_D(ScrollAnimation);
+	LTK_PUBLIC_DQ(ScrollAnimation);
 	d->bInput = true;
 	d->timer->StartOnce();
     State new_state = stStop;
@@ -85,14 +85,14 @@ void ScrollAnimation::BeginScroll(float delta)
 
 void ScrollAnimation::Stop()
 {
-	LTK_D(ScrollAnimation);
+	LTK_PUBLIC_DQ(ScrollAnimation);
 	d->velocity = 0.0f;
 	d->state = stStop;
 }
 
 void ScrollAnimation::UpdateScroll(float height)
 {
-	LTK_D(ScrollAnimation);
+	LTK_PUBLIC_DQ(ScrollAnimation);
 	if (height < 0.0f) {
         return;
     }
@@ -133,13 +133,13 @@ void ScrollAnimation::UpdateScroll(float height)
 
 float ScrollAnimation::GetScroll()
 {
-	LTK_D(ScrollAnimation);
+	LTK_PUBLIC_DQ(ScrollAnimation);
 	return d->scroll;
 }
 
 void ScrollAnimation::SetScroll(float pos)
 {
-	LTK_D(ScrollAnimation);
+	LTK_PUBLIC_DQ(ScrollAnimation);
 	d->state = stStop;
 	d->velocity = 0.0f;
 	d->scroll = pos;
@@ -147,13 +147,13 @@ void ScrollAnimation::SetScroll(float pos)
 
 bool ScrollAnimation::IsRunning()
 {
-	LTK_D(ScrollAnimation);
+	LTK_PUBLIC_DQ(ScrollAnimation);
 	return d->state != stStop;
 }
 
 ltk::ScrollAnimation::State ScrollAnimation::GetState()
 {
-	LTK_D(ScrollAnimation);
+	LTK_PUBLIC_DQ(ScrollAnimation);
 	return d->state;
 }
 

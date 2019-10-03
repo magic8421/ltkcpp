@@ -57,7 +57,7 @@ Window::Window(WindowPrivate *q) : Object(q)
 
 Window::~Window(void)
 {
-	LTK_D(Window);
+	LTK_PUBLIC_DQ(Window);
 	::DestroyWindow(d->hwnd);
 
     if (d->sprite) {
@@ -86,7 +86,7 @@ Window::~Window(void)
 
 void Window::Create(Window *parent, RectF rc)
 {
-	LTK_D(Window);
+	LTK_PUBLIC_DQ(Window);
 
     HWND hParent = NULL;
     if (!parent)
@@ -138,7 +138,7 @@ void Window::Create(Window *parent, SizeF size)
 
 RectF Window::GetRect()
 {
-	LTK_D(Window);
+	LTK_PUBLIC_DQ(Window);
 
     RectF rf;
     RECT rc;
@@ -152,14 +152,14 @@ RectF Window::GetRect()
 
 void Window::SetRect(RectF rc)
 {
-	LTK_D(Window);
+	LTK_PUBLIC_DQ(Window);
 
 	::MoveWindow(d->hwnd, (int)rc.X, (int)rc.Y, (int)rc.Width, (int)rc.Height, TRUE);
 }
 
 void Window::SetCaption(LPCWSTR text)
 {
-	LTK_D(Window);
+	LTK_PUBLIC_DQ(Window);
 
 	::SetWindowText(d->hwnd, text);
 	d->sprite->SetCaptionText(text);
@@ -167,13 +167,13 @@ void Window::SetCaption(LPCWSTR text)
 
 void Window::EnableShadow(bool b)
 {
-	LTK_D(Window);
+	LTK_PUBLIC_DQ(Window);
 	d->bShadow = b;
 }
 
 SizeF Window::GetClientSize()
 {
-	LTK_D(Window);
+	LTK_PUBLIC_DQ(Window);
 
     RECT rc;
 	::GetClientRect(d->hwnd, &rc);
@@ -342,7 +342,7 @@ LRESULT WindowPrivate::HandleNcHitTest(const POINT &pt)
 
 LRESULT Window::WndProc(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam)
 {
-	LTK_D(Window);
+	LTK_PUBLIC_DQ(Window);
 
     POINT pt;
     switch (message)
@@ -563,7 +563,7 @@ void WindowPrivate::DrawNonClient()
 
 ID2D1SolidColorBrush *Window::GetStockBrush()
 {
-	LTK_D(Window);
+	LTK_PUBLIC_DQ(Window);
 	return d->brush;
 }
 
@@ -581,7 +581,7 @@ void WindowPrivate::RecreateResouce()
 
 void Window::OnPaint(HWND hwnd )
 {
-	LTK_D(Window);
+	LTK_PUBLIC_DQ(Window);
 	PAINTSTRUCT ps;
 	HDC hdc = ::BeginPaint(hwnd, &ps);
     HRESULT hr = E_FAIL;
@@ -635,7 +635,7 @@ void Window::OnPaint(HWND hwnd )
 
 bool Window::OnSize(float cx, float cy, DWORD flag)
 {
-	LTK_D(Window);
+	LTK_PUBLIC_DQ(Window);
 	if (d->sprite) {
 		ScreenCoordToDip(cx, cy);
 		d->sprite->SetRect(RectF(1.0f, 1.0f, (float)(cx - 2.0f), (float)(cy - 1.0f)));
@@ -645,7 +645,7 @@ bool Window::OnSize(float cx, float cy, DWORD flag)
 
 void Window::CloseWindow()
 {
-	LTK_D(Window);
+	LTK_PUBLIC_DQ(Window);
 	bool proceed = false;
     OnClose(proceed);
     if (proceed) {
@@ -655,13 +655,13 @@ void Window::CloseWindow()
 
 void Window::Minimize()
 {
-	LTK_D(Window);
+	LTK_PUBLIC_DQ(Window);
 	::ShowWindow(d->hwnd, SW_MINIMIZE);
 }
 
 void Window::Maximize()
 {
-	LTK_D(Window);
+	LTK_PUBLIC_DQ(Window);
 	WINDOWPLACEMENT wp = { 0 };
     wp.length = sizeof(wp);
 	::GetWindowPlacement(d->hwnd, &wp);
@@ -674,7 +674,7 @@ void Window::Maximize()
 
 bool Window::OnClose(bool &proceed)
 {
-	LTK_D(Window);
+	LTK_PUBLIC_DQ(Window);
 	proceed = true;
     d->CloseDelegate(std::ref(proceed));
     return proceed;
@@ -686,7 +686,7 @@ void Window::OnDestroy()
 
 HWND Window::Handle()
 {
-	LTK_D(Window);
+	LTK_PUBLIC_DQ(Window);
 	return d->hwnd;
 }
 
@@ -750,7 +750,7 @@ LRESULT WindowPrivate::OnImeEvent(UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 void Window::SetImePosition( float x, float y )
 {
-	LTK_D(Window);
+	LTK_PUBLIC_DQ(Window);
 	d->rectComposition.left = (int)x;
 	d->rectComposition.right = (int)x + 5;
 	d->rectComposition.top = (int)y;
@@ -759,31 +759,31 @@ void Window::SetImePosition( float x, float y )
 
 Sprite *Window::GetRootSprite()
 {
-	LTK_D(Window);
+	LTK_PUBLIC_DQ(Window);
 	return d->sprite;
 }
 
 Sprite *Window::SetClientSprite(Sprite *sp)
 {
-	LTK_D(Window);
+	LTK_PUBLIC_DQ(Window);
 	return d->sprite->SetClientSprite(sp);
 }
 
 MenuBar *Window::SetMenu(MenuBar *m)
 {
-	LTK_D(Window);
+	LTK_PUBLIC_DQ(Window);
 	return d->sprite->SetMenuBar(m);
 }
 
 MenuBar * Window::GetMenu()
 {
-	LTK_D(Window);
+	LTK_PUBLIC_DQ(Window);
 	return d->sprite->GetMenuBar();
 }
 
 void Window::SetFocusSprite( Sprite *sp )
 {
-	LTK_D(Window);
+	LTK_PUBLIC_DQ(Window);
 	if (d->spFocus == sp)
 	{
 		return;
@@ -805,20 +805,20 @@ void Window::SetFocusSprite( Sprite *sp )
 
 Sprite *Window::GetFocusSprite()
 {
-	LTK_D(Window);
+	LTK_PUBLIC_DQ(Window);
 	return d->spFocus;
 }
 
 void Window::DisableFocusChange()
 {
-	LTK_D(Window);
+	LTK_PUBLIC_DQ(Window);
 	d->bEnableFocusChange = false;
 }
 
 // TODO change to private?
 void Window::OnImeInput( PCTSTR text )
 {
-	LTK_D(Window);
+	LTK_PUBLIC_DQ(Window);
 	if (d->spFocus)
 	{
 		// 其他的Sprite也有可能去接受ime消息。比如再来一个RichEdit
@@ -828,13 +828,13 @@ void Window::OnImeInput( PCTSTR text )
 
 void Window::SetCaretHeight( float h)
 {
-	LTK_D(Window);
+	LTK_PUBLIC_DQ(Window);
 	d->caretHeight = (int)h;
 }
 
 void Window::SetCapture( Sprite *sp )
 {
-	LTK_D(Window);
+	LTK_PUBLIC_DQ(Window);
 	LTK_ASSERT(sp->GetWindow() == this);
 	d->spCapture = sp;
 	LTK_ASSERT(::IsWindow(d->hwnd));
@@ -844,7 +844,7 @@ void Window::SetCapture( Sprite *sp )
 
 void Window::ReleaseCapture()
 {
-	LTK_D(Window);
+	LTK_PUBLIC_DQ(Window);
 	d->spCapture = NULL;
 	::ReleaseCapture();
     //LTK_LOG("ReleaseCapture");
@@ -852,27 +852,27 @@ void Window::ReleaseCapture()
 
 bool Window::IsCapturing(Sprite *sp)
 {
-	LTK_D(Window);
+	LTK_PUBLIC_DQ(Window);
 	return d->spCapture == sp;
 }
 
 void Window::ShowCaret()
 {
-	LTK_D(Window);
+	LTK_PUBLIC_DQ(Window);
 	LTK_LOG("ShowCaret");
 	::ShowCaret(d->hwnd);
 }
 
 void Window::HideCaret()
 {
-	LTK_D(Window);
+	LTK_PUBLIC_DQ(Window);
 	LTK_LOG("HideCaret");
 	::HideCaret(d->hwnd);
 }
 
 void Window::TrackMouseLeave( Sprite *sp )
 {
-	LTK_D(Window);
+	LTK_PUBLIC_DQ(Window);
 	if (sp->GetWindow() == this)
 	{
 		d->setTrackMouseLeave.insert(sp);
@@ -888,7 +888,7 @@ void Window::TrackMouseLeave( Sprite *sp )
 
 void Window::BeginAnimation(Sprite *sp)
 {
-	LTK_D(Window);
+	LTK_PUBLIC_DQ(Window);
 	//if (!::IsIconic(d->hwnd)) {
 	if (d->setAnimation.size() == 0)
         {
@@ -900,7 +900,7 @@ void Window::BeginAnimation(Sprite *sp)
 
 void Window::EndAnimation(Sprite *sp)
 {
-	LTK_D(Window);
+	LTK_PUBLIC_DQ(Window);
 	if (d->setAnimation.size() == 0)
     {
 		::KillTimer(d->hwnd, TIMER_ANIMATION);
@@ -919,20 +919,20 @@ void Window::EndAnimation(Sprite *sp)
 
 ID2D1Bitmap *Window::GetAtlasBitmap()
 {
-	LTK_D(Window);
+	LTK_PUBLIC_DQ(Window);
 	return d->atlas;
 }
 
 void Window::SetBackground(LPCSTR style)
 {
-	LTK_D(Window);
+	LTK_PUBLIC_DQ(Window);
 	d->background = StyleManager::Instance()->GetBackground(style);
 	d->styleName = style;
 }
 
 void Window::UpdateTheme()
 {
-	LTK_D(Window);
+	LTK_PUBLIC_DQ(Window);
 	d->background = StyleManager::Instance()->GetBackground(d->styleName.c_str());
     this->OnThemeChanged();
 	if (d->sprite) {
@@ -955,14 +955,14 @@ void Window::UpdateTheme()
 
 Cookie Window::AttachCloseDelegate(const Delegate1<bool&> &cb)
 {
-	LTK_D(Window);
+	LTK_PUBLIC_DQ(Window);
 	d->CloseDelegate += cb;
 	return 0;
 }
 
 void Window::RemoveCloseDelegate(const Delegate1<bool&> &cb)
 {
-	LTK_D(Window);
+	LTK_PUBLIC_DQ(Window);
 	d->CloseDelegate -= cb;
 }
 

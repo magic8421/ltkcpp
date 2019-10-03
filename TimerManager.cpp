@@ -26,20 +26,20 @@ Timer::Timer(TimerPrivate *d) : Object(d)
 
 void Timer::SetInterval(UINT ms)
 {
-	LTK_D(Timer);
+	LTK_PUBLIC_DQ(Timer);
 	d->elapse = ms;
 }
 
 void Timer::Start()
 {
-	LTK_D(Timer);
+	LTK_PUBLIC_DQ(Timer);
 	d->bOnce = false;
 	TimerManager::Instance()->SetTimer(this);
 }
 
 void Timer::StartOnce()
 {
-	LTK_D(Timer);
+	LTK_PUBLIC_DQ(Timer);
 	d->bOnce = true;
 	TimerManager::Instance()->SetTimer(this);
 }
@@ -56,19 +56,19 @@ void Timer::Reset()
 
 UINT Timer::GetId()
 {
-	LTK_D(Timer);
+	LTK_PUBLIC_DQ(Timer);
 	return d->id;
 }
 
 void Timer::AttatchTimeoutDelegate(const Delegate0<> &cb)
 {
-	LTK_D(Timer);
+	LTK_PUBLIC_DQ(Timer);
 	d->delegateTrigerred += cb;
 }
 
 void Timer::RemoveTimeoutDelegate(const Delegate0<> &cb)
 {
-	LTK_D(Timer);
+	LTK_PUBLIC_DQ(Timer);
 	d->delegateTrigerred -= cb;
 }
 

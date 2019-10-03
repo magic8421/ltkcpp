@@ -45,7 +45,7 @@ ButtonPrivate::~ButtonPrivate()
 
 void Button::OnThemeChanged()
 {
-	LTK_D(Button);
+	LTK_PUBLIC_DQ(Button);
 	SAFE_RELEASE(d->layout);
 	auto sm = StyleManager::Instance();
 
@@ -56,7 +56,7 @@ void Button::OnThemeChanged()
 
 bool Button::OnPaint(PaintEvent *ev)
 {
-	LTK_D(Button);
+	LTK_PUBLIC_DQ(Button);
 	Update();
     //LTK_LOG("OnPaint target: 0x%08x", ev->target);
 
@@ -97,7 +97,7 @@ bool Button::OnPaint(PaintEvent *ev)
 void Button::SetText(LPCWSTR text)
 {
 	LTK_CHECK_THREAD;
-	LTK_D(Button);
+	LTK_PUBLIC_DQ(Button);
 	d->text = text;
 	SAFE_RELEASE(d->layout);
     this->Invalidate();
@@ -105,7 +105,7 @@ void Button::SetText(LPCWSTR text)
 
 void Button::RecreateLayout()
 {
-	LTK_D(Button);
+	LTK_PUBLIC_DQ(Button);
 	static int cnt = 0;
 	//LTK_LOG("Button::RecreateLayout() %d", cnt++);
 
@@ -125,7 +125,7 @@ void Button::RecreateLayout()
 SizeF Button::GetPreferredSize()
 {
 	LTK_CHECK_THREAD;
-	LTK_D(Button);
+	LTK_PUBLIC_DQ(Button);
 	if (!d->layout) {
 		this->RecreateLayout();
 	}
@@ -145,21 +145,21 @@ bool Button::OnSize(SizeEvent *ev)
 void Button::SetBackground(LPCSTR name)
 {
 	LTK_CHECK_THREAD;
-	LTK_D(Button);
+	LTK_PUBLIC_DQ(Button);
 	d->Background = name;
 }
 
 void Button::SetTextFormat(LPCSTR name)
 {
 	LTK_CHECK_THREAD;
-	LTK_D(Button);
+	LTK_PUBLIC_DQ(Button);
 	d->TextFormat = name;
 }
 
 void Button::SetTextColor(LPCSTR name)
 {
 	LTK_CHECK_THREAD;
-	LTK_D(Button);
+	LTK_PUBLIC_DQ(Button);
 	d->TextColor = name;
 }
 

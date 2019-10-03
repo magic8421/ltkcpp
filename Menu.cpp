@@ -57,7 +57,7 @@ PopupMenuPrivate::PopupMenuPrivate(PopupMenu *q) :
 
 void PopupMenu::AddItem(LPCWSTR text)
 {
-	LTK_D(PopupMenu);
+	LTK_PUBLIC_DQ(PopupMenu);
 	auto item = new MenuItem;
 	item->text = text;
 	d->vecItems.push_back(item);
@@ -65,31 +65,31 @@ void PopupMenu::AddItem(LPCWSTR text)
 
 UINT PopupMenu::GetChildCount()
 {
-	LTK_D(PopupMenu);
+	LTK_PUBLIC_DQ(PopupMenu);
 	return d->vecItems.size();
 }
 
 void PopupMenu::AttachItemClickedDelegate(UINT idx, const Delegate0<> &cb)
 {
-	LTK_D(PopupMenu);
+	LTK_PUBLIC_DQ(PopupMenu);
 	d->vecItems[idx]->clickedDelegate += cb;
 }
 
 void PopupMenu::SetWidth(float w)
 {
-	LTK_D(PopupMenu);
+	LTK_PUBLIC_DQ(PopupMenu);
 	d->width = w;
 }
 
 float PopupMenu::GetWidth()
 {
-	LTK_D(PopupMenu);
+	LTK_PUBLIC_DQ(PopupMenu);
 	return d->width;
 }
 
 void PopupMenu::SetSubMenu(UINT idx, PopupMenu *popup)
 {
-	LTK_D(PopupMenu);
+	LTK_PUBLIC_DQ(PopupMenu);
 	LTK_ASSERT(d->vecItems[idx]->sub_menu == nullptr);
 	popup->d_func()->parent = this;
 	d->vecItems[idx]->sub_menu = popup;
@@ -102,7 +102,7 @@ void PopupMenuPrivate::SetMenuBar(MenuBar *b)
 
 void PopupMenu::Show(Window* wnd, const RectF& rc)
 {
-	LTK_D(PopupMenu);
+	LTK_PUBLIC_DQ(PopupMenu);
 	if (!wnd) {
 		return;
 	}
@@ -120,7 +120,7 @@ void PopupMenu::Show(Window* wnd, const RectF& rc)
 
 void PopupMenuPrivate::Hide()
 {
-	LTK_Q(PopupMenu);
+	LTK_PRIVATE_DQ(PopupMenu);
 	this->state = PopupMenuPrivate::sHide;
 	this->bHiding = true;
 	if (q->GetParentSprite()) {
@@ -138,7 +138,7 @@ void PopupMenuPrivate::Hide()
 
 void PopupMenuPrivate::HideAll()
 {
-	LTK_Q(PopupMenu);
+	LTK_PRIVATE_DQ(PopupMenu);
 	this->state = PopupMenuPrivate::sHide;
 	this->bHiding = true;
 	if (q->GetParentSprite()) {
@@ -156,7 +156,7 @@ void PopupMenuPrivate::HideAll()
 
 void PopupMenu::OnThemeChanged()
 {
-	LTK_D(PopupMenu);
+	LTK_PUBLIC_DQ(PopupMenu);
 	auto sm = StyleManager::Instance();
 	d->format = sm->GetTextFormat(d->TextFormat);
 	d->textColor = sm->GetColor(d->TextColor);
@@ -172,13 +172,13 @@ void PopupMenu::OnThemeChanged()
 
 void PopupMenu::OnParentChanged(Sprite* old, Sprite* new_)
 {
-	LTK_D(PopupMenu);
+	LTK_PUBLIC_DQ(PopupMenu);
 	d->hoverIdx = -1;
 }
 
 bool PopupMenu::OnPaint(PaintEvent *ev)
 {
-	LTK_D(PopupMenu);
+	LTK_PUBLIC_DQ(PopupMenu);
 	auto rcbg = this->GetClientRect();
 	rcbg.Inflate(7, 7);
 
@@ -225,7 +225,7 @@ bool PopupMenu::OnPaint(PaintEvent *ev)
 
 bool PopupMenu::OnKillFocus(FocusEvent* ev)
 {
-	LTK_D(PopupMenu);
+	LTK_PUBLIC_DQ(PopupMenu);
 	Invalidate();
 	if (d->trackingIdx < 0 && !d->bHiding) {
 		d->Hide();
@@ -240,7 +240,7 @@ bool PopupMenu::OnKillFocus(FocusEvent* ev)
 
 bool PopupMenu::OnLBtnDown(MouseEvent* ev)
 {
-	LTK_D(PopupMenu);
+	LTK_PUBLIC_DQ(PopupMenu);
 	auto wnd = GetWindow();
 	wnd->DisableFocusChange();
 	int hit = (int)(ev->y / ITEM_HEIGHT);
@@ -267,7 +267,7 @@ bool PopupMenu::OnLBtnDown(MouseEvent* ev)
 
 void PopupMenuPrivate::TrackPopupMenu(UINT idx)
 {
-	LTK_Q(PopupMenu);
+	LTK_PRIVATE_DQ(PopupMenu);
 	auto menu = this->vecItems[idx]->sub_menu;
 	if (menu) {
 		this->trackingIdx = idx;
@@ -281,7 +281,7 @@ void PopupMenuPrivate::TrackPopupMenu(UINT idx)
 
 bool PopupMenu::OnMouseMove(MouseEvent* ev)
 {
-	LTK_D(PopupMenu);
+	LTK_PUBLIC_DQ(PopupMenu);
 	TrackMouseLeave();
 	int hover = (int)(ev->y / ITEM_HEIGHT);
 	if (hover != d->hoverIdx) {
@@ -311,7 +311,7 @@ bool PopupMenu::OnMouseMove(MouseEvent* ev)
 
 bool PopupMenu::OnMouseLeave(MouseEvent* ev)
 {
-	LTK_D(PopupMenu);
+	LTK_PUBLIC_DQ(PopupMenu);
 	d->hoverIdx = -1;
 	Invalidate();
 	return false;
@@ -342,7 +342,7 @@ MenuBarPrivate::~MenuBarPrivate()
 
 void MenuBar::AddItem(LPCWSTR text)
 {
-	LTK_D(MenuBar);
+	LTK_PUBLIC_DQ(MenuBar);
 	Button *btn = new Button;
 	btn->SetText(text);
 	btn->SetBackground("menu_bar_btn_bg");
@@ -358,7 +358,7 @@ void MenuBar::AddItem(LPCWSTR text)
 
 void MenuBar::SetPopupMenu(UINT idx, PopupMenu *menu)
 {
-	LTK_D(MenuBar);
+	LTK_PUBLIC_DQ(MenuBar);
 	LTK_ASSERT(d->vecMenuItems[idx].sub_menu == nullptr);
 	menu->OnThemeChanged();
 	d->vecMenuItems[idx].sub_menu = menu;
@@ -367,7 +367,7 @@ void MenuBar::SetPopupMenu(UINT idx, PopupMenu *menu)
 
 void MenuBarPrivate::OnMenuBtnClicked()
 {
-	LTK_Q(MenuBar);
+	LTK_PRIVATE_DQ(MenuBar);
 	Button* btn = Object::GetDelegateInvoker()->As<Button>();
 	int idx = this->FindMenuButtonIdx(btn);
 	LTK_ASSERT(idx < (int)this->vecMenuItems.size());
@@ -408,7 +408,7 @@ void MenuBarPrivate::OnButtonMouseEvent(MouseEvent* ev, bool& bHandled)
 
 void MenuBar::DoLayout()
 {
-	LTK_D(MenuBar);
+	LTK_PUBLIC_DQ(MenuBar);
 	float x = 0;
 	for (UINT i = 0; i < d->vecMenuItems.size(); i++) {
 		auto param = d->vecMenuItems[i];
@@ -433,7 +433,7 @@ bool MenuBar::OnSize(SizeEvent *ev)
 
 void MenuBar::OnThemeChanged()
 {
-	LTK_D(MenuBar);
+	LTK_PUBLIC_DQ(MenuBar);
 	for (auto &item : d->vecMenuItems) {
 		if (item.sub_menu) {
 			item.sub_menu->OnThemeChanged();

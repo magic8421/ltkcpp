@@ -68,7 +68,7 @@ ListViewPrivate::~ListViewPrivate()
 
 void ListView::OnThemeChanged()
 {
-	LTK_D(ListView);
+	LTK_PUBLIC_DQ(ListView);
 
 	auto sm = StyleManager::Instance();
 	d->textColor = sm->GetColor(d->TextColor);
@@ -81,7 +81,7 @@ void ListView::OnThemeChanged()
 
 bool ListView::OnPaint(PaintEvent *ev)
 {
-	LTK_D(ListView);
+	LTK_PUBLIC_DQ(ListView);
 	ID2D1RenderTarget *target = ev->target;
 
     RectF rcSprite = this->GetRect();
@@ -158,7 +158,7 @@ bool ListView::OnPaint(PaintEvent *ev)
 
 void ListView::AddItem(LPCWSTR text)
 {
-	LTK_D(ListView);
+	LTK_PUBLIC_DQ(ListView);
     LineData data;
     data.cells.push_back(std::move(std::wstring(text)));
 	d->vecData.push_back(std::move(data));
@@ -168,7 +168,7 @@ void ListView::AddItem(LPCWSTR text)
 
 bool ListView::SetSubItemText(UINT row, UINT col, LPCWSTR text)
 {
-	LTK_D(ListView);
+	LTK_PUBLIC_DQ(ListView);
 	if (row >= d->vecData.size()) {
         return false;
     }
@@ -184,7 +184,7 @@ bool ListView::SetSubItemText(UINT row, UINT col, LPCWSTR text)
 
 bool ListView::OnLBtnDown(MouseEvent *ev)
 {
-	LTK_D(ListView);
+	LTK_PUBLIC_DQ(ListView);
 
 	d->scroll.Stop();
     this->EndAnimation();
@@ -196,7 +196,7 @@ bool ListView::OnLBtnDown(MouseEvent *ev)
 
 bool ListView::OnMouseMove(MouseEvent *ev)
 {
-	LTK_D(ListView);
+	LTK_PUBLIC_DQ(ListView);
 
     this->TrackMouseLeave();
 	if (d->scroll.IsRunning()) {
@@ -209,7 +209,7 @@ bool ListView::OnMouseMove(MouseEvent *ev)
 
 bool ListView::OnMouseLeave(MouseEvent *ev)
 {
-	LTK_D(ListView);
+	LTK_PUBLIC_DQ(ListView);
 
 	d->hoverItem = -1;
     this->Invalidate();
@@ -218,21 +218,21 @@ bool ListView::OnMouseLeave(MouseEvent *ev)
 
 float ListView::GetTotalHeight()
 {
-	LTK_D(ListView);
+	LTK_PUBLIC_DQ(ListView);
 
 	return d->vecData.size() * ItemHeight;
 }
 
 int ListView::GetSelectedItem()
 {
-	LTK_D(ListView);
+	LTK_PUBLIC_DQ(ListView);
 
 	return d->selectedItem;
 }
 
 bool ListView::OnMouseWheel(MouseEvent *ev)
 {
-	LTK_D(ListView);
+	LTK_PUBLIC_DQ(ListView);
 
 	//LTK_LOG("wheel delta: %.2f", ev->delta);
 	// TODO lag when using a high precision trackpad.
@@ -277,7 +277,7 @@ void ListViewPrivate::HandleHScrollBar(float pos)
 
 bool ListView::OnSize(SizeEvent *ev)
 {
-	LTK_D(ListView);
+	LTK_PUBLIC_DQ(ListView);
 
 	this->HandleResizeEnd();
 
@@ -290,7 +290,7 @@ bool ListView::OnSize(SizeEvent *ev)
 
 void ListView::RemoveItem(int row)
 {
-	LTK_D(ListView);
+	LTK_PUBLIC_DQ(ListView);
 
 	if (row < 0 || row >= (int)d->vecData.size()) {
         return;
@@ -301,7 +301,7 @@ void ListView::RemoveItem(int row)
 
 LPCWSTR ListView::GetItemText(int row)
 {
-	LTK_D(ListView);
+	LTK_PUBLIC_DQ(ListView);
 
 	if (row < 0 || row >= (int)d->vecData.size()) {
         return NULL;
@@ -311,7 +311,7 @@ LPCWSTR ListView::GetItemText(int row)
 
 void ListView::ScrollToBottom()
 {
-	LTK_D(ListView);
+	LTK_PUBLIC_DQ(ListView);
 
     RectF rcSprite = this->GetRect();
 	d->scroll.SetScroll(this->GetTotalHeight() - rcSprite.Height);
@@ -321,7 +321,7 @@ void ListView::ScrollToBottom()
 // TODO rename to SetColumnWidth
 void ListView::SetColumns(std::vector<float> &columns)
 {
-	LTK_D(ListView);
+	LTK_PUBLIC_DQ(ListView);
 
 	d->vecColumns.swap(columns);
 	d->hsb->SetContentSize(d->header->GetTotalWidth());
@@ -329,7 +329,7 @@ void ListView::SetColumns(std::vector<float> &columns)
 
 void ListView::UpdateColumnWidth()
 {
-	LTK_D(ListView);
+	LTK_PUBLIC_DQ(ListView);
 
 	LTK_ASSERT(d->header);
     std::vector<float> cols;
@@ -345,7 +345,7 @@ void ListViewPrivate::OnHeaderDelete()
 
 void ListViewPrivate::RemoveHeaderDelegates()
 {
-	LTK_Q(ListView);
+	LTK_PRIVATE_DQ(ListView);
 
 	if (d->header) {
 		LTK_LOG("the ListView already has a HeadCtrl");
@@ -360,7 +360,7 @@ void ListViewPrivate::RemoveHeaderDelegates()
 
 void ListView::SetHeaderCtrl(HeaderCtrl *head)
 {
-	LTK_D(ListView);
+	LTK_PUBLIC_DQ(ListView);
 
 	d->RemoveHeaderDelegates();
 	d->header = head;
@@ -376,7 +376,7 @@ void ListView::SetHeaderCtrl(HeaderCtrl *head)
 
 void ListView::HandleResizeEnd()
 {
-	LTK_D(ListView);
+	LTK_PUBLIC_DQ(ListView);
 
 	float max_hscroll = d->header->GetTotalWidth() - this->GetWidth();
 	max_hscroll = max(0.f, max_hscroll);
