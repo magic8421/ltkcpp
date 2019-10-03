@@ -12,6 +12,7 @@ public:
 	void Init();
 	void OnNoInputTimer();
 
+private:
 	float scroll = 0.0f;
 	float velocity = 0.0f;
 	DWORD lastTick = 0;

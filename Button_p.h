@@ -12,6 +12,7 @@ public:
 
 	LTK_DECLARE_PUBLIC(Button);
 
+private:
 	std::wstring text;
 	AbstractBackground *background = nullptr;
 	IDWriteTextFormat *format = nullptr;

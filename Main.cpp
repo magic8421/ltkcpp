@@ -59,18 +59,18 @@ DemoWindow::DemoWindow()
 	this->AttachCloseDelegate(MakeDelegate(OnDemoWindowClose));
 
 	m_timer = new Timer;
+	m_timer->SetParent(this);
 	m_timer->SetInterval(1000);
 	m_timer->AttatchTimeoutDelegate(MakeDelegate(this, &DemoWindow::OnTimer));
 
 	m_onceTimer = new Timer;
+	m_onceTimer->SetParent(this);
 	m_onceTimer->SetInterval(1000);
 	m_onceTimer->AttatchTimeoutDelegate(MakeDelegate(this, &DemoWindow::OnOnceTimer));
 }
 
 DemoWindow::~DemoWindow()
 {
-	delete m_timer;
-	delete m_onceTimer;
 }
 
 void DemoWindow::Create()

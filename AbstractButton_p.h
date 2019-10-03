@@ -13,6 +13,7 @@ public:
 
 	LTK_DECLARE_PUBLIC(AbstractButton);
 
+private:
 	bool bCaptureMouse = true;
 	bool bMouseIn = false;
 

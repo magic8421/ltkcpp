@@ -18,12 +18,14 @@ public:
 		SpritePrivate(q), mode(m) {}
 	virtual ~SplitterPrivate() {}
 
+private:
 	std::vector<SplitterItem> vecItems;
 	Splitter::Mode mode;
 	bool bCapture = false;
 	float dragPos = 0.f;
 	int dragIdx = -1;
 
+public:
 	int HitTest(float x, float y);
 	float PosFromIdx(UINT idx);
 

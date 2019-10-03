@@ -20,6 +20,7 @@ public:
 	void HandleRecreateResouce(ID2D1RenderTarget *target);
 	void HandleThemeChange();
 
+private:
 	bool bVisible = true;
 	bool bClipChildren = false; // TODO this one is useless
 

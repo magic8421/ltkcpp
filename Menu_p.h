@@ -36,6 +36,7 @@ public:
 	PopupMenuPrivate(PopupMenu *q);
 	virtual ~PopupMenuPrivate();
 
+private:
 	std::vector<MenuItem *> vecItems;
 	PopupMenu* parent = nullptr;
 	MenuBar* menuBar = nullptr;
@@ -61,6 +62,7 @@ public:
 	ImmutableString TextFormat;
 	ImmutableString Background;
 
+public:
 	void SetMenuBar(MenuBar*);
 	void Hide();
 	void HideAll();
@@ -82,9 +84,11 @@ public:
 	MenuBarPrivate(MenuBar *q) : SpritePrivate(q) {}
 	virtual ~MenuBarPrivate();
 
+private:
 	std::vector<MenuButtonParam> vecMenuItems;
 	int trackingIdx = -1;
 
+public:
 	int FindMenuButtonIdx(Button *btn);
 
 	void OnMenuHide();

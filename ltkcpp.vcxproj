@@ -277,6 +277,7 @@
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="StyleManager.h" />
     <ClInclude Include="TextEdit.h" />
+    <ClInclude Include="TextEdit_p.h" />
     <ClInclude Include="ThreadHelper.h" />
     <ClInclude Include="TimerManager.h" />
     <ClInclude Include="TimerManager_p.h" />

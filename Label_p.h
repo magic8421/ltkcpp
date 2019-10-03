@@ -12,6 +12,7 @@ public:
 	LabelPrivate(Label *q);
 	virtual ~LabelPrivate() {}
 
+private:
 	std::wstring text;
 	IDWriteTextFormat *textFormat = nullptr;
 	D2D1_COLOR_F color;

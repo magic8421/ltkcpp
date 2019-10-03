@@ -11,7 +11,7 @@
 
 namespace ltk {
 
-class ScrollBar;
+class TextEditPrivate;
 
 class TextEdit : public Sprite
 {
@@ -38,25 +38,10 @@ protected:
     void UpdateCursor(bool bEnsureVisible);
 
 private:
-    void DeleteSelected();
-    int HitTest(float x, float y);
+	LTK_DECLARE_PRIVATE(TextEdit);
 
-private:
-    int m_cursorPos = 0;
-    int m_selection = -1;
-    int m_prevSelection = -1;
-
-    wstring m_text;
-    IDWriteTextFormat *m_format = nullptr;
-    IDWriteTextLayout *m_layout = nullptr;
-    ID2D1SolidColorBrush *m_brushSelectedText = nullptr;
-
-    ScrollBar *m_vsb = nullptr;
-    ScrollAnimation m_scrollAni;
-    bool m_isInside = true;
-    bool m_bCapture = false;
-
-    float m_padding = 10.0f;
+protected:
+	TextEdit(TextEditPrivate *d);
 };
 
 } // namespace ltk

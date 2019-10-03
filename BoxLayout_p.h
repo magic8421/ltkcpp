@@ -17,6 +17,7 @@ public:
 	BoxLayoutPrivate(BoxLayout *q, BoxLayout::Mode m);
 	virtual ~BoxLayoutPrivate() {}
 
+private:
 	std::vector<BoxLayoutParam> params; // item: owner
 	BoxLayout::Mode mode;
 	float spacing = 5.0f;

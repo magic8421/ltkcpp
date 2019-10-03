@@ -18,6 +18,7 @@ public:
 
 	LTK_DECLARE_PUBLIC(Window);
 
+private:
 	HWND hwnd = NULL;
 
 	ImeInput ime;
@@ -42,7 +43,6 @@ public:
 	ShadowFrame shadowBottom;
 	bool bShadow = true;
 
-	void ShowShadowFrame(bool);
 
 	ID2D1Bitmap *atlas = nullptr; // owner TODO share across multiple Window
 	AbstractBackground *background = nullptr;
@@ -51,6 +51,7 @@ public:
 	//Delegate<void(bool &)> CloseDelegate;
 	MulticastDelegate1<bool &> CloseDelegate;
 
+public:
 	void HandleMouseMessage(UINT message, WPARAM wparam, LPARAM lparam);
 	void HandleMouseLeave();
 	void DrawNonClient();
@@ -60,6 +61,7 @@ public:
 
 	LRESULT OnImeEvent(UINT message, WPARAM wparam, LPARAM lparam); // TODO change name
 	LRESULT HandleNcHitTest(const POINT &pt);
+	void ShowShadowFrame(bool);
 };
 
 } // namespace ltk

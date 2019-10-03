@@ -10,6 +10,7 @@ public:
 	ScrollBarPrivate(ScrollBar *q, ScrollBar::Mode m);
 	virtual ~ScrollBarPrivate() {}
 
+private:
 	ScrollBar::Mode mode;
 	Button *slider = nullptr;
 	float contentSize = 100.0f;
@@ -20,6 +21,7 @@ public:
 
 	MulticastDelegate1<float> valueChangedDelegate;
 
+public:
 	void Init();
 	void OnSilderEvent(MouseEvent *ev, bool &bHandled);
 

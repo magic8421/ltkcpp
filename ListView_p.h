@@ -25,6 +25,7 @@ public:
 	void OnHeaderDelete();
 	void RemoveHeaderDelegates();
 
+private:
 	ImmutableString TextColor;
 	ImmutableString HoverColor;
 	ImmutableString SelectedColor;

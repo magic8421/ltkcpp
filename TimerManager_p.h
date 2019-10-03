@@ -10,16 +10,19 @@ public:
 	TimerPrivate(Timer *q);
 	virtual ~TimerPrivate();
 
+private:
 	UINT id = 0;
 	UINT elapse = 0;
 	bool bOnce = false;
 
 	MulticastDelegate0 delegateTrigerred;
 
+public:
 	void Triger();
 	void SetId(UINT id);
 
 	LTK_DECLARE_PUBLIC(Timer);
+	friend class TimerManager;
 };
 
 struct TimerNode {
