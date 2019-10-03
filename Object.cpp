@@ -142,9 +142,34 @@ Object *Object::GetChildAt(UINT idx)
 	return d->children[idx];
 }
 
+void Object::SetTypeTag(DWORD type)
+{
+	d_ptr->type = type;
+}
+
+DWORD Object::GetTypeTag()
+{
+	return d_ptr->type;
+}
+
 bool Object::IsSpriteType()
 {
-	return d_ptr->isSpriteType;
+	return d_ptr->type == ObjectPrivate::tSprite;
+}
+
+void ObjectPrivate::SetSpriteType()
+{
+	this->type = ObjectPrivate::tSprite;
+}
+
+bool Object::IsTreeNodeType()
+{
+	return d_ptr->type == ObjectPrivate::tTreeNode;
+}
+
+void ObjectPrivate::SetTreeNodeType()
+{
+	this->type = ObjectPrivate::tTreeNode;
 }
 
 } // namespace ltk

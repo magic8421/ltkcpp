@@ -282,6 +282,7 @@
     <ClInclude Include="TimerManager.h" />
     <ClInclude Include="TimerManager_p.h" />
     <ClInclude Include="TreeView.h" />
+    <ClInclude Include="TreeView_p.h" />
     <ClInclude Include="UniConversion.h" />
     <ClInclude Include="Window.h" />
     <ClInclude Include="WindowLayout.h" />

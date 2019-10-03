@@ -47,7 +47,7 @@ void SpritePrivate::Init()
 	d->rect.Y = 0;
 	d->rect.Width = 10;
 	d->rect.Height = 10;
-	d->isSpriteType = true;
+	d->SetSpriteType();
 }
 
 RectF Sprite::GetRect()
@@ -142,7 +142,6 @@ void Sprite::SetWindow( Window *wnd )
 void SpritePrivate::HandlePaint(ID2D1RenderTarget *target)
 {
 	LTK_Q(Sprite);
-	auto d = this;
 
 	if (!d->bVisible)
 	{

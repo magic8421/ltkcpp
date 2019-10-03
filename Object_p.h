@@ -10,12 +10,16 @@ public:
 	ObjectPrivate(Object *q);
 	virtual ~ObjectPrivate() {}
 
+	enum type { tObject, tSprite, tTreeNode, tLast };
+	void SetSpriteType();
+	void SetTreeNodeType();
+
 protected:
 	Object *q_ptr = nullptr;
-	bool isSpriteType = false;
 
 private:
 	DWORD thread_id = 0;
+	DWORD type = 0;
 	Object *parent = nullptr;
 	std::vector<Object *> children;
 

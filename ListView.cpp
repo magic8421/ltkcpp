@@ -345,7 +345,6 @@ void ListViewPrivate::OnHeaderDelete()
 
 void ListViewPrivate::RemoveHeaderDelegates()
 {
-	auto d = this;
 	LTK_Q(ListView);
 
 	if (d->header) {

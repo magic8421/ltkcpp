@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "TreeView.h"
+#include "TreeView_p.h"
 #include "ScrollBar.h"
 #include "StyleManager.h"
 #include "Window.h"
@@ -114,52 +115,72 @@ const float TreeNode::m_btn_size = 15;
 
 //////////////////////////////////////////////////////////////////////////
 
-TreeView::TreeView() :
-	TextColor("item_text_clr"),
-	HoverColor("item_hover_clr"),
-	SelectedColor("item_selected_clr"),
-	SelectedTextColor("item_selected_text_clr"),
-	TextFormat("tree_item_text_fmt")
+TreeView::TreeView() : Sprite(new TreeViewPrivate(this))
 {
-    this->EnableClipChildren(true);
-    m_root.SetTreeView(this);
-    m_vsb = new ScrollBar(ScrollBar::Vertical);
-    this->AddChild(m_vsb);
+	d_func()->Init();
+}
+
+TreeView::TreeView(TreeViewPrivate *d)
+{
+	d->Init();
 }
 
 TreeView::~TreeView()
 {
 }
 
+TreeViewPrivate::TreeViewPrivate(TreeView *q) : SpritePrivate(q),
+	TextColor("item_text_clr"),
+	HoverColor("item_hover_clr"),
+	SelectedColor("item_selected_clr"),
+	SelectedTextColor("item_selected_text_clr"),
+	TextFormat("tree_item_text_fmt")
+{
+}
+
+void TreeViewPrivate::Init()
+{
+	auto q = q_func();
+	auto d = this;
+	q->EnableClipChildren(true);
+	d->root.SetTreeView(q);
+	d->vsb = new ScrollBar(ScrollBar::Vertical);
+	q->AddChild(d->vsb);
+}
+
 
 void TreeView::DoLayout()
 {
+	LTK_D(TreeView);
+
     float y = 0.0f;
     RectF rcSprite = GetClientRect();
 
-    TraverseTree(&m_root, 0, [&, this](TreeNode *node, int depth) {
+    d->TraverseTree(&d->root, 0, [&, this](TreeNode *node, int depth) {
         RectF rc;
-        rc.X = (depth - 1) * m_indent;
+		rc.X = (depth - 1) * d->indent;
         rc.Y = y;
-        rc.Width = rcSprite.Width - (depth - 1) * m_indent;
-        rc.Height = m_itemHeight;
+		rc.Width = rcSprite.Width - (depth - 1) * d->indent;
+		rc.Height = d->itemHeight;
         node->SetRect(rc);
-        y += m_itemHeight;
-        m_maxHeight = y;
+		y += d->itemHeight;
+		d->maxHeight = y;
     });
-    if (m_maxHeight > rcSprite.Height) {
-        m_vsb->SetContentSize(m_maxHeight);
-        m_vsb->SetVisible(true);
+	if (d->maxHeight > rcSprite.Height) {
+		d->vsb->SetContentSize(d->maxHeight);
+		d->vsb->SetVisible(true);
     } else {
-        m_vsb->SetVisible(false);
-        m_scrollAni.SetScroll(0);
+		d->vsb->SetVisible(false);
+		d->scrollAni.SetScroll(0);
     }
 }
 
-void TreeView::TraverseTree(TreeNode *node, int depth, 
+void TreeViewPrivate::TraverseTree(TreeNode *node, int depth, 
     const std::function<void(TreeNode *, int)> &cb)
 {
-    if (node != &m_root) {
+	auto d = this;
+
+	if (node != &d->root) {
         cb(node, depth);
     }
     if (node->IsExpand()) {
@@ -176,30 +197,38 @@ ID2D1SolidColorBrush * TreeView::GetBrush()
 
 IDWriteTextFormat * TreeView::GetTextFormat()
 {
-    return m_format;
+	LTK_D(TreeView);
+
+	return d->format;
 }
 
 TreeViewColors * TreeView::GetColorScheme()
 {
-	return &m_colors;
+	LTK_D(TreeView);
+
+	return &d->colors;
 }
 
 TreeNode * TreeView::GetRootNode()
 {
-    return &m_root;
+	LTK_D(TreeView);
+
+	return &d->root;
 }
 
 bool TreeView::OnPaint(PaintEvent *ev)
 {
+	LTK_D(TreeView);
+
     auto rc = this->GetClientRect();
-	m_scrollAni.UpdateScroll(m_maxHeight - rc.Height);
-	if (!m_scrollAni.IsRunning()) {
+	d->scrollAni.UpdateScroll(d->maxHeight - rc.Height);
+	if (!d->scrollAni.IsRunning()) {
 		this->EndAnimation();
 	}
-    m_vsb->SetPosition(m_scrollAni.GetScroll());
+	d->vsb->SetPosition(d->scrollAni.GetScroll());
 
-    TraverseTree(&m_root, 0, [&, this](TreeNode *node, int) {
-        node->OnPaint(ev->target, m_scrollAni.GetScroll());
+	d->TraverseTree(&d->root, 0, [&, this](TreeNode *node, int) {
+		node->OnPaint(ev->target, d->scrollAni.GetScroll());
     });
     return true;
 }
@@ -210,26 +239,32 @@ void TreeView::OnRecreateResouce(ID2D1RenderTarget *target)
 
 void TreeView::OnThemeChanged()
 {
-	auto sm = StyleManager::Instance();
-	m_colors.TextColor = sm->GetColor(TextColor);
-	m_colors.HoverColor = sm->GetColor(HoverColor);
-	m_colors.SelectedColor = sm->GetColor(SelectedColor);
-	m_colors.SelectedTextColor = sm->GetColor(SelectedTextColor);
+	LTK_D(TreeView);
 
-	m_format = sm->GetTextFormat(TextFormat);
+	auto sm = StyleManager::Instance();
+	d->colors.TextColor = sm->GetColor(d->TextColor);
+	d->colors.HoverColor = sm->GetColor(d->HoverColor);
+	d->colors.SelectedColor = sm->GetColor(d->SelectedColor);
+	d->colors.SelectedTextColor = sm->GetColor(d->SelectedTextColor);
+
+	d->format = sm->GetTextFormat(d->TextFormat);
 }
 
 bool TreeView::OnMouseWheel(MouseEvent *ev)
 {
-    m_scrollAni.BeginScroll(ev->delta);
+	LTK_D(TreeView);
+
+	d->scrollAni.BeginScroll(ev->delta);
     this->BeginAnimation();
     return true;
 }
 
 bool TreeView::OnLBtnDown(MouseEvent *ev)
 {
-	auto scroll = m_scrollAni.GetScroll();
-    TraverseTree(&m_root, 0, 
+	LTK_D(TreeView);
+
+	auto scroll = d->scrollAni.GetScroll();
+	d->TraverseTree(&d->root, 0,
 		[ev, scroll](TreeNode *node, int) {
             node->OnLBtnDown(PointF(ev->x, ev->y + scroll));
     });
@@ -240,14 +275,12 @@ bool TreeView::OnLBtnDown(MouseEvent *ev)
 
 bool TreeView::OnSize(SizeEvent *ev)
 {
+	LTK_D(TreeView);
+
     this->DoLayout();
-    m_vsb->SetRect(RectF(ev->width - 8, 0, 6, ev->height));
+	d->vsb->SetRect(RectF(ev->width - 8, 0, 6, ev->height));
     return false;
 }
-
-const float TreeView::m_itemHeight = 30.0f;
-const float TreeView::m_indent = 10.0f;
-
 
 
 } // namespace ltk

@@ -2,7 +2,6 @@
 // Author:    Sara Chen
 // Email:     6659907@163.com
 // QQ:        314266265
-// License:   MIT license
 //////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -16,14 +15,9 @@ namespace ltk {
 
 class ScrollBar;
 class TreeView;
-
-struct TreeViewColors
-{
-	D2D1_COLOR_F TextColor;
-	D2D1_COLOR_F HoverColor;
-	D2D1_COLOR_F SelectedColor;
-	D2D1_COLOR_F SelectedTextColor;
-};
+class TreeViewPrivate;
+class TreeNodePrivate;
+struct TreeViewColors;
 
 class TreeNode
 {
@@ -75,19 +69,10 @@ public:
 
     void DoLayout();
 
-    void TraverseTree(TreeNode *node, int depth,
-        const std::function<void(TreeNode *, int)> &cb);
-
     ID2D1SolidColorBrush *GetBrush();
     IDWriteTextFormat *GetTextFormat();
 	TreeViewColors *GetColorScheme();
     TreeNode *GetRootNode();
-
-	ImmutableString TextColor;
-	ImmutableString HoverColor;
-	ImmutableString SelectedColor;
-	ImmutableString SelectedTextColor;
-	ImmutableString TextFormat;
 
 protected:
     virtual bool OnPaint(PaintEvent *ev) override;
@@ -95,25 +80,13 @@ protected:
     virtual bool OnLBtnDown(MouseEvent *ev) override;
     virtual bool OnMouseWheel(MouseEvent *ev) override;
     virtual void OnRecreateResouce(ID2D1RenderTarget *target) override;
-
-
 	virtual void OnThemeChanged() override;
 
 private:
-    ScrollBar *m_vsb = nullptr;
-    TreeNode m_root;
+	LTK_DECLARE_PRIVATE(TreeView);
 
-    static const float m_itemHeight;
-    static const float m_indent;
-
-    IDWriteTextFormat *m_format = nullptr;
-
-    ScrollAnimation m_scrollAni;
-    float m_maxHeight = 0.0f;
-
-	TreeViewColors m_colors;
-
-    DISALLOW_COPY_AND_ASSIGN(TreeView)
+protected:
+	TreeView(TreeViewPrivate *d);
 };
 
 } // namespace ltk

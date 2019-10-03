@@ -35,7 +35,6 @@ ScrollBar::ScrollBar(ScrollBarPrivate *d) : Sprite(d)
 void ScrollBarPrivate::Init()
 {
 	LTK_Q(ScrollBar);
-	auto d = this;
 	d->slider = new Button;
 	d->slider->EnableCapture(false);
 	d->slider->AttachMouseEventDelegate(MakeDelegate(

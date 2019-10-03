@@ -341,6 +341,9 @@
     <ClInclude Include="TextEdit_p.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="TreeView_p.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />

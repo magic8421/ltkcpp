@@ -31,6 +31,9 @@ public:
 	Object *GetChildAt(UINT idx);
 
 	bool IsSpriteType();
+	bool IsTreeNodeType();
+	void SetTypeTag(DWORD type);
+	DWORD GetTypeTag();
 
 private:
 	DISALLOW_COPY_AND_ASSIGN(Object);
