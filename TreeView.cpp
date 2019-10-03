@@ -12,106 +12,120 @@
 namespace ltk
 {
 
+static const float PADDING = 5;
+static const float BTN_SIZE = 15;
+
+TreeNode::TreeNode() : Object(new TreeNodePrivate(this))
+{
+	d_func()->SetTreeNodeType();
+}
+
+TreeNode::TreeNode(TreeNodePrivate *d)
+{
+	d->SetTreeNodeType();
+}
+
 TreeNode::~TreeNode()
 {
-    for (auto node : m_children) {
-        delete node;
-    }
+}
+
+TreeNodePrivate::TreeNodePrivate(TreeNode *q) : ObjectPrivate(q)
+{
+}
+
+TreeNodePrivate::~TreeNodePrivate()
+{
+
 }
 
 void TreeNode::SetTreeView(TreeView *tree)
 {
-    m_treeView = tree;
+	LTK_D(TreeNode);
+    d->treeView = tree;
 }
 
 void TreeNode::AddChild(TreeNode *node)
 {
-    LTK_ASSERT(node->m_parent == nullptr);
-    LTK_ASSERT(node != this);
+	LTK_D(TreeNode);
 
-    node->m_parent = this;
-    node->m_treeView = m_treeView;
-    m_children.push_back(node);
-}
-
-UINT TreeNode::GetChildCount()
-{
-    return m_children.size();
-}
-
-TreeNode * TreeNode::GetNthChild(UINT i)
-{
-    return m_children[i];
+	node->d_func()->treeView = d->treeView;
+	Object::AddChild(node);
 }
 
 void TreeNode::SetRect(const RectF &rc)
 {
-    m_rect = rc;
-    m_rcExpandBtn = RectF(rc.X + m_padding, rc.Y + (rc.Height - m_btn_size) / 2.0f,
-        m_btn_size, m_btn_size);
+	LTK_D(TreeNode);
+
+	d->rect = rc;
+	d->rcExpandBtn = RectF(rc.X + PADDING, rc.Y + (rc.Height - BTN_SIZE) / 2.0f,
+        BTN_SIZE, BTN_SIZE);
 }
 
 RectF TreeNode::GetRect()
 {
-    return m_rect;
+	LTK_D(TreeNode);
+	return d->rect;
 }
 
 LPCWSTR TreeNode::GetText()
 {
-    return m_text.c_str();
+	LTK_D(TreeNode);
+	return d->text.c_str();
 }
 
 void TreeNode::SetText(LPCWSTR t)
 {
-    m_text = t;
+	LTK_D(TreeNode);
+	d->text = t;
 }
 
 bool TreeNode::IsExpand()
 {
-    return m_bExpand;
+	LTK_D(TreeNode);
+	return d->bExpand;
 }
 
 void TreeNode::OnPaint(ID2D1RenderTarget *target, float scroll)
 {
-    auto rcItem = m_rect;
+	LTK_D(TreeNode);
+	auto rcItem = d->rect;
     rcItem.Y -= scroll;
-	auto rcSprite = m_treeView->GetClientRect();
+	auto rcSprite = d->treeView->GetClientRect();
 	if (rcItem.Y + rcItem.Height < 0.f || rcItem.Y > rcSprite.Height) {
 		return;
 	}
 
-    auto rcExpandBtn = m_rcExpandBtn;
+	auto rcExpandBtn = d->rcExpandBtn;
     rcExpandBtn.Y -= scroll;
-	auto colors = m_treeView->GetColorScheme();
+	auto colors = d->treeView->GetColorScheme();
 
-    auto brush = m_treeView->GetBrush();
+	auto brush = d->treeView->GetBrush();
     //brush->SetColor(StyleManager::ColorFromString("#cccccc"));
     //target->DrawRectangle(D2D1RectF(rcItem), brush);
 
     brush->SetColor(StyleManager::ColorFromString("#aaaaaa"));
-    if (m_children.size() > 0) {
+    if (this->GetChildCount() > 0) {
         target->FillRectangle(D2D1RectF(rcExpandBtn), brush);
     } else {
         target->DrawRectangle(D2D1RectF(rcExpandBtn), brush);
     }
-    auto format = m_treeView->GetTextFormat();
+	auto format = d->treeView->GetTextFormat();
     brush->SetColor(colors->TextColor);
-    float space = m_padding * 2.0f + m_btn_size;
+	float space = PADDING * 2.0f + BTN_SIZE;
 	auto rcText = RectF(
 		space + rcItem.X, rcItem.Y, rcItem.Width - space, rcItem.Height);
     target->DrawText(
-        m_text.c_str(), m_text.size(), format, D2D1RectF(rcText), brush);
+		d->text.c_str(), d->text.size(), format, D2D1RectF(rcText), brush);
 }
 
 void TreeNode::OnLBtnDown(PointF pt)
 {
-    if (m_rcExpandBtn.Contains(pt)) {
-        m_bExpand = !m_bExpand;
+	LTK_D(TreeNode);
+
+	if (d->rcExpandBtn.Contains(pt)) {
+		d->bExpand = !d->bExpand;
     }
 }
-
-const float TreeNode::m_padding = 5;
-const float TreeNode::m_btn_size = 15;
 
 //////////////////////////////////////////////////////////////////////////
 
@@ -140,8 +154,7 @@ TreeViewPrivate::TreeViewPrivate(TreeView *q) : SpritePrivate(q),
 
 void TreeViewPrivate::Init()
 {
-	auto q = q_func();
-	auto d = this;
+	LTK_Q(TreeView);
 	q->EnableClipChildren(true);
 	d->root.SetTreeView(q);
 	d->vsb = new ScrollBar(ScrollBar::Vertical);
@@ -185,7 +198,9 @@ void TreeViewPrivate::TraverseTree(TreeNode *node, int depth,
     }
     if (node->IsExpand()) {
         for (UINT i = 0; i < node->GetChildCount(); i++) {
-            TraverseTree(node->GetNthChild(i), depth + 1, cb);
+			auto obj = node->GetChildAt(i);
+			LTK_ASSERT(obj->IsTreeNodeType());
+            TraverseTree(static_cast<TreeNode*>(obj), depth + 1, cb);
         }
     }
 }

@@ -19,18 +19,16 @@ class TreeViewPrivate;
 class TreeNodePrivate;
 struct TreeViewColors;
 
-class TreeNode
+class TreeNode : public Object
 {
 public:
-    TreeNode() {}
+    TreeNode();
     virtual ~TreeNode();
 
     void SetTreeView(TreeView *tree);
 
     void AddChild(TreeNode *);
     void InsertChild(TreeNode *);
-    UINT GetChildCount();
-    TreeNode *GetNthChild(UINT i);
 
     void SetRect(const RectF &rc);
     RectF GetRect();
@@ -43,22 +41,10 @@ public:
     virtual void OnPaint(ID2D1RenderTarget *target, float scroll);
     virtual void OnLBtnDown(PointF pt);
 
+protected:
+	TreeNode(TreeNodePrivate *d);
 private:
-    bool m_bExpand = true;
-    bool m_bMouseHover = false;
-    bool m_bChecked = false;
-
-    TreeView *m_treeView = nullptr;
-    TreeNode *m_parent = nullptr;
-    std::vector<TreeNode *> m_children;
-    RectF m_rect;
-    RectF m_rcExpandBtn;
-    std::wstring m_text;
-
-    static const float m_padding;
-    static const float m_btn_size;
-
-    DISALLOW_COPY_AND_ASSIGN(TreeNode)
+	LTK_DECLARE_PRIVATE(TreeNode);
 };
 
 class TreeView : public Sprite
