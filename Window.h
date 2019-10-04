@@ -30,8 +30,9 @@ public:
     virtual ~Window(void);
 
     void Create(Window *parent, RectF rc);
+	void Create(Window *parent, SizeF size);
 
-    void SetRect(RectF rc);
+	void SetRect(RectF rc);
     RectF GetRect();
 
     SizeF GetClientSize();

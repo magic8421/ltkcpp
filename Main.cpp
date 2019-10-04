@@ -62,7 +62,7 @@ int CALLBACK WinMain(
 	auto wnd = new Window;
     wnd->SetCaption(L"LTK²âÊÔ´°¿Ú");
     wnd->SetBackground("window_bg");
-    wnd->Create(nullptr, RectF(0, 0, 600, 500));
+    wnd->Create(nullptr, SizeF(600, 500));
     wnd->CloseEvent.Attach([](bool &proceed) {
         //proceed = false;
         ::PostQuitMessage(0);
