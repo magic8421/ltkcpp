@@ -222,135 +222,170 @@ Margin StyleManager::MarginFromXml(tinyxml2::XMLElement *elm)
     return margin;
 }
 
+std::vector<std::string> StyleManager::SplitString(const char *str, char c)
+{
+	vector<std::string> result;
+
+	do {
+		const char *begin = str;
+
+		while (*str != c && *str) 
+			str++;
+
+		result.push_back(std::string(begin, str));
+	} while (0 != *str++);
+
+	return std::move(result);
+}
+
+RectF StyleManager::RectFromString(LPCSTR str)
+{
+	auto list = SplitString(str);
+	if (list.size() != 4) {
+		return RectF(0, 0, 10, 10);
+	}
+	RectF rc;
+	rc.X = (float)::atof(list[0].c_str());
+	rc.Y = (float)::atof(list[1].c_str());
+	rc.Width = (float)::atof(list[2].c_str());
+	rc.Height = (float)::atof(list[3].c_str());
+	return rc;
+}
+
+Margin StyleManager::MarginFromString(LPCSTR str)
+{
+	auto list = SplitString(str);
+	if (list.size() != 4) {
+		return Margin();
+	}
+	Margin m;
+	m.left = (float)::atof(list[0].c_str());
+	m.top = (float)::atof(list[1].c_str());
+	m.right = (float)::atof(list[2].c_str());
+	m.bottom = (float)::atof(list[3].c_str());
+	return m;
+}
+
 bool StyleManager::TextureFromXml(tinyxml2::XMLElement *elm, TextureInfo *tex)
 {
-    auto atlas_elm = elm->FirstChildElement("Atlas");
-    if (!atlas_elm) return false;
-    tex->atlas = RectFromXml(atlas_elm);
-    auto margin_elm = elm->FirstChildElement("Margin");
-    if (!margin_elm) return false;
-    tex->margin = MarginFromXml(margin_elm);
-
+	tex->atlas = StyleManager::RectFromString(elm->Attribute("Atlas", "0,0,10,10"));
+	tex->margin = StyleManager::MarginFromString(elm->Attribute("Margin", "0,0,0,0"));
     return true;
 }
 
-bool StyleManager::LoadFromXml(LPCSTR file_name)
+void StyleManager::LoadNinePatchBackgroundFromXml(tinyxml2::XMLElement *root)
+{
+	NinePatchBackground *npbg = nullptr;
+	auto nine_path_elm = root->FirstChildElement("NinePatch");
+	while (nine_path_elm) {
+		npbg = new NinePatchBackground;
+
+		auto normal_elm = nine_path_elm->FirstChildElement("Normal");
+		if (!normal_elm) goto next;
+
+		TextureFromXml(normal_elm, &npbg->texNormal);
+
+		auto hover_elm = nine_path_elm->FirstChildElement("Hover");
+		if (!hover_elm) {
+			npbg->texHover = npbg->texNormal;
+		} else {
+			TextureFromXml(hover_elm, &npbg->texHover);
+		}
+		auto pressed_elm = nine_path_elm->FirstChildElement("Pressed");
+		if (!pressed_elm) {
+			npbg->texPressed = npbg->texNormal;
+		} else {
+			TextureFromXml(pressed_elm, &npbg->texPressed);
+		}
+		auto disable_elm = nine_path_elm->FirstChildElement("Disable");
+		if (!disable_elm) {
+			npbg->texDisable = npbg->texNormal;
+		} else {
+			TextureFromXml(disable_elm, &npbg->texDisable);
+		}
+		auto style_name = nine_path_elm->Attribute("name");
+		if (!style_name) goto next;
+		this->AddBackgroundStyle(style_name, npbg);
+		npbg = nullptr;
+
+	next:
+		delete npbg;
+		nine_path_elm = nine_path_elm->NextSiblingElement("NinePatch");
+	}
+}
+
+void StyleManager::LoadOnePatchBackgroundFromXml(tinyxml2::XMLElement *root)
+{
+	OnePatchBackground *opbg = nullptr;
+	auto one_path_elm = root->FirstChildElement("OnePatch");
+	while (one_path_elm) {
+		opbg = new OnePatchBackground;
+
+		auto normal_elm = one_path_elm->FirstChildElement("Normal");
+		if (!normal_elm) goto next;
+
+		opbg->iconNormal.atlas = RectFromString(normal_elm->Attribute(
+			"Atlas", "0,0,10,10"));
+
+		auto hover_elm = one_path_elm->FirstChildElement("Hover");
+		if (!hover_elm) {
+			opbg->iconHover = opbg->iconNormal;
+		}
+		else {
+			opbg->iconHover.atlas = RectFromString(hover_elm->Attribute(
+				"Atlas", "0,0,10,10"));
+		}
+		auto press_elm = one_path_elm->FirstChildElement("Pressed");
+		if (!press_elm) {
+			opbg->iconPressed = opbg->iconNormal;
+		}
+		else {
+			opbg->iconPressed.atlas = RectFromString(press_elm->Attribute(
+				"Atlas", "0,0,10,10"));
+		}
+		auto disable_elm = one_path_elm->FirstChildElement("Disable");
+		if (!disable_elm) {
+			opbg->iconDisable = opbg->iconNormal;
+		}
+		else {
+			opbg->iconDisable.atlas = RectFromString(disable_elm->Attribute(
+				"Atlas", "0,0,10,10"));
+		}
+
+		auto style_name = one_path_elm->Attribute("name");
+		if (!style_name) goto next;
+		this->AddBackgroundStyle(style_name, opbg);
+		opbg = nullptr;
+
+	next:
+		delete opbg;
+		one_path_elm = one_path_elm->NextSiblingElement("OnePatch");
+	}
+}
+
+void StyleManager::LoadColorsFromXml(tinyxml2::XMLElement *root)
+{
+	auto color_elm = root->FirstChildElement("Color");
+	while (color_elm) {
+		auto name = color_elm->Attribute("name");
+		if (name) {
+			auto value = color_elm->Attribute("value", "#ff00ff");
+			Instance()->RegisterColor(name, StyleManager::ColorFromString(value));
+		}
+		color_elm = color_elm->NextSiblingElement("Color");
+	}
+}
+
+bool StyleManager::LoadThemeXml(LPCSTR file_name)
 {
     using namespace tinyxml2;
     tinyxml2::XMLDocument doc;
     if (doc.LoadFile(file_name) != XML_NO_ERROR) return false;
-    auto style_elm = doc.FirstChildElement("Style");
-    if (!style_elm) return false;
-
-    auto nine_path_elm = style_elm->FirstChildElement("NinePatch");
-    while (nine_path_elm) {
-        auto normal_elm = nine_path_elm->FirstChildElement("Normal");
-        if (!normal_elm) return false;
-        unique_ptr<NinePatchBackground> npbg;
-        npbg.reset(new NinePatchBackground);
-
-        if (!TextureFromXml(normal_elm, &npbg->texNormal)) return false;
-
-        auto hover_elm = nine_path_elm->FirstChildElement("Hover");
-        if (!hover_elm) {
-            npbg->texHover = npbg->texNormal;
-        } else if (!TextureFromXml(hover_elm, &npbg->texHover)) {
-            return false;
-        }
-        auto pressed_elm = nine_path_elm->FirstChildElement("Pressed");
-        if (!pressed_elm) {
-            npbg->texPressed = npbg->texNormal;
-        } else if (!TextureFromXml(pressed_elm, &npbg->texPressed)) {
-            return false;
-        }
-        auto disable_elm = nine_path_elm->FirstChildElement("Disable");
-        if (!disable_elm) {
-            npbg->texDisable = npbg->texNormal;
-        } else if (!TextureFromXml(disable_elm, &npbg->texDisable)) {
-            return false;
-        }
-        auto style_name = nine_path_elm->Attribute("name");
-        if (!style_name) return false;
-        this->AddBackgroundStyle(style_name, npbg.release());
-
-        nine_path_elm = nine_path_elm->NextSiblingElement("NinePatch");
-    }
-
-    auto one_path_elm = style_elm->FirstChildElement("OnePatch");
-    while (one_path_elm) {
-        auto normal_elm = one_path_elm->FirstChildElement("Normal");
-        if (!normal_elm) return false;
-
-        unique_ptr<OnePatchBackground> opbg;
-        opbg.reset(new OnePatchBackground);
-        opbg->iconNormal.atlas = RectFromXml(normal_elm);
-
-        auto hover_elm = one_path_elm->FirstChildElement("Hover");
-        if (!hover_elm) {
-            opbg->iconHover = opbg->iconNormal;
-        } else {
-            opbg->iconHover.atlas = RectFromXml(hover_elm);
-        }
-        auto press_elm = one_path_elm->FirstChildElement("Pressed");
-        if (!press_elm) {
-            opbg->iconPressed = opbg->iconNormal;
-        } else {
-            opbg->iconPressed.atlas = RectFromXml(press_elm);
-        }
-        auto disable_elm = one_path_elm->FirstChildElement("Disable");
-        if (!disable_elm) {
-            opbg->iconDisable = opbg->iconNormal;
-        } else {
-            opbg->iconDisable.atlas = RectFromXml(disable_elm);
-        }
-
-        auto style_name = one_path_elm->Attribute("name");
-        if (!style_name) return false;
-        this->AddBackgroundStyle(style_name, opbg.release());
-
-        one_path_elm = one_path_elm->NextSiblingElement("OnePatch");
-    }
-
-	/*
-    auto color_elm = style_elm->FirstChildElement("Color");
-    while (color_elm) {
-        auto name = color_elm->Attribute("name");
-        auto value = color_elm->Attribute("value");
-        if (!name || !value) return false;
-
-        // TODO change to a map
-        if (!strcmp(name, "TextNormal")) {
-            m_colors[clrTextNormal] = ColorFromString(value);
-        } else if (!strcmp(name, "TextHover")) {
-            m_colors[clrTextHover] = ColorFromString(value);
-        } else if (!strcmp(name, "TextCaption")) {
-            m_colors[clrTextCaption] = ColorFromString(value);
-        } else if (!strcmp(name, "ListBoxHover")) {
-            m_colors[clrListBoxHover] = ColorFromString(value);
-        } else if (!strcmp(name, "ListBoxSelected")) {
-            m_colors[clrListBoxSelected] = ColorFromString(value);
-        }
-
-        color_elm = color_elm->NextSiblingElement("Color");
-    }
-
-    auto meauare_elm = style_elm->FirstChildElement("Measurement");
-    while (meauare_elm) {
-        auto name = meauare_elm->Attribute("name");
-        auto value = (float)meauare_elm->IntAttribute("value");
-        if (!name || !value) return false;
-
-        // TODO change to a map
-        if (!strcmp(name, "SysButtonWidth")) {
-            m_measurements[mSysButtonWidth] = value;
-        } else if (!strcmp(name, "SysButtonHeight")) {
-            m_measurements[mSysButtonHeight] = value;
-        } else if (!strcmp(name, "CaptionHeight")) {
-            m_measurements[mCaptionHeight] = value;
-        } 
-        meauare_elm = meauare_elm->NextSiblingElement("Measurement");
-    }
-	*/
+    auto theme_elm = doc.FirstChildElement("Theme");
+    if (!theme_elm) return false;
+	LoadNinePatchBackgroundFromXml(theme_elm);
+	LoadOnePatchBackgroundFromXml(theme_elm);
+	LoadColorsFromXml(theme_elm);
     return true;
 }
 
@@ -454,7 +489,8 @@ static D2D1_COLOR_F operator+(const D2D1_COLOR_F&lhs, const D2D1_COLOR_F&rhs)
     return ret;
 }
 
-void RectangleBackground::Draw(Window *wnd, ID2D1RenderTarget *targe, const RectF &rc, State state, float blend)
+void RectangleBackground::Draw(Window *wnd, ID2D1RenderTarget *target,
+	const RectF &rc, State state, float blend)
 {
     auto brush = wnd->GetStockBrush();
     D2D1_COLOR_F clrInner;
@@ -489,11 +525,43 @@ void RectangleBackground::Draw(Window *wnd, ID2D1RenderTarget *targe, const Rect
     rc2.Y += 0.5f;
     rc2.Width -= 1.0f;
     rc2.Height -= 1.0f;
-    targe->FillRectangle(D2D1RectF(rc2), brush);
-    if (this->hasBorder) {
-        brush->SetColor(clrBorder);
-        targe->DrawRectangle(D2D1RectF(rc2), brush);
+
+	rc2.X += this->margin.left;
+	rc2.Y += this->margin.top;
+	rc2.Width -= this->margin.left + this->margin.right;
+	rc2.Height -= this->margin.top + this->margin.bottom;
+
+	auto old_mode = target->GetAntialiasMode();
+
+	if (this->roundCorner >= 0.f) {
+		D2D1_ROUNDED_RECT rrc;
+		rrc.radiusX = this->roundCorner;
+		rrc.radiusY = this->roundCorner;
+		rrc.rect = D2D1RectF(rc2);
+		target->SetAntialiasMode(D2D1_ANTIALIAS_MODE_PER_PRIMITIVE);
+		target->FillRoundedRectangle(&rrc, brush);
+		if (this->hasBorder) {
+			brush->SetColor(clrBorder);
+			target->DrawRoundedRectangle(&rrc, brush);
+		}
+	}
+	else {
+		target->SetAntialiasMode(D2D1_ANTIALIAS_MODE_ALIASED);
+		target->FillRectangle(D2D1RectF(rc2), brush);
+		if (this->hasBorder) {
+			brush->SetColor(clrBorder);
+			target->DrawRectangle(D2D1RectF(rc2), brush);
+		}
     }
+	target->SetAntialiasMode(old_mode);
+}
+
+void RectangleBackground::SetMargin(float left, float top, float right, float bottom)
+{
+	this->margin.left = left;
+	this->margin.top = top;
+	this->margin.right = right;
+	this->margin.bottom = bottom;
 }
 
 void FourStateColor::SetColor(LPCSTR normal, LPCSTR hover, LPCSTR pressed, LPCSTR disable)

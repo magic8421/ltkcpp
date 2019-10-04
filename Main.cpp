@@ -214,6 +214,8 @@ void DemoWindow::BuildSplitterTest()
 	spitter1->SetClientSize(2, 100);
 	spitter1->AddClient(new Button);
 	spitter1->SetClientSize(3, 100);
+	spitter1->AddClient(new Button);
+	spitter1->SetClientSize(4, 100);
 
 	spitter1->DoLayout();
 }
@@ -270,8 +272,9 @@ int CALLBACK WinMain(
 	auto wnd = new DemoWindow;
     wnd->SetCaption(L"LTK²âÊÔ´°¿Ú");
     wnd->SetBackground("window_bg");
-	wnd->BuildDemoWindow();
-    wnd->Create(nullptr, SizeF(600, 500));
+	//wnd->BuildDemoWindow();
+	wnd->BuildSplitterTest();
+    wnd->Create(nullptr, SizeF(700, 500));
 	wnd->UpdateTheme();
 
 

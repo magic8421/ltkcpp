@@ -54,11 +54,17 @@ public:
         DWRITE_FONT_STYLE style, float size, DWRITE_TEXT_ALIGNMENT hAlign,
         DWRITE_PARAGRAPH_ALIGNMENT vAlign);
 
+	static std::vector<std::string> SplitString(const char *str, char c = ',');
     static RectF RectFromXml(tinyxml2::XMLElement *elm);
     static Margin MarginFromXml(tinyxml2::XMLElement *elm);
+	static RectF RectFromString(LPCSTR str);
+	static Margin MarginFromString(LPCSTR str);
     static bool TextureFromXml(tinyxml2::XMLElement *elm, TextureInfo *tex);
 
-    bool LoadFromXml(LPCSTR file_name);
+	void LoadNinePatchBackgroundFromXml(tinyxml2::XMLElement *root);
+	void LoadOnePatchBackgroundFromXml(tinyxml2::XMLElement *root);
+	void LoadColorsFromXml(tinyxml2::XMLElement *root);
+	bool LoadThemeXml(LPCSTR file_name);
 
     bool IsDebuggingLayout();
     void SetDebuggingLayout(bool);
@@ -137,13 +143,14 @@ public:
 
     FourStateColor &BorderColor() { return borderColors; }
     FourStateColor &InnerColor() { return innerColors; }
+	void SetMargin(float left, float top, float right, float bottom);
 
-private:
     FourStateColor borderColors;
     FourStateColor innerColors;
     // TODO add Gradient
     bool hasBorder = true;
     float roundCorner = -1.0f;
+	Margin margin;
 };
 
 struct WindowStyle

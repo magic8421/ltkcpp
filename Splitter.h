@@ -34,7 +34,7 @@ private:
 	std::vector<SplitterItem> m_vecItems;
 	Mode m_mode;
 	bool m_bCapture = false;
-	float m_dragPos = 0.f;
+	float m_dragDelta = 0.f;
 	int m_dragIdx = -1;
 };
 

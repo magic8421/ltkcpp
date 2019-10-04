@@ -81,7 +81,8 @@ bool Splitter::OnLBtnDown(MouseEvent *ev)
 	if (m_dragIdx >= 0) {
 		this->SetCapture();
 		m_bCapture = true;
-		m_dragPos = ev->x - PosFromIdx(m_dragIdx);
+		m_dragDelta = ev->x - PosFromIdx(m_dragIdx);
+		LTK_LOG("m_dragDelta %.2f m_dragIdx %d", m_dragDelta, m_dragIdx);
 	}
 	return false;
 }
@@ -89,7 +90,7 @@ bool Splitter::OnLBtnDown(MouseEvent *ev)
 bool Splitter::OnLBtnUp(MouseEvent *ev)
 {
 	if (m_bCapture) {
-		m_dragPos = 0.f;
+		m_dragDelta = 0.f;
 		m_dragIdx = -1;
 		m_bCapture = false;
 		this->ReleaseCapture();
@@ -119,27 +120,65 @@ bool Splitter::OnMouseMove(MouseEvent *ev)
 	if (!m_bCapture) {
 		auto idx = HitTest(ev->x, ev->y);
 		if (idx >= 0) {
-			LTK_LOG("HIT: %d", idx);
+			//LTK_LOG("HIT: %d", idx);
 			if (m_mode == Horizontal) {
 				::SetCursor(::LoadCursor(NULL, IDC_SIZEWE));
-			}
-			else {
+			} else {
 				::SetCursor(::LoadCursor(NULL, IDC_SIZENS));
 			}
 		}
 	}
 	else {
+		if (m_mode == Horizontal) {
+			::SetCursor(::LoadCursor(NULL, IDC_SIZEWE));
+		} else {
+			::SetCursor(::LoadCursor(NULL, IDC_SIZENS));
+		}
+		float cx = ev->x;
 		for (int i = 0; i < m_dragIdx; i++) {
-			ev->x -= m_vecItems[i].size;
+			cx -= m_vecItems[i].size;
+			cx -= GRIP_SIZE;
 		}
-		m_vecItems[m_dragIdx].size = max(MIN_SIZE, ev->x - m_dragPos);
-		float sum = PosFromIdx(m_vecItems.size() - 1);
-		for (int i = m_vecItems.size() - 1; i >= 0; i --) {
-			auto &item = m_vecItems[i];
-			item.size -= sum - this->GetWidth();
-			item.size = max(MIN_SIZE, item.size);
-			sum = PosFromIdx(m_vecItems.size() - 1);
+		//cx += GRIP_SIZE;
+		//m_vecItems[m_dragIdx + 1].size = 
+		float new_size = cx - m_dragDelta;
+		float size_delta = new_size - m_vecItems[m_dragIdx].size;
+		UINT idx = m_dragIdx;
+		if (size_delta > 0.f) {
+			while (idx < m_vecItems.size() - 1 && size_delta > 0.f) {
+				float old_size = m_vecItems[idx + 1].size;
+				m_vecItems[idx + 1].size -= size_delta;
+				m_vecItems[idx + 1].size = max(MIN_SIZE, m_vecItems[idx + 1].size);
+				size_delta -= old_size - m_vecItems[idx + 1].size;
+				idx++;
+			}
+		} else {
+			if (idx < m_vecItems.size() - 1) {
+				m_vecItems[idx + 1].size -= size_delta;
+			}
 		}
+		m_vecItems[m_dragIdx].size = max(MIN_SIZE, cx - m_dragDelta);
+
+		float move_left = cx - m_dragDelta - MIN_SIZE;
+		if (move_left < 0.f) {
+			UINT idx = m_dragIdx;
+			move_left = -move_left;
+			while (idx > 0 && move_left > 0.f) {
+				float old_size = m_vecItems[idx - 1].size;
+				m_vecItems[idx - 1].size -= move_left;
+				m_vecItems[idx - 1].size = max(MIN_SIZE, m_vecItems[idx - 1].size);
+				move_left -= old_size - m_vecItems[idx - 1].size;
+				idx--;
+			}
+		}
+
+		//float sum = PosFromIdx(m_vecItems.size() - 1);
+		//for (int i = m_vecItems.size() - 1; i >= 0; i --) {
+		//	auto &item = m_vecItems[i];
+		//	item.size -= sum - this->GetWidth();
+		//	item.size = max(MIN_SIZE, item.size);
+		//	sum = PosFromIdx(m_vecItems.size() - 1);
+		//}
 		DoLayout();
 	}
 	return false;
