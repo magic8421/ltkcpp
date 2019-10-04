@@ -135,16 +135,24 @@ bool Splitter::OnMouseMove(MouseEvent *ev)
 			::SetCursor(::LoadCursor(NULL, IDC_SIZENS));
 		}
 		float cx = ev->x;
+		if (cx - m_dragDelta > this->GetWidth() -
+			(m_vecItems.size() - m_dragIdx - 1) * (MIN_SIZE + GRIP_SIZE))
+		{
+			cx = this->GetWidth() -
+				(m_vecItems.size() - m_dragIdx - 1) * (MIN_SIZE + GRIP_SIZE)
+				+ m_dragDelta;
+		}
+
 		for (int i = 0; i < m_dragIdx; i++) {
 			cx -= m_vecItems[i].size;
 			cx -= GRIP_SIZE;
 		}
-		//cx += GRIP_SIZE;
-		//m_vecItems[m_dragIdx + 1].size = 
+
 		float new_size = cx - m_dragDelta;
+
 		float size_delta = new_size - m_vecItems[m_dragIdx].size;
 		UINT idx = m_dragIdx;
-		if (size_delta > 0.f) {
+		if (size_delta > 0.0001f) {
 			while (idx < m_vecItems.size() - 1 && size_delta > 0.f) {
 				float old_size = m_vecItems[idx + 1].size;
 				m_vecItems[idx + 1].size -= size_delta;
@@ -152,14 +160,14 @@ bool Splitter::OnMouseMove(MouseEvent *ev)
 				size_delta -= old_size - m_vecItems[idx + 1].size;
 				idx++;
 			}
-		} else {
+		} else if (size_delta < -0.0001f) {
 			if (idx < m_vecItems.size() - 1) {
 				m_vecItems[idx + 1].size -= size_delta;
 			}
 		}
-		m_vecItems[m_dragIdx].size = max(MIN_SIZE, cx - m_dragDelta);
+		m_vecItems[m_dragIdx].size = max(MIN_SIZE, new_size);
 
-		float move_left = cx - m_dragDelta - MIN_SIZE;
+		float move_left = new_size - MIN_SIZE;
 		if (move_left < 0.f) {
 			UINT idx = m_dragIdx;
 			move_left = -move_left;
