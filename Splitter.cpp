@@ -81,7 +81,11 @@ bool Splitter::OnLBtnDown(MouseEvent *ev)
 	if (m_dragIdx >= 0) {
 		this->SetCapture();
 		m_bCapture = true;
-		m_dragDelta = ev->x - PosFromIdx(m_dragIdx);
+		if (m_mode == Horizontal) {
+			m_dragDelta = ev->x - PosFromIdx(m_dragIdx);
+		} else {
+			m_dragDelta = ev->y - PosFromIdx(m_dragIdx);
+		}
 		LTK_LOG("m_dragDelta %.2f m_dragIdx %d", m_dragDelta, m_dragIdx);
 	}
 	return false;
@@ -134,21 +138,29 @@ bool Splitter::OnMouseMove(MouseEvent *ev)
 		} else {
 			::SetCursor(::LoadCursor(NULL, IDC_SIZENS));
 		}
-		float cx = ev->x;
-		if (cx - m_dragDelta > this->GetWidth() -
+		float input_pos;
+		float total_size;
+		if (m_mode == Horizontal) {
+			input_pos = ev->x;
+			total_size = this->GetWidth();
+		} else {
+			input_pos = ev->y;
+			total_size = this->GetHeight();
+		}
+		if (input_pos - m_dragDelta > total_size -
 			(m_vecItems.size() - m_dragIdx - 1) * (MIN_SIZE + GRIP_SIZE))
 		{
-			cx = this->GetWidth() -
+			input_pos = total_size -
 				(m_vecItems.size() - m_dragIdx - 1) * (MIN_SIZE + GRIP_SIZE)
 				+ m_dragDelta;
 		}
 
 		for (int i = 0; i < m_dragIdx; i++) {
-			cx -= m_vecItems[i].size;
-			cx -= GRIP_SIZE;
+			input_pos -= m_vecItems[i].size;
+			input_pos -= GRIP_SIZE;
 		}
 
-		float new_size = cx - m_dragDelta;
+		float new_size = input_pos - m_dragDelta;
 
 		float size_delta = new_size - m_vecItems[m_dragIdx].size;
 		UINT idx = m_dragIdx;

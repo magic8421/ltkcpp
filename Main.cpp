@@ -204,7 +204,7 @@ void DemoWindow::BuildDemoWindow()
 void DemoWindow::BuildSplitterTest()
 {
 	Window *wnd = this;
-	Splitter *spitter1 = new Splitter(Splitter::Horizontal);
+	Splitter *spitter1 = new Splitter(Splitter::Vertical);
 	wnd->SetClientSprite(spitter1);
 	spitter1->AddClient(new Button);
 	spitter1->SetClientSize(0, 100);
