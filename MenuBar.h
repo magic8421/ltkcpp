@@ -23,6 +23,9 @@ public:
 
 	enum Type {Normal, Icon, Check, Radio};
 
+	MulticastDelegate0 ClickedDelegate;
+
+private:
 	Type type = Normal;
 	std::wstring text;
 	bool bChecked = false;
@@ -30,9 +33,9 @@ public:
 	ltk::IconInfo icon;
 	PopupMenu* sub_menu = nullptr;
 
-	MulticastDelegate0 ClickedDelegate;
 
 private:
+	friend class PopupMenu;
 	DISALLOW_COPY_AND_ASSIGN(MenuItem)
 };
 

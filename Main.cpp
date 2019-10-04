@@ -75,7 +75,7 @@ void DemoWindow::BuildDemoWindow()
 
 	::srand(ltk::TickCount());
 
-	//RecBuildNodes(tree->GetRootNode(), 0);
+	RecBuildNodes(tree->GetRootNode(), 0);
 	LTK_LOG("node_count: %d", node_count);
 
 	BoxLayout *vboxRightPanel = new BoxLayout(BoxLayout::Vertical);

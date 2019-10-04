@@ -52,12 +52,16 @@ namespace ltk {
 		#pragma warning(push)
 		#pragma warning(disable:4996)
 		#pragma warning(disable:28159)
-        float dpi_x = 0.0f;
-        float dpi_y = 0.0f;
-        g_d2d_factory->GetDesktopDpi(&dpi_x, &dpi_y); // wtf? non-square pixel?
 
+        static float dpi_x = 0.0f;
+        static float dpi_y = 0.0f;
+
+		if (dpi_x == 0.0f) {
+			g_d2d_factory->GetDesktopDpi(&dpi_x, &dpi_y); // wtf? non-square pixel?
+		}
         x = x * 96.0f / dpi_x;
         y = y * 96.0f / dpi_y;
+
 		#pragma warning(pop)
     }
 

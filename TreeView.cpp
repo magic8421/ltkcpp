@@ -72,29 +72,35 @@ bool TreeNode::IsExpand()
 
 void TreeNode::OnPaint(ID2D1RenderTarget *target, float scroll)
 {
-    auto rcItem = m_rect;
-    rcItem.Y -= scroll;
-    auto rcExpandBtn = m_rcExpandBtn;
-    rcExpandBtn.Y -= scroll;
+	auto rcItem = m_rect;
+	rcItem.Y -= scroll;
+	auto rcSprite = m_treeView->GetClientRect();
+	if (rcItem.Y + rcItem.Height < 0.f || rcItem.Y > rcSprite.Height) {
+		return;
+	}
+
+	auto rcExpandBtn = m_rcExpandBtn;
+	rcExpandBtn.Y -= scroll;
 	auto colors = m_treeView->GetColorScheme();
 
-    auto brush = m_treeView->GetBrush();
-    //brush->SetColor(StyleManager::ColorFromString("#cccccc"));
-    //target->DrawRectangle(D2D1RectF(rcItem), brush);
+	auto brush = m_treeView->GetBrush();
+	//brush->SetColor(StyleManager::ColorFromString("#cccccc"));
+	//target->DrawRectangle(D2D1RectF(rcItem), brush);
 
-    brush->SetColor(StyleManager::ColorFromString("#aaaaaa"));
-    if (m_children.size() > 0) {
-        target->FillRectangle(D2D1RectF(rcExpandBtn), brush);
-    } else {
-        target->DrawRectangle(D2D1RectF(rcExpandBtn), brush);
-    }
-    auto format = m_treeView->GetTextFormat();
-    brush->SetColor(colors->TextColor);
-    float space = m_padding * 2.0f + m_btn_size;
-    target->DrawText(
-        m_text.c_str(), m_text.size(), format, D2D1RectF(RectF(
-            space + rcItem.X, rcItem.Y, rcItem.Width - space, rcItem.Height
-        )), brush);
+	brush->SetColor(StyleManager::ColorFromString("#aaaaaa"));
+	if (m_children.size() > 0) {
+		target->FillRectangle(D2D1RectF(rcExpandBtn), brush);
+	}
+	else {
+		target->DrawRectangle(D2D1RectF(rcExpandBtn), brush);
+	}
+	auto format = m_treeView->GetTextFormat();
+	brush->SetColor(colors->TextColor);
+	float space = m_padding * 2.0f + m_btn_size;
+	auto rcText = RectF(
+		space + rcItem.X, rcItem.Y, rcItem.Width - space, rcItem.Height);
+	target->DrawText(
+		m_text.c_str(), m_text.size(), format, D2D1RectF(rcText), brush);
 }
 
 void TreeNode::OnLBtnDown(PointF pt)
