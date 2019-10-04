@@ -31,8 +31,6 @@ PopupMenu::PopupMenu() :
 
 PopupMenu::~PopupMenu()
 {
-	ltk::KillTimer(m_hoverTimer);
-
 	for (auto item : m_vecItems) {
 		delete item->sub_menu;
 		delete item;
@@ -46,9 +44,14 @@ void PopupMenu::AddItem(LPCWSTR text)
 	m_vecItems.push_back(item);
 }
 
-UINT PopupMenu::GetChildCount()
+UINT PopupMenu::GetMenuItemCount()
 {
 	return m_vecItems.size();
+}
+
+MenuItem * PopupMenu::GetMenuItemAt(UINT idx)
+{
+	return m_vecItems[idx];
 }
 
 void PopupMenu::SetWidth(float w)
@@ -214,7 +217,8 @@ bool PopupMenu::OnLBtnDown(MouseEvent* ev)
 	}
 	auto item = m_vecItems[hit];
 	if (!item->sub_menu) {
-		item->ClickedEvent.Invoke();
+		SetDelegateInvoker(this);
+		item->ClickedDelegate();
 	}
 	int tracking = m_trackingIdx;
 	PopupMenu* menu = this;
@@ -235,7 +239,7 @@ void PopupMenu::TrackPopupMenu(UINT idx)
 		auto arc = this->GetAbsRect();
 		menu->Show(GetWindow(), RectF(
 			arc.X + this->GetWidth(), arc.Y + idx * ITEM_HEIGHT,
-			menu->GetWidth(), menu->GetChildCount() * ITEM_HEIGHT));
+			menu->GetWidth(), menu->GetMenuItemCount() * ITEM_HEIGHT));
 		Invalidate();
 	}
 }
@@ -247,22 +251,16 @@ bool PopupMenu::OnMouseMove(MouseEvent* ev)
 	if (hover != m_hoverIdx) {
 		m_hoverIdx = hover;
 		Invalidate();
-		m_hoverTimer = ltk::SetOnceTimer(0, m_hoverTimer, [this, hover]() {
-			//LTK_LOG("hover %d", hover);
-			if (m_trackingIdx >= 0 && m_trackingIdx != hover) {
-				auto sub_menu = m_vecItems[m_trackingIdx]->sub_menu;
-				sub_menu->Hide();
-				m_trackingIdx = -1;
-				this->TrackPopupMenu(hover);
-				this->Invalidate();
-			} else if (m_trackingIdx < 0){
-				this->TrackPopupMenu(hover);
-			}
-			m_hoverTimer = 0;
-		});
-		if (m_parent) {
-			ltk::KillTimer(m_parent->m_hoverTimer);
-			m_parent->m_hoverTimer = 0;
+		
+		//LTK_LOG("hover %d", hover);
+		if (m_trackingIdx >= 0 && m_trackingIdx != hover) {
+			auto sub_menu = m_vecItems[m_trackingIdx]->sub_menu;
+			sub_menu->Hide();
+			m_trackingIdx = -1;
+			this->TrackPopupMenu(hover);
+			this->Invalidate();
+		} else if (m_trackingIdx < 0){
+			this->TrackPopupMenu(hover);
 		}
 	}
 	return true;
@@ -301,13 +299,8 @@ void MenuBar::AddItem(LPCWSTR text)
 	MenuButtonParam param;
 	param.button = btn;
 	m_vecMenuItems.push_back(param);
-	UINT idx = m_vecMenuItems.size() - 1;
-	btn->ClickedEvent.Attach([this, idx]() { // TODO  包btn比较好 插入删除不会错
-		this->OnMenuBtnClicked(idx);
-	});
-	btn->DelegateMouseEvent.Attach([this, btn](MouseEvent *ev, bool &bHandled) {
-		this->OnButtonMouseEvent(btn, ev, bHandled);
-	});
+	btn->ClickedDelegate += MakeDelegate(this, &MenuBar::OnMenuBtnClicked);
+	btn->MouseEventDelegate += MakeDelegate(this, &MenuBar::OnButtonMouseEvent);
 }
 
 void MenuBar::SetPopupMenu(UINT idx, PopupMenu *menu)
@@ -318,31 +311,43 @@ void MenuBar::SetPopupMenu(UINT idx, PopupMenu *menu)
 	menu->SetMenuBar(this);
 }
 
-void MenuBar::OnMenuBtnClicked(UINT idx)
+void MenuBar::OnMenuBtnClicked()
 {
-	LTK_ASSERT(idx < m_vecMenuItems.size());
-	auto menu = m_vecMenuItems[idx].sub_menu;
+	Button* btn = Object::GetDelegateInvoker()->As<Button>();
+	int idx = FindMenuButtonIdx(btn);
+	LTK_ASSERT(idx < (int)m_vecMenuItems.size());
+	PopupMenu *menu = m_vecMenuItems[idx].sub_menu;
 	if (!menu) {
 		return;
 	}
 	auto arc = m_vecMenuItems[idx].button->GetAbsRect();
 
-	menu->Show(GetWindow(), RectF(arc.X, arc.Y + arc.Height,
-		m_vecMenuItems[idx].sub_menu->GetWidth(), menu->GetChildCount() * ITEM_HEIGHT));
+	menu->Show(this->GetWindow(), RectF(arc.X, arc.Y + arc.Height,
+		m_vecMenuItems[idx].sub_menu->GetWidth(), menu->GetMenuItemCount() * ITEM_HEIGHT));
 	m_trackingIdx = idx;
 }
 
-void MenuBar::OnButtonMouseEvent(Button* btn, MouseEvent* ev, bool& bHandled)
+
+int MenuBar::FindMenuButtonIdx(Button *btn)
 {
-	if (ev->id == eMouseMove && m_trackingIdx >= 0) {
-		size_t idx = 0;
-		for (; idx < m_vecMenuItems.size(); idx++) {
-			if (m_vecMenuItems[idx].button == btn) {
-				break;
-			}
+	int idx = -1;
+	for (size_t i = 0; i < m_vecMenuItems.size(); i++) {
+		if (m_vecMenuItems[i].button == btn) {
+			idx = i;
+			break;
 		}
+	}
+	return idx;
+}
+
+void MenuBar::OnButtonMouseEvent(MouseEvent* ev, bool& bHandled)
+{
+	Button* btn = Object::GetDelegateInvoker()->As<Button>();
+
+	if (ev->id == eMouseMove && m_trackingIdx >= 0) {
+		int idx = FindMenuButtonIdx(btn);
 		if (m_trackingIdx != (int)idx) {
-			OnMenuBtnClicked(idx);
+			OnMenuBtnClicked();
 		}
 	}
 }

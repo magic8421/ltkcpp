@@ -9,6 +9,7 @@
 #include "Sprite.h"
 #include "StyleManager.h"
 #include "Delegate.h"
+#include "MulticastDelegate.h"
 
 namespace ltk {
 
@@ -27,6 +28,9 @@ public:
 
     Delegate<void()> ClickedEvent;
     Delegate<void(MouseEvent*, bool&)> DelegateMouseEvent;
+
+	MulticastDelegate0 ClickedDelegate;
+	MulticastDelegate2<MouseEvent*, bool&> MouseEventDelegate;
 
     virtual bool OnEvent(Event *ev) override;
 

@@ -45,6 +45,8 @@ m_shadowBottom(ShadowFrame::eBottom)
 
 Window::~Window(void)
 {
+	::DestroyWindow(m_hwnd);
+
     if (m_sprite) {
         delete m_sprite;
     }
@@ -67,8 +69,6 @@ Window::~Window(void)
         m_atlas->Release();
     }
     m_atlas = INVALID_POINTER(ID2D1Bitmap);
-
-	::DestroyWindow(m_hwnd);
 }
 
 void Window::Create(Window *parent, RectF rc)
@@ -634,11 +634,10 @@ void Window::Maximize()
     }
 }
 
-bool Window::OnClose(bool &proceed)
+void Window::OnClose(bool &proceed)
 {
-    proceed = true;
-    this->CloseEvent.Invoke(std::ref(proceed));
-    return proceed;
+	SetDelegateInvoker(this);
+	this->CloseDelegate(proceed);
 }
 
 void Window::OnDestroy()

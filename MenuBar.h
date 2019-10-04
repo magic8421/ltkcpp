@@ -7,7 +7,7 @@
 
 #pragma once
 #include "Sprite.h"
-#include "Delegate.h"
+#include "MulticastDelegate.h"
 
 namespace ltk {
 
@@ -30,7 +30,7 @@ public:
 	ltk::IconInfo icon;
 	PopupMenu* sub_menu = nullptr;
 
-	Delegate<void()> ClickedEvent;
+	MulticastDelegate0 ClickedDelegate;
 
 private:
 	DISALLOW_COPY_AND_ASSIGN(MenuItem)
@@ -43,7 +43,8 @@ public:
 	virtual ~PopupMenu();
 
 	void AddItem(LPCWSTR text);
-	UINT GetChildCount();
+	UINT GetMenuItemCount();
+	MenuItem *GetMenuItemAt(UINT idx);
 	
 	void SetWidth(float);
 	float GetWidth();
@@ -77,7 +78,6 @@ private:
 	int m_hoverIdx = -1;
 	int m_trackingIdx = -1;
 	bool m_bTrackingPopup = false; // TODO 这个能和m_trackingIdx合并吗？
-	UINT m_hoverTimer = 0;
 	bool m_bHiding = false;
 
 	enum State {sHide, sSlideIn, sShow};
@@ -113,8 +113,10 @@ protected:
 	virtual bool OnSize(SizeEvent *ev) override;
 	virtual void OnThemeChanged() override;
 
-	void OnMenuBtnClicked(UINT idx);
-	void OnButtonMouseEvent(Button* btn, MouseEvent* ev, bool& bHandled);
+	void OnMenuBtnClicked();
+	void OnButtonMouseEvent(MouseEvent* ev, bool& bHandled);
+
+	int FindMenuButtonIdx(Button *btn);
 
 private:
 	std::vector<MenuButtonParam> m_vecMenuItems;

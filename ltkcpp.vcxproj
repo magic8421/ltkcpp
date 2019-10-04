@@ -90,6 +90,7 @@
       <LanguageStandard>stdcpp17</LanguageStandard>
       <DisableSpecificWarnings>4100;4189</DisableSpecificWarnings>
       <TreatWarningAsError>true</TreatWarningAsError>
+      <AdditionalIncludeDirectories>.\Delegate</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -120,6 +121,7 @@
       <PreprocessorDefinitions>WIN32;LTK_EXPORTS;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <DisableSpecificWarnings>4100;4189</DisableSpecificWarnings>
       <TreatWarningAsError>true</TreatWarningAsError>
+      <AdditionalIncludeDirectories>.\Delegate</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -227,6 +229,7 @@
     <ClInclude Include="Label.h" />
     <ClInclude Include="ListView.h" />
     <ClInclude Include="ltk.h" />
+    <ClInclude Include="Main.h" />
     <ClInclude Include="MenuBar.h" />
     <ClInclude Include="Object.h" />
     <ClInclude Include="ScrollBar.h" />

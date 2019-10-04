@@ -6,12 +6,33 @@
 //////////////////////////////////////////////////////////////////////////
 
 #pragma once
+#include "Object.h"
+#include "MulticastDelegate.h"
 
 namespace ltk {
 
-struct TimerNode {
-    std::function<void()> callback;
-    bool isOnceTimer = true;
+class Timer : public Object
+{
+public:
+	Timer() {}
+	virtual ~Timer();
+
+	void SetInterval(UINT ms);
+	void Start();
+	void StartOnce();
+	void Stop();
+	UINT GetId();
+
+	MulticastDelegate0 TimeoutDelegate;
+
+private:
+	void Triger();
+
+	UINT id = 0;
+	UINT elapse = 0;
+	bool bOnce = false;
+
+	friend class TimerManager;
 };
 
 class TimerManager
@@ -20,8 +41,8 @@ public:
     static TimerManager *Instance();
     static void Free();
 
-    UINT SetTimer(UINT id, const std::function<void()>&cb, UINT elapse, bool bOnce);
-    void KillTimer(UINT id);
+	UINT SetTimer(Timer *timer);
+	void KillTimer(Timer *timer);
 
 private:
     TimerManager();
@@ -32,11 +53,7 @@ private:
     void OnTimer(UINT id);
 
     HWND m_hwnd = 0;
-    std::unordered_map<UINT, TimerNode *> m_mapCallback;
+	std::unordered_map<UINT, Timer *> m_mapCallback;
 };
-
-UINT SetTimer(UINT elapse, UINT id, const std::function<void()>&cb);
-UINT SetOnceTimer(UINT elapse, UINT id, const std::function<void()>&cb);
-void KillTimer(UINT id);
 
 } // namespace ltk

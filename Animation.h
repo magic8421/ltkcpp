@@ -6,6 +6,7 @@
 //////////////////////////////////////////////////////////////////////////
 
 #pragma once
+#include "TimerManager.h"
 
 namespace ltk {
 
@@ -19,7 +20,7 @@ public:
 class ScrollAnimation : public AbstractAnimation
 {
 public:
-    ScrollAnimation() {}
+    ScrollAnimation();
     ~ScrollAnimation() {}
 
     enum State
@@ -38,6 +39,8 @@ public:
 
     virtual bool IsRunning() override;
 
+	void OnNoInputTimer();
+
 private:
     float m_scroll = 0.0f;
     float m_velocity = 0.0f;
@@ -47,7 +50,7 @@ private:
     const float ItemHeight = 35.0f;
     const float ScrollVelocity = ItemHeight * 3 / 500.0f;
 
-	UINT m_timerId = 0;
+	Timer m_timer;
 	bool m_bInput = false;
 };
 

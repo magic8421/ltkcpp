@@ -10,7 +10,7 @@
 #include "ShadowFrame.h"
 #include "Event.h"
 #include "ImeInput.h"
-#include "Delegate.h"
+#include "MulticastDelegate.h"
 #include "Object.h"
 
 namespace ltk {
@@ -80,7 +80,7 @@ public:
     void CloseWindow();
 
     virtual bool OnSize(float cx, float cy, DWORD flag);
-    virtual bool OnClose(bool &proceed);
+    virtual void OnClose(bool &proceed);
 	virtual void OnDestroy();
 
     ID2D1Bitmap *GetAtlasBitmap();
@@ -91,7 +91,7 @@ public:
     virtual void OnThemeChanged() {}
 
 public:
-    Delegate<void(bool &)> CloseEvent;
+	MulticastDelegate1<bool&> CloseDelegate;
 
 private:
 	void HandleMouseMessage(UINT message, WPARAM wparam, LPARAM lparam);

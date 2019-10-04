@@ -57,6 +57,8 @@ bool AbstractButton::OnEvent(Event *ev)
     if (ev->id > eMouseFirst && ev->id < eMouseLast) {
         this->DelegateMouseEvent.Invoke(
             static_cast<MouseEvent *>(ev), std::ref(bHandled));
+		SetDelegateInvoker(this);
+		this->MouseEventDelegate(static_cast<MouseEvent *>(ev), bHandled);
     }
     if (!bHandled) {
         return Sprite::OnEvent(ev);
@@ -116,6 +118,8 @@ bool AbstractButton::OnLBtnUp(MouseEvent *ev)
 void AbstractButton::OnClicked()
 {
     this->ClickedEvent.Invoke();
+	Object::SetDelegateInvoker(this);
+	this->ClickedDelegate();
 }
 
 

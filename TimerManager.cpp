@@ -15,6 +15,46 @@
 
 namespace ltk {
 
+Timer::~Timer()
+{
+	TimerManager::Instance()->KillTimer(this);
+}
+
+void Timer::SetInterval(UINT ms)
+{
+	this->elapse = ms;
+}
+
+void Timer::Start()
+{
+	this->bOnce = false;
+	TimerManager::Instance()->SetTimer(this);
+}
+
+void Timer::StartOnce()
+{
+	this->bOnce = true;
+	TimerManager::Instance()->SetTimer(this);
+}
+
+void Timer::Stop()
+{
+	TimerManager::Instance()->KillTimer(this);
+}
+
+UINT Timer::GetId()
+{
+	return this->id;
+}
+
+void Timer::Triger()
+{
+	// Object::SetDelegeteInvoker(q_func());
+	this->TimeoutDelegate();
+}
+
+//////////////////////////////////////////////////////////////////////////
+
 TimerManager *TimerManager::m_instance = nullptr;
 
 TimerManager *TimerManager::Instance()
@@ -76,72 +116,65 @@ LRESULT CALLBACK TimerManager::MyWndProc(
 
 void TimerManager::OnTimer(UINT id)
 {
-    auto iter = m_mapCallback.find(id);
-    if (iter != m_mapCallback.end()) {
-        TimerNode *node = iter->second;
-        node->callback();
-        if (node->isOnceTimer) {
-            ::KillTimer(m_hwnd, iter->first);
-            delete node;
-            m_mapCallback.erase(iter);
-        }
-    } else {
-        LTK_ASSERT(false);
-    }
+	auto iter = m_mapCallback.find(id);
+	if (iter != m_mapCallback.end()) {
+		Timer *timer = iter->second;
+		LTK_ASSERT(timer->id == id);
+		timer->Triger();
+		if (timer->bOnce) {
+			timer->id = 0;
+			::KillTimer(m_hwnd, id);
+			m_mapCallback.erase(iter);
+		}
+	}
+	else {
+		LTK_ASSERT(false);
+	}
 }
 
-UINT TimerManager::SetTimer(UINT id, const std::function<void()>&cb, UINT elapse, bool bOnce)
+UINT TimerManager::SetTimer(Timer *timer)
 {
-    if (id == 0) {
-        auto iter = m_mapCallback.end();
-        do {
-            id = (UINT)rand() + USER_TIMER_MINIMUM;
-            iter = m_mapCallback.find(id);
-        } while (iter != m_mapCallback.end());
-        auto node = new TimerNode;
-        node->callback = cb;
-        node->isOnceTimer = bOnce;
-        m_mapCallback[id] = node;
-        ::SetTimer(m_hwnd, id, elapse, NULL);
-    } else {
-        auto iter = m_mapCallback.find(id);
-        if (iter != m_mapCallback.end()) {
-            iter->second->isOnceTimer = bOnce;
-			iter->second->callback = cb;
-            ::SetTimer(m_hwnd, id, elapse, NULL); // refresh the timer.
-        } else {
-            LTK_ASSERT(false);
-        }
-    }
-    return id;
+	UINT id = timer->id;
+	bool bOnce = timer->bOnce;
+	UINT elapse = timer->elapse;
+
+	if (id == 0) {
+		auto iter = m_mapCallback.end();
+		do {
+			id = (UINT)rand() + USER_TIMER_MINIMUM;
+			iter = m_mapCallback.find(id);
+		} while (iter != m_mapCallback.end());
+
+		m_mapCallback[id] = timer;
+		::SetTimer(m_hwnd, id, elapse, NULL);
+		timer->id = id;
+	}
+	else {
+		auto iter = m_mapCallback.find(id);
+		if (iter != m_mapCallback.end()) {
+			LTK_ASSERT(iter->second == timer);
+			::SetTimer(m_hwnd, id, elapse, NULL); // refresh the timer.
+		}
+		else {
+			LTK_ASSERT(false);
+		}
+	}
+	return id;
 }
 
-void TimerManager::KillTimer(UINT id)
+void TimerManager::KillTimer(Timer *timer)
 {
+	UINT id = timer->id;
+
 	if (id == 0) {
 		return; // TODO [0] cannot be searched by stl hash table?
 	}
-    auto iter = m_mapCallback.find(id);
-    if (iter != m_mapCallback.end()) {
-        delete iter->second;
-        ::KillTimer(m_hwnd, id);
-        m_mapCallback.erase(iter);
-    }
-}
-
-UINT SetTimer(UINT elapse, UINT id, const std::function<void()>&cb)
-{
-    return TimerManager::Instance()->SetTimer(id, cb, elapse, false);
-}
-
-UINT SetOnceTimer(UINT elapse, UINT id, const std::function<void()>&cb)
-{
-    return TimerManager::Instance()->SetTimer(id, cb, elapse, true);
-}
-
-void KillTimer(UINT id)
-{
-    TimerManager::Instance()->KillTimer(id);
+	auto iter = m_mapCallback.find(id);
+	if (iter != m_mapCallback.end()) {
+		timer->id = 0;
+		::KillTimer(m_hwnd, id);
+		m_mapCallback.erase(iter);
+	}
 }
 
 } // namespace ltk

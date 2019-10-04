@@ -109,6 +109,12 @@ private:
 	T *m_ptr;
 };
 
+template <class T>
+Ptr<T> ToPtr(T *obj)
+{
+	return obj->GetPtr<T>();
+}
+
 class Object : public RTTI
 {
 public:
@@ -119,11 +125,13 @@ public:
 
 	template<typename T>
 	Ptr<T> GetPtr() {
-		assert(this->Is(T::TypeIdClass()));
 		return Ptr<T>(m_obctrl);
 	}
 
 	void SetInvalid();
+
+	static Object *GetDelegateInvoker();
+	static void SetDelegateInvoker(Object *);
 
 private:
 	ObserverCtrl *m_obctrl = nullptr;
