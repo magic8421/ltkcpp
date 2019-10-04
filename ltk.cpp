@@ -347,6 +347,7 @@ namespace ltk {
 		SetupVectorStyleLight();
 
 		StyleManager::NewTheme("pixel");
+		//StyleManager::Instance()->LoadThemeXml("res\\style.xml");
 		SetupPixelStyle1();
     }
 
