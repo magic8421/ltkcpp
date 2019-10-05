@@ -11,7 +11,7 @@
 
 namespace ltk {
 
-class Timer : public Object
+class LTK_API Timer : public Object
 {
 public:
 	Timer() {}

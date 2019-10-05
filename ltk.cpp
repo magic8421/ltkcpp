@@ -6,9 +6,9 @@
 //////////////////////////////////////////////////////////////////////////
 
 #include "stdafx.h"
-#include "atlstr.h"
-#include "ltk.h"
 #include "Common.h"
+#include "ltk.h"
+#include "atlstr.h"
 #include "Window.h"
 #include "ShadowFrame.h"
 #include "StyleManager.h"
@@ -303,7 +303,7 @@ namespace ltk {
 #pragma warning(pop)
 	}
 
-    void LtkInitialize()
+	void LtkInitialize()
     {
         ::CoInitialize(NULL);
 

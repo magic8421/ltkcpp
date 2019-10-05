@@ -10,14 +10,7 @@
 
 namespace ltk {
 
-class AbstractAnimation
-{
-public:
-    virtual ~AbstractAnimation() {}
-    virtual bool IsRunning() = 0;
-};
-
-class ScrollAnimation : public AbstractAnimation
+class LTK_API ScrollAnimation : public Object
 {
 public:
     ScrollAnimation();
@@ -37,7 +30,7 @@ public:
     void SetScroll(float pos);
     State GetState() { return m_state; }
 
-    virtual bool IsRunning() override;
+    virtual bool IsRunning();
 
 	void OnNoInputTimer();
 

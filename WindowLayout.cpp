@@ -91,7 +91,6 @@ void WindowLayout::SetCaptionText(LPCWSTR text)
 
 void WindowLayout::DoLayout()
 {
-    auto sm = StyleManager::Instance();
 	float btn_w = 22;
 	float btn_h = 20;
 	float caption_h = 30;

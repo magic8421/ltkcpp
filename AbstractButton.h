@@ -13,7 +13,7 @@
 
 namespace ltk {
 
-class AbstractButton : public Sprite
+class LTK_API AbstractButton : public Sprite
 {
 public:
     AbstractButton() {}

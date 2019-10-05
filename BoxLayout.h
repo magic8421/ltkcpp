@@ -17,7 +17,7 @@ struct BoxLayoutParam {
     float growFactor = 0.0f;
 };
 
-class BoxLayout : public Sprite
+class LTK_API BoxLayout : public Sprite
 {
 public:
     enum Mode {

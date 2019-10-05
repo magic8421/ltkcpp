@@ -176,10 +176,6 @@ void ScrollBar::OnSilderEvent(MouseEvent *ev, bool &bHandled)
         break;
     case eMouseMove:
         //LTK_LOG("eMouseMove %f %f", ev->x, ev->y);
-        if (m_bDrag) {
-            int i = 1;
-            i = 1;
-        }
         break;
     }
     bHandled = false;

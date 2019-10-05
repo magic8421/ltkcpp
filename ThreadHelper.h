@@ -11,7 +11,7 @@
 #include <functional>
 #include "Common.h"
 
-namespace cs {
+namespace ltk {
     
     extern HWND g_hwndUITask;
     extern const UINT WM_POST_THREAD_TASK;

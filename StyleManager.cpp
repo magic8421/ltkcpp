@@ -63,7 +63,7 @@ StyleManager * StyleManager::Instance()
 
 void StyleManager::Free()
 {
-    auto &map = m_sThemeData->MapTheme;
+    const auto &map = m_sThemeData->MapTheme;
     for (auto &pair : map) {
         delete pair.second;
     }
@@ -95,7 +95,7 @@ D2D1_COLOR_F StyleManager::ColorFromString(const char *psz)
     clr.g = (bin & 0xFF) / 256.0f;
     bin >>= 8;
     clr.r = (bin & 0xFF) / 256.0f;
-    bin >>= 8;
+    //bin >>= 8;
     return clr;
 }
 

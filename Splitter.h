@@ -3,7 +3,7 @@
 
 namespace ltk {
 
-class Splitter : public Sprite
+class LTK_API Splitter : public Sprite
 {
 public:
 	enum Mode { Horizontal, Vertical };

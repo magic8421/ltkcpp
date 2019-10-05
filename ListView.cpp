@@ -113,9 +113,9 @@ bool ListView::OnPaint(PaintEvent *ev)
         } else {
 			brush->SetColor(m_textColor);
         }
-        //if (m_vecColumns.size() > 0) {
+        if (m_vecColumns.size() > 0) {
             rcItem.right = m_vecColumns[0];
-        //}
+        }
         target->DrawText(text, len, m_textFormat, rcItem, brush);
 
         if (m_vecColumns.size() > 0) {

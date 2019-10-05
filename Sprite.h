@@ -14,7 +14,7 @@ namespace ltk {
 
 class Window;
 
-class Sprite : public Object
+class LTK_API Sprite : public Object
 {
 public:
 	RTTI_DECLARATIONS(Sprite, Object);
@@ -79,7 +79,7 @@ public:
 	Sprite *SetFocus();
 	void KillFocus();
 
-    virtual bool OnEvent(Event *ev);
+    virtual bool OnEvent(Event *ev) override;
 
 protected:
     virtual bool OnPaint            (PaintEvent *ev) { return false; }

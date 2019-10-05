@@ -2,6 +2,7 @@
 #define _MULTICAST_DELEGATE_BASE_H
 
 #include "Delegate.h"
+#include "..\Common.h"
 
 namespace ltk {
 
@@ -9,7 +10,7 @@ namespace ltk {
 /// @details Since the MulticastDelegate template class inherits from this class, 
 /// as much code is placed into this base class as possible to minimize the
 /// template code instantiation. 
-class MulticastDelegateBase
+class LTK_API  MulticastDelegateBase
 {
 public:
 	/// Constructor

@@ -184,23 +184,23 @@ bool Splitter::OnMouseMove(MouseEvent *ev)
 		float move_left = new_size - MIN_SIZE;
 		bool bCanMoveLeft = true;
 		if (move_left < 0.f) {
-			UINT idx = m_dragIdx;
+			UINT idx2 = m_dragIdx;
 			move_left = -move_left;
-			while (idx > 0 && move_left > 0.f) {
-				float old_size = m_vecItems[idx - 1].size;
-				m_vecItems[idx - 1].size -= move_left;
-				m_vecItems[idx - 1].size = max(MIN_SIZE, m_vecItems[idx - 1].size);
-				move_left -= old_size - m_vecItems[idx - 1].size;
-				idx--;
+			while (idx2 > 0 && move_left > 0.f) {
+				float old_size = m_vecItems[idx2 - 1].size;
+				m_vecItems[idx2 - 1].size -= move_left;
+				m_vecItems[idx2 - 1].size = max(MIN_SIZE, m_vecItems[idx2 - 1].size);
+				move_left -= old_size - m_vecItems[idx2 - 1].size;
+				idx2--;
 			}
 			if (move_left > 0.0001f) {
 				bCanMoveLeft = false;
 			}
 		}
 		if (size_delta < -0.0001f && bCanMoveLeft) {
-			if (idx < m_vecItems.size() - 1) {
+			if (m_dragIdx < (int)m_vecItems.size() - 1) {
 				//LTK_LOG("size_delta [2] %.2f", size_delta);
-				m_vecItems[idx + 1].size -= size_delta;
+				m_vecItems[m_dragIdx + 1].size -= size_delta;
 			}
 		}
 		DoLayout();

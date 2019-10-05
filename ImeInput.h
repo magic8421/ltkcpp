@@ -6,8 +6,8 @@
 
 
 #include <windows.h>
-
 #include <string>
+#include "Common.h"
 
 //#include "base/basictypes.h"
 //#include "base/gfx/rect.h"
@@ -91,7 +91,7 @@ struct ImeComposition {
 //   hand, we can NEVER disable either TSF or CUAS in Windows Vista, i.e.
 //   THIS CLASS IS NOT ONLY USED ON THE INPUT CONTEXTS OF EAST-ASIAN
 //   LANGUAGES BUT ALSO USED ON THE INPUT CONTEXTS OF ALL LANGUAGES.
-class ImeInput {
+class LTK_API ImeInput {
 public:
 	ImeInput();
 	~ImeInput();

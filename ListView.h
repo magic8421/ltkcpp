@@ -17,7 +17,7 @@ namespace ltk {
 class ScrollBar;
 class HeaderCtrl;
 
-class ListView : public Sprite
+class LTK_API ListView : public Sprite
 {
 public:
     ListView();

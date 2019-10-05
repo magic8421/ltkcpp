@@ -4,6 +4,13 @@
     <platform>win32W</platform>
     <importproject>ltkcpp.vcxproj</importproject>
     <analyze-all-vs-configs>true</analyze-all-vs-configs>
+    <check-headers>true</check-headers>
+    <check-unused-templates>false</check-unused-templates>
+    <max-ctu-depth>10</max-ctu-depth>
+    <exclude>
+        <path name="3rd/"/>
+        <path name="Delegate/"/>
+    </exclude>
     <libraries>
         <library>microsoft_sal</library>
         <library>windows</library>

@@ -6,6 +6,7 @@
 //////////////////////////////////////////////////////////////////////////
 
 #pragma once
+#include "ltk.h"
 #include "Sprite.h"
 #include "MulticastDelegate.h"
 
@@ -16,7 +17,7 @@ class AbstractBackground;
 class MenuBar;
 class PopupMenu;
 
-struct MenuItem
+struct LTK_API MenuItem
 {
 public:
 	MenuItem() {}
@@ -39,7 +40,7 @@ private:
 	DISALLOW_COPY_AND_ASSIGN(MenuItem)
 };
 
-class PopupMenu : public Sprite
+class LTK_API PopupMenu : public Sprite
 {
 public:
 	PopupMenu();
@@ -100,7 +101,7 @@ struct MenuButtonParam {
 	PopupMenu *sub_menu = nullptr;
 };
 
-class MenuBar : public Sprite
+class LTK_API MenuBar : public Sprite
 {
 public:
 	MenuBar();

@@ -14,7 +14,7 @@ namespace ltk {
 
 class Button;
 
-class ScrollBar : public Sprite
+class LTK_API ScrollBar : public Sprite
 {
 public:
     enum Mode {
@@ -43,7 +43,7 @@ public:
 
     virtual bool OnValueChanged(float pos);
 
-    virtual void RecreateResouce(ID2D1RenderTarget *target);
+    virtual void RecreateResouce(ID2D1RenderTarget *target) override;
 
     Delegate<void(float)> ValueChangedEvent;
 

@@ -9,7 +9,7 @@
 #include <cassert>
 #include "ThreadHelper.h"
 
-namespace cs{
+namespace ltk{
 
 HWND g_hwndUITask = NULL;
 const UINT WM_POST_THREAD_TASK = WM_USER + 1;

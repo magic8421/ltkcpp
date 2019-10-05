@@ -27,7 +27,7 @@
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v120</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
@@ -89,7 +89,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;LTK_EXPORTS;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <DisableSpecificWarnings>4100;4189</DisableSpecificWarnings>
+      <DisableSpecificWarnings>4100;4189;4251</DisableSpecificWarnings>
       <TreatWarningAsError>true</TreatWarningAsError>
       <AdditionalIncludeDirectories>.\Delegate</AdditionalIncludeDirectories>
     </ClCompile>
@@ -164,7 +164,6 @@
     <ClCompile Include="Delegate\ThreadWin.cpp" />
     <ClCompile Include="Delegate\WorkerThreadWin.cpp" />
     <ClCompile Include="HeaderCtrl.cpp" />
-    <ClCompile Include="ImageSprite.cpp" />
     <ClCompile Include="ImeInput.cpp" />
     <ClCompile Include="Label.cpp" />
     <ClCompile Include="ListView.cpp" />
@@ -225,7 +224,6 @@
     <ClInclude Include="Delegate\WorkerThreadWin.h" />
     <ClInclude Include="Delegate\xallocator.h" />
     <ClInclude Include="HeaderCtrl.h" />
-    <ClInclude Include="ImageSprite.h" />
     <ClInclude Include="ImeInput.h" />
     <ClInclude Include="Label.h" />
     <ClInclude Include="ListView.h" />

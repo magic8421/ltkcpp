@@ -6,36 +6,35 @@
 //////////////////////////////////////////////////////////////////////////
 
 #pragma once
-
-
+#include "Common.h"
 
 namespace ltk {
-	void LtkInitialize();
-	void LtkUninitialize();
-	ID2D1Factory *GetD2DFactory();
-    IWICImagingFactory *GetWICFactory();
-    IDWriteFactory *GetDWriteFactory();
-    void TranslateTransform(ID2D1RenderTarget *target, float dx, float dy);
-    D2D1_RECT_F D2D1RectF(const RectF &rc);
-	HRESULT LoadBitmapFromFile(ID2D1RenderTarget * target, LPCWSTR path, ID2D1Bitmap ** bitmap);
-	DWORD TickCount();
+	LTK_API void LtkInitialize();
+	LTK_API void LtkUninitialize();
+	LTK_API ID2D1Factory *GetD2DFactory();
+	LTK_API IWICImagingFactory *GetWICFactory();
+	LTK_API IDWriteFactory *GetDWriteFactory();
+	LTK_API void TranslateTransform(ID2D1RenderTarget *target, float dx, float dy);
+	LTK_API D2D1_RECT_F D2D1RectF(const RectF &rc);
+	LTK_API HRESULT LoadBitmapFromFile(ID2D1RenderTarget * target, LPCWSTR path, ID2D1Bitmap ** bitmap);
+	LTK_API DWORD TickCount();
 
-    struct Margin {
+	struct LTK_API Margin {
         float left = 0.0f;
         float top = 0.0f;
         float right = 0.0f;
         float bottom = 0.0f;
     };
-    void DrawTextureNineInOne(ID2D1RenderTarget *target, ID2D1Bitmap *bitmap,
+	LTK_API void DrawTextureNineInOne(ID2D1RenderTarget *target, ID2D1Bitmap *bitmap,
         const RectF &atlas, const Margin& margin, RectF dst, float opacity, float scale);
 
-    void DrawRectSnapped(ID2D1RenderTarget *target, const RectF &rc, ID2D1Brush *brush);
+	LTK_API void DrawRectSnapped(ID2D1RenderTarget *target, const RectF &rc, ID2D1Brush *brush);
 
-    void DipCoordToScreen(float &x, float &y);
-    void ScreenCoordToDip(float &x, float &y);
-    RECT DipRectToScreen(const RectF &rc);
+	LTK_API void DipCoordToScreen(float &x, float &y);
+	LTK_API void ScreenCoordToDip(float &x, float &y);
+	LTK_API RECT DipRectToScreen(const RectF &rc);
 
-    struct TextureInfo {
+	struct LTK_API TextureInfo {
         TextureInfo& SetAtals(float x, float y, float w, float h);
         TextureInfo& SetMargin(float left, float top, float right, float bottom);
 
@@ -45,7 +44,7 @@ namespace ltk {
         float scale = 1.0f;
     };
 
-    struct IconInfo {
+	struct LTK_API IconInfo {
         IconInfo& SetAtlas(float x, float y, float w, float h);
         IconInfo& SetScale(float s);
 

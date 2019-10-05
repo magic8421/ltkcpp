@@ -74,7 +74,6 @@ ImageSprite::~ImageSprite()
 
 bool ImageSprite::OnPaint(PaintEvent *ev)
 {
-    RectF rc = this->GetClientRect();
     if (m_bitmap) {
     }
     return true;

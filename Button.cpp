@@ -90,7 +90,6 @@ void Button::RecreateLayout()
 	LTK_LOG("Button::RecreateLayout() %d", cnt++);
 
 	SAFE_RELEASE(m_layout);
-	auto rc = this->GetClientRect();
 	if (!m_format) {
 		this->OnThemeChanged();
 	}

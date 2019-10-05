@@ -1,5 +1,6 @@
 #pragma once
 #include "RTTI.h"
+#include "Common.h"
 
 namespace ltk {
 
@@ -115,7 +116,7 @@ Ptr<T> ToPtr(T *obj)
 	return obj->GetPtr<T>();
 }
 
-class Object : public RTTI
+class LTK_API Object : public RTTI
 {
 public:
 	RTTI_DECLARATIONS(Object, RTTI);
@@ -135,6 +136,8 @@ public:
 
 private:
 	ObserverCtrl *m_obctrl = nullptr;
+	
+	DISALLOW_COPY_AND_ASSIGN(Object);
 };
 
 } // namespace ltk

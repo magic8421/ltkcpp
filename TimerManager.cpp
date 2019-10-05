@@ -135,7 +135,6 @@ void TimerManager::OnTimer(UINT id)
 UINT TimerManager::SetTimer(Timer *timer)
 {
 	UINT id = timer->id;
-	bool bOnce = timer->bOnce;
 	UINT elapse = timer->elapse;
 
 	if (id == 0) {

@@ -14,7 +14,7 @@ namespace ltk {
 
 class ScrollBar;
 
-class TextEdit : public Sprite
+class LTK_API TextEdit : public Sprite
 {
 public:
     TextEdit();

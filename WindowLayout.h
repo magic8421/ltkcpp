@@ -16,7 +16,7 @@ class Button;
 class Label;
 class MenuBar;
 
-class WindowLayout : public Sprite
+class LTK_API WindowLayout : public Sprite
 {
 public:
     WindowLayout();

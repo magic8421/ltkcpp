@@ -206,7 +206,7 @@ void DemoWindow::BuildDemoWindow()
 void DemoWindow::BuildSplitterTest2()
 {
 	Window *wnd = this;
-	Splitter *spitter1 = new Splitter(Splitter::Vertical);
+	Splitter *spitter1 = new Splitter(Splitter::Horizontal);
 	wnd->SetClientSprite(spitter1);
 	spitter1->AddClient(new Button);
 	spitter1->SetClientSize(0, 100);
@@ -310,8 +310,8 @@ int CALLBACK WinMain(
 	auto wnd = new DemoWindow;
     wnd->SetCaption(L"LTK²âÊÔ´°¿Ú");
     wnd->SetBackground("window_bg");
-	wnd->BuildDemoWindow();
-	//wnd->BuildSplitterTest();
+	//wnd->BuildDemoWindow();
+	wnd->BuildSplitterTest2();
     wnd->Create(nullptr, SizeF(700, 500));
 	wnd->UpdateTheme();
 

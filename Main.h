@@ -6,6 +6,7 @@
 //////////////////////////////////////////////////////////////////////////
 
 #pragma once
+#include "Common.h"
 #include "Window.h"
 #include "TimerManager.h"
 
@@ -32,5 +33,7 @@ public:
 private:
 	ltk::Timer *m_timer = nullptr;
 	ltk::Timer *m_onceTimer = nullptr;
+	
+	DISALLOW_COPY_AND_ASSIGN(DemoWindow);
 };
 

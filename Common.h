@@ -6,20 +6,25 @@
 //////////////////////////////////////////////////////////////////////////
 
 #pragma once
-#include "ltk.h"
 #include "ScopeGuard.h"
 
-std::wstring Utf8ToUtf16(LPCSTR strA, int len = -1);
+#ifdef LTK_EXPORTS
+#define LTK_API __declspec(dllexport)
+#else
+#define LTK_API __declspec(dllimport)
+#endif
+
+LTK_API std::wstring Utf8ToUtf16(LPCSTR strA, int len = -1);
 CStringA Utf16ToUtf8(LPCTSTR strW, int len);
 CStringA Utf16ToGbk(LPCTSTR strW, int len);
 
-std::wstring WStringFormat(LPCWSTR format, ...);
+LTK_API std::wstring WStringFormat(LPCWSTR format, ...);
 
 class ImmutableString
 {
 public:
 	ImmutableString() {}
-	ImmutableString(LPCSTR str)
+	explicit ImmutableString(LPCSTR str)
 	{
 		m_ptr = _strdup(str);
 	}
@@ -51,6 +56,8 @@ public:
 
 private:
 	const char *m_ptr = nullptr;
+	ImmutableString(const ImmutableString&) = delete;
+	ImmutableString& operator=(const ImmutableString&) = delete;
 };
 
 
@@ -89,5 +96,5 @@ EXTERN_C IMAGE_DOS_HEADER __ImageBase;
 
 #define  LTK_LOG(...) LtkLogImpl(__FILE__, __LINE__, __VA_ARGS__)
 
-void LtkLogInit();
-void LtkLogImpl(const char *source, int line, const char *format, ...);
+LTK_API void LtkLogInit();
+LTK_API void LtkLogImpl(const char *source, int line, const char *format, ...);
