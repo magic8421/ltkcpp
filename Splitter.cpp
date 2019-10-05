@@ -165,7 +165,7 @@ bool Splitter::OnMouseMove(MouseEvent *ev)
 		float size_delta = new_size - m_vecItems[m_dragIdx].size;
 		UINT idx = m_dragIdx;
 		if (size_delta > 0.0001f) {
-			LTK_LOG("size_delta %.2f", size_delta);
+			//LTK_LOG("size_delta %.2f", size_delta);
 			while (idx < m_vecItems.size() - 1 && size_delta > 0.f) {
 				float old_size = m_vecItems[idx + 1].size;
 				m_vecItems[idx + 1].size -= size_delta;
@@ -199,7 +199,7 @@ bool Splitter::OnMouseMove(MouseEvent *ev)
 		}
 		if (size_delta < -0.0001f && bCanMoveLeft) {
 			if (idx < m_vecItems.size() - 1) {
-				LTK_LOG("size_delta [2] %.2f", size_delta);
+				//LTK_LOG("size_delta [2] %.2f", size_delta);
 				m_vecItems[idx + 1].size -= size_delta;
 			}
 		}

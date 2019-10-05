@@ -27,7 +27,7 @@ protected:
 private:
 	struct SplitterItem
 	{
-		float size = 10.f;
+		float size = 20.f;
 		bool bFixed = false;
 		Sprite* client = nullptr;
 	};

@@ -17,6 +17,7 @@ public:
 
 	void BuildDemoWindow();
 	void BuildSplitterTest();
+	void BuildSplitterTest2();
 
 	void OnTimer();
 	void OnOnceTimer();

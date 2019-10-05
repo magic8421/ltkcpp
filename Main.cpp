@@ -67,11 +67,13 @@ DemoWindow::~DemoWindow()
 void DemoWindow::BuildDemoWindow()
 {
 	Window *wnd = this;
-	BoxLayout *hbox = new BoxLayout(BoxLayout::Horizontal);
-	wnd->SetClientSprite(hbox);
+	//BoxLayout *hbox = new BoxLayout(BoxLayout::Horizontal);
+	Splitter *spitter1 = new Splitter(Splitter::Horizontal);
+	wnd->SetClientSprite(spitter1);
 
 	TreeView *tree = new TreeView;
-	hbox->AddLayoutItem(tree, 100, 0.3f);
+	spitter1->AddClient(tree);
+	spitter1->SetClientSize(0, 300);
 
 	::srand(ltk::TickCount());
 
@@ -80,7 +82,7 @@ void DemoWindow::BuildDemoWindow()
 
 	BoxLayout *vboxRightPanel = new BoxLayout(BoxLayout::Vertical);
 	//vbox->SetSpacing(10);
-	hbox->AddLayoutItem(vboxRightPanel, 100, 0.7f);
+	spitter1->AddClient(vboxRightPanel);
 
 	HeaderCtrl *header = new HeaderCtrl;
 	header->AddColumn(L"项目名", 100);
@@ -201,7 +203,7 @@ void DemoWindow::BuildDemoWindow()
 	vboxRightPanel->AddSpaceItem(5, 0);
 }
 
-void DemoWindow::BuildSplitterTest()
+void DemoWindow::BuildSplitterTest2()
 {
 	Window *wnd = this;
 	Splitter *spitter1 = new Splitter(Splitter::Vertical);
@@ -218,6 +220,42 @@ void DemoWindow::BuildSplitterTest()
 	spitter1->SetClientSize(4, 100);
 
 	spitter1->DoLayout();
+}
+
+void DemoWindow::BuildSplitterTest()
+{
+	Window *wnd = this;
+
+	Splitter *sp_left = new Splitter(Splitter::Vertical);
+	sp_left->AddClient(new Button);
+	sp_left->SetClientSize(0, 100);
+	sp_left->AddClient(new Button);
+	sp_left->SetClientSize(1, 100);
+	sp_left->AddClient(new Button);
+	sp_left->SetClientSize(2, 100);
+
+	Splitter *sp_mid = new Splitter(Splitter::Vertical);
+	sp_mid->AddClient(new Button);
+	sp_mid->SetClientSize(0, 350);
+	sp_mid->AddClient(new Button);
+	sp_mid->SetClientSize(1, 100);
+
+	Splitter *sp_right = new Splitter(Splitter::Vertical);
+	sp_right->AddClient(new Button);
+	sp_right->SetClientSize(0, 100);
+	sp_right->AddClient(new Button);
+	sp_right->SetClientSize(1, 100);
+	sp_right->AddClient(new Button);
+	sp_right->SetClientSize(2, 100);
+
+	Splitter *spitter1 = new Splitter(Splitter::Horizontal);
+	wnd->SetClientSprite(spitter1);
+	spitter1->AddClient(sp_left);
+	spitter1->SetClientSize(0, 100);
+	spitter1->AddClient(sp_mid);
+	spitter1->SetClientSize(1, 500);
+	spitter1->AddClient(sp_right);
+	spitter1->SetClientSize(2, 100);
 }
 
 
@@ -272,8 +310,8 @@ int CALLBACK WinMain(
 	auto wnd = new DemoWindow;
     wnd->SetCaption(L"LTK测试窗口");
     wnd->SetBackground("window_bg");
-	//wnd->BuildDemoWindow();
-	wnd->BuildSplitterTest();
+	wnd->BuildDemoWindow();
+	//wnd->BuildSplitterTest();
     wnd->Create(nullptr, SizeF(700, 500));
 	wnd->UpdateTheme();
 
