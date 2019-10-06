@@ -30,7 +30,7 @@ TextEdit::TextEdit()
 
     this->EnableClipChildren(true);
 
-    m_vsb = new ScrollBar(ScrollBar::Vertical);
+	m_vsb = new ScrollBar(ltk::Vertical);
     this->AddChild(m_vsb);
 }
 

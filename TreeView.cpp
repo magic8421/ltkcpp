@@ -124,7 +124,7 @@ TreeView::TreeView() :
 {
     this->EnableClipChildren(true);
     m_root.SetTreeView(this);
-    m_vsb = new ScrollBar(ScrollBar::Vertical);
+    m_vsb = new ScrollBar(ltk::Vertical);
     this->AddChild(m_vsb);
 }
 

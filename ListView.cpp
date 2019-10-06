@@ -31,12 +31,12 @@ ListView::ListView() :
 	m_selectedTextColor(D2D1::ColorF(D2D1::ColorF::Cyan)),
 	m_textColor(D2D1::ColorF(D2D1::ColorF::Cyan))
 {
-    m_vsb = new ScrollBar(ScrollBar::Vertical);
+	m_vsb = new ScrollBar(ltk::Vertical);
     m_vsb->ValueChangedEvent.Attach([this](float pos) {
         this->HandleVScrollBar(pos);
     });
     this->AddChild(m_vsb);
-    m_hsb = new ScrollBar(ScrollBar::Horizontal);
+	m_hsb = new ScrollBar(ltk::Horizontal);
     m_hsb->ValueChangedEvent.Attach([this](float pos) {
         this->HandleHScrollBar(pos);
     });

@@ -6,7 +6,7 @@
 //////////////////////////////////////////////////////////////////////////
 
 #pragma once
-
+#include "ltk.h"
 #include "Sprite.h"
 #include "Delegate.h"
 
@@ -17,11 +17,7 @@ class Button;
 class LTK_API ScrollBar : public Sprite
 {
 public:
-    enum Mode {
-        Horizontal, Vertical
-    };
-
-    explicit ScrollBar(Mode mode);
+    explicit ScrollBar(Orientation mode);
     ~ScrollBar();
 
     float GetValue() { return m_position; }
@@ -48,7 +44,7 @@ public:
     Delegate<void(float)> ValueChangedEvent;
 
 private:
-    Mode m_mode;
+	Orientation m_mode;
     Button *m_slider = nullptr;
     float m_contentSize = 100.0f;
     float m_position = 0.0f;

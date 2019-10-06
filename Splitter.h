@@ -1,4 +1,5 @@
 #pragma once
+#include "ltk.h"
 #include "Sprite.h"
 
 namespace ltk {
@@ -6,8 +7,7 @@ namespace ltk {
 class LTK_API Splitter : public Sprite
 {
 public:
-	enum Mode { Horizontal, Vertical };
-	explicit Splitter(Mode m) : m_mode(m) {}
+	explicit Splitter(Orientation m) : m_mode(m) {}
 	virtual ~Splitter() {}
 
 
@@ -32,7 +32,7 @@ private:
 		Sprite* client = nullptr;
 	};
 	std::vector<SplitterItem> m_vecItems;
-	Mode m_mode;
+	Orientation m_mode;
 	bool m_bCapture = false;
 	float m_dragDelta = 0.f;
 	int m_dragIdx = -1;

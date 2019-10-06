@@ -19,7 +19,7 @@ namespace ltk {
 
 const float ScrollBar::SLIDER_MIN = 10.0f;
 
-ScrollBar::ScrollBar(Mode mode) : m_mode(mode)
+ScrollBar::ScrollBar(Orientation mode) : m_mode(mode)
 {
     m_slider = new Button;
     m_slider->EnableCapture(false);

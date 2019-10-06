@@ -68,8 +68,8 @@ DemoWindow::~DemoWindow()
 void DemoWindow::BuildDemoWindow()
 {
 	Window *wnd = this;
-	//BoxLayout *hbox = new BoxLayout(BoxLayout::Horizontal);
-	Splitter *spitter1 = new Splitter(Splitter::Horizontal);
+	//BoxLayout *hbox = new BoxLayout(ltk::Horizontal);
+	Splitter *spitter1 = new Splitter(ltk::Horizontal);
 	wnd->SetClientSprite(spitter1);
 
 	TreeView *tree = new TreeView;
@@ -207,7 +207,7 @@ void DemoWindow::BuildDemoWindow()
 void DemoWindow::BuildSplitterTest2()
 {
 	Window *wnd = this;
-	Splitter *spitter1 = new Splitter(Splitter::Horizontal);
+	Splitter *spitter1 = new Splitter(ltk::Horizontal);
 	wnd->SetClientSprite(spitter1);
 	spitter1->AddClient(new Button);
 	spitter1->SetClientSize(0, 100);
@@ -227,7 +227,7 @@ void DemoWindow::BuildSplitterTest()
 {
 	Window *wnd = this;
 
-	Splitter *sp_left = new Splitter(Splitter::Vertical);
+	Splitter *sp_left = new Splitter(ltk::Vertical);
 	sp_left->AddClient(new Button);
 	sp_left->SetClientSize(0, 100);
 	sp_left->AddClient(new Button);
@@ -235,13 +235,13 @@ void DemoWindow::BuildSplitterTest()
 	sp_left->AddClient(new Button);
 	sp_left->SetClientSize(2, 100);
 
-	Splitter *sp_mid = new Splitter(Splitter::Vertical);
+	Splitter *sp_mid = new Splitter(ltk::Vertical);
 	sp_mid->AddClient(new Button);
 	sp_mid->SetClientSize(0, 350);
 	sp_mid->AddClient(new Button);
 	sp_mid->SetClientSize(1, 100);
 
-	Splitter *sp_right = new Splitter(Splitter::Vertical);
+	Splitter *sp_right = new Splitter(ltk::Vertical);
 	sp_right->AddClient(new Button);
 	sp_right->SetClientSize(0, 100);
 	sp_right->AddClient(new Button);
@@ -249,7 +249,7 @@ void DemoWindow::BuildSplitterTest()
 	sp_right->AddClient(new Button);
 	sp_right->SetClientSize(2, 100);
 
-	Splitter *spitter1 = new Splitter(Splitter::Horizontal);
+	Splitter *spitter1 = new Splitter(ltk::Horizontal);
 	wnd->SetClientSprite(spitter1);
 	spitter1->AddClient(sp_left);
 	spitter1->SetClientSize(0, 100);
