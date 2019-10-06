@@ -19,6 +19,7 @@
 #include "MenuBar.h"
 #include "Splitter.h"
 #include "Main.h"
+#include "TimerWindow.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW 
@@ -36,8 +37,8 @@ static void RecBuildNodes(TreeNode *parent, int depth)
 	int num = rand() % 13 + 3;
 	for (int i = 0; i < num; i++) {
 		TreeNode *node = new TreeNode;
-		wstring text = WStringFormat(L"%d", rand());
-		node->SetText(text.c_str());
+		auto text = WStringFormat(L"TreeNode: %d", node_count);
+		node->SetText(text);
 		parent->AddChild(node);
 		node_count++;
 		if (rand() % 100 < 35) {
@@ -80,7 +81,7 @@ void DemoWindow::BuildDemoWindow()
 	RecBuildNodes(tree->GetRootNode(), 0);
 	LTK_LOG("node_count: %d", node_count);
 
-	BoxLayout *vboxRightPanel = new BoxLayout(BoxLayout::Vertical);
+	BoxLayout *vboxRightPanel = new BoxLayout(ltk::Vertical);
 	//vbox->SetSpacing(10);
 	spitter1->AddClient(vboxRightPanel);
 
@@ -107,7 +108,7 @@ void DemoWindow::BuildDemoWindow()
 	TextEdit *edit1 = new TextEdit;
 	vboxRightPanel->AddLayoutItem(edit1, 100, 0.0f);
 
-	auto hboxTimerTest = new BoxLayout(BoxLayout::Horizontal);
+	auto hboxTimerTest = new BoxLayout(ltk::Horizontal);
 	vboxRightPanel->AddLayoutItem(hboxTimerTest, 30, 0.0f);
 
 	Button *btnRepeatTimer = new Button;
@@ -130,7 +131,7 @@ void DemoWindow::BuildDemoWindow()
 	btnStopOnceTimer->ClickedDelegate += MakeDelegate(m_onceTimer, &Timer::Stop);
 	hboxTimerTest->AddLayoutItem(btnStopOnceTimer, 0, 1);
 
-	auto hboxTheme = new BoxLayout(BoxLayout::Horizontal);
+	auto hboxTheme = new BoxLayout(ltk::Horizontal);
 	vboxRightPanel->AddLayoutItem(hboxTheme, 30, 0.0f);
 
 	Button *btnPixelTheme = new Button;
@@ -297,6 +298,13 @@ void DemoWindow::OnClose(bool &proceed)
 	::PostQuitMessage(0);
 }
 
+static void SetupAppStyle()
+{
+	auto sm = StyleManager::Instance();
+	sm->AddTextFormat2("timer_label_fmt", L"Î¢ÈíÑÅºÚ", DWRITE_FONT_WEIGHT_NORMAL,
+		DWRITE_FONT_STYLE_NORMAL, 34, DWRITE_TEXT_ALIGNMENT_CENTER,
+		DWRITE_PARAGRAPH_ALIGNMENT_CENTER);
+}
 int CALLBACK WinMain(
 	_In_ HINSTANCE hInstance,
 	_In_opt_ HINSTANCE hPrevInstance,
@@ -307,12 +315,19 @@ int CALLBACK WinMain(
 
     ltk::LtkInitialize();
 
+	/*
 	auto wnd = new DemoWindow;
     wnd->SetCaption(L"LTK²âÊÔ´°¿Ú");
     wnd->SetBackground("window_bg");
-	//wnd->BuildDemoWindow();
-	wnd->BuildSplitterTest2();
+	wnd->BuildDemoWindow();
+	//wnd->BuildSplitterTest2();
     wnd->Create(nullptr, SizeF(700, 500));
+	wnd->UpdateTheme();
+	*/
+	SetupAppStyle();
+	TimerWindow *wnd = new TimerWindow;
+	wnd->SetBackground("window_bg");
+	wnd->Create(nullptr, SizeF(300, 500));
 	wnd->UpdateTheme();
 
 

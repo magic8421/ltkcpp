@@ -32,6 +32,7 @@ public:
     int GetSelectedItem() { return m_selectedItem; }
     void RemoveItem(int row);
     LPCWSTR GetItemText(int row);
+	UINT GetItemCount();
     void ScrollToBottom();
     void SetColumns(std::vector<float> &columns);
     void UpdateColumnWidth();

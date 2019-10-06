@@ -249,6 +249,11 @@ LPCWSTR ListView::GetItemText(int row)
     return m_vecData[row].cells.at(0).c_str();
 }
 
+UINT ListView::GetItemCount()
+{
+	return m_vecData.size();
+}
+
 void ListView::ScrollToBottom()
 {
     RectF rcSprite = this->GetRect();
@@ -291,6 +296,9 @@ void ListView::SetHeaderCtrl(HeaderCtrl *head)
 
 void ListView::HandleResizeEnd()
 {
+	if (!m_header) {
+		return;
+	}
 	float max_hscroll = m_header->GetTotalWidth() - this->GetWidth();
 	max_hscroll = max(0.f, max_hscroll);
 	float pos = min(m_hscroll, max_hscroll);

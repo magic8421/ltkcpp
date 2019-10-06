@@ -57,16 +57,16 @@ CStringA Utf16ToGbk(LPCTSTR strW, int len)
     return strA;
 }
 
-std::wstring WStringFormat(LPCWSTR format, ...)
+ImmutableWString WStringFormat(LPCWSTR format, ...)
 {
 #pragma warning(push)
 #pragma warning(disable:4996)
-    std::wstring str;
+	ImmutableWString str;
     va_list arg;
     va_start(arg, format);
     auto len = _vscwprintf(format, arg);
-    str.resize(len);
-    vswprintf(&str[0], format, arg);
+    auto buf = str.Allocate(len);
+	vswprintf(buf, format, arg);
     va_end(arg);
     return std::move(str);
 #pragma warning(pop)

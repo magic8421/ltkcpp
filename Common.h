@@ -14,11 +14,16 @@
 #define LTK_API __declspec(dllimport)
 #endif
 
-LTK_API std::wstring Utf8ToUtf16(LPCSTR strA, int len = -1);
-CStringA Utf16ToUtf8(LPCTSTR strW, int len);
-CStringA Utf16ToGbk(LPCTSTR strW, int len);
+#define DISALLOW_COPY_AND_ASSIGN(TypeName) \
+	TypeName(const TypeName&) = delete; \
+	void operator=(const TypeName&) = delete;
 
-LTK_API std::wstring WStringFormat(LPCWSTR format, ...);
+#ifdef _DEBUG
+#define LTK_ASSERT(expr) if (!(expr)) {__debugbreak();} // super KISS
+#else
+#define LTK_ASSERT(expr) (void)(expr)
+#endif
+
 
 class ImmutableString
 {
@@ -27,6 +32,11 @@ public:
 	explicit ImmutableString(LPCSTR str)
 	{
 		m_ptr = _strdup(str);
+	}
+	ImmutableString(ImmutableString &&rhs)
+	{
+		m_ptr = rhs.m_ptr;
+		rhs.m_ptr = nullptr;
 	}
 	~ImmutableString()
 	{
@@ -56,9 +66,67 @@ public:
 
 private:
 	const char *m_ptr = nullptr;
-	ImmutableString(const ImmutableString&) = delete;
-	ImmutableString& operator=(const ImmutableString&) = delete;
+	DISALLOW_COPY_AND_ASSIGN(ImmutableString);
 };
+
+class ImmutableWString
+{
+public:
+	ImmutableWString()
+	{
+	}
+	explicit ImmutableWString(LPCWSTR str)
+	{
+		m_ptr = _wcsdup(str);
+	}
+	ImmutableWString(ImmutableWString &&rhs)
+	{
+		m_ptr = rhs.m_ptr;
+		rhs.m_ptr = nullptr;
+	}
+	~ImmutableWString()
+	{
+		free((void *)m_ptr);
+	}
+	bool operator==(LPCWSTR rhs)
+	{
+		if (m_ptr && rhs) {
+			return wcscmp(m_ptr, rhs) == 0;
+		}
+		else {
+			return m_ptr == rhs;
+		}
+	}
+	void operator=(LPCWSTR str)
+	{
+		free((void *)m_ptr);
+		if (str) {
+			m_ptr = _wcsdup(str);
+		}
+		else {
+			m_ptr = nullptr;
+		}
+	}
+	operator LPCWSTR()
+	{
+		return m_ptr;
+	}
+	wchar_t *Allocate(UINT size)
+	{
+		free((void *)m_ptr);
+		m_ptr = (wchar_t *)malloc((size + 1) * sizeof(wchar_t));
+		return const_cast<wchar_t*>(m_ptr);
+	}
+private:
+	const wchar_t *m_ptr = nullptr;
+	DISALLOW_COPY_AND_ASSIGN(ImmutableWString);
+};
+
+LTK_API std::wstring Utf8ToUtf16(LPCSTR strA, int len = -1);
+CStringA Utf16ToUtf8(LPCTSTR strW, int len);
+CStringA Utf16ToGbk(LPCTSTR strW, int len);
+
+LTK_API ImmutableWString WStringFormat(LPCWSTR format, ...);
 
 
 #define LOGW(msg) do\
@@ -67,10 +135,6 @@ private:
 	ss << __FUNCTIONW__ << L"() " msg << std::endl;\
 	OutputDebugStringW(ss.str().c_str());\
 } while (0)
-
-#define DISALLOW_COPY_AND_ASSIGN(TypeName) \
-	TypeName(const TypeName&) = delete;             \
-	void operator=(const TypeName&) = delete;
 
 // https://stackoverflow.com/questions/3060006/is-it-worth-setting-pointers-to-null-in-a-destructor
 #ifndef INVALID_POINTER
@@ -88,11 +152,6 @@ EXTERN_C IMAGE_DOS_HEADER __ImageBase;
 //    CStringW msg; msg.Format(L"Assertion Failed: %s\r\n%s(%d)", L#expr, __FILEW__, __LINE__);\
 //    ::OutputDebugStringW(msg);__debugbreak();}
 
-#ifdef _DEBUG
-#define LTK_ASSERT(expr) if (!(expr)) {__debugbreak();} // super KISS
-#else
-#define LTK_ASSERT(expr) (void)(expr)
-#endif
 
 #define  LTK_LOG(...) LtkLogImpl(__FILE__, __LINE__, __VA_ARGS__)
 

@@ -610,7 +610,7 @@ bool Window::OnSize(float cx, float cy, DWORD flag)
 
 void Window::CloseWindow()
 {
-    bool proceed = false;
+    bool proceed = true;
     OnClose(proceed);
     if (proceed) {
         ::DestroyWindow(m_hwnd);

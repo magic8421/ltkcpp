@@ -15,7 +15,7 @@
 
 namespace ltk {
 
-BoxLayout::BoxLayout(Mode m) :  m_mode(m)
+BoxLayout::BoxLayout(ltk::Orientation m) : m_mode(m)
 {
 }
 
@@ -29,8 +29,22 @@ BoxLayout::~BoxLayout()
     //}
 }
 
+bool BoxLayout::AlreadyHas(Sprite *sp)
+{
+	bool bHas = false;
+	for (UINT i = m_params.size(); i > 0; i --) {
+		auto &item = m_params[i - 1];
+		if (item.item == sp) {
+			bHas = true;
+			break;
+		}
+	}
+	return bHas;
+}
+
 void BoxLayout::AddLayoutItem(Sprite *item, float preferedSize, float growFactor)
 {
+	LTK_ASSERT(!AlreadyHas(item));
     Sprite::AddChild(item);
     //item->AddRef();
     BoxLayoutParam param;
@@ -42,7 +56,8 @@ void BoxLayout::AddLayoutItem(Sprite *item, float preferedSize, float growFactor
 }
 void BoxLayout::InsertLayoutItem(UINT before, Sprite *item, float preferedSize, float growFactor)
 {
-    Sprite::AddChild(item);
+	LTK_ASSERT(!AlreadyHas(item));
+	Sprite::AddChild(item);
     //item->AddRef();
     BoxLayoutParam param;
     param.item = item;

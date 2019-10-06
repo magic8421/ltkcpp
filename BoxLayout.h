@@ -7,6 +7,7 @@
 
 #pragma once
 
+#include "ltk.h"
 #include "Sprite.h"
 
 namespace ltk {
@@ -20,21 +21,11 @@ struct BoxLayoutParam {
 class LTK_API BoxLayout : public Sprite
 {
 public:
-    enum Mode {
-        Horizontal, Vertical
-    };
-    explicit BoxLayout(Mode m);
+	explicit BoxLayout(Orientation);
     virtual ~BoxLayout();
 
-    virtual bool OnSize(SizeEvent *ev) override;
-    /*
-    void SetMargin(float m);
+	virtual bool OnSize(SizeEvent *ev) override;
 
-    void SetLeftMargin(float m);
-    void SetTopMargin(float m);
-    void SetRightMargin(float m);
-    void SetBottomMargin(float m);
-    */
     void SetSpacing(float spacing);
 
     void AddLayoutItem(Sprite *sp, float preferedSize, float growFactor = 0.0f);
@@ -46,12 +37,10 @@ public:
     void DoLayout();
 
 private:
-    std::vector<BoxLayoutParam> m_params; // item: owner
-    Mode m_mode;
-    //float m_marginLeft = 0.0f;
-    //float m_marginRight = 0.0f;
-    //float m_marginTop = 0.0f;
-    //float m_marginBottom = 0.0f;
+	bool AlreadyHas(Sprite *item);
+
+	std::vector<BoxLayoutParam> m_params; // item: owner
+	Orientation m_mode;
     float m_spacing = 5.0f;
 };
 
