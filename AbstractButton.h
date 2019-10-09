@@ -8,12 +8,11 @@
 #pragma once
 #include "Sprite.h"
 #include "StyleManager.h"
-#include "Delegate.h"
 #include "MulticastDelegate.h"
 
 namespace ltk {
 
-class LTK_API AbstractButton : public Sprite
+class LTK_CPP_API AbstractButton : public Sprite
 {
 public:
     AbstractButton() {}
@@ -25,9 +24,6 @@ public:
     void EnableCapture(bool);
     void Update();
     float GetBlend();
-
-    Delegate<void()> ClickedEvent;
-    Delegate<void(MouseEvent*, bool&)> DelegateMouseEvent;
 
 	MulticastDelegate0 ClickedDelegate;
 	MulticastDelegate2<MouseEvent*, bool&> MouseEventDelegate;
@@ -42,6 +38,9 @@ public:
     virtual void OnClicked();
 
 private:
+	virtual void DoInvokeCallback(
+		UINT event_id, LtkCallback cb, void* userdata, va_list args) override;
+
     bool m_bCaptureMouse = true;
 	bool m_bMouseIn = false;
 

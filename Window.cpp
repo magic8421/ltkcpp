@@ -41,6 +41,8 @@ m_shadowBottom(ShadowFrame::eBottom)
     m_sprite->SetWindow(this);
     
 	m_caretHeight = 20;
+
+	SetBackground("window_bg");
 }
 
 Window::~Window(void)
@@ -610,8 +612,8 @@ bool Window::OnSize(float cx, float cy, DWORD flag)
 
 void Window::CloseWindow()
 {
-    bool proceed = true;
-    OnClose(proceed);
+    BOOL proceed = TRUE;
+    OnClose(&proceed);
     if (proceed) {
         ::DestroyWindow(m_hwnd);
     }
@@ -634,14 +636,39 @@ void Window::Maximize()
     }
 }
 
-void Window::OnClose(bool &proceed)
+typedef void(CALLBACK *WindowCloseCallback)(void *userdata, BOOL *pProceed);
+typedef void(CALLBACK *WindowDestroyCallback)(void *userdata);
+
+void Window::DoInvokeCallback(UINT event_id, LtkCallback cb, void* userdata, va_list args)
+{
+	switch (event_id)
+	{
+	case LTK_WINDOW_CLOSE:
+		{
+			BOOL *pProceed = va_arg(args, BOOL *);
+			((WindowCloseCallback)cb)(userdata, pProceed);
+		}
+		break;
+	case LTK_WINDOW_DESTROY:
+		((WindowDestroyCallback)cb)(userdata);
+		break;
+	default:
+		Object::DoInvokeCallback(event_id, cb, userdata, args);
+	}
+}
+
+void Window::OnClose(BOOL* proceed)
 {
 	SetDelegateInvoker(this);
 	this->CloseDelegate(proceed);
+	Object::InvokeCallback(LTK_WINDOW_CLOSE, proceed);
 }
 
 void Window::OnDestroy()
-{ 
+{
+	SetDelegateInvoker(this);
+	this->DestroyDelegate();
+	Object::InvokeCallback(LTK_WINDOW_DESTROY);
 }
 
 HWND Window::Handle()

@@ -4,7 +4,7 @@
 
 namespace ltk {
 
-class LTK_API Splitter : public Sprite
+class LTK_CPP_API Splitter : public Sprite
 {
 public:
 	explicit Splitter(Orientation m) : m_mode(m) {}

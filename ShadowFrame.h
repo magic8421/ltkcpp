@@ -10,7 +10,7 @@
 
 namespace ltk {
 
-class LTK_API ShadowFrame
+class LTK_CPP_API ShadowFrame
 {
 public:
     enum Mode {

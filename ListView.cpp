@@ -32,23 +32,22 @@ ListView::ListView() :
 	m_textColor(D2D1::ColorF(D2D1::ColorF::Cyan))
 {
 	m_vsb = new ScrollBar(ltk::Vertical);
-    m_vsb->ValueChangedEvent.Attach([this](float pos) {
-        this->HandleVScrollBar(pos);
-    });
+	m_vsb->ValueChangedDelegate += MakeDelegate(
+		this, &ListView::HandleVScrollBar);
     this->AddChild(m_vsb);
 	m_hsb = new ScrollBar(ltk::Horizontal);
-    m_hsb->ValueChangedEvent.Attach([this](float pos) {
-        this->HandleHScrollBar(pos);
-    });
+	m_hsb->ValueChangedDelegate += MakeDelegate(
+		this, &ListView::HandleHScrollBar);
     this->AddChild(m_hsb);
+
+	m_header = new HeaderCtrl;
+	this->AddChild(m_header);
+	m_header->ResizingDelegate += MakeDelegate(this, &ListView::UpdateColumnWidth);
+	m_header->ResizeEndDelegate += MakeDelegate(this, &ListView::HandleResizeEnd);
 }
 
 ListView::~ListView()
 {
-    if (m_header) {
-        m_header->ResizingEvent.Remove(m_columnResizeTracker);
-        m_header->DeleteEvent.Remove(m_headerDeletedTracker);
-    }
 }
 
 void ListView::OnThemeChanged()
@@ -60,6 +59,15 @@ void ListView::OnThemeChanged()
 	m_selectedTextColor = sm->GetColor(SelectedTextColor);
 
 	m_textFormat = sm->GetTextFormat(TextFormat);
+}
+
+bool ListView::OnEvent(Event *ev)
+{
+	if (ev->id > eMouseFirst && ev->id < eMouseLast) {
+		MouseEvent *mev = static_cast<MouseEvent *>(ev);
+		mev->y -= m_headerHeight;
+	}
+	return Sprite::OnEvent(ev);
 }
 
 bool ListView::OnPaint(PaintEvent *ev)
@@ -78,9 +86,9 @@ bool ListView::OnPaint(PaintEvent *ev)
     rcClip.top = 0;
     rcClip.bottom = rcSprite.Height;
     target->PushAxisAlignedClip(rcClip, D2D1_ANTIALIAS_MODE_ALIASED);
-    TranslateTransform(target, -m_hscroll, 0.0f);
+	TranslateTransform(target, -m_hscroll, m_headerHeight);
     auto guard = LtkScopeGuard([&]() {
-        TranslateTransform(target, m_hscroll, 0.0f);
+		TranslateTransform(target, m_hscroll, -m_headerHeight);
         target->PopAxisAlignedClip();
     });
 
@@ -194,6 +202,11 @@ float ListView::GetTotalHeight()
     return m_vecData.size() * ItemHeight;
 }
 
+int ListView::GetSelectedItem()
+{
+	return m_selectedItem;
+}
+
 bool ListView::OnMouseWheel(MouseEvent *ev)
 {
     m_scroll.BeginScroll(ev->delta);
@@ -227,25 +240,29 @@ bool ListView::OnSize(SizeEvent *ev)
 
     RectF rc = this->GetClientRect();
     const float sb_size = 6.0f; // TODO load from StyleManager
-    m_vsb->SetRect(RectF(rc.Width - sb_size, 0, sb_size, rc.Height));
+    m_vsb->SetRect(RectF(
+		rc.Width - sb_size, m_headerHeight,
+		sb_size, rc.Height - m_headerHeight));
     m_hsb->SetRect(RectF(0, rc.Height - sb_size, rc.Width, sb_size + 2));
+
+	m_header->SetRect(RectF(0, 0, rc.Width, m_headerHeight));
     return true;
 }
 
-void ListView::RemoveItem(int row)
+void ListView::RemoveItem(UINT row)
 {
-    if (row < 0 || row >= (int)m_vecData.size()) {
-        return;
-    }
+	if (row >= m_vecData.size()) {
+		__debugbreak();
+	}
     m_vecData.erase(m_vecData.begin() + (size_t)row);
     this->Invalidate();
 }
 
-LPCWSTR ListView::GetItemText(int row)
+LPCWSTR ListView::GetItemText(UINT row)
 {
-    if (row < 0 || row >= (int)m_vecData.size()) {
-        return NULL;
-    }
+	if (row >= m_vecData.size()) {
+		__debugbreak();
+	}
     return m_vecData[row].cells.at(0).c_str();
 }
 
@@ -275,23 +292,14 @@ void ListView::UpdateColumnWidth()
     this->SetColumns(cols);
 }
 
+HeaderCtrl * ListView::GetHeaderCtrl()
+{
+	return m_header;
+}
+
 void ListView::SetHeaderCtrl(HeaderCtrl *head)
 {
-    if (m_header) {
-        LTK_LOG("the ListView already has a HeadCtrl");
-        m_header->ResizingEvent.Remove(m_columnResizeTracker);
-    }
-    m_header = head;
-    m_columnResizeTracker = m_header->ResizingEvent.Attach([this]() {
-        this->UpdateColumnWidth();
-    });
-    m_headerDeletedTracker = m_header->DeleteEvent.Attach([this]() {
-        m_header = nullptr;
-    });
-    this->UpdateColumnWidth();
-	m_header->ResizeEndEvent.Attach([this]() {
-		HandleResizeEnd();
-	});
+	LTK_ASSERT(false);
 }
 
 void ListView::HandleResizeEnd()

@@ -10,7 +10,7 @@ namespace ltk {
 /// @details Since the MulticastDelegate template class inherits from this class, 
 /// as much code is placed into this base class as possible to minimize the
 /// template code instantiation. 
-class LTK_API  MulticastDelegateBase
+class LTK_CPP_API  MulticastDelegateBase
 {
 public:
 	/// Constructor

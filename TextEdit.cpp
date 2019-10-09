@@ -43,6 +43,9 @@ TextEdit::~TextEdit()
 
 bool TextEdit::OnPaint(PaintEvent *ev)
 {
+	if (!m_layout) {
+		return false;
+	}
     auto target = ev->target;
     auto rc = this->GetClientRect();
 
@@ -148,6 +151,9 @@ bool TextEdit::OnChar(KeyEvent *ev)
 
 bool TextEdit::OnKeyDown(KeyEvent *ev)
 {
+	if (!m_layout) {
+		return true;
+	}
     wchar_t ch = (wchar_t)ev->keyCode;
     HRESULT hr = S_OK;
     float x = 0.0f;
@@ -207,7 +213,9 @@ void TextEdit::RecreateLayout()
     HRESULT hr = GetDWriteFactory()->CreateTextLayout(
         m_text.c_str(), m_text.size(), m_format,
         rc.Width - m_padding * 2, 0.0f, &m_layout);
-    LTK_ASSERT(SUCCEEDED(hr));
+	if (!m_layout) {
+		return;
+	}
 
     if (m_selection > 0) {
         UINT32 begin = m_cursorPos;
@@ -235,6 +243,9 @@ void TextEdit::RecreateLayout()
 
 void TextEdit::UpdateCursor(bool bEnsureVisible)
 {
+	if (!m_layout) {
+		return;
+	}
     HRESULT hr = S_OK;
     float x = 0.0f;
     float y = 0.0f;
@@ -277,6 +288,9 @@ bool TextEdit::OnMouseWheel(MouseEvent *ev)
 
 int TextEdit::HitTest(float x, float y)
 {
+	if (!m_layout) {
+		return -1;
+	}
     int pos = -1;
     y += m_scrollAni.GetScroll();
     BOOL isTrailingHit = FALSE;

@@ -1,6 +1,9 @@
 #pragma once
 #include "RTTI.h"
 #include "Common.h"
+#ifndef LTK_NO_CINTERFACE
+#include "LtkInterface.h"
+#endif
 
 namespace ltk {
 
@@ -116,7 +119,7 @@ Ptr<T> ToPtr(T *obj)
 	return obj->GetPtr<T>();
 }
 
-class LTK_API Object : public RTTI
+class LTK_CPP_API Object : public RTTI
 {
 public:
 	RTTI_DECLARATIONS(Object, RTTI);
@@ -131,12 +134,34 @@ public:
 
 	void SetInvalid();
 
+#ifndef LTK_NO_CINTERFACE
+	struct CallbackInfo
+	{
+		LtkCallback callback = nullptr;
+		void* userdata = nullptr;
+	};
+
 	static Object *GetDelegateInvoker();
 	static void SetDelegateInvoker(Object *);
 
+	void RegisterCallback(UINT event_id, LtkCallback cb, void* userdata);
+	void InvokeCallback(UINT event_id, ...);
+
+	virtual void DoInvokeCallback(UINT event_id, LtkCallback cb,
+		void* userdata, va_list args) {
+	}
+
+	static Object *GetEventSender();
+#endif
+
 private:
 	ObserverCtrl *m_obctrl = nullptr;
-	
+#ifndef LTK_NO_CINTERFACE
+	std::map<UINT, std::vector<CallbackInfo>> m_mapCallbacks;
+	//const char *m_source = nullptr; // 好像没必要 外部使用者应该用umdh来查内存泄漏
+	//int m_line = -1;
+#endif
+
 	DISALLOW_COPY_AND_ASSIGN(Object);
 };
 

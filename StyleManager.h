@@ -31,7 +31,7 @@ struct ColorDesc
 	LPCSTR color;
 };
 
-class LTK_API StyleManager
+class LTK_CPP_API StyleManager
 {
 public:
     static void NewTheme(LPCSTR name);
@@ -81,7 +81,7 @@ private:
 	std::unordered_map<std::string, IDWriteTextFormat*> m_mapTextFormat;
 };
 
-class LTK_API AbstractBackground
+class LTK_CPP_API AbstractBackground
 {
 public:
     enum State {Normal, Hover, Normal2Hover, Hover2Normal, Pressed, Disable};
@@ -89,7 +89,7 @@ public:
         State state, float blend) = 0;
 };
 
-class LTK_API NinePatchBackground : public AbstractBackground
+class LTK_CPP_API NinePatchBackground : public AbstractBackground
 {
 
 public:
@@ -107,7 +107,7 @@ public:
     TextureInfo texDisable;
 };
 
-class LTK_API OnePatchBackground : public AbstractBackground
+class LTK_CPP_API OnePatchBackground : public AbstractBackground
 {
 public:
     virtual void Draw(Window *wnd, ID2D1RenderTarget *targe, const RectF &rc,
@@ -125,7 +125,7 @@ public:
 };
 
 
-struct LTK_API FourStateColor {
+struct LTK_CPP_API FourStateColor {
     void SetColor(LPCSTR normal, LPCSTR hover, LPCSTR pressed, LPCSTR disable);
 
     D2D1_COLOR_F clrNormal;
@@ -134,7 +134,7 @@ struct LTK_API FourStateColor {
     D2D1_COLOR_F clrDisable;
 };
 
-class LTK_API RectangleBackground : public AbstractBackground
+class LTK_CPP_API RectangleBackground : public AbstractBackground
 {
 public:
     virtual void Draw(

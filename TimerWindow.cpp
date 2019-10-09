@@ -1,7 +1,15 @@
+//////////////////////////////////////////////////////////////////////////
+// Author:    Sara Chen
+// Email:     6659907@163.com
+// QQ:        314266265
+// License:   MIT license
+//////////////////////////////////////////////////////////////////////////
+
 #include "stdafx.h"
 #include "TimerWindow.h"
 #include "BoxLayout.h"
 #include "Button.h"
+#include "ListView.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW 
@@ -22,6 +30,11 @@ TimerWindow::TimerWindow()
 
 	m_listView = new ltk::ListView;
 	vbox1->AddLayoutItem(m_listView, 100, 1);
+
+	ltk::HeaderCtrl *header = m_listView->GetHeaderCtrl();
+	header->AddColumn(L"Ãû³Æ", 100.f);
+	header->AddColumn(L"Ê±³¤", 170.f);
+	m_listView->UpdateColumnWidth();
 
 	ltk::BoxLayout *hbox1 = new ltk::BoxLayout(ltk::Horizontal);
 	vbox1->AddLayoutItem(hbox1, 40, 0);

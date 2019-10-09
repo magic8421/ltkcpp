@@ -8,7 +8,6 @@
 #pragma once
 
 #include "Sprite.h"
-#include "Delegate.h"
 
 namespace ltk { 
 
@@ -16,7 +15,7 @@ class Button;
 class Label;
 class MenuBar;
 
-class LTK_API WindowLayout : public Sprite
+class LTK_CPP_API WindowLayout : public Sprite
 {
 public:
     WindowLayout();
@@ -37,15 +36,16 @@ public:
     virtual bool OnSize(SizeEvent *ev) override;
 
 private:
+	static void CALLBACK OnMinBtnClicked(void *userdata);
+	static void CALLBACK OnMaxBtnClicked(void *userdata);
+	static void CALLBACK OnCloseBtnClicked(void *userdata);
+
     Sprite *m_client = nullptr;
     Button *m_minBtn = nullptr;
     Button *m_maxBtn = nullptr;
     Button *m_closeBtn = nullptr;
 	MenuBar *m_menu = nullptr;
     
-    Cookie m_minTrack = 0;
-    Cookie m_maxTrack = 0;
-    Cookie m_closeTrack = 0;
     Label *m_caption = nullptr;
 };
 

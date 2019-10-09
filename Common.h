@@ -8,11 +8,12 @@
 #pragma once
 #include "ScopeGuard.h"
 
-#ifdef LTK_EXPORTS
-#define LTK_API __declspec(dllexport)
-#else
-#define LTK_API __declspec(dllimport)
-#endif
+//#ifdef LTK_EXPORTS
+//#define LTK_CPP_API __declspec(dllexport)
+//#else
+//#define LTK_CPP_API __declspec(dllimport)
+//#endif
+#define LTK_CPP_API
 
 #define DISALLOW_COPY_AND_ASSIGN(TypeName) \
 	TypeName(const TypeName&) = delete; \
@@ -122,11 +123,11 @@ private:
 	DISALLOW_COPY_AND_ASSIGN(ImmutableWString);
 };
 
-LTK_API std::wstring Utf8ToUtf16(LPCSTR strA, int len = -1);
+LTK_CPP_API std::wstring Utf8ToUtf16(LPCSTR strA, int len = -1);
 CStringA Utf16ToUtf8(LPCTSTR strW, int len);
 CStringA Utf16ToGbk(LPCTSTR strW, int len);
 
-LTK_API ImmutableWString WStringFormat(LPCWSTR format, ...);
+LTK_CPP_API ImmutableWString WStringFormat(LPCWSTR format, ...);
 
 
 #define LOGW(msg) do\
@@ -155,5 +156,5 @@ EXTERN_C IMAGE_DOS_HEADER __ImageBase;
 
 #define  LTK_LOG(...) LtkLogImpl(__FILE__, __LINE__, __VA_ARGS__)
 
-LTK_API void LtkLogInit();
-LTK_API void LtkLogImpl(const char *source, int line, const char *format, ...);
+LTK_CPP_API void LtkLogInit();
+LTK_CPP_API void LtkLogImpl(const char *source, int line, const char *format, ...);

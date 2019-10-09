@@ -9,34 +9,29 @@
 
 #include "Sprite.h"
 #include "Animation.h"
-#include "Delegate.h"
+#include "HeaderCtrl.h"
 
 
 namespace ltk {
 
 class ScrollBar;
-class HeaderCtrl;
 
-class LTK_API ListView : public Sprite
+class LTK_CPP_API ListView : public Sprite
 {
 public:
     ListView();
     virtual ~ListView();
 
-    void HandleVScrollBar(float pos);
-    void HandleHScrollBar(float pos);
-
     void AddItem(LPCWSTR text);
     bool SetSubItemText(UINT row, UINT col, LPCWSTR text);
     float GetTotalHeight();
-    int GetSelectedItem() { return m_selectedItem; }
-    void RemoveItem(int row);
-    LPCWSTR GetItemText(int row);
+    int GetSelectedItem();
+    void RemoveItem(UINT row);
+	LPCWSTR GetItemText(UINT row);
 	UINT GetItemCount();
     void ScrollToBottom();
-    void SetColumns(std::vector<float> &columns);
     void UpdateColumnWidth();
-    //void ShowHeader(bool show);
+	HeaderCtrl *GetHeaderCtrl();
     void SetHeaderCtrl(HeaderCtrl *head);
 	void HandleResizeEnd();
 
@@ -46,6 +41,7 @@ public:
 	ImmutableString SelectedTextColor;
 	ImmutableString TextFormat;
 
+	virtual bool OnEvent(Event *ev) override;
 	virtual bool OnPaint(PaintEvent *ev) override;
 	virtual bool OnLBtnDown(MouseEvent *ev) override;
 	virtual bool OnMouseWheel(MouseEvent *ev) override;
@@ -55,14 +51,16 @@ public:
 	virtual void RecreateResouce(ID2D1RenderTarget *target) override;
 	virtual void OnThemeChanged() override;
 
+	void HandleVScrollBar(float pos);
+	void HandleHScrollBar(float pos);
+
+protected:
+	void SetColumns(std::vector<float> &columns);
+
 private:
     struct LineData
     {
         std::vector<std::wstring> cells;
-    };
-    enum State
-    {
-        stStop, stScrollUp, stScrollDown
     };
     std::vector<LineData> m_vecData;
     ID2D1SolidColorBrush *m_brush = nullptr;
@@ -77,9 +75,7 @@ private:
     float m_hscroll = 0.0f;
 
     const float ItemHeight = 25.0f;
-
-    Cookie m_columnResizeTracker = 0;
-    Cookie m_headerDeletedTracker = 0;
+	float m_headerHeight = 30.f;
 
 protected:
 	D2D1_COLOR_F m_textColor;

@@ -20,7 +20,7 @@ struct ColumnData {
     HeaderButton *button = nullptr;
 };
 
-class LTK_API HeaderCtrl : public Sprite
+class LTK_CPP_API HeaderCtrl : public Sprite
 {
 public:
     HeaderCtrl();
@@ -34,9 +34,8 @@ public:
 
     void OnColumnResizeBegin(HeaderButton *btn, PointF pt);
 
-    Delegate<void()> ResizingEvent;
-	Delegate<void()> ResizeEndEvent;
-	Delegate<void()> DeleteEvent;
+	MulticastDelegate0 ResizingDelegate;
+	MulticastDelegate0 ResizeEndDelegate;
 
     virtual bool OnSize(SizeEvent *ev) override;
     virtual bool OnMouseMove(MouseEvent *ev) override;

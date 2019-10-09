@@ -14,7 +14,7 @@ namespace ltk {
 
 class Window;
 
-class LTK_API Sprite : public Object
+class LTK_CPP_API Sprite : public Object
 {
 public:
 	RTTI_DECLARATIONS(Sprite, Object);

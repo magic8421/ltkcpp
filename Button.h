@@ -9,11 +9,10 @@
 
 #include "AbstractButton.h"
 #include "StyleManager.h"
-#include "Delegate.h"
 
 namespace ltk {
 
-class LTK_API Button : public AbstractButton
+class LTK_CPP_API Button : public AbstractButton
 {
 public:
     Button();

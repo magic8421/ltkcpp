@@ -422,7 +422,7 @@ void NinePatchBackground::Draw(Window *wnd, ID2D1RenderTarget *targe, const Rect
     case State::Normal2Hover:
     case State::Hover2Normal:
         //LTK_LOG("blend: %f", blend);
-        DrawTextureNineInOne(targe, bmp, texNormal.atlas, texNormal.margin, rc, 1.0f - blend, texNormal.scale);
+        DrawTextureNineInOne(targe, bmp, texNormal.atlas, texNormal.margin, rc, 1.0f, texNormal.scale);
         DrawTextureNineInOne(targe, bmp, texHover.atlas, texHover.margin, rc, blend, texHover.scale);
         return;
     case State::Pressed:

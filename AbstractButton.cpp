@@ -55,8 +55,6 @@ bool AbstractButton::OnEvent(Event *ev)
 {
     bool bHandled = false;
     if (ev->id > eMouseFirst && ev->id < eMouseLast) {
-        this->DelegateMouseEvent.Invoke(
-            static_cast<MouseEvent *>(ev), std::ref(bHandled));
 		SetDelegateInvoker(this);
 		this->MouseEventDelegate(static_cast<MouseEvent *>(ev), bHandled);
     }
@@ -117,10 +115,24 @@ bool AbstractButton::OnLBtnUp(MouseEvent *ev)
 
 void AbstractButton::OnClicked()
 {
-    this->ClickedEvent.Invoke();
 	Object::SetDelegateInvoker(this);
 	this->ClickedDelegate();
+	Object::InvokeCallback(LTK_BUTTON_CLICKED);
 }
 
+typedef void(CALLBACK *ButtonClickedCallback)(void *userdata);
+
+void AbstractButton::DoInvokeCallback(
+	UINT event_id, LtkCallback cb, void* userdata, va_list args)
+{
+	switch (event_id)
+	{
+	case LTK_BUTTON_CLICKED:
+		((ButtonClickedCallback)cb)(userdata);
+		break;
+	default:
+		Object::DoInvokeCallback(event_id, cb, userdata, args);
+	}
+}
 
 } // namespace ltk

@@ -17,7 +17,7 @@ class AbstractBackground;
 class MenuBar;
 class PopupMenu;
 
-struct LTK_API MenuItem
+struct LTK_CPP_API MenuItem
 {
 public:
 	MenuItem() {}
@@ -40,7 +40,7 @@ private:
 	DISALLOW_COPY_AND_ASSIGN(MenuItem)
 };
 
-class LTK_API PopupMenu : public Sprite
+class LTK_CPP_API PopupMenu : public Sprite
 {
 public:
 	PopupMenu();
@@ -101,7 +101,7 @@ struct MenuButtonParam {
 	PopupMenu *sub_menu = nullptr;
 };
 
-class LTK_API MenuBar : public Sprite
+class LTK_CPP_API MenuBar : public Sprite
 {
 public:
 	MenuBar();

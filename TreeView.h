@@ -23,7 +23,7 @@ struct TreeViewColors
 	D2D1_COLOR_F SelectedTextColor;
 };
 
-class LTK_API TreeNode
+class LTK_CPP_API TreeNode
 {
 public:
     TreeNode() {}
@@ -65,7 +65,7 @@ private:
     DISALLOW_COPY_AND_ASSIGN(TreeNode)
 };
 
-class LTK_API TreeView : public Sprite
+class LTK_CPP_API TreeView : public Sprite
 {
 public:
     TreeView();

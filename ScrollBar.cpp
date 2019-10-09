@@ -23,9 +23,8 @@ ScrollBar::ScrollBar(Orientation mode) : m_mode(mode)
 {
     m_slider = new Button;
     m_slider->EnableCapture(false);
-    m_slider->DelegateMouseEvent.Attach([this](MouseEvent *ev, bool &bHandled) {
-        this->OnSilderEvent(ev, bHandled);
-    });
+	m_slider->MouseEventDelegate += MakeDelegate(this, &ScrollBar::OnSilderEvent);
+
     if (m_mode == Horizontal) {
         m_slider->Background = "scrollbar_h";
     } else {
@@ -147,7 +146,8 @@ bool ScrollBar::OnLBtnUp(MouseEvent *ev)
 
 bool ScrollBar::OnValueChanged(float pos)
 {
-    this->ValueChangedEvent.Invoke(pos);
+	SetDelegateInvoker(this);
+	this->ValueChangedDelegate(pos);
     return false;
 }
 

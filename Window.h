@@ -21,7 +21,7 @@ class WindowLayout;
 class AbstractBackground;
 class MenuBar;
 
-class LTK_API Window : public Object
+class LTK_CPP_API Window : public Object
 {
 public:
 	RTTI_DECLARATIONS(Window, Object);
@@ -104,10 +104,10 @@ public:
 
     void Minimize();
     void Maximize();
-    void CloseWindow();
+	void CloseWindow();
 
     virtual bool OnSize(float cx, float cy, DWORD flag);
-    virtual void OnClose(bool &proceed);
+	virtual void OnClose(BOOL* proceed);
 	virtual void OnDestroy();
 
     ID2D1Bitmap *GetAtlasBitmap();
@@ -118,7 +118,8 @@ public:
     virtual void OnThemeChanged() {}
 
 public:
-	MulticastDelegate1<bool&> CloseDelegate;
+	MulticastDelegate1<BOOL*> CloseDelegate;
+	MulticastDelegate0 DestroyDelegate;
 
 private:
 	void HandleMouseMessage(UINT message, WPARAM wparam, LPARAM lparam);
@@ -127,6 +128,8 @@ private:
     void RecreateResouce();
     void UpdateShadowFrame(bool bRedraw);
 	Events TranslateMessageCode(UINT message);
+
+	virtual void DoInvokeCallback(UINT event_id, LtkCallback cb, void* userdata, va_list args) override;
 
     LRESULT OnImeEvent(UINT message, WPARAM wparam, LPARAM lparam);
     LRESULT HandleNcHitTest(const POINT &pt);

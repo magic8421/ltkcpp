@@ -18,7 +18,7 @@ struct BoxLayoutParam {
     float growFactor = 0.0f;
 };
 
-class LTK_API BoxLayout : public Sprite
+class LTK_CPP_API BoxLayout : public Sprite
 {
 public:
 	explicit BoxLayout(Orientation);

@@ -8,13 +8,13 @@
 #pragma once
 #include "ltk.h"
 #include "Sprite.h"
-#include "Delegate.h"
+#include "MulticastDelegate.h"
 
 namespace ltk {
 
 class Button;
 
-class LTK_API ScrollBar : public Sprite
+class LTK_CPP_API ScrollBar : public Sprite
 {
 public:
     explicit ScrollBar(Orientation mode);
@@ -41,7 +41,7 @@ public:
 
     virtual void RecreateResouce(ID2D1RenderTarget *target) override;
 
-    Delegate<void(float)> ValueChangedEvent;
+	MulticastDelegate1<float> ValueChangedDelegate;
 
 private:
 	Orientation m_mode;

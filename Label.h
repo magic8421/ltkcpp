@@ -11,7 +11,7 @@
 
 namespace ltk {
 
-class LTK_API Label : public Sprite
+class LTK_CPP_API Label : public Sprite
 {
 public:
     Label();

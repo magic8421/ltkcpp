@@ -128,27 +128,34 @@ void WindowLayout::DoLayout()
 void WindowLayout::SetWindow( Window *wnd )
 {
     Sprite::SetWindow(wnd);
-
-    m_minBtn->ClickedEvent.Remove(m_minTrack);
-    m_minTrack = m_minBtn->ClickedEvent.Attach([=]() {
-        wnd->Minimize();
-    });
-
-    m_maxBtn->ClickedEvent.Remove(m_maxTrack);
-    m_maxTrack = m_maxBtn->ClickedEvent.Attach([=]() {
-        wnd->Maximize();
-    });
-
-    m_closeBtn->ClickedEvent.Remove(m_closeTrack);
-    m_closeTrack = m_closeBtn->ClickedEvent.Attach([=]() {
-        wnd->CloseWindow();
-    });
+	// TODO remove old callbacks
+	m_minBtn->RegisterCallback(LTK_BUTTON_CLICKED, (LtkCallback)OnMinBtnClicked, this);
+	m_maxBtn->RegisterCallback(LTK_BUTTON_CLICKED, (LtkCallback)OnMaxBtnClicked, this);
+	m_closeBtn->RegisterCallback(LTK_BUTTON_CLICKED, (LtkCallback)OnCloseBtnClicked, this);
 }
 
 bool WindowLayout::OnSize(SizeEvent *ev)
 {
     this->DoLayout();
     return false;
+}
+
+void CALLBACK WindowLayout::OnMinBtnClicked(void *userdata)
+{
+	WindowLayout* thiz = (WindowLayout *)userdata;
+	thiz->GetWindow()->Minimize();
+}
+
+void CALLBACK WindowLayout::OnMaxBtnClicked(void *userdata)
+{
+	WindowLayout* thiz = (WindowLayout *)userdata;
+	thiz->GetWindow()->Maximize();
+}
+
+void CALLBACK WindowLayout::OnCloseBtnClicked(void *userdata)
+{
+	WindowLayout* thiz = (WindowLayout *)userdata;
+	thiz->GetWindow()->CloseWindow();
 }
 
 } // namespace ltk

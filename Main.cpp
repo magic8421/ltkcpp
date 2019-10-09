@@ -85,24 +85,22 @@ void DemoWindow::BuildDemoWindow()
 	//vbox->SetSpacing(10);
 	spitter1->AddClient(vboxRightPanel);
 
-	HeaderCtrl *header = new HeaderCtrl;
+	ListView *listview1 = new ListView();
+	HeaderCtrl *header = listview1->GetHeaderCtrl();
 	header->AddColumn(L"项目名", 100);
 	header->AddColumn(L"工程名", 200);
 	header->AddColumn(L"负责人", 200);
-	vboxRightPanel->AddLayoutItem(header, 30, 0.0f);
-
-	ListView *listview1 = new ListView();
+	listview1->UpdateColumnWidth();
 	vboxRightPanel->AddLayoutItem(listview1, 0.0f, 1.0f);
-	listview1->SetHeaderCtrl(header);
-	std::wstring text;
+
 	UINT num = rand() % 200;
 	for (UINT i = 0; i < num; i++) {
-		text = WStringFormat(L"item:%d", i);
-		listview1->AddItem(text.c_str());
-		text = WStringFormat(L"subitem1:%d", i);
-		listview1->SetSubItemText(i, 1, text.c_str());
-		text = WStringFormat(L"subitem2:%d", i);
-		listview1->SetSubItemText(i, 2, text.c_str());
+		auto text = WStringFormat(L"item:%d", i);
+		listview1->AddItem(text);
+		auto text2 = WStringFormat(L"subitem1:%d", i);
+		listview1->SetSubItemText(i, 1, text2);
+		auto text3 = WStringFormat(L"subitem2:%d", i);
+		listview1->SetSubItemText(i, 2, text3);
 	}
 
 	TextEdit *edit1 = new TextEdit;
@@ -293,7 +291,7 @@ void DemoWindow::OnExitClicked()
 	::PostQuitMessage(0);
 }
 
-void DemoWindow::OnClose(bool &proceed)
+void DemoWindow::OnClose(BOOL* proceed)
 {
 	::PostQuitMessage(0);
 }
@@ -315,20 +313,23 @@ int CALLBACK WinMain(
 
     ltk::LtkInitialize();
 
-	/*
+	
 	auto wnd = new DemoWindow;
     wnd->SetCaption(L"LTK测试窗口");
-    wnd->SetBackground("window_bg");
+    //wnd->SetBackground("window_bg");
 	wnd->BuildDemoWindow();
 	//wnd->BuildSplitterTest2();
     wnd->Create(nullptr, SizeF(700, 500));
 	wnd->UpdateTheme();
-	*/
+	
+
+	/*
 	SetupAppStyle();
 	TimerWindow *wnd = new TimerWindow;
-	wnd->SetBackground("window_bg");
+	//wnd->SetBackground("window_bg");
 	wnd->Create(nullptr, SizeF(300, 500));
 	wnd->UpdateTheme();
+	*/
 
 
     MSG msg;

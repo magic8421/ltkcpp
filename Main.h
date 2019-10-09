@@ -28,7 +28,7 @@ public:
 	void OnLightThemeClicked();
 	void OnExitClicked();
 
-	virtual void OnClose(bool &proceed) override;
+	virtual void OnClose(BOOL* proceed) override;
 
 private:
 	ltk::Timer *m_timer = nullptr;
