@@ -209,15 +209,16 @@ void DemoWindow::BuildSplitterTest2()
 	Window *wnd = this;
 	Splitter *spitter1 = new Splitter(ltk::Horizontal);
 	wnd->SetClientSprite(spitter1);
-	spitter1->AddClient(new Button);
+	spitter1->Resize(5);
+	spitter1->SetClientAt(0, new Button);
 	spitter1->SetClientSize(0, 100);
-	spitter1->AddClient(new Button);
+	//spitter1->SetClientAt(1, new Button);
 	spitter1->SetClientSize(1, 100);
-	spitter1->AddClient(new Button);
+	spitter1->SetClientAt(2, new Button);
 	spitter1->SetClientSize(2, 100);
-	spitter1->AddClient(new Button);
+	spitter1->SetClientAt(3, new Button);
 	spitter1->SetClientSize(3, 100);
-	spitter1->AddClient(new Button);
+	spitter1->SetClientAt(4, new Button);
 	spitter1->SetClientSize(4, 100);
 
 	spitter1->DoLayout();
@@ -324,8 +325,8 @@ int CALLBACK WinMain(
 	auto wnd = new DemoWindow;
     wnd->SetCaption(L"LTK²âÊÔ´°¿Ú");
     //wnd->SetBackground("window_bg");
-	wnd->BuildDemoWindow();
-	//wnd->BuildSplitterTest2();
+	//wnd->BuildDemoWindow();
+	wnd->BuildSplitterTest2();
     wnd->Create(nullptr, SizeF(700, 500));
 	wnd->UpdateTheme();
 	

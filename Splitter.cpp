@@ -28,6 +28,10 @@ Sprite* Splitter::SetClientAt(UINT idx, Sprite* sp)
 {
 	auto &item = m_vecItems.at(idx);
 	auto old_sp = item.client;
+	if (old_sp) {
+		GetParent()->RemoveChild(old_sp);
+	}
+	Sprite::AddChild(sp);
 	item.client = sp;
 	return old_sp;
 }
@@ -77,7 +81,9 @@ void Splitter::DoLayout()
 			}
 			y += item.size + GRIP_SIZE;
 		}
-		item.client->SetRect(rc);
+		if (item.client) {
+			item.client->SetRect(rc);
+		}
 	}
 }
 

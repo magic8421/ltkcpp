@@ -15,6 +15,8 @@ namespace ltk {
 class LTK_CPP_API AbstractButton : public Sprite
 {
 public:
+	RTTI_DECLARATIONS(AbstractButton, Sprite);
+
     AbstractButton() {}
     virtual ~AbstractButton();
 

@@ -21,7 +21,7 @@ LTK_API void WINAPI LtkUninitialize()
 	ltk::LtkUninitialize();
 }
 
-LTK_API void WINAPI LtkRunApp()
+LTK_API void WINAPI LtkRunMessageLoop()
 {
 	MSG msg;
 	BOOL bRet;
@@ -48,23 +48,36 @@ LTK_API void WINAPI LtkObject_RegisterCallback(
 	thiz->RegisterCallback(event_id, cb, userdata);
 }
 
-
-LTK_API LtkObject * WINAPI LtkGetEventSender()
+LTK_API LtkObject * WINAPI LtkCallbackInvoker()
 {
 	return (LtkObject *)Object::GetEventSender();
 }
+
+//////////////////////////////////////////////////////////////////////////
+// Sprite
+//////////////////////////////////////////////////////////////////////////
+
+LTK_API BOOL WINAPI LtkIsSprite(LtkObject* o)
+{
+	Object *obj = (Object *)o;
+	if (!Object::CheckValid(obj)) return FALSE;
+	return obj->Is(Sprite::TypeIdClass()) ? TRUE : FALSE;
+}
+
 
 //////////////////////////////////////////////////////////////////////////
 // Window
 //////////////////////////////////////////////////////////////////////////
 
 
-LTK_API LtkWindow* WINAPI LtkWindow_New()
+LTK_API LtkWindow* WINAPI LtkWindow_New_(LPCSTR source, int line)
 {
-	return (LtkWindow*)new Window;
+	auto obj = new Window;
+	obj->SetSourceLine(source, line);
+	return (LtkWindow*)obj;
 }
 
-LTK_API void WINAPI LtkCreateWindow(
+LTK_API void WINAPI LtkWindow_Create(
 	LtkWindow* self, LtkWindow* parent, LtkRect *rc)
 {
 	Window* p2 = nullptr;
@@ -77,7 +90,7 @@ LTK_API void WINAPI LtkCreateWindow(
 }
 
 
-LTK_API void WINAPI LtkCreateWindowCenter(
+LTK_API void WINAPI LtkWindow_CreateCenter(
 	LtkWindow*self, LtkWindow* parent, float width, float height)
 {
 	Window* p2 = nullptr;
@@ -112,9 +125,11 @@ LTK_API void WINAPI LtkWindow_SetClientSprite(LtkWindow* self, LtkSprite* sp)
 // BoxLayout
 //////////////////////////////////////////////////////////////////////////
 
-LTK_API LtkBoxLayout* WINAPI LtkBoxLayout_New(UINT orientation)
+LTK_API LtkBoxLayout* WINAPI LtkBoxLayout_New_(UINT orientation, LPCSTR source, int line)
 {
-	return (LtkBoxLayout*)new BoxLayout((ltk::Orientation)orientation);
+	auto obj = new BoxLayout((ltk::Orientation)orientation);
+	obj->SetSourceLine(source, line);
+	return (LtkBoxLayout*)obj;
 }
 
 LTK_API void WINAPI LtkBoxLayout_AddLayoutItem(
@@ -140,9 +155,18 @@ LTK_API void WINAPI LtkBoxLayout_SetSpacing(LtkBoxLayout* self, float spacing)
 // Button
 //////////////////////////////////////////////////////////////////////////
 
-LTK_API LtkButton* WINAPI LtkButton_New()
+LTK_API LtkObject* WINAPI LtkButton_New_(LPCSTR source, int line)
 {
-	return (LtkButton*)new Button;
+	auto obj = new Button;
+	obj->SetSourceLine(source, line);
+	return (LtkObject*)obj;
+}
+
+LTK_API BOOL WINAPI LtkIsButton(LtkObject* o)
+{
+	Object *obj = (Object *)o;
+	if (!Object::CheckValid(obj)) return FALSE;
+	return obj->Is(Button::TypeIdClass()) ? TRUE : FALSE;
 }
 
 LTK_API void WINAPI LtkButton_SetText(LtkButton* self, LPCWSTR text)
@@ -155,9 +179,16 @@ LTK_API void WINAPI LtkButton_SetText(LtkButton* self, LPCWSTR text)
 // ListView
 //////////////////////////////////////////////////////////////////////////
 
-LTK_API LtkListView* WINAPI LtkListView_New()
+LTK_API LtkObject* WINAPI LtkListView_New_(LPCSTR source, int line)
 {
-	return (LtkListView*)new ListView;
+	return (LtkObject*)new ListView;
+}
+
+LTK_API BOOL WINAPI LtkIsListView(LtkObject* o)
+{
+	Object *obj = (Object *)o;
+	if (!Object::CheckValid(obj)) return FALSE;
+	return obj->Is(ListView::TypeIdClass()) ? TRUE : FALSE;
 }
 
 LTK_API UINT WINAPI LtkListView_AddRow(LtkListView* self)
@@ -188,9 +219,18 @@ LTK_API int WINAPI LtkListView_GetSelectedRow(LtkListView* self)
 // Splitter
 //////////////////////////////////////////////////////////////////////////
 
-LTK_API LtkSplitter* WINAPI LtkSplitter_New(UINT orientation)
+LTK_API LtkObject* WINAPI LtkSplitter_New_(UINT orientation, LPCSTR source, int line)
 {
-	return (LtkSplitter*)new Splitter((Orientation)orientation);
+	auto obj = new Splitter((Orientation)orientation);
+	obj->SetSourceLine(source, line);
+	return (LtkObject*)obj;
+}
+
+LTK_API BOOL WINAPI LtkIsSplitter(LtkObject *o)
+{
+	Object *obj = (Object *)o;
+	if (!Object::CheckValid(obj)) return FALSE;
+	return obj->Is(Splitter::TypeIdClass()) ? TRUE : FALSE;
 }
 
 LTK_API void WINAPI LtkSplitter_Resize(LtkSplitter* self, UINT n)

@@ -48,6 +48,12 @@ void Object::DumpObjectLeaks()
 	delete sObjectSet;
 }
 
+bool Object::CheckValid(Object *o)
+{
+	// TODO lock for multithread.
+	return sObjectSet->find(o) != sObjectSet->end();
+}
+
 void Object::SetInvalid()
 {
 	m_obctrl->Set(nullptr);
@@ -108,6 +114,12 @@ void Object::InvokeCallback(UINT event_id, ...)
 		//}
 		va_end(args);
 	}
+}
+
+void Object::SetSourceLine(LPCSTR source, int line)
+{
+	m_source = source;
+	m_line = line;
 }
 
 Object *Object::GetEventSender()

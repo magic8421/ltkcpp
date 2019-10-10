@@ -7,6 +7,8 @@ namespace ltk {
 class LTK_CPP_API Splitter : public Sprite
 {
 public:
+	RTTI_DECLARATIONS(Splitter, Sprite);
+
 	explicit Splitter(Orientation m) : m_mode(m) {}
 	virtual ~Splitter() {}
 

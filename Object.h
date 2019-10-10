@@ -152,9 +152,11 @@ public:
 		void* userdata, va_list args) {
 	}
 
-	static Object *GetEventSender();
+	void SetSourceLine(LPCSTR source, int line);
 
+	static Object *GetEventSender();
 	static void DumpObjectLeaks();
+	static bool CheckValid(Object *o);
 
 #endif
 
