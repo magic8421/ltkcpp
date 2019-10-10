@@ -6,6 +6,32 @@ namespace ltk {
 static const float GRIP_SIZE = 5.f;
 static const float MIN_SIZE = 15.f;
 
+void Splitter::Resize(UINT n)
+{
+	if (n < m_vecItems.size()) {
+		// TODO test this branch.
+		for (UINT i = m_vecItems.size(); i > 0 && i > n; i --) {
+			auto &item = m_vecItems[i - 1];
+			if (item.client) {
+				LTK_LOG("Splitter::Resize() failed: non-NULL clients.");
+				return;
+			}
+			m_vecItems.pop_back();
+		}
+	}
+	else  {
+		m_vecItems.resize(n);
+	}
+}
+
+Sprite* Splitter::SetClientAt(UINT idx, Sprite* sp)
+{
+	auto &item = m_vecItems.at(idx);
+	auto old_sp = item.client;
+	item.client = sp;
+	return old_sp;
+}
+
 void Splitter::AddClient(Sprite *sp)
 {
 	SplitterItem item;

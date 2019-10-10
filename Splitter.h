@@ -10,7 +10,8 @@ public:
 	explicit Splitter(Orientation m) : m_mode(m) {}
 	virtual ~Splitter() {}
 
-
+	void Resize(UINT n);
+	Sprite* SetClientAt(UINT idx, Sprite* sp);
 	void AddClient(Sprite *sp);
 	void SetClientSize(UINT idx, float size);
 	

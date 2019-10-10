@@ -135,6 +135,7 @@ public:
 	void SetInvalid();
 
 #ifndef LTK_NO_CINTERFACE
+
 	struct CallbackInfo
 	{
 		LtkCallback callback = nullptr;
@@ -152,14 +153,17 @@ public:
 	}
 
 	static Object *GetEventSender();
+
+	static void DumpObjectLeaks();
+
 #endif
 
 private:
 	ObserverCtrl *m_obctrl = nullptr;
 #ifndef LTK_NO_CINTERFACE
 	std::map<UINT, std::vector<CallbackInfo>> m_mapCallbacks;
-	//const char *m_source = nullptr; // 好像没必要 外部使用者应该用umdh来查内存泄漏
-	//int m_line = -1;
+	const char *m_source = nullptr; // 好像没必要 外部使用者应该用umdh来查内存泄漏
+	int m_line = -1;
 #endif
 
 	DISALLOW_COPY_AND_ASSIGN(Object);

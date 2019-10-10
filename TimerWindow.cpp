@@ -58,8 +58,9 @@ void TimerWindow::OnTimer()
 
 void TimerWindow::OnAddBtnClicked()
 {
-	m_listView->AddItem(L"Ãû³Æ");
-	m_listView->SetSubItemText(m_listView->GetItemCount() - 1, 1, L"00:00:00");
+	UINT row = m_listView->AddRow();
+	m_listView->SetCellText(row, 0, L"ÊäÈëÃû³Æ");
+	m_listView->SetCellText(row, 1, L"00:00:00");
 }
 
 void TimerWindow::OnDestroy()

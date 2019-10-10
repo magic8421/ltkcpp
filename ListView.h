@@ -22,10 +22,11 @@ public:
     ListView();
     virtual ~ListView();
 
-    void AddItem(LPCWSTR text);
-    bool SetSubItemText(UINT row, UINT col, LPCWSTR text);
+	UINT AddRow();
+    bool SetCellText(UINT row, UINT col, LPCWSTR text);
+	LPCWSTR GetCellText(UINT row, UINT col);
     float GetTotalHeight();
-    int GetSelectedItem();
+    int GetSelectedRow();
     void RemoveItem(UINT row);
 	LPCWSTR GetItemText(UINT row);
 	UINT GetItemCount();
@@ -58,6 +59,9 @@ protected:
 	void SetColumns(std::vector<float> &columns);
 
 private:
+	virtual void DoInvokeCallback(
+		UINT event_id, LtkCallback cb, void* userdata, va_list args) override;
+
     struct LineData
     {
         std::vector<std::wstring> cells;
@@ -70,7 +74,7 @@ private:
     ScrollBar *m_hsb = nullptr;
     HeaderCtrl *m_header = nullptr;
     int m_hoverItem = -1;
-    int m_selectedItem = -1;
+    int m_selectedRow = -1;
     std::vector<float> m_vecColumns;
     float m_hscroll = 0.0f;
 

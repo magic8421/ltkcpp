@@ -92,15 +92,17 @@ void DemoWindow::BuildDemoWindow()
 	header->AddColumn(L"¸ºÔðÈË", 200);
 	listview1->UpdateColumnWidth();
 	vboxRightPanel->AddLayoutItem(listview1, 0.0f, 1.0f);
+	listview1->RegisterCallback(LTK_LISTVIEW_SELECT_CHANGE, (LtkCallback)OnListViewSelectChange, this);
 
 	UINT num = rand() % 200;
 	for (UINT i = 0; i < num; i++) {
+		listview1->AddRow();
 		auto text = WStringFormat(L"item:%d", i);
-		listview1->AddItem(text);
+		listview1->SetCellText(i, 0, text);
 		auto text2 = WStringFormat(L"subitem1:%d", i);
-		listview1->SetSubItemText(i, 1, text2);
+		listview1->SetCellText(i, 1, text2);
 		auto text3 = WStringFormat(L"subitem2:%d", i);
-		listview1->SetSubItemText(i, 2, text3);
+		listview1->SetCellText(i, 2, text3);
 	}
 
 	TextEdit *edit1 = new TextEdit;
@@ -294,6 +296,11 @@ void DemoWindow::OnExitClicked()
 void DemoWindow::OnClose(BOOL* proceed)
 {
 	::PostQuitMessage(0);
+}
+
+void CALLBACK DemoWindow::OnListViewSelectChange(void* userdata, int row, int oldRow)
+{
+	LTK_LOG("OnListViewSelectChange: %d %d", row, oldRow);
 }
 
 static void SetupAppStyle()

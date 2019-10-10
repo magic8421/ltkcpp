@@ -5,6 +5,8 @@
 #include "Window.h"
 #include "Button.h"
 #include "BoxLayout.h"
+#include "ListView.h"
+#include "Splitter.h"
 
 using namespace ltk;
 
@@ -99,6 +101,13 @@ LTK_API void WINAPI LtkWindow_UpdateTheme(LtkWindow* wnd)
 	thiz->UpdateTheme();
 }
 
+LTK_API void WINAPI LtkWindow_SetClientSprite(LtkWindow* self, LtkSprite* sp)
+{
+	Window* thiz = (Window*)self;
+	thiz->SetClientSprite((Sprite*)sp);
+}
+
+
 //////////////////////////////////////////////////////////////////////////
 // BoxLayout
 //////////////////////////////////////////////////////////////////////////
@@ -140,4 +149,58 @@ LTK_API void WINAPI LtkButton_SetText(LtkButton* self, LPCWSTR text)
 {
 	Button* thiz = (Button*)self;
 	thiz->SetText(text);
+}
+
+//////////////////////////////////////////////////////////////////////////
+// ListView
+//////////////////////////////////////////////////////////////////////////
+
+LTK_API LtkListView* WINAPI LtkListView_New()
+{
+	return (LtkListView*)new ListView;
+}
+
+LTK_API UINT WINAPI LtkListView_AddRow(LtkListView* self)
+{
+	ListView* thiz = (ListView *)self;
+	return thiz->AddRow();
+}
+
+LTK_API void WINAPI LtkListView_SetCellText(LtkListView* self, UINT row, UINT col, LPCWSTR text)
+{
+	ListView* thiz = (ListView *)self;
+	thiz->SetCellText(row, col, text);
+}
+
+LTK_API LPCWSTR WINAPI LtkListView_GetCellText(LtkListView* self, UINT row, UINT col)
+{
+	ListView* thiz = (ListView *)self;
+	return thiz->GetCellText(row, col);
+}
+
+LTK_API int WINAPI LtkListView_GetSelectedRow(LtkListView* self)
+{
+	ListView* thiz = (ListView *)self;
+	return thiz->GetSelectedRow();
+}
+
+//////////////////////////////////////////////////////////////////////////
+// Splitter
+//////////////////////////////////////////////////////////////////////////
+
+LTK_API LtkSplitter* WINAPI LtkSplitter_New(UINT orientation)
+{
+	return (LtkSplitter*)new Splitter((Orientation)orientation);
+}
+
+LTK_API void WINAPI LtkSplitter_Resize(LtkSplitter* self, UINT n)
+{
+	Splitter* thiz = (Splitter*)self;
+	thiz->Resize(n);
+}
+
+LTK_API LtkSprite* WINAPI LtkSplitter_SetClientAt(LtkSplitter* self, UINT idx, LtkSprite* sp)
+{
+	Splitter* thiz = (Splitter*)self;
+	return (LtkSprite*)thiz->SetClientAt(idx, (Sprite*)sp);
 }

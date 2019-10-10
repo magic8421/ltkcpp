@@ -104,7 +104,7 @@ bool ListView::OnPaint(PaintEvent *ev)
         rcItem.left = m_hscroll;
         rcItem.right = rcSprite.Width + m_hscroll;
         rcItem.bottom = rcItem.top + ItemHeight;
-        if (m_selectedItem == i) {
+        if (m_selectedRow == i) {
 			brush->SetColor(m_selectedColor);
             target->FillRectangle(rcItem, brush);
         }
@@ -116,7 +116,7 @@ bool ListView::OnPaint(PaintEvent *ev)
         auto text = line.cells.at(0).data();
         auto len = line.cells.at(0).length();
         rcItem.left = 0.0f;
-        if (m_selectedItem == i) {
+        if (m_selectedRow == i) {
 			brush->SetColor(m_selectedTextColor);
         } else {
 			brush->SetColor(m_textColor);
@@ -145,22 +145,24 @@ bool ListView::OnPaint(PaintEvent *ev)
     return true;
 }
 
-void ListView::AddItem(LPCWSTR text)
+UINT ListView::AddRow()
 {
     LineData data;
-    data.cells.push_back(std::move(std::wstring(text)));
+    //data.cells.push_back(std::move(std::wstring(text)));
     m_vecData.push_back(std::move(data));
     m_vsb->SetContentSize(this->GetTotalHeight());
     this->Invalidate();
+	return m_vecData.size() - 1;
 }
 
-bool ListView::SetSubItemText(UINT row, UINT col, LPCWSTR text)
+bool ListView::SetCellText(UINT row, UINT col, LPCWSTR text)
 {
+	LTK_ASSERT(col < 999);
     if (row >= m_vecData.size()) {
         return false;
     }
     auto &row_data = m_vecData[row];
-    while (row_data.cells.size() - 1 < col) {
+    while ((int)row_data.cells.size() - 1 < (int)col) {
         row_data.cells.push_back(std::wstring());
     }
     row_data.cells[col] = text;
@@ -169,13 +171,29 @@ bool ListView::SetSubItemText(UINT row, UINT col, LPCWSTR text)
     return true;
 }
 
+LPCWSTR ListView::GetCellText(UINT row, UINT col)
+{
+	if (row >= m_vecData.size()) {
+		return nullptr;
+	}
+	if (col >= m_vecData[row].cells.size()) {
+		return nullptr;
+	}
+	return m_vecData[row].cells[col].c_str();
+}
+
 bool ListView::OnLBtnDown(MouseEvent *ev)
 {
     m_scroll.Stop();
     this->EndAnimation();
 
-    m_selectedItem = (int)((m_scroll.GetScroll() + ev->y) / ItemHeight);
-    this->Invalidate();
+    int row = (int)((m_scroll.GetScroll() + ev->y) / ItemHeight);
+	if (row != m_selectedRow) {
+		int oldRow = m_selectedRow;
+		m_selectedRow = row;
+		Object::InvokeCallback(LTK_LISTVIEW_SELECT_CHANGE, row, oldRow);
+		this->Invalidate();
+	}
     return true;
 }
 
@@ -202,9 +220,9 @@ float ListView::GetTotalHeight()
     return m_vecData.size() * ItemHeight;
 }
 
-int ListView::GetSelectedItem()
+int ListView::GetSelectedRow()
 {
-	return m_selectedItem;
+	return m_selectedRow;
 }
 
 bool ListView::OnMouseWheel(MouseEvent *ev)
@@ -313,6 +331,24 @@ void ListView::HandleResizeEnd()
 	m_hsb->SetPosition(pos);
 	// m_vsb->SetContentSize(m_header->GetTotalWidth()); TODO
 	HandleHScrollBar(pos);
+}
+
+typedef void (CALLBACK *OnListViewSelectChange)(void* userdata, int row, int oldRow);
+
+void ListView::DoInvokeCallback(UINT event_id, LtkCallback cb, void* userdata, va_list args)
+{
+	switch (event_id)
+	{
+	case LTK_LISTVIEW_SELECT_CHANGE:
+		{
+			int row = va_arg(args, int);
+			int oldRow = va_arg(args, int);
+			((OnListViewSelectChange)cb)(userdata, row, oldRow);
+		}
+		break;
+	default:
+		Sprite::DoInvokeCallback(event_id, cb, userdata, args);
+	}
 }
 
 } // namespace ltk
