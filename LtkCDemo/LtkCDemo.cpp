@@ -20,24 +20,34 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 {
 	LtkInitialize();
 
-	LtkWindow* wnd = LtkWindow_New();
-	LtkWindow_CreateCenter(wnd, NULL, 500, 400);
+	LtkObject* wnd = LtkWindow_New();
 	//LtkWindow_SetBackground(wnd, "window_bg");
+	LtkObject_RegisterCallback(
+		(LtkObject*)wnd, LTK_WINDOW_DESTROY, (LtkCallback)MyEventCallback, NULL);
+
 	LtkObject* splitter_h = LtkSplitter_New(LTK_HORIZONTAL);
-	LtkSplitter_Resize(LTK_SPLITTER(splitter_h), 3);
+	LtkWindow_SetClientSprite(LTK_WINDOW(wnd), LTK_SPRITE(splitter_h));
+
+	LtkSplitter_Resize(LTK_SPLITTER(splitter_h), 2);
 
 	LtkObject* btn = LtkButton_New();
 	LtkSplitter_SetClientAt(LTK_SPLITTER(splitter_h), 0, LTK_SPRITE(btn));
-	btn = LtkButton_New();
-	LtkSplitter_SetClientAt(LTK_SPLITTER(splitter_h), 1, LTK_SPRITE(btn));
-	btn = LtkButton_New();
-	LtkSplitter_SetClientAt(LTK_SPLITTER(splitter_h), 2, LTK_SPRITE(btn));
+	LtkSplitter_SetClientSize(LTK_SPLITTER(splitter_h), 0, 200);
 
-	LtkWindow_SetClientSprite(wnd, LTK_SPRITE(splitter_h));
+	LtkObject* splitter_v = LtkSplitter_New(LTK_VERTICAL);
+	LtkSplitter_Resize(LTK_SPLITTER(splitter_v), 2);
+	LtkSplitter_SetClientAt(LTK_SPLITTER(splitter_h), 1, LTK_SPRITE(splitter_v));
 
-	LtkWindow_UpdateTheme(wnd);
-	LtkObject_RegisterCallback(
-		(LtkObject*)wnd, LTK_WINDOW_DESTROY, (LtkCallback)MyEventCallback, NULL);
+	btn = LtkButton_New();
+	LtkSplitter_SetClientAt(LTK_SPLITTER(splitter_v), 0, LTK_SPRITE(btn));
+	LtkSplitter_SetClientSize(LTK_SPLITTER(splitter_v), 0, 350);
+	btn = LtkButton_New();
+	LtkSplitter_SetClientAt(LTK_SPLITTER(splitter_v), 1, LTK_SPRITE(btn));
+
+
+	LtkWindow_CreateCenter(LTK_WINDOW(wnd), NULL, 800, 600);
+	LtkWindow_SetCaption(LTK_WINDOW(wnd), L"Ltk测试窗口");
+	LtkWindow_UpdateTheme(LTK_WINDOW(wnd));
 
 	LtkRunMessageLoop();
 

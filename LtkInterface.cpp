@@ -7,13 +7,14 @@
 #include "BoxLayout.h"
 #include "ListView.h"
 #include "Splitter.h"
+#include "TreeView.h"
 
 using namespace ltk;
 
 LTK_API UINT WINAPI LtkInitialize()
 {
 	ltk::LtkInitialize();
-	return LTK_OK;
+	return 0;
 }
 
 LTK_API void WINAPI LtkUninitialize()
@@ -70,11 +71,18 @@ LTK_API BOOL WINAPI LtkIsSprite(LtkObject* o)
 //////////////////////////////////////////////////////////////////////////
 
 
-LTK_API LtkWindow* WINAPI LtkWindow_New_(LPCSTR source, int line)
+LTK_API LtkObject* WINAPI LtkWindow_New_(LPCSTR source, int line)
 {
 	auto obj = new Window;
 	obj->SetSourceLine(source, line);
-	return (LtkWindow*)obj;
+	return (LtkObject*)obj;
+}
+
+LTK_API BOOL WINAPI LtkIsWindow(LtkObject* o)
+{
+	Object *obj = (Object *)o;
+	if (!Object::CheckValid(obj)) return FALSE;
+	return obj->Is(Window::TypeIdClass()) ? TRUE : FALSE;
 }
 
 LTK_API void WINAPI LtkWindow_Create(
@@ -102,9 +110,15 @@ LTK_API void WINAPI LtkWindow_CreateCenter(
 	thiz->Create(p2, size);
 }
 
-LTK_API void WINAPI LtkWindow_SetBackground(LtkWindow* wnd, LPCSTR name)
+LTK_API void WINAPI LtkWindow_SetCaption(LtkWindow*self, LPCWSTR text)
 {
-	Window* thiz = (Window*)wnd;
+	Window* thiz = (Window*)self;
+	thiz->SetCaption(text);
+}
+
+LTK_API void WINAPI LtkWindow_SetBackground(LtkWindow* self, LPCSTR name)
+{
+	Window* thiz = (Window*)self;
 	thiz->SetBackground(name);
 }
 
@@ -125,11 +139,18 @@ LTK_API void WINAPI LtkWindow_SetClientSprite(LtkWindow* self, LtkSprite* sp)
 // BoxLayout
 //////////////////////////////////////////////////////////////////////////
 
-LTK_API LtkBoxLayout* WINAPI LtkBoxLayout_New_(UINT orientation, LPCSTR source, int line)
+LTK_API LtkObject* WINAPI LtkBoxLayout_New_(UINT orientation, LPCSTR source, int line)
 {
 	auto obj = new BoxLayout((ltk::Orientation)orientation);
 	obj->SetSourceLine(source, line);
-	return (LtkBoxLayout*)obj;
+	return (LtkObject*)obj;
+}
+
+LTK_API BOOL WINAPI LtkIsBoxLayout(LtkObject* o)
+{
+	Object *obj = (Object *)o;
+	if (!Object::CheckValid(obj)) return FALSE;
+	return obj->Is(BoxLayout::TypeIdClass()) ? TRUE : FALSE;
 }
 
 LTK_API void WINAPI LtkBoxLayout_AddLayoutItem(
@@ -243,4 +264,28 @@ LTK_API LtkSprite* WINAPI LtkSplitter_SetClientAt(LtkSplitter* self, UINT idx, L
 {
 	Splitter* thiz = (Splitter*)self;
 	return (LtkSprite*)thiz->SetClientAt(idx, (Sprite*)sp);
+}
+
+LTK_API void WINAPI LtkSplitter_SetClientSize(LtkSplitter* self, UINT idx, float size)
+{
+	Splitter* thiz = (Splitter*)self;
+	thiz->SetClientSize(idx, size);
+}
+
+//////////////////////////////////////////////////////////////////////////
+// TreeView
+//////////////////////////////////////////////////////////////////////////
+
+LTK_API BOOL WINAPI LtkIsTreeView(LtkObject* o)
+{
+	Object *obj = (Object *)o;
+	if (!Object::CheckValid(obj)) return FALSE;
+	return obj->Is(TreeView::TypeIdClass()) ? TRUE : FALSE;
+}
+
+LTK_API LtkObject* WINAPI LtkTreeView_New_(LPCSTR source, int line)
+{
+	auto obj = new TreeView();
+	obj->SetSourceLine(source, line);
+	return (LtkObject*)obj;
 }
