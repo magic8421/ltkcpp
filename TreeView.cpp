@@ -84,15 +84,17 @@ void TreeNode::OnPaint(ID2D1RenderTarget *target, float scroll)
 	auto colors = m_treeView->GetColorScheme();
 
 	auto brush = m_treeView->GetBrush();
-	//brush->SetColor(StyleManager::ColorFromString("#cccccc"));
-	//target->DrawRectangle(D2D1RectF(rcItem), brush);
 
-	brush->SetColor(StyleManager::ColorFromString("#aaaaaa"));
 	if (m_children.size() > 0) {
-		target->FillRectangle(D2D1RectF(rcExpandBtn), brush);
-	}
-	else {
-		target->DrawRectangle(D2D1RectF(rcExpandBtn), brush);
+		if (m_bExpand) {
+			m_treeView->GetExpandIcon()->Draw(m_treeView->GetWindow(),
+				target, RectF(rcExpandBtn.X, rcExpandBtn.Y, 16, 11),
+				AbstractBackground::Normal, 0.f);
+		} else {
+			m_treeView->GetCollapseIcon()->Draw(m_treeView->GetWindow(),
+			target, RectF(rcExpandBtn.X, rcExpandBtn.Y, 11, 15),
+			AbstractBackground::Normal, 0.f);
+		}
 	}
 	auto format = m_treeView->GetTextFormat();
 	brush->SetColor(colors->TextColor);
@@ -185,6 +187,16 @@ TreeViewColors * TreeView::GetColorScheme()
 	return &m_colors;
 }
 
+AbstractBackground * TreeView::GetExpandIcon()
+{
+	return m_expandBg;
+}
+
+ltk::AbstractBackground * TreeView::GetCollapseIcon()
+{
+	return m_collapseBg;
+}
+
 TreeNode * TreeView::GetRootNode()
 {
     return &m_root;
@@ -217,6 +229,8 @@ void TreeView::OnThemeChanged()
 	m_colors.SelectedTextColor = sm->GetColor(SelectedTextColor);
 
 	m_format = sm->GetTextFormat(TextFormat);
+	m_expandBg = sm->GetBackground("tree_expand_bg");
+	m_collapseBg = sm->GetBackground("tree_collapse_bg");
 }
 
 bool TreeView::OnMouseWheel(MouseEvent *ev)
@@ -247,7 +261,5 @@ bool TreeView::OnSize(SizeEvent *ev)
 
 const float TreeView::m_itemHeight = 30.0f;
 const float TreeView::m_indent = 10.0f;
-
-
 
 } // namespace ltk

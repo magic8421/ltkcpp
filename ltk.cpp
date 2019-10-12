@@ -341,10 +341,12 @@ namespace ltk {
         Window::RegisterWndClass();
 
 		StyleManager::NewTheme("rect");
-		SetupVectorStyle1();
+		SetupVectorStyleDark();
 
 		StyleManager::NewTheme("pixel");
 		SetupPixelStyle1();
+
+		LTK_LOG("sizeof map: %d", sizeof(std::map<int, void*>));
     }
 
     void LtkUninitialize()

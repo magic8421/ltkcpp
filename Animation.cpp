@@ -30,6 +30,12 @@ void ScrollAnimation::OnNoInputTimer()
 
 void ScrollAnimation::BeginScroll(float delta)
 {
+	if (fabs(fabs(delta) - 1.f) > 0.001) {
+		m_scroll -= delta * 120.f;
+		m_scroll = max(0.f, m_scroll);
+		return;
+	}
+
 	m_bInput = true;
 	
 	m_timer.StartOnce();

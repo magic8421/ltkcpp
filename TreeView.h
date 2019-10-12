@@ -14,6 +14,7 @@ namespace ltk {
 
 class ScrollBar;
 class TreeView;
+class AbstractBackground;
 
 struct TreeViewColors
 {
@@ -68,6 +69,8 @@ private:
 class LTK_CPP_API TreeView : public Sprite
 {
 public:
+	RTTI_DECLARATIONS(TreeView, Sprite);
+
     TreeView();
     virtual ~TreeView();
 
@@ -79,6 +82,9 @@ public:
     ID2D1SolidColorBrush *GetBrush();
     IDWriteTextFormat *GetTextFormat();
 	TreeViewColors *GetColorScheme();
+	AbstractBackground *GetExpandIcon();
+	AbstractBackground *GetCollapseIcon();
+
     TreeNode *GetRootNode();
 
 	ImmutableString TextColor;
@@ -93,8 +99,6 @@ protected:
     virtual bool OnLBtnDown(MouseEvent *ev) override;
     virtual bool OnMouseWheel(MouseEvent *ev) override;
     virtual void RecreateResouce(ID2D1RenderTarget *target) override;
-
-
 	virtual void OnThemeChanged() override;
 
 private:
@@ -105,6 +109,8 @@ private:
     static const float m_indent;
 
     IDWriteTextFormat *m_format = nullptr;
+	AbstractBackground *m_expandBg = nullptr;
+	AbstractBackground *m_collapseBg = nullptr;
 
     ScrollAnimation m_scrollAni;
     float m_maxHeight = 0.0f;

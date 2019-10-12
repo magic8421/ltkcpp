@@ -109,7 +109,8 @@ AbstractBackground *StyleManager::GetBackground(const char *name) const
     }
     else {
         LTK_ASSERT(false);
-        return m_mapBackgroundStyle.begin()->second;
+		// TODO return a always avaliable rect bg.
+        return m_mapBackgroundStyle.begin()->second; 
     }
 }
 

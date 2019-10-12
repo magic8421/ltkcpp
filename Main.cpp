@@ -325,8 +325,8 @@ int CALLBACK WinMain(
 	auto wnd = new DemoWindow;
     wnd->SetCaption(L"LTK²âÊÔ´°¿Ú");
     //wnd->SetBackground("window_bg");
-	//wnd->BuildDemoWindow();
-	wnd->BuildSplitterTest2();
+	wnd->BuildDemoWindow();
+	//wnd->BuildSplitterTest2();
     wnd->Create(nullptr, SizeF(700, 500));
 	wnd->UpdateTheme();
 	
