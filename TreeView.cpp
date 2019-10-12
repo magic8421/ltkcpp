@@ -84,6 +84,13 @@ void TreeNode::OnPaint(ID2D1RenderTarget *target, float scroll)
 	auto colors = m_treeView->GetColorScheme();
 
 	auto brush = m_treeView->GetBrush();
+	if (m_treeView->GetSelectedNode() == this) {
+		brush->SetColor(colors->SelectedColor);
+		auto rcSelected = rcItem;
+		rcSelected.X = 0;
+		rcSelected.Width = m_treeView->GetWidth();
+		target->FillRectangle(D2D1RectF(rcSelected), brush);
+	}
 
 	if (m_children.size() > 0) {
 		if (m_bExpand) {
@@ -97,7 +104,13 @@ void TreeNode::OnPaint(ID2D1RenderTarget *target, float scroll)
 		}
 	}
 	auto format = m_treeView->GetTextFormat();
-	brush->SetColor(colors->TextColor);
+
+	if (m_treeView->GetSelectedNode() == this) {
+		brush->SetColor(colors->SelectedTextColor);
+	}
+	else {
+		brush->SetColor(colors->TextColor);
+	}
 	float space = m_padding * 2.0f + m_btn_size;
 	auto rcText = RectF(
 		space + rcItem.X, rcItem.Y, rcItem.Width - space, rcItem.Height);
@@ -105,11 +118,21 @@ void TreeNode::OnPaint(ID2D1RenderTarget *target, float scroll)
 		m_text.c_str(), m_text.size(), format, D2D1RectF(rcText), brush);
 }
 
-void TreeNode::OnLBtnDown(PointF pt)
+void TreeNode::OnLBtnDown(PointF pt, float scroll)
 {
-    if (m_rcExpandBtn.Contains(pt)) {
+	auto rcExpandBtn = m_rcExpandBtn;
+	rcExpandBtn.Y -= scroll;
+
+    if (rcExpandBtn.Contains(pt)) {
         m_bExpand = !m_bExpand;
+		return;
     }
+	auto rcItem = m_rect;
+	rcItem.Y -= scroll;
+	if (rcItem.Contains(pt)) {
+		//LTK_LOG("SetSelectedNode %08x", this);
+		m_treeView->SetSelectedNode(this);
+	}
 }
 
 const float TreeNode::m_padding = 5;
@@ -197,9 +220,24 @@ ltk::AbstractBackground * TreeView::GetCollapseIcon()
 	return m_collapseBg;
 }
 
+float TreeView::GetItemHeight()
+{
+	return m_itemHeight;
+}
+
 TreeNode * TreeView::GetRootNode()
 {
     return &m_root;
+}
+
+void TreeView::SetSelectedNode(TreeNode* node)
+{
+	m_selected = node;
+}
+
+TreeNode * TreeView::GetSelectedNode()
+{
+	return m_selected;
 }
 
 bool TreeView::OnPaint(PaintEvent *ev)
@@ -245,7 +283,7 @@ bool TreeView::OnLBtnDown(MouseEvent *ev)
 	auto scroll = m_scrollAni.GetScroll();
     TraverseTree(&m_root, 0, 
 		[ev, scroll](TreeNode *node, int) {
-            node->OnLBtnDown(PointF(ev->x, ev->y + scroll));
+            node->OnLBtnDown(PointF(ev->x, ev->y), scroll);
     });
     this->DoLayout(); // TODO change callback to return bool, early abort.
     this->Invalidate();
@@ -259,7 +297,7 @@ bool TreeView::OnSize(SizeEvent *ev)
     return false;
 }
 
-const float TreeView::m_itemHeight = 30.0f;
-const float TreeView::m_indent = 10.0f;
+const float TreeView::m_itemHeight = 25.0f;
+const float TreeView::m_indent = 15.0f;
 
 } // namespace ltk

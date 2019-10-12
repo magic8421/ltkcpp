@@ -46,7 +46,7 @@ public:
     bool IsExpand();
 
     virtual void OnPaint(ID2D1RenderTarget *target, float scroll);
-    virtual void OnLBtnDown(PointF pt);
+    virtual void OnLBtnDown(PointF pt, float scroll);
 
 private:
     bool m_bExpand = true;
@@ -84,8 +84,11 @@ public:
 	TreeViewColors *GetColorScheme();
 	AbstractBackground *GetExpandIcon();
 	AbstractBackground *GetCollapseIcon();
+	float GetItemHeight();
 
     TreeNode *GetRootNode();
+	void SetSelectedNode(TreeNode *);
+	TreeNode *GetSelectedNode();
 
 	ImmutableString TextColor;
 	ImmutableString HoverColor;
@@ -104,6 +107,7 @@ protected:
 private:
     ScrollBar *m_vsb = nullptr;
     TreeNode m_root;
+	TreeNode *m_selected = nullptr;
 
     static const float m_itemHeight;
     static const float m_indent;
