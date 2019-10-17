@@ -8,6 +8,8 @@
 #include "ListView.h"
 #include "Splitter.h"
 #include "TreeView.h"
+#include "TextEdit.h"
+#include "MenuBar.h"
 
 using namespace ltk;
 
@@ -134,6 +136,12 @@ LTK_API void WINAPI LtkWindow_SetClientSprite(LtkWindow* self, LtkSprite* sp)
 	thiz->SetClientSprite((Sprite*)sp);
 }
 
+LTK_API void WINAPI LtkWindow_SetMenu(LtkWindow* self, LtkMenuBar* menu)
+{
+	Window* thiz = (Window*)self;
+	thiz->SetMenu((MenuBar*)menu);
+}
+
 
 //////////////////////////////////////////////////////////////////////////
 // BoxLayout
@@ -197,6 +205,30 @@ LTK_API void WINAPI LtkButton_SetText(LtkButton* self, LPCWSTR text)
 }
 
 //////////////////////////////////////////////////////////////////////////
+// HeaderCtrl
+//////////////////////////////////////////////////////////////////////////
+
+LTK_API BOOL WINAPI LtkIsHeaderCtrl(LtkObject* o)
+{
+	Object *obj = (Object *)o;
+	if (!Object::CheckValid(obj)) return FALSE;
+	return obj->Is(HeaderCtrl::TypeIdClass()) ? TRUE : FALSE;
+}
+
+LTK_API LtkObject* WINAPI LtkHeaderCtrl_New_(LPCSTR source, int line)
+{
+	auto obj = new HeaderCtrl();
+	obj->SetSourceLine(source, line);
+	return (LtkObject*)obj;
+}
+
+LTK_API void WINAPI LtkHeaderCtrl_AddColumn(LtkHeaderCtrl* self, LPCWSTR text, float width)
+{
+	HeaderCtrl* thiz = (HeaderCtrl*)self;
+	thiz->AddColumn(text, width);
+}
+
+//////////////////////////////////////////////////////////////////////////
 // ListView
 //////////////////////////////////////////////////////////////////////////
 
@@ -234,6 +266,18 @@ LTK_API int WINAPI LtkListView_GetSelectedRow(LtkListView* self)
 {
 	ListView* thiz = (ListView *)self;
 	return thiz->GetSelectedRow();
+}
+
+LTK_API LtkObject* WINAPI LtkListView_GetHeaderCtrl(LtkListView* self)
+{
+	ListView* thiz = (ListView *)self;
+	return (LtkObject*)thiz->GetHeaderCtrl();
+}
+
+LTK_API void WINAPI LtkListView_UpdateColumnWidth(LtkListView* self)
+{
+	ListView* thiz = (ListView *)self;
+	thiz->UpdateColumnWidth();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -288,4 +332,124 @@ LTK_API LtkObject* WINAPI LtkTreeView_New_(LPCSTR source, int line)
 	auto obj = new TreeView();
 	obj->SetSourceLine(source, line);
 	return (LtkObject*)obj;
+}
+
+LTK_API LtkObject* WINAPI LtkTreeView_GetRootNode(LtkTreeView* self)
+{
+	TreeView* thiz = (TreeView*)self;
+	return (LtkObject*)thiz->GetRootNode();
+}
+
+//////////////////////////////////////////////////////////////////////////
+// TreeNode
+//////////////////////////////////////////////////////////////////////////
+
+LTK_API BOOL WINAPI LtkIsTreeNode(LtkObject* o)
+{
+	Object *obj = (Object *)o;
+	if (!Object::CheckValid(obj)) return FALSE;
+	return obj->Is(TreeNode::TypeIdClass()) ? TRUE : FALSE;
+}
+
+LTK_API LtkObject* WINAPI LtkTreeNode_New_(LPCSTR source, int line)
+{
+	auto obj = new TreeNode();
+	obj->SetSourceLine(source, line);
+	return (LtkObject*)obj;
+}
+
+LTK_API void WINAPI LtkTreeNode_AddChild(LtkTreeNode* self, LtkTreeNode* node)
+{
+	TreeNode* thiz = (TreeNode*)self;
+	thiz->AddChild((TreeNode*)node);
+}
+
+LTK_API void WINAPI LtkTreeNode_SetText(LtkTreeNode* self, LPCWSTR text)
+{
+	TreeNode* thiz = (TreeNode*)self;
+	thiz->SetText(text);
+}
+
+//////////////////////////////////////////////////////////////////////////
+// TextEdit
+//////////////////////////////////////////////////////////////////////////
+
+LTK_API BOOL WINAPI LtkIsTextEdit(LtkObject* o)
+{
+	Object *obj = (Object *)o;
+	if (!Object::CheckValid(obj)) return FALSE;
+	return obj->Is(TextEdit::TypeIdClass()) ? TRUE : FALSE;
+}
+
+LTK_API LtkObject* WINAPI LtkTextEdit_New_(LPCSTR source, int line)
+{
+	auto obj = new TextEdit();
+	obj->SetSourceLine(source, line);
+	return (LtkObject*)obj;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// MenuBar
+//////////////////////////////////////////////////////////////////////////
+
+LTK_API BOOL WINAPI LtkIsMenuBar(LtkObject* o)
+{
+	Object *obj = (Object *)o;
+	if (!Object::CheckValid(obj)) return FALSE;
+	return obj->Is(MenuBar::TypeIdClass()) ? TRUE : FALSE;
+}
+
+LTK_API LtkObject* WINAPI LtkMenuBar_New_(LPCSTR source, int line)
+{
+	auto obj = new MenuBar();
+	obj->SetSourceLine(source, line);
+	return (LtkObject*)obj;
+}
+
+LTK_API void WINAPI LtkMenuBar_AddItem(LtkMenuBar* self, LPCWSTR text)
+{
+	MenuBar* thiz = (MenuBar*)self;
+	thiz->AddItem(text);
+}
+
+LTK_API void WINAPI LtkMenuBar_SetPopupMenu(LtkMenuBar* self, UINT idx, LtkPopupMenu* popup)
+{
+	MenuBar* thiz = (MenuBar*)self;
+	thiz->SetPopupMenu(idx, (PopupMenu*)popup);
+}
+
+//////////////////////////////////////////////////////////////////////////
+// PopupMenu
+//////////////////////////////////////////////////////////////////////////
+
+LTK_API BOOL WINAPI LtkIsPopupMenu(LtkObject* o)
+{
+	Object *obj = (Object *)o;
+	if (!Object::CheckValid(obj)) return FALSE;
+	return obj->Is(PopupMenu::TypeIdClass()) ? TRUE : FALSE;
+}
+
+LTK_API LtkObject* WINAPI LtkPopupMenu_New_(LPCSTR source, int line)
+{
+	auto obj = new PopupMenu();
+	obj->SetSourceLine(source, line);
+	return (LtkObject*)obj;
+}
+
+LTK_API void WINAPI LtkPopupMenu_AddItem(LtkPopupMenu* self, LPCWSTR text)
+{
+	PopupMenu* thiz = (PopupMenu*)self;
+	thiz->AddItem(text);
+}
+
+LTK_API void WINAPI LtkPopupMenu_SetWidth(LtkPopupMenu* self, float width)
+{
+	PopupMenu* thiz = (PopupMenu*)self;
+	thiz->SetWidth(width);
+}
+
+LTK_API void WINAPI LtkPopupMenu_SetSubMenu(LtkPopupMenu* self, UINT idx, LtkPopupMenu* popup)
+{
+	PopupMenu* thiz = (PopupMenu*)self;
+	thiz->SetSubMenu(idx, (PopupMenu*)popup);
 }

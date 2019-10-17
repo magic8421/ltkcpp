@@ -149,18 +149,21 @@ void PopupMenu::OnParentChanged(Sprite* old, Sprite* new_)
 
 bool PopupMenu::OnPaint(PaintEvent *ev)
 {
+	auto rcbg = this->GetClientRect();
+	rcbg.Inflate(7, 7);
+
 	float slide_h = 0.f;
 	if (m_state == sSlideIn) {
 		m_aniProgress += (TickCount() - m_lastTick) * AniDelta;
 		m_aniProgress = min(1.0f, m_aniProgress);
 		slide_h = -this->GetHeight() + this->GetHeight() * m_aniProgress;
-		ev->target->PushAxisAlignedClip(ltk::D2D1RectF(GetClientRect()),
+		ev->target->PushAxisAlignedClip(ltk::D2D1RectF(rcbg),
 			D2D1_ANTIALIAS_MODE_ALIASED);
 		ltk::TranslateTransform(ev->target, 0.f, slide_h);
 	}
 
 	m_background->Draw(GetWindow(), ev->target,
-		this->GetClientRect(), 
+		rcbg, 
 		AbstractBackground::Normal, 1.f);
 	float y = 0;
 	auto brush = GetWindow()->GetStockBrush();

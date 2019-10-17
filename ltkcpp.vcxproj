@@ -27,7 +27,7 @@
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v120</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
@@ -122,6 +122,7 @@
       <DisableSpecificWarnings>4100;4189</DisableSpecificWarnings>
       <TreatWarningAsError>true</TreatWarningAsError>
       <AdditionalIncludeDirectories>.\Delegate</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -129,6 +130,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>D2d1.lib;Windowscodecs.lib;Dwrite.lib;gdiplus.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <StripPrivateSymbols>striped.pdb</StripPrivateSymbols>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">

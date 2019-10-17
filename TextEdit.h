@@ -17,6 +17,8 @@ class ScrollBar;
 class LTK_CPP_API TextEdit : public Sprite
 {
 public:
+	RTTI_DECLARATIONS(TextEdit, Sprite);
+
     TextEdit();
     ~TextEdit();
 

@@ -43,6 +43,8 @@ private:
 class LTK_CPP_API PopupMenu : public Sprite
 {
 public:
+	RTTI_DECLARATIONS(PopupMenu, Sprite);
+
 	PopupMenu();
 	virtual ~PopupMenu();
 
@@ -104,6 +106,8 @@ struct MenuButtonParam {
 class LTK_CPP_API MenuBar : public Sprite
 {
 public:
+	RTTI_DECLARATIONS(MenuBar, Sprite);
+
 	MenuBar();
 	virtual ~MenuBar();
 

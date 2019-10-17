@@ -113,7 +113,7 @@ void TreeNode::OnPaint(ID2D1RenderTarget *target, float scroll)
 	}
 	float space = m_padding * 2.0f + m_btn_size;
 	auto rcText = RectF(
-		space + rcItem.X, rcItem.Y, rcItem.Width - space, rcItem.Height);
+		space + rcItem.X, rcItem.Y, /*rcItem.Width - space*/ 999, rcItem.Height);
 	target->DrawText(
 		m_text.c_str(), m_text.size(), format, D2D1RectF(rcText), brush);
 }

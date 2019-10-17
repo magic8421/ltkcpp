@@ -24,9 +24,11 @@ struct TreeViewColors
 	D2D1_COLOR_F SelectedTextColor;
 };
 
-class LTK_CPP_API TreeNode
+class LTK_CPP_API TreeNode : public Object
 {
 public:
+	RTTI_DECLARATIONS(TreeNode, Object);
+
     TreeNode() {}
     virtual ~TreeNode();
 

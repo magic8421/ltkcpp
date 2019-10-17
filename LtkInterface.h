@@ -10,13 +10,6 @@
 extern "C" {
 #endif
 
-//enum LtkError
-//{
-//	LTK_OK = 0,
-//	LTK_FAILED,
-//	LTK_NO_IMPLEMENT
-//};
-
 #define LTK_DECLARE_TYPE(type) \
  typedef struct _##type { \
 	int dummy; \
@@ -47,6 +40,9 @@ LTK_DECLARE_TYPE(LtkWindow); // 基类：LtkObject
 
 LTK_DECLARE_TYPE(LtkSprite); // 基类：LtkObject
 
+LTK_DECLARE_TYPE(LtkMenuBar); // 基类：LtkSprite
+LTK_DECLARE_TYPE(LtkPopupMenu); // 基类：LtkSprite
+
 #define LTK_SPRITE(o) LtkIsSprite(o) ? (LtkSprite*)o : NULL
 LTK_API BOOL WINAPI LtkIsSprite(LtkObject* o);
 
@@ -68,6 +64,7 @@ LTK_API void WINAPI LtkWindow_SetCaption(LtkWindow*self, LPCWSTR text);
 LTK_API void WINAPI LtkWindow_SetBackground(LtkWindow* self, LPCSTR name);
 LTK_API void WINAPI LtkWindow_UpdateTheme(LtkWindow* self);
 LTK_API void WINAPI LtkWindow_SetClientSprite(LtkWindow* self, LtkSprite* sp);
+LTK_API void WINAPI LtkWindow_SetMenu(LtkWindow* self, LtkMenuBar* menu);
 
 LTK_DECLARE_TYPE(LtkBoxLayout); // 基类：LtkSprite
 
@@ -97,6 +94,16 @@ LTK_API LtkObject* WINAPI LtkButton_New_(LPCSTR source, int line);
 
 LTK_API void WINAPI LtkButton_SetText(LtkButton* self, LPCWSTR);
 
+LTK_DECLARE_TYPE(LtkHeaderCtrl); // 基类：LtkSprite
+
+#define LTK_HEADERCTRL(o) LtkIsHeaderCtrl(o) ? (LtkHeaderCtrl*)o : NULL
+LTK_API BOOL WINAPI LtkIsHeaderCtrl(LtkObject* o);
+
+#define LtkHeaderCtrl_New() LtkHeaderCtrl_New_(  __FILE__, __LINE__)
+LTK_API LtkObject* WINAPI LtkHeaderCtrl_New_(LPCSTR source, int line);
+
+LTK_API void WINAPI LtkHeaderCtrl_AddColumn(LtkHeaderCtrl* self, LPCWSTR text, float width);
+
 LTK_DECLARE_TYPE(LtkListView); // 基类：LtkSprite
 
 // void CALLBACK OnListViewSelectChange(void* userdata, int row, int oldRow)
@@ -115,6 +122,8 @@ LTK_API UINT WINAPI LtkListView_AddRow(LtkListView* self);
 LTK_API void WINAPI LtkListView_SetCellText(LtkListView* self, UINT row, UINT col, LPCWSTR text);
 LTK_API LPCWSTR WINAPI LtkListView_GetCellText(LtkListView* self, UINT row, UINT col);
 LTK_API int WINAPI LtkListView_GetSelectedRow(LtkListView* self);
+LTK_API LtkObject* WINAPI LtkListView_GetHeaderCtrl(LtkListView* self);
+LTK_API void WINAPI LtkListView_UpdateColumnWidth(LtkListView* self);
 
 LTK_DECLARE_TYPE(LtkSplitter); // 基类：LtkSprite
 
@@ -133,11 +142,54 @@ LTK_API float WINAPI LtkSplitter_GetClientSize(LtkSplitter* self, UINT idx);
 
 LTK_DECLARE_TYPE(LtkTreeView); // 基类：LtkSprite
 
-#define LTK_TREEVIEW(o) LtkIsTreeView(o) ? (LtkTreeView*)o
+// void CALLBACK OnTreeViewSelectChange(void* userdata, LtkTreeNode* node, LtkTreeNode* oldNode)
+#define LTK_TREEVIEW_SELECT_CHANGE		401
+
+#define LTK_TREEVIEW(o) LtkIsTreeView(o) ? (LtkTreeView*)o : NULL
 LTK_API BOOL WINAPI LtkIsTreeView(LtkObject* o);
 
 #define LtkTreeView_New() LtkTreeView_New_(  __FILE__, __LINE__)
 LTK_API LtkObject* WINAPI LtkTreeView_New_(LPCSTR source, int line);
+
+LTK_DECLARE_TYPE(LtkTreeNode); // 基类：LtkObject
+
+LTK_API LtkObject* WINAPI LtkTreeView_GetRootNode(LtkTreeView* self);
+
+#define LTK_TREENODE(o) LtkIsTreeNode(o) ? (LtkTreeNode*)o : NULL
+LTK_API BOOL WINAPI LtkIsTreeNode(LtkObject* o);
+
+#define LtkTreeNode_New() LtkTreeNode_New_(  __FILE__, __LINE__)
+LTK_API LtkObject* WINAPI LtkTreeNode_New_(LPCSTR source, int line);
+
+LTK_API void WINAPI LtkTreeNode_AddChild(LtkTreeNode* self, LtkTreeNode* node);
+LTK_API void WINAPI LtkTreeNode_SetText(LtkTreeNode* self, LPCWSTR text);
+
+LTK_DECLARE_TYPE(LtkTextEdit); // 基类：LtkSprite
+
+#define LTK_TEXTEDIT(o) LtkIsTextEdit(o) ? (LtkTextEdit*)o : NULL
+LTK_API BOOL WINAPI LtkIsTextEdit(LtkObject* o);
+
+#define LtkTextEdit_New() LtkTextEdit_New_(  __FILE__, __LINE__)
+LTK_API LtkObject* WINAPI LtkTextEdit_New_(LPCSTR source, int line);
+
+#define LTK_MENUBAR(o) LtkIsMenuBar(o) ? (LtkMenuBar*)o : NULL
+LTK_API BOOL WINAPI LtkIsMenuBar(LtkObject* o);
+
+#define LtkMenuBar_New() LtkMenuBar_New_(  __FILE__, __LINE__)
+LTK_API LtkObject* WINAPI LtkMenuBar_New_(LPCSTR source, int line);
+
+LTK_API void WINAPI LtkMenuBar_AddItem(LtkMenuBar* self, LPCWSTR text);
+LTK_API void WINAPI LtkMenuBar_SetPopupMenu(LtkMenuBar* self, UINT idx, LtkPopupMenu* popup);
+
+#define LTK_POPUPMENU(o) LtkIsPopupMenu(o) ? (LtkPopupMenu*)o : NULL
+LTK_API BOOL WINAPI LtkIsPopupMenu(LtkObject* o);
+
+#define LtkPopupMenu_New() LtkPopupMenu_New_(  __FILE__, __LINE__)
+LTK_API LtkObject* WINAPI LtkPopupMenu_New_(LPCSTR source, int line);
+
+LTK_API void WINAPI LtkPopupMenu_AddItem(LtkPopupMenu* self, LPCWSTR text);
+LTK_API void WINAPI LtkPopupMenu_SetWidth(LtkPopupMenu* self, float width);
+LTK_API void WINAPI LtkPopupMenu_SetSubMenu(LtkPopupMenu* self, UINT idx, LtkPopupMenu* popup);
 
 #ifdef __cplusplus
 } // extern "C"
