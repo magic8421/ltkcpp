@@ -203,6 +203,80 @@ void StyleManager::AddTextFormat2(LPCSTR name, LPCWSTR font_family,
     format->Release();
 }
 
+void StyleManager::LoadTextFormatFromXml(tinyxml2::XMLElement *root)
+{
+	HRESULT hr = E_FAIL;
+	IDWriteTextFormat *format = nullptr;
+	std::wstring familyW;
+
+	auto format_elm = root->FirstChildElement("TextFormat");
+	while (format_elm) {
+		LPCSTR name = format_elm->Attribute("name");
+		if (!name) {
+			LTK_LOG("TextFormat doesn't have a name attr.");
+			goto next;
+		}
+		LPCSTR family = format_elm->Attribute("font_family");
+		if (!family) {
+			LTK_LOG("TextFormat [%s] doesn't have a font_family attr.", name);
+			goto next;
+		}
+		familyW = Utf8ToUtf16(family);
+
+		LPCSTR font_size = format_elm->Attribute("font_size");
+		if (!font_size) {
+			LTK_LOG("TextFormat [%s] doesn't have a font_size attr.", name);
+			goto next;
+		}
+
+		DWRITE_FONT_WEIGHT dfw = DWRITE_FONT_WEIGHT_NORMAL;
+		LPCSTR weight = format_elm->Attribute("weight");
+		if (weight) {
+			if (!strcmp(weight, "normal")) {
+				dfw = DWRITE_FONT_WEIGHT_NORMAL;
+			} else if (!strcmp(weight, "bold")) {
+				dfw = DWRITE_FONT_WEIGHT_BOLD;
+			} else {
+				LTK_LOG("TextFormat [%s] invalide attr: weight", name);
+				goto next;
+			}
+		}
+		DWRITE_FONT_STYLE dfs = DWRITE_FONT_STYLE_NORMAL;
+		LPCSTR style = format_elm->Attribute("style");
+		if (style) {
+			if (!strcmp(style, "normal")) {
+				dfs = DWRITE_FONT_STYLE_NORMAL;
+			}
+			else if (!strcmp(style, "bold")) {
+				dfs = DWRITE_FONT_STYLE_ITALIC;
+			}
+			else {
+				LTK_LOG("TextFormat [%s] invalide attr: style", name);
+				goto next;
+			}
+		}
+		hr = GetDWriteFactory()->CreateTextFormat(
+			familyW.c_str(),
+			NULL,
+			dfw,
+			dfs,
+			DWRITE_FONT_STRETCH_NORMAL,
+			(float)::atof(font_size),
+			L"zh-cn",
+			&format
+			);
+		if (FAILED(hr)) {
+			LTK_LOG("TextFormat [%s] failed to create.", name);
+			goto next;
+		}
+		this->AddTextFormat(name, format);
+
+	next:
+		SAFE_RELEASE(format);
+		format_elm = format_elm->NextSiblingElement("TextFormat");
+	}
+}
+
 RectF StyleManager::RectFromXml(tinyxml2::XMLElement *elm)
 {
     RectF rc;
@@ -269,8 +343,8 @@ Margin StyleManager::MarginFromString(LPCSTR str)
 
 bool StyleManager::TextureFromXml(tinyxml2::XMLElement *elm, TextureInfo *tex)
 {
-	tex->atlas = StyleManager::RectFromString(elm->Attribute("Atlas", "0,0,10,10"));
-	tex->margin = StyleManager::MarginFromString(elm->Attribute("Margin", "0,0,0,0"));
+	tex->atlas = StyleManager::RectFromString(elm->Attribute("atlas"));
+	tex->margin = StyleManager::MarginFromString(elm->Attribute("margin"));
     return true;
 }
 
@@ -325,32 +399,28 @@ void StyleManager::LoadOnePatchBackgroundFromXml(tinyxml2::XMLElement *root)
 		auto normal_elm = one_path_elm->FirstChildElement("Normal");
 		if (!normal_elm) goto next;
 
-		opbg->iconNormal.atlas = RectFromString(normal_elm->Attribute(
-			"Atlas", "0,0,10,10"));
+		opbg->iconNormal.atlas = RectFromString(normal_elm->Attribute("atlas"));
 
 		auto hover_elm = one_path_elm->FirstChildElement("Hover");
 		if (!hover_elm) {
 			opbg->iconHover = opbg->iconNormal;
 		}
 		else {
-			opbg->iconHover.atlas = RectFromString(hover_elm->Attribute(
-				"Atlas", "0,0,10,10"));
+			opbg->iconHover.atlas = RectFromString(hover_elm->Attribute("atlas"));
 		}
 		auto press_elm = one_path_elm->FirstChildElement("Pressed");
 		if (!press_elm) {
 			opbg->iconPressed = opbg->iconNormal;
 		}
 		else {
-			opbg->iconPressed.atlas = RectFromString(press_elm->Attribute(
-				"Atlas", "0,0,10,10"));
+			opbg->iconPressed.atlas = RectFromString(press_elm->Attribute("atlas"));
 		}
 		auto disable_elm = one_path_elm->FirstChildElement("Disable");
 		if (!disable_elm) {
 			opbg->iconDisable = opbg->iconNormal;
 		}
 		else {
-			opbg->iconDisable.atlas = RectFromString(disable_elm->Attribute(
-				"Atlas", "0,0,10,10"));
+			opbg->iconDisable.atlas = RectFromString(disable_elm->Attribute("atlas"));
 		}
 
 		auto style_name = one_path_elm->Attribute("name");
@@ -370,7 +440,7 @@ void StyleManager::LoadColorsFromXml(tinyxml2::XMLElement *root)
 	while (color_elm) {
 		auto name = color_elm->Attribute("name");
 		if (name) {
-			auto value = color_elm->Attribute("value", "#ff00ff");
+			auto value = color_elm->Attribute("value");
 			Instance()->RegisterColor(name, StyleManager::ColorFromString(value));
 		}
 		color_elm = color_elm->NextSiblingElement("Color");
@@ -387,6 +457,7 @@ bool StyleManager::LoadThemeXml(LPCSTR file_name)
 	LoadNinePatchBackgroundFromXml(theme_elm);
 	LoadOnePatchBackgroundFromXml(theme_elm);
 	LoadColorsFromXml(theme_elm);
+	LoadTextFormatFromXml(theme_elm);
     return true;
 }
 

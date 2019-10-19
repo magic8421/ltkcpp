@@ -344,6 +344,7 @@ namespace ltk {
 		SetupVectorStyleDark();
 
 		StyleManager::NewTheme("pixel");
+		StyleManager::Instance()->LoadThemeXml("res\\theme_pixel.xml");
 		SetupPixelStyle1();
 
 		LTK_LOG("sizeof map: %d", sizeof(std::map<int, void*>));

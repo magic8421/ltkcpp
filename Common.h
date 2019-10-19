@@ -154,6 +154,10 @@ EXTERN_C IMAGE_DOS_HEADER __ImageBase;
 //    ::OutputDebugStringW(msg);__debugbreak();}
 
 
+enum LtkLogLevel {
+	logInfo, logWarn, logError, logFatal
+};
+
 #define  LTK_LOG(...) LtkLogImpl(__FILE__, __LINE__, __VA_ARGS__)
 
 LTK_CPP_API void LtkLogInit();

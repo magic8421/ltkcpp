@@ -1,0 +1,81 @@
+<Theme name="pixel">
+	<NinePatch name="default_btn_bg">
+		<!-- atlas="x,y,w,h" margin="left,top,right,bottom" -->
+		<Normal atlas="4,3,21,67" margin="8,8,8,9" />
+		<Hover atlas="54,3,21,67" margin="8,8,8,9" />
+		<Pressed atlas="79,3,21,67" margin="8,8,8,9" />
+		<Disable atlas="29,3,21,67" margin="8,8,8,9" />
+	</NinePatch>
+	<NinePatch name="scrollbar_v">
+		<!-- atlas="x,y,w,h" margin="left,top,right,bottom" -->
+		<Normal atlas="125,68,6,15" margin="2,3,2,3" />
+		<Hover atlas="142,68,6,15" margin="2,3,2,3" />
+	</NinePatch>
+	<NinePatch name="scrollbar_h">
+		<!-- atlas="x,y,w,h" margin="left,top,right,bottom" -->
+		<Normal atlas="121,86,15,6" margin="3,2,3,2" />
+		<Hover atlas="138,86,15,6" margin="3,2,3,2" />
+	</NinePatch>
+	<NinePatch name="header_btn_bg">
+		<!-- atlas="x,y,w,h" margin="left,top,right,bottom" -->
+		<Normal atlas="177,10,8,23" margin="3,3,3,3" />
+		<Hover atlas="189,10,8,23" margin="3,3,3,3" />
+		<Pressed atlas="201,10,8,23" margin="3,3,3,3" />
+	</NinePatch>
+	<NinePatch name="window_bg">
+		<!-- atlas="x,y,w,h" margin="left,top,right,bottom" -->
+		<Normal atlas="2,98,39,66" margin="17,45,17,17" />
+	</NinePatch>
+	<OnePatch name="min_btn_bg">
+		<!-- atlas="x,y,w,h" -->
+		<Normal atlas="103,3,22,20"/>
+		<Hover atlas="103,23,22,20"/>
+		<Pressed atlas="103,43,22,20"/>
+	</OnePatch>
+	<OnePatch name="max_btn_bg">
+		<!-- atlas="x,y,w,h" -->
+		<Normal atlas="125,3,22,20"/>
+		<Hover atlas="125,23,22,20"/>
+		<Pressed atlas="125,43,22,20"/>
+	</OnePatch>
+	<OnePatch name="close_btn_bg">
+		<!-- atlas="x,y,w,h" -->
+		<Normal atlas="147,3,22,20"/>
+		<Hover atlas="147,23,22,20"/>
+		<Pressed atlas="147,43,22,20"/>
+	</OnePatch>
+	<NinePatch name="menu_bar_btn_bg">
+		<!-- atlas="x,y,w,h" margin="left,top,right,bottom" -->
+		<Normal atlas="100,70,12,12" margin="2,2,2,2" />
+		<Hover atlas="171,36,18,29" margin="6,6,6,6" />
+		<Pressed atlas="193,36,18,29" margin="6,6,6,6" />
+	</NinePatch>
+	<NinePatch name="popup_menu_bg">
+		<!-- atlas="x,y,w,h" margin="left,top,right,bottom" -->
+		<Normal atlas="54,118,56,56" margin="20,20,20,20" />
+	</NinePatch>
+	<OnePatch name="tree_collapse_bg">
+		<!-- atlas="x,y,w,h" -->
+		<Normal atlas="138,102,11,15"/>
+	</OnePatch>
+	<OnePatch name="tree_expand_bg">
+		<!-- atlas="x,y,w,h" -->
+		<Normal atlas="152,104,16,11"/>
+	</OnePatch>
+	
+	<Color name="default_btn_clr" value="#231e00" />
+	<Color name="default_label_clr" value="#231e00" />
+	<Color name="item_text_clr" value="#231e00" />
+	<Color name="item_hover_clr" value="#fafad2" />
+	<Color name="item_selected_clr" value="#bbb073" />
+	<Color name="item_selected_text_clr" value="#eae9ce" />
+	<Color name="caption_clr" value="#fbfbf6" />
+	<Color name="menu_hover_clr" value="#fafad277" />
+	
+	<TextFormat name="default_btn_fmt" font_family="微软雅黑" font_size="14" />
+	<TextFormat name="default_label_fmt" font_family="微软雅黑" font_size="14" />
+	<TextFormat name="item_text_fmt" font_family="微软雅黑" font_size="14" />
+	<TextFormat name="tree_item_text_fmt" font_family="微软雅黑" font_size="14" />
+	<TextFormat name="caption_fmt" font_family="宋体" font_size="12" />
+	<TextFormat name="popup_menu_fmt" font_family="微软雅黑" font_size="14" />
+</Theme>

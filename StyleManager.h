@@ -63,6 +63,7 @@ public:
 
 	void LoadNinePatchBackgroundFromXml(tinyxml2::XMLElement *root);
 	void LoadOnePatchBackgroundFromXml(tinyxml2::XMLElement *root);
+	void LoadTextFormatFromXml(tinyxml2::XMLElement *root);
 	void LoadColorsFromXml(tinyxml2::XMLElement *root);
 	bool LoadThemeXml(LPCSTR file_name);
 

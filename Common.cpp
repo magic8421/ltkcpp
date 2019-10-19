@@ -77,7 +77,7 @@ ImmutableWString WStringFormat(LPCWSTR format, ...)
 ///////////////////////////////////////////////////////////////////////////////
 
 static bool g_ltk_log_to_ods = true;
-static bool g_ltk_log_to_file = true;
+static bool g_ltk_log_to_file = false;
 static HANDLE g_ltk_log_file_handle = 0;
 
 static const wchar_t *LOG_DIR = L"C:\\ZLOG";
