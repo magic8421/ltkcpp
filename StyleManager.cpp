@@ -269,6 +269,38 @@ void StyleManager::LoadTextFormatFromXml(tinyxml2::XMLElement *root)
 			LTK_LOG("TextFormat [%s] failed to create.", name);
 			goto next;
 		}
+		DWRITE_TEXT_ALIGNMENT dta = DWRITE_TEXT_ALIGNMENT_LEADING;
+		LPCSTR halign = format_elm->Attribute("halign");
+		if (halign) {
+			if (!strcmp(halign, "left")) {
+				dta = DWRITE_TEXT_ALIGNMENT_LEADING;
+			} else if (!strcmp(halign, "center")) {
+				dta = DWRITE_TEXT_ALIGNMENT_CENTER;
+			} else if (!strcmp(halign, "right")) {
+				dta = DWRITE_TEXT_ALIGNMENT_TRAILING;
+			} else {
+				LTK_LOG("TextFormat [%s] invalide attr: halign", name);
+				goto next;
+			}
+		}
+		format->SetTextAlignment(dta);
+
+		DWRITE_PARAGRAPH_ALIGNMENT dpa = DWRITE_PARAGRAPH_ALIGNMENT_CENTER;
+		LPCSTR valign = format_elm->Attribute("valign");
+		if (valign) {
+			if (!strcmp(valign, "top")) {
+				dpa = DWRITE_PARAGRAPH_ALIGNMENT_NEAR;
+			} else if (!strcmp(valign, "center")) {
+				dpa = DWRITE_PARAGRAPH_ALIGNMENT_CENTER;
+			} else if (!strcmp(valign, "bottom")) {
+				dpa = DWRITE_PARAGRAPH_ALIGNMENT_FAR;
+			} else {
+				LTK_LOG("TextFormat [%s] invalide attr: halign", name);
+				goto next;
+			}
+		}
+		format->SetParagraphAlignment(dpa);
+
 		this->AddTextFormat(name, format);
 
 	next:
