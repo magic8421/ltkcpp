@@ -17,6 +17,7 @@ public:
 	void AddClient(Sprite *sp);
 	void SetClientSize(UINT idx, float size);
 	
+	float GetTotolSize();
 	void DoLayout();
 	int HitTest(float x, float y);
 	float PosFromIdx(UINT idx);
@@ -30,7 +31,7 @@ protected:
 private:
 	struct SplitterItem
 	{
-		float size = 20.f;
+		float size = 15.f; // TODO MIN_SIZE
 		bool bFixed = false;
 		Sprite* client = nullptr;
 	};

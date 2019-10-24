@@ -108,7 +108,7 @@ AbstractBackground *StyleManager::GetBackground(const char *name) const
         return iter->second;
     }
     else {
-        LTK_ASSERT(false);
+        LTK_LOG("StyleManager::GetBackground [%s] does not exist.", name);
 		// TODO return a always avaliable rect bg.
         return m_mapBackgroundStyle.begin()->second; 
     }
@@ -483,7 +483,7 @@ bool StyleManager::LoadThemeXml(LPCSTR file_name)
 {
     using namespace tinyxml2;
     tinyxml2::XMLDocument doc;
-    if (doc.LoadFile(file_name) != XML_NO_ERROR) return false;
+    if (doc.LoadFile(file_name) != XML_SUCCESS) return false;
     auto theme_elm = doc.FirstChildElement("Theme");
     if (!theme_elm) return false;
 	LoadNinePatchBackgroundFromXml(theme_elm);

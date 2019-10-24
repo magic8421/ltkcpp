@@ -49,11 +49,42 @@ void Splitter::SetClientSize(UINT idx, float size)
 	m_vecItems[idx].size = size;
 }
 
+float Splitter::GetTotolSize()
+{
+	float sum_size = 0.f;
+	for (const auto &item : m_vecItems) {
+		sum_size += item.size;
+		sum_size += GRIP_SIZE;
+	}
+	sum_size -= GRIP_SIZE;
+	return sum_size;
+}
+
 void Splitter::DoLayout()
 {
 	if (m_vecItems.size() == 0) {
 		return;
 	}
+	RectF rcSprite = this->GetClientRect();
+
+	float size_limit = 10.f;
+	if (m_mode == Horizontal) {
+		size_limit = rcSprite.Width;
+	} else {
+		size_limit = rcSprite.Height;
+	}
+	if (m_vecItems.size() >= 2) {
+		int i = m_vecItems.size() - 1;
+		while (size_limit < GetTotolSize() && i >= 0) {
+			m_vecItems[i].size -= GetTotolSize() - size_limit;
+			m_vecItems[i].size = max(MIN_SIZE, m_vecItems[i].size);
+			if (size_limit >= GetTotolSize()) {
+				break;
+			}
+			i--;
+		}
+	}
+
 	float x = 0;
 	float y = 0;
 	for (UINT i = 0; i < m_vecItems.size(); i ++) {
@@ -110,7 +141,7 @@ int Splitter::HitTest(float x, float y)
 bool Splitter::OnLBtnDown(MouseEvent *ev)
 {
 	m_dragIdx = HitTest(ev->x, ev->y);
-	if (m_dragIdx >= 0) {
+	if (m_dragIdx >= 0 && m_dragIdx < (int)m_vecItems.size() - 1) {
 		this->SetCapture();
 		m_bCapture = true;
 		if (m_mode == Horizontal) {
@@ -155,7 +186,7 @@ bool Splitter::OnMouseMove(MouseEvent *ev)
 {
 	if (!m_bCapture) {
 		auto idx = HitTest(ev->x, ev->y);
-		if (idx >= 0) {
+		if (idx >= 0 && idx < (int)m_vecItems.size() - 1) {
 			//LTK_LOG("HIT: %d", idx);
 			if (m_mode == Horizontal) {
 				::SetCursor(::LoadCursor(NULL, IDC_SIZEWE));

@@ -151,7 +151,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="3rd\tinyxml2.cpp" />
+    <ClCompile Include="3rd\tinyxml2.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="AbstractButton.cpp" />
     <ClCompile Include="Animation.cpp" />
     <ClCompile Include="BoxLayout.cpp" />
