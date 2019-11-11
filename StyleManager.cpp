@@ -503,6 +503,19 @@ void StyleManager::SetDebuggingLayout(bool b)
     m_bDebugLayout = b;
 }
 
+LPCSTR StyleManager::InternString(LPCSTR psz)
+{
+	std::string str(psz);
+	auto iter = m_internedStrings.find(str);
+	if (iter == m_internedStrings.end()) {
+		auto ret = m_internedStrings.insert(str);
+		LTK_ASSERT(ret.second); // the insertion took place.
+		return (ret.first)->c_str();
+	} else {
+		return iter->c_str();
+	}
+}
+
 void StyleManager::RegisterColorBulk(const ColorDesc *colors)
 {
 	for (UINT i = 0; colors[i].name; i++) {
