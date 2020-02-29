@@ -351,9 +351,9 @@ int CALLBACK WinMain(
             DispatchMessage(&msg);
         }
     }
-	ltk::Ptr<Window> ob = wnd->GetPtr<Window>();
+	//ltk::Ptr<Window> ob = wnd->GetPtr<Window>();
 	delete wnd;
-	LTK_ASSERT(ob.Get() == nullptr);
+	//LTK_ASSERT(ob.Get() == nullptr);
 
     LTK_LOG("MessageLoop END");
     ::Sleep(2000);
