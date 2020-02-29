@@ -36,9 +36,9 @@ public:
     virtual bool OnSize(SizeEvent *ev) override;
 
 private:
-	static void CALLBACK OnMinBtnClicked(void *userdata);
-	static void CALLBACK OnMaxBtnClicked(void *userdata);
-	static void CALLBACK OnCloseBtnClicked(void *userdata);
+	void OnMinBtnClicked();
+	void OnMaxBtnClicked();
+	void OnCloseBtnClicked();
 
     Sprite *m_client = nullptr;
     Button *m_minBtn = nullptr;

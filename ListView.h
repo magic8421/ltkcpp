@@ -55,13 +55,12 @@ public:
 	void HandleVScrollBar(float pos);
 	void HandleHScrollBar(float pos);
 
+	MulticastDelegate2<int, int> SelectChangeDelegate;
+
 protected:
 	void SetColumns(std::vector<float> &columns);
 
 private:
-	virtual void DoInvokeCallback(
-		UINT event_id, LtkCallback cb, void* userdata, va_list args) override;
-
     struct LineData
     {
         std::vector<std::wstring> cells;

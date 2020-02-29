@@ -175,7 +175,7 @@ void Window::RegisterWndClass()
 void Window::HandleMouseMessage(UINT message, WPARAM wparam, LPARAM lparam)
 {
     //LTK_LOG("Mouse Message: %d %08x %d %d", message, wparam, (short)LOWORD(lparam), (short)HIWORD(lparam));
-	MouseEvent ev;
+    MouseEvent ev = {0};
 	ev.id = TranslateMessageCode(message);
 	ev.flag = LOWORD(wparam);
 
@@ -255,7 +255,7 @@ void Window::HandleMouseLeave()
     for (auto iter = m_setTrackMouseLeave.begin(); iter != m_setTrackMouseLeave.end(); ++iter)
     {
         Sprite *sp = *iter;
-        MouseEvent e2;
+        MouseEvent e2 = {0};
         e2.id = eMouseLeave;
         e2.delta = 0;
         e2.flag = 0;
@@ -636,39 +636,16 @@ void Window::Maximize()
     }
 }
 
-typedef void(CALLBACK *WindowCloseCallback)(void *userdata, BOOL *pProceed);
-typedef void(CALLBACK *WindowDestroyCallback)(void *userdata);
-
-void Window::DoInvokeCallback(UINT event_id, LtkCallback cb, void* userdata, va_list args)
-{
-	switch (event_id)
-	{
-	case LTK_WINDOW_CLOSE:
-		{
-			BOOL *pProceed = va_arg(args, BOOL *);
-			((WindowCloseCallback)cb)(userdata, pProceed);
-		}
-		break;
-	case LTK_WINDOW_DESTROY:
-		((WindowDestroyCallback)cb)(userdata);
-		break;
-	default:
-		Object::DoInvokeCallback(event_id, cb, userdata, args);
-	}
-}
-
 void Window::OnClose(BOOL* proceed)
 {
 	SetDelegateInvoker(this);
 	this->CloseDelegate(proceed);
-	Object::InvokeCallback(LTK_WINDOW_CLOSE, proceed);
 }
 
 void Window::OnDestroy()
 {
 	SetDelegateInvoker(this);
 	this->DestroyDelegate();
-	Object::InvokeCallback(LTK_WINDOW_DESTROY);
 }
 
 HWND Window::Handle()

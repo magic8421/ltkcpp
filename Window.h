@@ -129,8 +129,6 @@ private:
     void UpdateShadowFrame(bool bRedraw);
 	Events TranslateMessageCode(UINT message);
 
-	virtual void DoInvokeCallback(UINT event_id, LtkCallback cb, void* userdata, va_list args) override;
-
     LRESULT OnImeEvent(UINT message, WPARAM wparam, LPARAM lparam);
     LRESULT HandleNcHitTest(const POINT &pt);
     enum { TIMER_ANIMATION = 100 };

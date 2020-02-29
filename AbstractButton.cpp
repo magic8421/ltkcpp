@@ -117,22 +117,6 @@ void AbstractButton::OnClicked()
 {
 	Object::SetDelegateInvoker(this);
 	this->ClickedDelegate();
-	Object::InvokeCallback(LTK_BUTTON_CLICKED);
-}
-
-typedef void(CALLBACK *ButtonClickedCallback)(void *userdata);
-
-void AbstractButton::DoInvokeCallback(
-	UINT event_id, LtkCallback cb, void* userdata, va_list args)
-{
-	switch (event_id)
-	{
-	case LTK_BUTTON_CLICKED:
-		((ButtonClickedCallback)cb)(userdata);
-		break;
-	default:
-		Object::DoInvokeCallback(event_id, cb, userdata, args);
-	}
 }
 
 } // namespace ltk

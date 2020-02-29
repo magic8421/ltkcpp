@@ -92,7 +92,8 @@ void DemoWindow::BuildDemoWindow()
 	header->AddColumn(L"¸ºÔðÈË", 200);
 	listview1->UpdateColumnWidth();
 	vboxRightPanel->AddLayoutItem(listview1, 0.0f, 1.0f);
-	listview1->RegisterCallback(LTK_LISTVIEW_SELECT_CHANGE, (LtkCallback)OnListViewSelectChange, this);
+	listview1->SelectChangeDelegate += MakeDelegate(this, &DemoWindow::OnListViewSelectChange);
+	//listview1->RegisterCallback(LTK_LISTVIEW_SELECT_CHANGE, (LtkCallback)OnListViewSelectChange, this);
 
 	UINT num = rand() % 200;
 	for (UINT i = 0; i < num; i++) {
@@ -299,7 +300,7 @@ void DemoWindow::OnClose(BOOL* proceed)
 	::PostQuitMessage(0);
 }
 
-void CALLBACK DemoWindow::OnListViewSelectChange(void* userdata, int row, int oldRow)
+void DemoWindow::OnListViewSelectChange(int row, int oldRow)
 {
 	LTK_LOG("OnListViewSelectChange: %d %d", row, oldRow);
 }

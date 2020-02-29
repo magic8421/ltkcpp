@@ -134,40 +134,11 @@ public:
 
 	void SetInvalid();
 
-#ifndef LTK_NO_CINTERFACE
-
-	struct CallbackInfo
-	{
-		LtkCallback callback = nullptr;
-		void* userdata = nullptr;
-	};
-
 	static Object *GetDelegateInvoker();
 	static void SetDelegateInvoker(Object *);
 
-	void RegisterCallback(UINT event_id, LtkCallback cb, void* userdata);
-	void InvokeCallback(UINT event_id, ...);
-
-	virtual void DoInvokeCallback(UINT event_id, LtkCallback cb,
-		void* userdata, va_list args) {
-	}
-
-	void SetSourceLine(LPCSTR source, int line);
-
-	static Object *GetEventSender();
-	static void DumpObjectLeaks();
-	static bool CheckValid(Object *o);
-
-#endif
-
 private:
 	ObserverCtrl *m_obctrl = nullptr;
-#ifndef LTK_NO_CINTERFACE
-	std::map<UINT, std::vector<CallbackInfo>> m_mapCallbacks;
-	const char *m_source = nullptr; // 好像没必要 外部使用者应该用umdh来查内存泄漏
-	int m_line = -1;
-#endif
-
 	DISALLOW_COPY_AND_ASSIGN(Object);
 };
 

@@ -30,7 +30,7 @@ public:
 
 	virtual void OnClose(BOOL* proceed) override;
 
-	static void CALLBACK OnListViewSelectChange(void* userdata, int row, int oldRow);
+	void OnListViewSelectChange(int row, int oldRow);
 
 private:
 	ltk::Timer *m_timer = nullptr;

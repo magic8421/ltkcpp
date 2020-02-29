@@ -363,8 +363,6 @@ namespace ltk {
         Gdiplus::GdiplusShutdown(m_gdiplusToken);
 
         ::CoUninitialize();
-
-		Object::DumpObjectLeaks();
 	}
 
     IconInfo& IconInfo::SetAtlas(float x, float y, float w, float h)

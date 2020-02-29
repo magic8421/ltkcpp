@@ -191,7 +191,7 @@ bool ListView::OnLBtnDown(MouseEvent *ev)
 	if (row != m_selectedRow) {
 		int oldRow = m_selectedRow;
 		m_selectedRow = row;
-		Object::InvokeCallback(LTK_LISTVIEW_SELECT_CHANGE, row, oldRow);
+        this->SelectChangeDelegate(row, oldRow);
 		this->Invalidate();
 	}
     return true;
@@ -331,24 +331,6 @@ void ListView::HandleResizeEnd()
 	m_hsb->SetPosition(pos);
 	// m_vsb->SetContentSize(m_header->GetTotalWidth()); TODO
 	HandleHScrollBar(pos);
-}
-
-typedef void (CALLBACK *OnListViewSelectChange)(void* userdata, int row, int oldRow);
-
-void ListView::DoInvokeCallback(UINT event_id, LtkCallback cb, void* userdata, va_list args)
-{
-	switch (event_id)
-	{
-	case LTK_LISTVIEW_SELECT_CHANGE:
-		{
-			int row = va_arg(args, int);
-			int oldRow = va_arg(args, int);
-			((OnListViewSelectChange)cb)(userdata, row, oldRow);
-		}
-		break;
-	default:
-		Sprite::DoInvokeCallback(event_id, cb, userdata, args);
-	}
 }
 
 } // namespace ltk

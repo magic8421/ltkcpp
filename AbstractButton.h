@@ -40,9 +40,6 @@ public:
     virtual void OnClicked();
 
 private:
-	virtual void DoInvokeCallback(
-		UINT event_id, LtkCallback cb, void* userdata, va_list args) override;
-
     bool m_bCaptureMouse = true;
 	bool m_bMouseIn = false;
 
