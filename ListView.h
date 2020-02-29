@@ -36,11 +36,12 @@ public:
     void SetHeaderCtrl(HeaderCtrl *head);
 	void HandleResizeEnd();
 
-	ImmutableString TextColor;
-	ImmutableString HoverColor;
-	ImmutableString SelectedColor;
-	ImmutableString SelectedTextColor;
-	ImmutableString TextFormat;
+	void SetTextColor(LPCSTR style);
+	void SetHoverColor(LPCSTR style);
+	void SetSelectedColor(LPCSTR style);
+	void SetSelectedTextColor(LPCSTR style);
+	void SetTextFormat(LPCSTR style);
+
 
 	virtual bool OnEvent(Event *ev) override;
 	virtual bool OnPaint(PaintEvent *ev) override;
@@ -79,6 +80,13 @@ private:
 
     const float ItemHeight = 25.0f;
 	float m_headerHeight = 30.f;
+
+	LPCSTR m_szTextColor = nullptr;
+	LPCSTR m_szHoverColor = nullptr;
+	LPCSTR m_szSelectedColor = nullptr;
+	LPCSTR m_szSelectedTextColor = nullptr;
+	LPCSTR m_szTextFormat = nullptr;
+
 
 protected:
 	D2D1_COLOR_F m_textColor;

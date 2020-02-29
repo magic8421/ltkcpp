@@ -22,8 +22,6 @@ public:
     Sprite(void);
     virtual ~Sprite(void);
 
-	ImmutableString ObjectName;
-
     RectF GetRect();
 	RectF GetClientRect();
 	void SetRect( RectF rect );

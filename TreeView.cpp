@@ -141,11 +141,11 @@ const float TreeNode::m_btn_size = 15;
 //////////////////////////////////////////////////////////////////////////
 
 TreeView::TreeView() :
-	TextColor("item_text_clr"),
-	HoverColor("item_hover_clr"),
-	SelectedColor("item_selected_clr"),
-	SelectedTextColor("item_selected_text_clr"),
-	TextFormat("tree_item_text_fmt")
+	m_szTextColor("item_text_clr"),
+	m_szHoverColor("item_hover_clr"),
+	m_szSelectedColor("item_selected_clr"),
+	m_szSelectedTextColor("item_selected_text_clr"),
+	m_szTextFormat("tree_item_text_fmt")
 {
     this->EnableClipChildren(true);
     m_root.SetTreeView(this);
@@ -240,6 +240,31 @@ TreeNode * TreeView::GetSelectedNode()
 	return m_selected;
 }
 
+void TreeView::SetTextColor(LPCSTR style)
+{
+    this->m_szTextColor = StyleManager::Instance()->InternString(style);
+}
+
+void TreeView::SetHoverColor(LPCSTR style)
+{
+    this->m_szHoverColor = StyleManager::Instance()->InternString(style);
+}
+
+void TreeView::SetSelectedColor(LPCSTR style)
+{
+    this->m_szSelectedColor = StyleManager::Instance()->InternString(style);
+}
+
+void TreeView::SetSelectedTextColor(LPCSTR style)
+{
+    this->m_szSelectedTextColor = StyleManager::Instance()->InternString(style);
+}
+
+void TreeView::SetTextFormat(LPCSTR style)
+{
+    this->m_szTextFormat = StyleManager::Instance()->InternString(style);
+}
+
 bool TreeView::OnPaint(PaintEvent *ev)
 {
     auto rc = this->GetClientRect();
@@ -261,12 +286,12 @@ void TreeView::RecreateResouce(ID2D1RenderTarget *target)
 void TreeView::OnThemeChanged()
 {
 	auto sm = StyleManager::Instance();
-	m_colors.TextColor = sm->GetColor(TextColor);
-	m_colors.HoverColor = sm->GetColor(HoverColor);
-	m_colors.SelectedColor = sm->GetColor(SelectedColor);
-	m_colors.SelectedTextColor = sm->GetColor(SelectedTextColor);
+	m_colors.TextColor = sm->GetColor(m_szTextColor);
+	m_colors.HoverColor = sm->GetColor(m_szHoverColor);
+	m_colors.SelectedColor = sm->GetColor(m_szSelectedColor);
+	m_colors.SelectedTextColor = sm->GetColor(m_szSelectedTextColor);
 
-	m_format = sm->GetTextFormat(TextFormat);
+	m_format = sm->GetTextFormat(m_szTextFormat);
 	m_expandBg = sm->GetBackground("tree_expand_bg");
 	m_collapseBg = sm->GetBackground("tree_collapse_bg");
 }

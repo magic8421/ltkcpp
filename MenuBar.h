@@ -22,12 +22,12 @@ struct LTK_CPP_API MenuItem
 public:
 	MenuItem() {}
 
-	enum Type {Normal, Icon, Check, Radio};
+	enum class Type {Normal, Icon, Check, Radio};
 
 	MulticastDelegate0 ClickedDelegate;
 
 private:
-	Type type = Normal;
+	Type type = Type::Normal;
 	std::wstring text;
 	bool bChecked = false;
 	bool bNewRadioGroup = false;
@@ -63,10 +63,6 @@ public:
 	void HideAll();
 	void TrackPopupMenu(UINT idx);
 
-	ImmutableString TextColor;
-	ImmutableString HoverColor;
-	ImmutableString TextFormat;
-	ImmutableString Background;
 
 	virtual bool OnPaint(PaintEvent *ev) override;
 	virtual bool OnKillFocus(FocusEvent* ev) override;
@@ -75,6 +71,11 @@ public:
 	virtual bool OnMouseLeave(MouseEvent* ev) override;
 	virtual void OnThemeChanged() override;
 	virtual void OnParentChanged(Sprite* old, Sprite* new_) override;
+
+	void SetTextColor(LPCSTR style);
+	void SetHoverColor(LPCSTR style);
+	void SetTextFormat(LPCSTR style);
+	void SetBackground(LPCSTR style);
 
 private:
 	std::vector<MenuItem *> m_vecItems;
@@ -86,8 +87,8 @@ private:
 	bool m_bTrackingPopup = false; // TODO 这个能和m_trackingIdx合并吗？
 	bool m_bHiding = false;
 
-	enum State {sHide, sSlideIn, sShow};
-	State m_state = sHide;
+	enum class State {sHide, sSlideIn, sShow};
+	State m_state = State::sHide;
 	float m_aniProgress = 0.f;
 	const float AniDelta = 1.f / 300.f;
 	DWORD m_lastTick = 0;
@@ -96,6 +97,11 @@ private:
 	D2D1_COLOR_F m_textColor;
 	D2D1_COLOR_F m_hoverColor;
 	AbstractBackground* m_background = nullptr;
+
+	LPCSTR m_szTextColor = nullptr;
+	LPCSTR m_szHoverColor = nullptr;
+	LPCSTR m_szTextFormat = nullptr;
+	LPCSTR m_szBackground = nullptr;
 };
 
 struct MenuButtonParam {

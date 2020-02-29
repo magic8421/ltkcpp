@@ -20,10 +20,10 @@ const static float ICON_WIDTH = 16.f;
 const static float PADDING = 5.f;
 
 PopupMenu::PopupMenu() :
-	TextColor("item_text_clr"),
-	TextFormat("popup_menu_fmt"),
-	HoverColor("menu_hover_clr"),
-	Background("popup_menu_bg"),
+	m_szTextColor("item_text_clr"),
+	m_szTextFormat("popup_menu_fmt"),
+	m_szHoverColor("menu_hover_clr"),
+	m_szBackground("popup_menu_bg"),
 	m_textColor(D2D1::ColorF(D2D1::ColorF::Cyan)),
 	m_hoverColor(D2D1::ColorF(D2D1::ColorF::Cyan))
 {
@@ -87,7 +87,7 @@ void PopupMenu::Show(Window* wnd, const RectF& rc)
 	wnd->SetFocusSprite(this);
 	m_trackingIdx = -1;
 	
-	m_state = sSlideIn;
+	m_state = State::sSlideIn;
 	m_aniProgress = 0.f;
 	m_lastTick = TickCount();
 	BeginAnimation();
@@ -95,7 +95,7 @@ void PopupMenu::Show(Window* wnd, const RectF& rc)
 
 void PopupMenu::Hide()
 {
-	m_state = sHide;
+	m_state = State::sHide;
 	m_bHiding = true;
 	if (GetParent()) {
 		GetParent()->RemoveChild(this);
@@ -112,7 +112,7 @@ void PopupMenu::Hide()
 
 void PopupMenu::HideAll()
 {
-	m_state = sHide;
+	m_state = State::sHide;
 	m_bHiding = true;
 	if (GetParent()) {
 		GetParent()->RemoveChild(this);
@@ -130,10 +130,10 @@ void PopupMenu::HideAll()
 void PopupMenu::OnThemeChanged()
 {
 	auto sm = StyleManager::Instance();
-	m_format = sm->GetTextFormat(this->TextFormat);
-	m_textColor = sm->GetColor(this->TextColor);
-	m_hoverColor = sm->GetColor(this->HoverColor);
-	m_background = sm->GetBackground(this->Background);
+	m_format = sm->GetTextFormat(this->m_szTextFormat);
+	m_textColor = sm->GetColor(this->m_szTextColor);
+	m_hoverColor = sm->GetColor(this->m_szHoverColor);
+	m_background = sm->GetBackground(this->m_szBackground);
 
 	for (auto item : m_vecItems) {
 		if (item->sub_menu) {
@@ -147,13 +147,33 @@ void PopupMenu::OnParentChanged(Sprite* old, Sprite* new_)
 	m_hoverIdx = -1;
 }
 
+void PopupMenu::SetTextColor(LPCSTR style)
+{
+	this->m_szTextColor = StyleManager::Instance()->InternString(style);
+}
+
+void PopupMenu::SetHoverColor(LPCSTR style)
+{
+	this->m_szHoverColor = StyleManager::Instance()->InternString(style);
+}
+
+void PopupMenu::SetTextFormat(LPCSTR style)
+{
+	this->m_szTextFormat = StyleManager::Instance()->InternString(style);
+}
+
+void PopupMenu::SetBackground(LPCSTR style)
+{
+	this->m_szBackground = StyleManager::Instance()->InternString(style);
+}
+
 bool PopupMenu::OnPaint(PaintEvent *ev)
 {
 	auto rcbg = this->GetClientRect();
 	rcbg.Inflate(7, 7);
 
 	float slide_h = 0.f;
-	if (m_state == sSlideIn) {
+	if (m_state == State::sSlideIn) {
 		m_aniProgress += (TickCount() - m_lastTick) * AniDelta;
 		m_aniProgress = min(1.0f, m_aniProgress);
 		slide_h = -this->GetHeight() + this->GetHeight() * m_aniProgress;
@@ -180,14 +200,14 @@ bool PopupMenu::OnPaint(PaintEvent *ev)
 		y += ITEM_HEIGHT;
 	}
 
-	if (m_state == sSlideIn) {
+	if (m_state == State::sSlideIn) {
 		ltk::TranslateTransform(ev->target, 0.f, -slide_h);
 		ev->target->PopAxisAlignedClip();
 		m_lastTick = TickCount();
 		//LTK_LOG("m_aniProgress: %.2f", m_aniProgress);
 		if (m_aniProgress >= 1.f) {
 			EndAnimation();
-			m_state = sShow;
+			m_state = State::sShow;
 		}
 	}
 	return false;
@@ -296,7 +316,7 @@ void MenuBar::AddItem(LPCWSTR text)
 {
 	Button *btn = new Button;
 	btn->SetText(text);
-	btn->Background = "menu_bar_btn_bg";
+	btn->SetBackground("menu_bar_btn_bg");
 	//btn->ObjectName = "menu_btn";
 	this->AddChild(btn);
 	MenuButtonParam param;

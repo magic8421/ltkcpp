@@ -21,11 +21,11 @@ namespace ltk
 {
 
 ListView::ListView() :
-	TextColor("item_text_clr"),
-	HoverColor("item_hover_clr"),
-	SelectedColor("item_selected_clr"),
-	SelectedTextColor("item_selected_text_clr"),
-	TextFormat("item_text_fmt"),
+	m_szTextColor("item_text_clr"),
+	m_szHoverColor("item_hover_clr"),
+	m_szSelectedColor("item_selected_clr"),
+	m_szSelectedTextColor("item_selected_text_clr"),
+	m_szTextFormat("item_text_fmt"),
 	m_hoverColor(D2D1::ColorF(D2D1::ColorF::Cyan)),
 	m_selectedColor(D2D1::ColorF(D2D1::ColorF::Cyan)),
 	m_selectedTextColor(D2D1::ColorF(D2D1::ColorF::Cyan)),
@@ -53,12 +53,12 @@ ListView::~ListView()
 void ListView::OnThemeChanged()
 {
 	auto sm = StyleManager::Instance();
-	m_textColor = sm->GetColor(TextColor);
-	m_hoverColor = sm->GetColor(HoverColor);
-	m_selectedColor = sm->GetColor(SelectedColor);
-	m_selectedTextColor = sm->GetColor(SelectedTextColor);
+	m_textColor = sm->GetColor(m_szTextColor);
+	m_hoverColor = sm->GetColor(m_szHoverColor);
+	m_selectedColor = sm->GetColor(m_szSelectedColor);
+	m_selectedTextColor = sm->GetColor(m_szSelectedTextColor);
 
-	m_textFormat = sm->GetTextFormat(TextFormat);
+	m_textFormat = sm->GetTextFormat(m_szTextFormat);
 }
 
 bool ListView::OnEvent(Event *ev)
@@ -331,6 +331,31 @@ void ListView::HandleResizeEnd()
 	m_hsb->SetPosition(pos);
 	// m_vsb->SetContentSize(m_header->GetTotalWidth()); TODO
 	HandleHScrollBar(pos);
+}
+
+void ListView::SetTextColor(LPCSTR style)
+{
+    this->m_szTextColor = StyleManager::Instance()->InternString(style);
+}
+
+void ListView::SetHoverColor(LPCSTR style)
+{
+    this->m_szHoverColor = StyleManager::Instance()->InternString(style);
+}
+
+void ListView::SetSelectedColor(LPCSTR style)
+{
+    this->m_szSelectedColor = StyleManager::Instance()->InternString(style);
+}
+
+void ListView::SetSelectedTextColor(LPCSTR style)
+{
+    this->m_szSelectedTextColor = StyleManager::Instance()->InternString(style);
+}
+
+void ListView::SetTextFormat(LPCSTR style)
+{
+    this->m_szTextFormat = StyleManager::Instance()->InternString(style);
 }
 
 } // namespace ltk

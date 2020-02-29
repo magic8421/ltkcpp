@@ -92,11 +92,11 @@ public:
 	void SetSelectedNode(TreeNode *);
 	TreeNode *GetSelectedNode();
 
-	ImmutableString TextColor;
-	ImmutableString HoverColor;
-	ImmutableString SelectedColor;
-	ImmutableString SelectedTextColor;
-	ImmutableString TextFormat;
+    void SetTextColor(LPCSTR style);
+    void SetHoverColor(LPCSTR style);
+    void SetSelectedColor(LPCSTR style);
+    void SetSelectedTextColor(LPCSTR style);
+    void SetTextFormat(LPCSTR style);
 
 protected:
     virtual bool OnPaint(PaintEvent *ev) override;
@@ -122,6 +122,12 @@ private:
     float m_maxHeight = 0.0f;
 
 	TreeViewColors m_colors;
+
+    LPCSTR m_szTextColor = nullptr;
+    LPCSTR m_szHoverColor = nullptr;
+    LPCSTR m_szSelectedColor = nullptr;
+    LPCSTR m_szSelectedTextColor = nullptr;
+    LPCSTR m_szTextFormat = nullptr;
 
     DISALLOW_COPY_AND_ASSIGN(TreeView)
 };

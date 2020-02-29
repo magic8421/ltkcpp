@@ -26,9 +26,9 @@ ScrollBar::ScrollBar(Orientation mode) : m_mode(mode)
 	m_slider->MouseEventDelegate += MakeDelegate(this, &ScrollBar::OnSilderEvent);
 
     if (m_mode == Horizontal) {
-        m_slider->Background = "scrollbar_h";
+        m_slider->SetBackground("scrollbar_h");
     } else {
-		m_slider->Background = "scrollbar_v";
+		m_slider->SetBackground("scrollbar_v");
     }
     this->AddChild(m_slider);
 }

@@ -18,9 +18,10 @@
 namespace ltk {
 
 Button::Button() : 
-	Background("default_btn_bg"),
-	TextFormat("default_btn_fmt"),
-	TextColor("default_btn_clr")
+	m_szBackground("default_btn_bg"),
+	m_szTextFormat("default_btn_fmt"),
+	m_szTextColor("default_btn_clr"),
+	m_textColor({ 1.0f, 0.0f, 1.0f, 0.5f })
 {
 }
 
@@ -33,9 +34,9 @@ void Button::OnThemeChanged()
 	SAFE_RELEASE(m_layout);
 	auto sm = StyleManager::Instance();
 
-	m_background = sm->GetBackground(Background);
-	m_format = sm->GetTextFormat(TextFormat);
-	m_textColor = sm->GetColor(TextColor);
+	m_background = sm->GetBackground(m_szBackground);
+	m_format = sm->GetTextFormat(m_szTextFormat);
+	m_textColor = sm->GetColor(m_szTextColor);
 }
 
 bool Button::OnPaint(PaintEvent *ev)
@@ -111,6 +112,21 @@ SizeF Button::GetPreferredSize()
 
 	const float padding = 8;
 	return SizeF(dtm.width + padding * 2, dtm.height + padding * 2);
+}
+
+void Button::SetBackground(LPCSTR style)
+{
+	this->m_szBackground = StyleManager::Instance()->InternString(style);
+}
+
+void Button::SetTextFormat(LPCSTR style)
+{
+	this->m_szTextFormat = StyleManager::Instance()->InternString(style);
+}
+
+void Button::SetTextColor(LPCSTR style)
+{
+	this->m_szTextColor = StyleManager::Instance()->InternString(style);
 }
 
 bool Button::OnSize(SizeEvent *ev)

@@ -24,9 +24,9 @@ public:
 	void RecreateLayout();
 	SizeF GetPreferredSize();
 
-	ImmutableString Background;
-	ImmutableString TextFormat;
-	ImmutableString TextColor;
+	void SetBackground(LPCSTR style);
+	void SetTextFormat(LPCSTR style);
+	void SetTextColor(LPCSTR style);
 
 protected:
 	virtual bool OnSize(SizeEvent *ev) override;
@@ -39,6 +39,10 @@ private:
     IDWriteTextFormat *m_format = nullptr;
 	IDWriteTextLayout *m_layout = nullptr;
 	D2D1_COLOR_F m_textColor;
+
+	LPCSTR m_szBackground = nullptr;
+	LPCSTR m_szTextFormat = nullptr;
+	LPCSTR m_szTextColor = nullptr;
 };
 
 } // namespace

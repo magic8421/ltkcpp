@@ -25,7 +25,7 @@ TimerWindow::TimerWindow()
 
 	m_lableTime = new ltk::Label;
 	m_lableTime->SetText(L"00:00:00");
-	m_lableTime->TextFormat = "timer_label_fmt";
+	m_lableTime->SetTextFormat("timer_label_fmt");
 	vbox1->AddLayoutItem(m_lableTime, 100, 0);
 
 	m_listView = new ltk::ListView;

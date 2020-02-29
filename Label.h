@@ -22,14 +22,17 @@ public:
 
     LPCWSTR GetText();
     void SetText(LPCWSTR text);
-    
-	ImmutableString TextFormat;
-	ImmutableString TextColor;
+
+    void SetTextFormat(LPCSTR style);
+    void SetTextColor(LPCSTR style);
 
 private:
 	std::wstring m_text;
 	IDWriteTextFormat *m_textFormat = nullptr;
 	D2D1_COLOR_F m_color;
+
+    LPCSTR m_szTextFormat = nullptr;
+    LPCSTR m_szTextColor = nullptr;
 };
 
 } // namespace ltk

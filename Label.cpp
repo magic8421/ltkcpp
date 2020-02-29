@@ -18,8 +18,9 @@
 namespace ltk {
 
 Label::Label() :
-	TextColor("default_label_clr"),
-	TextFormat("default_label_fmt")
+    m_szTextColor("default_label_clr"),
+    m_szTextFormat("default_label_fmt"),
+    m_color({ 1.0f, 0.0f, 1.0f, 0.5f })
 {}
 
 Label::~Label()
@@ -51,11 +52,21 @@ void Label::SetText(LPCWSTR t)
     this->Invalidate();
 }
 
+void Label::SetTextFormat(LPCSTR style)
+{
+    this->m_szTextFormat = StyleManager::Instance()->InternString(style);
+}
+
+void Label::SetTextColor(LPCSTR style)
+{
+    this->m_szTextColor = StyleManager::Instance()->InternString(style);
+}
+
 void Label::OnThemeChanged()
 {
 	auto sm = StyleManager::Instance();
-    m_textFormat = sm->GetTextFormat(TextFormat);
-	m_color = sm->GetColor(TextColor);
+    m_textFormat = sm->GetTextFormat(m_szTextFormat);
+	m_color = sm->GetColor(m_szTextColor);
 }
 
 } // namespace ltk
