@@ -30,15 +30,15 @@ LTK_DECLARE_TYPE(LtkObject);
 
 LTK_API void WINAPI LtkFree(LtkObject *);
 
-struct LtkEvent
-{
+typedef struct _LtkEvent {
 	UINT id;
 	void* sender;
-};
+} LtkEvent;
 
-typedef void (*LtkCallback)(void* userdata, LtkEvent* ev);
+typedef void (CALLBACK *LtkCallback)(void* userdata, LtkEvent* ev);
 
-
+LTK_API void WINAPI LtkObject_AddListener(LtkObject* o, void* userdata, LtkCallback callback);
+LTK_API void WINAPI LtkObject_RemoveListener(LtkObject* o, void* userdata, LtkCallback callback);
 
 
 LTK_DECLARE_TYPE(LtkWindow); // »ùÀà£ºLtkObject

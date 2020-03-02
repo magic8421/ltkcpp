@@ -646,6 +646,10 @@ void Window::OnDestroy()
 {
 	SetDelegateInvoker(this);
 	this->DestroyDelegate();
+    LtkEvent ev = { 0 };
+    ev.id = LTK_WINDOW_DESTROY;
+    ev.sender = this;
+    FireEvent(&ev);
 }
 
 HWND Window::Handle()

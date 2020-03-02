@@ -44,6 +44,18 @@ LTK_API void WINAPI LtkFree(LtkObject *obj)
 	delete pobj;
 }
 
+LTK_API void WINAPI LtkObject_AddListener(LtkObject* o, void* userdata, LtkCallback callback)
+{
+	Object* pobj = (Object*)o;
+	pobj->AddListener(userdata, callback);
+}
+
+LTK_API void WINAPI LtkObject_RemoveListener(LtkObject* o, void* userdata, LtkCallback callback)
+{
+	Object* pobj = (Object*)o;
+	pobj->RemoveListener(userdata, callback);
+}
+
 
 
 //////////////////////////////////////////////////////////////////////////

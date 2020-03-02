@@ -7,9 +7,14 @@
 #include "LtkInterface.h"
 
 
-void CALLBACK MyEventCallback(void* userdata)
+void CALLBACK MyEventCallback(void* userdata, LtkEvent *ev)
 {
-	::PostQuitMessage(0);
+	switch (ev->id)
+	{
+	case LTK_WINDOW_DESTROY:
+		::PostQuitMessage(0);
+		break;
+	}
 }
 
 static int node_count = 0;
@@ -43,8 +48,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 	LtkObject* wnd = LtkWindow_New();
 	//LtkWindow_SetBackground(wnd, "window_bg");
-	LtkObject_RegisterCallback(
-		(LtkObject*)wnd, LTK_WINDOW_DESTROY, (LtkCallback)MyEventCallback, NULL);
+	LtkObject_AddListener(
+		(LtkObject*)wnd, NULL, MyEventCallback);
 
 	LtkObject* splitter_h = LtkSplitter_New(LTK_HORIZONTAL);
 	LtkWindow_SetClientSprite(LTK_WINDOW(wnd), LTK_SPRITE(splitter_h));
@@ -110,6 +115,25 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	LtkPopupMenu_AddItem(LTK_POPUPMENU(popup2), L"C:\\路径\\文件");
 	LtkPopupMenu_AddItem(LTK_POPUPMENU(popup2), L"C:\\路径\\文件");
 	LtkPopupMenu_SetSubMenu(LTK_POPUPMENU(popup_menu), 2, LTK_POPUPMENU(popup2));
+
+	LtkObject* popup_menu2 = LtkPopupMenu_New();
+	LtkPopupMenu_AddItem(LTK_POPUPMENU(popup_menu2), L"撤销");
+	LtkPopupMenu_AddItem(LTK_POPUPMENU(popup_menu2), L"重做");
+	LtkPopupMenu_AddItem(LTK_POPUPMENU(popup_menu2), L"复制");
+	LtkPopupMenu_AddItem(LTK_POPUPMENU(popup_menu2), L"剪切");
+	LtkPopupMenu_AddItem(LTK_POPUPMENU(popup_menu2), L"粘贴");
+	LtkMenuBar_SetPopupMenu(LTK_MENUBAR(menu_bar), 1, LTK_POPUPMENU(popup_menu2));
+
+	LtkObject* popup_menu3 = LtkPopupMenu_New();
+	LtkPopupMenu_AddItem(LTK_POPUPMENU(popup_menu3), L"位图");
+	LtkPopupMenu_AddItem(LTK_POPUPMENU(popup_menu3), L"暗色");
+	LtkPopupMenu_AddItem(LTK_POPUPMENU(popup_menu3), L"亮色");
+	LtkMenuBar_SetPopupMenu(LTK_MENUBAR(menu_bar), 2, LTK_POPUPMENU(popup_menu3));
+
+	LtkObject* popup_menu4 = LtkPopupMenu_New();
+	LtkPopupMenu_AddItem(LTK_POPUPMENU(popup_menu4), L"在线文档");
+	LtkPopupMenu_AddItem(LTK_POPUPMENU(popup_menu4), L"关于");
+	LtkMenuBar_SetPopupMenu(LTK_MENUBAR(menu_bar), 3, LTK_POPUPMENU(popup_menu4));
 
 	LtkWindow_CreateCenter(LTK_WINDOW(wnd), NULL, 800, 600);
 	LtkWindow_SetCaption(LTK_WINDOW(wnd), L"Ltk测试窗口");
