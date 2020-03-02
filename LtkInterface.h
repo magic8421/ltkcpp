@@ -177,6 +177,8 @@ LTK_API BOOL WINAPI LtkIsTextEdit(LtkObject* o);
 #define LtkTextEdit_New() LtkTextEdit_New_(  __FILE__, __LINE__)
 LTK_API LtkObject* WINAPI LtkTextEdit_New_(LPCSTR source, int line);
 
+#define LTK_MENU_CLICK 501
+
 #define LTK_MENUBAR(o) LtkIsMenuBar(o) ? (LtkMenuBar*)o : NULL
 LTK_API BOOL WINAPI LtkIsMenuBar(LtkObject* o);
 

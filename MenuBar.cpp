@@ -227,6 +227,23 @@ bool PopupMenu::OnKillFocus(FocusEvent* ev)
 	return false;
 }
 
+void PopupMenu::SendClickEvent(MenuItem *item)
+{
+	LtkEvent ev;
+	ev.id = LTK_MENU_CLICK;
+	ev.sender = item;
+	auto wnd = this->GetWindow(); // TODO 感觉这样过于简单了
+	wnd->FireEvent(&ev);
+
+	/*auto popup = this;
+	while (popup->m_parent) {
+		popup = m_parent;
+	}
+	if (popup->m_menuBar)
+	{
+	}*/
+}
+
 bool PopupMenu::OnLBtnDown(MouseEvent* ev)
 {
 	auto wnd = GetWindow();
@@ -242,6 +259,8 @@ bool PopupMenu::OnLBtnDown(MouseEvent* ev)
 	if (!item->sub_menu) {
 		SetDelegateInvoker(this);
 		item->ClickedDelegate();
+
+		SendClickEvent(item);
 	}
 	int tracking = m_trackingIdx;
 	PopupMenu* menu = this;

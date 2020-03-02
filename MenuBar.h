@@ -17,7 +17,8 @@ class AbstractBackground;
 class MenuBar;
 class PopupMenu;
 
-struct LTK_CPP_API MenuItem
+// TODO 吧这个类暴露到C接口里 这样LTK_MENU_CLICK就可以直接用LtkEvent然后sender填写这个类就行了
+class LTK_CPP_API MenuItem : public Object
 {
 public:
 	MenuItem() {}
@@ -76,6 +77,9 @@ public:
 	void SetHoverColor(LPCSTR style);
 	void SetTextFormat(LPCSTR style);
 	void SetBackground(LPCSTR style);
+
+private:
+	void SendClickEvent(MenuItem* item);
 
 private:
 	std::vector<MenuItem *> m_vecItems;

@@ -14,6 +14,9 @@ void CALLBACK MyEventCallback(void* userdata, LtkEvent *ev)
 	case LTK_WINDOW_DESTROY:
 		::PostQuitMessage(0);
 		break;
+	case LTK_MENU_CLICK:
+		::MessageBox(0, L"LTK_MENU_CLICK", 0, 0);
+		break;
 	}
 }
 
