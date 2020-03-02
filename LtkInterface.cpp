@@ -44,17 +44,7 @@ LTK_API void WINAPI LtkFree(LtkObject *obj)
 	delete pobj;
 }
 
-LTK_API void WINAPI LtkObject_RegisterCallback(
-	LtkObject * obj, UINT event_id, LtkCallback cb, void* userdata)
-{
-	Object* thiz = (Object*)obj;
-	thiz->RegisterCallback(event_id, cb, userdata);
-}
 
-LTK_API LtkObject * WINAPI LtkCallbackInvoker()
-{
-	return (LtkObject *)Object::GetEventSender();
-}
 
 //////////////////////////////////////////////////////////////////////////
 // Sprite
