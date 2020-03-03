@@ -37,10 +37,11 @@ PopupMenu::~PopupMenu()
 	}
 }
 
-void PopupMenu::AddItem(LPCWSTR text)
+void PopupMenu::AddItem(LPCWSTR text, LPCSTR name)
 {
 	auto item = new MenuItem;
 	item->text = text;
+	item->SetName(name);
 	m_vecItems.push_back(item);
 }
 
@@ -231,7 +232,7 @@ void PopupMenu::SendClickEvent(MenuItem *item)
 {
 	LtkEvent ev;
 	ev.id = LTK_MENU_CLICK;
-	ev.sender = item;
+	ev.sender = (LtkObject*)item;
 	auto wnd = this->GetWindow(); // TODO 感觉这样过于简单了
 	wnd->FireEvent(&ev);
 

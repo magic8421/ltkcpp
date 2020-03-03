@@ -26,12 +26,17 @@ public:
 	static bool CheckValid(Object* o);
 	static void DumpObjectLeaks();
 
+	void SetName(LPCSTR name);
+	LPCSTR GetName();
+
 private:
 	struct CallbackInfo {
 		void* userdata = nullptr;
 		LtkCallback callback = nullptr;
 	};
 	std::vector<CallbackInfo> m_vecCallback;
+
+	LPCSTR m_name = nullptr;
 
 	const char* m_source = nullptr; // 好像没必要 外部使用者应该用umdh来查内存泄漏
 	int m_line = -1;

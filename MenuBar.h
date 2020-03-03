@@ -49,7 +49,7 @@ public:
 	PopupMenu();
 	virtual ~PopupMenu();
 
-	void AddItem(LPCWSTR text);
+	void AddItem(LPCWSTR text, LPCSTR name);
 	UINT GetMenuItemCount();
 	MenuItem *GetMenuItemAt(UINT idx);
 	

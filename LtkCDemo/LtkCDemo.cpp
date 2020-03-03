@@ -15,7 +15,15 @@ void CALLBACK MyEventCallback(void* userdata, LtkEvent *ev)
 		::PostQuitMessage(0);
 		break;
 	case LTK_MENU_CLICK:
-		::MessageBox(0, L"LTK_MENU_CLICK", 0, 0);
+	{
+		LPCSTR name = LtkObject_GetName((LtkObject *)ev->sender); // TODO 是不是要把这个sender改为LtkObject类型？
+		if (strcmp(name, "menu_new") == 0) {
+			::MessageBox(0, L"新建", 0, 0);
+		}
+		else if (strcmp(name, "menu_exit") == 0) {
+			::PostQuitMessage(0);
+		}
+	}
 		break;
 	}
 }
@@ -105,37 +113,37 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	LtkWindow_SetMenu(LTK_WINDOW(wnd), LTK_MENUBAR(menu_bar));
 
 	LtkObject* popup_menu = LtkPopupMenu_New();
-	LtkPopupMenu_AddItem(LTK_POPUPMENU(popup_menu), L"新建");
-	LtkPopupMenu_AddItem(LTK_POPUPMENU(popup_menu), L"打开");
-	LtkPopupMenu_AddItem(LTK_POPUPMENU(popup_menu), L"最近");
-	LtkPopupMenu_AddItem(LTK_POPUPMENU(popup_menu), L"关闭");
-	LtkPopupMenu_AddItem(LTK_POPUPMENU(popup_menu), L"退出");
+	LtkPopupMenu_AddItem(LTK_POPUPMENU(popup_menu), L"新建", "menu_new");
+	LtkPopupMenu_AddItem(LTK_POPUPMENU(popup_menu), L"打开", "");
+	LtkPopupMenu_AddItem(LTK_POPUPMENU(popup_menu), L"最近", "");
+	LtkPopupMenu_AddItem(LTK_POPUPMENU(popup_menu), L"关闭", "");
+	LtkPopupMenu_AddItem(LTK_POPUPMENU(popup_menu), L"退出", "menu_exit");
 	LtkMenuBar_SetPopupMenu(LTK_MENUBAR(menu_bar), 0, LTK_POPUPMENU(popup_menu));
 
 	LtkObject* popup2 = LtkPopupMenu_New();
 	LtkPopupMenu_SetWidth(LTK_POPUPMENU(popup2), 200);
-	LtkPopupMenu_AddItem(LTK_POPUPMENU(popup2), L"C:\\路径\\文件");
-	LtkPopupMenu_AddItem(LTK_POPUPMENU(popup2), L"C:\\路径\\文件");
-	LtkPopupMenu_AddItem(LTK_POPUPMENU(popup2), L"C:\\路径\\文件");
+	LtkPopupMenu_AddItem(LTK_POPUPMENU(popup2), L"C:\\路径\\文件", "");
+	LtkPopupMenu_AddItem(LTK_POPUPMENU(popup2), L"C:\\路径\\文件", "");
+	LtkPopupMenu_AddItem(LTK_POPUPMENU(popup2), L"C:\\路径\\文件", "");
 	LtkPopupMenu_SetSubMenu(LTK_POPUPMENU(popup_menu), 2, LTK_POPUPMENU(popup2));
 
 	LtkObject* popup_menu2 = LtkPopupMenu_New();
-	LtkPopupMenu_AddItem(LTK_POPUPMENU(popup_menu2), L"撤销");
-	LtkPopupMenu_AddItem(LTK_POPUPMENU(popup_menu2), L"重做");
-	LtkPopupMenu_AddItem(LTK_POPUPMENU(popup_menu2), L"复制");
-	LtkPopupMenu_AddItem(LTK_POPUPMENU(popup_menu2), L"剪切");
-	LtkPopupMenu_AddItem(LTK_POPUPMENU(popup_menu2), L"粘贴");
+	LtkPopupMenu_AddItem(LTK_POPUPMENU(popup_menu2), L"撤销", "");
+	LtkPopupMenu_AddItem(LTK_POPUPMENU(popup_menu2), L"重做", "");
+	LtkPopupMenu_AddItem(LTK_POPUPMENU(popup_menu2), L"复制", "");
+	LtkPopupMenu_AddItem(LTK_POPUPMENU(popup_menu2), L"剪切", "");
+	LtkPopupMenu_AddItem(LTK_POPUPMENU(popup_menu2), L"粘贴", "");
 	LtkMenuBar_SetPopupMenu(LTK_MENUBAR(menu_bar), 1, LTK_POPUPMENU(popup_menu2));
 
 	LtkObject* popup_menu3 = LtkPopupMenu_New();
-	LtkPopupMenu_AddItem(LTK_POPUPMENU(popup_menu3), L"位图");
-	LtkPopupMenu_AddItem(LTK_POPUPMENU(popup_menu3), L"暗色");
-	LtkPopupMenu_AddItem(LTK_POPUPMENU(popup_menu3), L"亮色");
+	LtkPopupMenu_AddItem(LTK_POPUPMENU(popup_menu3), L"位图", "");
+	LtkPopupMenu_AddItem(LTK_POPUPMENU(popup_menu3), L"暗色", "");
+	LtkPopupMenu_AddItem(LTK_POPUPMENU(popup_menu3), L"亮色", "");
 	LtkMenuBar_SetPopupMenu(LTK_MENUBAR(menu_bar), 2, LTK_POPUPMENU(popup_menu3));
 
 	LtkObject* popup_menu4 = LtkPopupMenu_New();
-	LtkPopupMenu_AddItem(LTK_POPUPMENU(popup_menu4), L"在线文档");
-	LtkPopupMenu_AddItem(LTK_POPUPMENU(popup_menu4), L"关于");
+	LtkPopupMenu_AddItem(LTK_POPUPMENU(popup_menu4), L"在线文档", "");
+	LtkPopupMenu_AddItem(LTK_POPUPMENU(popup_menu4), L"关于", "");
 	LtkMenuBar_SetPopupMenu(LTK_MENUBAR(menu_bar), 3, LTK_POPUPMENU(popup_menu4));
 
 	LtkWindow_CreateCenter(LTK_WINDOW(wnd), NULL, 800, 600);

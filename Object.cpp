@@ -32,6 +32,8 @@ Object::Object()
 
 Object::~Object()
 {
+	free((void*)m_name);
+
 	// TODO lock for multithread.
 	auto iter = sObjectSet->find(this);
 	if (iter == sObjectSet->end()) {
@@ -61,6 +63,17 @@ void Object::DumpObjectLeaks()
 			obj->TypeNameInstance(), obj->m_source, obj->m_line);
 		::OutputDebugStringA(buf);
 	}
+}
+
+void Object::SetName(LPCSTR name)
+{
+	free((void*)m_name);
+	m_name = _strdup(name);
+}
+
+LPCSTR Object::GetName()
+{
+	return m_name;
 }
 
 bool Object::CheckValid(Object* o)

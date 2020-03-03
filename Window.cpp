@@ -648,7 +648,7 @@ void Window::OnDestroy()
 	this->DestroyDelegate();
     LtkEvent ev = { 0 };
     ev.id = LTK_WINDOW_DESTROY;
-    ev.sender = this;
+    ev.sender = (LtkObject*)this;
     FireEvent(&ev);
 }
 

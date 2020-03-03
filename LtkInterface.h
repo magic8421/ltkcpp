@@ -32,10 +32,13 @@ LTK_API void WINAPI LtkFree(LtkObject *);
 
 typedef struct _LtkEvent {
 	UINT id;
-	void* sender;
+	LtkObject* sender;
 } LtkEvent;
 
 typedef void (CALLBACK *LtkCallback)(void* userdata, LtkEvent* ev);
+
+LTK_API void WINAPI LtkObject_SetName(LtkObject* o, LPCSTR name);
+LTK_API LPCSTR WINAPI LtkObject_GetName(LtkObject* o);
 
 LTK_API void WINAPI LtkObject_AddListener(LtkObject* o, void* userdata, LtkCallback callback);
 LTK_API void WINAPI LtkObject_RemoveListener(LtkObject* o, void* userdata, LtkCallback callback);
@@ -194,7 +197,7 @@ LTK_API BOOL WINAPI LtkIsPopupMenu(LtkObject* o);
 #define LtkPopupMenu_New() LtkPopupMenu_New_(  __FILE__, __LINE__)
 LTK_API LtkObject* WINAPI LtkPopupMenu_New_(LPCSTR source, int line);
 
-LTK_API void WINAPI LtkPopupMenu_AddItem(LtkPopupMenu* self, LPCWSTR text);
+LTK_API void WINAPI LtkPopupMenu_AddItem(LtkPopupMenu* self, LPCWSTR text, LPCSTR name);
 LTK_API void WINAPI LtkPopupMenu_SetWidth(LtkPopupMenu* self, float width);
 LTK_API void WINAPI LtkPopupMenu_SetSubMenu(LtkPopupMenu* self, UINT idx, LtkPopupMenu* popup);
 

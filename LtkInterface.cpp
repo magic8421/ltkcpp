@@ -44,6 +44,16 @@ LTK_API void WINAPI LtkFree(LtkObject *obj)
 	delete pobj;
 }
 
+LTK_API void WINAPI LtkObject_SetName(LtkObject* o, LPCSTR name)
+{
+	((Object*)(o))->SetName(name);
+}
+
+LTK_API LPCSTR WINAPI LtkObject_GetName(LtkObject* o)
+{
+	return ((Object*)(o))->GetName();
+}
+
 LTK_API void WINAPI LtkObject_AddListener(LtkObject* o, void* userdata, LtkCallback callback)
 {
 	Object* pobj = (Object*)o;
@@ -438,10 +448,10 @@ LTK_API LtkObject* WINAPI LtkPopupMenu_New_(LPCSTR source, int line)
 	return (LtkObject*)obj;
 }
 
-LTK_API void WINAPI LtkPopupMenu_AddItem(LtkPopupMenu* self, LPCWSTR text)
+LTK_API void WINAPI LtkPopupMenu_AddItem(LtkPopupMenu* self, LPCWSTR text, LPCSTR name)
 {
 	PopupMenu* thiz = (PopupMenu*)self;
-	thiz->AddItem(text);
+	thiz->AddItem(text, name);
 }
 
 LTK_API void WINAPI LtkPopupMenu_SetWidth(LtkPopupMenu* self, float width)
