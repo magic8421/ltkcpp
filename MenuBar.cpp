@@ -15,6 +15,7 @@
 namespace ltk {
 
 const static float ITEM_HEIGHT = 30.f;
+const static float SEPARATOR_HEIGHT = 10.f;
 const static float MENU_WIDTH = 300.f;
 const static float ICON_WIDTH = 16.f;
 const static float PADDING = 5.f;
@@ -32,8 +33,10 @@ PopupMenu::PopupMenu() :
 PopupMenu::~PopupMenu()
 {
 	for (auto item : m_vecItems) {
-		delete item->sub_menu;
-		delete item;
+		if (item) {
+			delete item->sub_menu;
+			delete item;
+		}
 	}
 }
 
@@ -45,6 +48,11 @@ void PopupMenu::AddItem(LPCWSTR text, LPCSTR name)
 	m_vecItems.push_back(item);
 }
 
+void PopupMenu::AddSeparator()
+{
+	m_vecItems.push_back(nullptr);
+}
+
 UINT PopupMenu::GetMenuItemCount()
 {
 	return m_vecItems.size();
@@ -53,6 +61,20 @@ UINT PopupMenu::GetMenuItemCount()
 MenuItem * PopupMenu::GetMenuItemAt(UINT idx)
 {
 	return m_vecItems[idx];
+}
+
+float PopupMenu::GetHeight()
+{
+	float h = 0.f;
+	for (auto item : m_vecItems) {
+		if (item) {
+			h += ITEM_HEIGHT;
+		}
+		else {
+			h += SEPARATOR_HEIGHT;
+		}
+	}
+	return h;
 }
 
 void PopupMenu::SetWidth(float w)
@@ -137,7 +159,7 @@ void PopupMenu::OnThemeChanged()
 	m_background = sm->GetBackground(this->m_szBackground);
 
 	for (auto item : m_vecItems) {
-		if (item->sub_menu) {
+		if (item && item->sub_menu) {
 			item->sub_menu->OnThemeChanged();
 		}
 	}
@@ -186,19 +208,27 @@ bool PopupMenu::OnPaint(PaintEvent *ev)
 	m_background->Draw(GetWindow(), ev->target,
 		rcbg, 
 		AbstractBackground::Normal, 1.f);
-	float y = 0;
+
 	auto brush = GetWindow()->GetStockBrush();
 	if (m_hoverIdx >= 0) {
 		brush->SetColor(m_hoverColor);
-		ev->target->FillRectangle(ltk::D2D1RectF(RectF(0.f, m_hoverIdx * ITEM_HEIGHT,
-			this->GetWidth(), ITEM_HEIGHT)), brush);
+		RectF rcHover = RectFromIndex(m_hoverIdx);
+		ev->target->FillRectangle(ltk::D2D1RectF(rcHover), brush);
 	}
 	brush->SetColor(m_textColor);
+	int idx = 0;
 	for (auto item : m_vecItems) {
-		ev->target->DrawText(item->text.c_str(), item->text.size(), m_format,
-			D2D1::RectF(PADDING + ICON_WIDTH, y, this->GetWidth(), y + ITEM_HEIGHT),
-			brush);
-		y += ITEM_HEIGHT;
+		if (item) {
+			//ev->target->DrawText(item->text.c_str(), item->text.size(), m_format,
+			//	D2D1::RectF(PADDING + ICON_WIDTH, y, this->GetWidth(), y + ITEM_HEIGHT),
+			//	brush);
+			auto rc = RectFromIndex(idx);
+			rc.X += PADDING + ICON_WIDTH;
+			rc.Width -= PADDING + ICON_WIDTH;
+			ev->target->DrawText(item->text.c_str(), item->text.size(), m_format,
+				ltk::D2D1RectF(rc), brush);
+		}
+		idx++;
 	}
 
 	if (m_state == State::sSlideIn) {
@@ -245,6 +275,51 @@ void PopupMenu::SendClickEvent(MenuItem *item)
 	}*/
 }
 
+int PopupMenu::IndexFromPos(float y)
+{
+	float pos = 0.f;
+	int idx = 0;
+	for (auto item : m_vecItems) {
+		if (item) {
+			pos += ITEM_HEIGHT;
+		}
+		else {
+			pos += SEPARATOR_HEIGHT;
+		}
+		if (y < pos) {
+			return idx;
+		}
+		idx++;
+	}
+	return -1;
+}
+
+RectF PopupMenu::RectFromIndex(int idx)
+{
+	LTK_ASSERT(idx >= 0);
+	RectF rc;
+	rc.Width = this->GetWidth();
+
+	for (int i = 0; i < idx; i ++) {
+		auto item = m_vecItems[i];
+		if (item) {
+			rc.Y += ITEM_HEIGHT;
+		}
+		else {
+			rc.Y += SEPARATOR_HEIGHT;
+		}
+	}
+	auto item = m_vecItems[idx];
+
+	if (item) {
+		rc.Height = ITEM_HEIGHT;
+	}
+	else {
+		rc.Height = SEPARATOR_HEIGHT;
+	}
+	return rc;
+}
+
 bool PopupMenu::OnLBtnDown(MouseEvent* ev)
 {
 	auto wnd = GetWindow();
@@ -257,7 +332,7 @@ bool PopupMenu::OnLBtnDown(MouseEvent* ev)
 		return false;
 	}
 	auto item = m_vecItems[hit];
-	if (!item->sub_menu) {
+	if (item && !item->sub_menu) {
 		SetDelegateInvoker(this);
 		item->ClickedDelegate();
 
@@ -274,15 +349,17 @@ bool PopupMenu::OnLBtnDown(MouseEvent* ev)
 	return true;
 }
 
-void PopupMenu::TrackPopupMenu(UINT idx)
+void PopupMenu::TrackPopupMenu(int idx)
 {
+	if (idx < 0 || !m_vecItems[idx])
+		return;
 	auto menu = m_vecItems[idx]->sub_menu;
 	if (menu) {
 		m_trackingIdx = idx;
 		auto arc = this->GetAbsRect();
+		auto mrc = this->RectFromIndex(idx);
 		menu->Show(GetWindow(), RectF(
-			arc.X + this->GetWidth(), arc.Y + idx * ITEM_HEIGHT,
-			menu->GetWidth(), menu->GetMenuItemCount() * ITEM_HEIGHT));
+			arc.X + this->GetWidth(), arc.Y + mrc.Y, menu->GetWidth(), menu->GetHeight()));
 		Invalidate();
 	}
 }
@@ -290,7 +367,7 @@ void PopupMenu::TrackPopupMenu(UINT idx)
 bool PopupMenu::OnMouseMove(MouseEvent* ev)
 {
 	TrackMouseLeave();
-	int hover = (int)(ev->y / ITEM_HEIGHT);
+	int hover = IndexFromPos(ev->y);
 	if (hover != m_hoverIdx) {
 		m_hoverIdx = hover;
 		Invalidate();
@@ -366,7 +443,7 @@ void MenuBar::OnMenuBtnClicked()
 	auto arc = m_vecMenuItems[idx].button->GetAbsRect();
 
 	menu->Show(this->GetWindow(), RectF(arc.X, arc.Y + arc.Height,
-		m_vecMenuItems[idx].sub_menu->GetWidth(), menu->GetMenuItemCount() * ITEM_HEIGHT));
+		m_vecMenuItems[idx].sub_menu->GetWidth(), menu->GetHeight()));
 	m_trackingIdx = idx;
 }
 

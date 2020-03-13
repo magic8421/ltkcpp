@@ -198,6 +198,7 @@ LTK_API BOOL WINAPI LtkIsPopupMenu(LtkObject* o);
 LTK_API LtkObject* WINAPI LtkPopupMenu_New_(LPCSTR source, int line);
 
 LTK_API void WINAPI LtkPopupMenu_AddItem(LtkPopupMenu* self, LPCWSTR text, LPCSTR name);
+LTK_API void WINAPI LtkPopupMenu_AddSeparator(LtkPopupMenu* self);
 LTK_API void WINAPI LtkPopupMenu_SetWidth(LtkPopupMenu* self, float width);
 LTK_API void WINAPI LtkPopupMenu_SetSubMenu(LtkPopupMenu* self, UINT idx, LtkPopupMenu* popup);
 

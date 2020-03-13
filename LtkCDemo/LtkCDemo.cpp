@@ -130,6 +130,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	LtkObject* popup_menu2 = LtkPopupMenu_New();
 	LtkPopupMenu_AddItem(LTK_POPUPMENU(popup_menu2), L"撤销", "");
 	LtkPopupMenu_AddItem(LTK_POPUPMENU(popup_menu2), L"重做", "");
+	LtkPopupMenu_AddSeparator(LTK_POPUPMENU(popup_menu2));
 	LtkPopupMenu_AddItem(LTK_POPUPMENU(popup_menu2), L"复制", "");
 	LtkPopupMenu_AddItem(LTK_POPUPMENU(popup_menu2), L"剪切", "");
 	LtkPopupMenu_AddItem(LTK_POPUPMENU(popup_menu2), L"粘贴", "");

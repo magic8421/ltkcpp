@@ -454,6 +454,12 @@ LTK_API void WINAPI LtkPopupMenu_AddItem(LtkPopupMenu* self, LPCWSTR text, LPCST
 	thiz->AddItem(text, name);
 }
 
+LTK_API void WINAPI LtkPopupMenu_AddSeparator(LtkPopupMenu* self)
+{
+	PopupMenu* thiz = (PopupMenu*)self;
+	thiz->AddSeparator();
+}
+
 LTK_API void WINAPI LtkPopupMenu_SetWidth(LtkPopupMenu* self, float width)
 {
 	PopupMenu* thiz = (PopupMenu*)self;

@@ -50,8 +50,12 @@ public:
 	virtual ~PopupMenu();
 
 	void AddItem(LPCWSTR text, LPCSTR name);
+	void AddSeparator();
+
 	UINT GetMenuItemCount();
 	MenuItem *GetMenuItemAt(UINT idx);
+
+	float GetHeight();
 	
 	void SetWidth(float);
 	float GetWidth();
@@ -62,7 +66,7 @@ public:
 	void Show(Window *wnd, const RectF &rc);
 	void Hide();
 	void HideAll();
-	void TrackPopupMenu(UINT idx);
+	void TrackPopupMenu(int idx);
 
 
 	virtual bool OnPaint(PaintEvent *ev) override;
@@ -80,6 +84,8 @@ public:
 
 private:
 	void SendClickEvent(MenuItem* item);
+	int IndexFromPos(float y);
+	RectF RectFromIndex(int idx);
 
 private:
 	std::vector<MenuItem *> m_vecItems;
