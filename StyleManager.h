@@ -91,6 +91,7 @@ public:
     enum State {Normal, Hover, Normal2Hover, Hover2Normal, Pressed, Disable};
     virtual void Draw(Window *wnd, ID2D1RenderTarget *targe, const RectF &rc,
         State state, float blend) = 0;
+    virtual ~AbstractBackground() {}
 };
 
 class LTK_CPP_API NinePatchBackground : public AbstractBackground
@@ -99,6 +100,7 @@ class LTK_CPP_API NinePatchBackground : public AbstractBackground
 public:
     virtual void Draw(Window *wnd, ID2D1RenderTarget *targe, const RectF &rc,
         State state, float blend) override;
+    virtual ~NinePatchBackground() {}
 
     TextureInfo& Normal() { return texNormal; }
     TextureInfo& Hover() { return texHover; }
@@ -116,6 +118,7 @@ class LTK_CPP_API OnePatchBackground : public AbstractBackground
 public:
     virtual void Draw(Window *wnd, ID2D1RenderTarget *targe, const RectF &rc,
         State state, float blend) override;
+    virtual ~OnePatchBackground() {}
     
     IconInfo &Normal() { return iconNormal; }
     IconInfo &Hover() { return iconHover; }
@@ -144,6 +147,7 @@ public:
     virtual void Draw(
         Window *wnd, ID2D1RenderTarget *targe, const RectF &rc,
         State state, float blend) override;
+    virtual ~RectangleBackground() {}
 
     FourStateColor &BorderColor() { return borderColors; }
     FourStateColor &InnerColor() { return innerColors; }

@@ -32,7 +32,7 @@ static int node_count = 0;
 
 static void RecBuildNodes(LtkTreeNode *parent, int depth)
 {
-	if (depth > 4) {
+	if (depth > 5) {
 		return;
 	}
 	int num = rand() % 13 + 3;
@@ -51,9 +51,9 @@ static void RecBuildNodes(LtkTreeNode *parent, int depth)
 
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
-                     _In_opt_ HINSTANCE hPrevInstance,
-                     _In_ LPWSTR    lpCmdLine,
-                     _In_ int       nCmdShow)
+					 _In_opt_ HINSTANCE hPrevInstance,
+					 _In_ LPWSTR    lpCmdLine,
+					 _In_ int       nCmdShow)
 {
 	LtkInitialize();
 
@@ -70,6 +70,9 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	LtkObject* tree_view = LtkTreeView_New();
 	RecBuildNodes(LTK_TREENODE(
 		LtkTreeView_GetRootNode(LTK_TREEVIEW(tree_view))), 0);
+	char msg[256];
+	StringCbPrintfA(msg, sizeof(msg), "Total Nodes: %d\r\n", node_count);
+	OutputDebugStringA(msg);
 
 	LtkObject* btn = NULL;
 	//LtkObject* btn = LtkButton_New();
