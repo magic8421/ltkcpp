@@ -210,7 +210,7 @@ bool PopupMenu::OnPaint(PaintEvent *ev)
 		AbstractBackground::Normal, 1.f);
 
 	auto brush = GetWindow()->GetStockBrush();
-	if (m_hoverIdx >= 0) {
+	if (m_hoverIdx >= 0 && m_vecItems[m_hoverIdx]) {
 		brush->SetColor(m_hoverColor);
 		RectF rcHover = RectFromIndex(m_hoverIdx);
 		ev->target->FillRectangle(ltk::D2D1RectF(rcHover), brush);
@@ -227,6 +227,14 @@ bool PopupMenu::OnPaint(PaintEvent *ev)
 			rc.Width -= PADDING + ICON_WIDTH;
 			ev->target->DrawText(item->text.c_str(), item->text.size(), m_format,
 				ltk::D2D1RectF(rc), brush);
+		}
+		else {
+			auto rc = RectFromIndex(idx);
+			auto old_clr = brush->GetColor();
+			brush->SetColor(D2D1::ColorF(D2D1::ColorF::Gray));
+			ev->target->DrawLine(D2D1::Point2F(rc.X + PADDING, rc.Y + rc.Height / 2.f),
+				D2D1::Point2F(rc.Width - PADDING * 2.f, rc.Y + rc.Height / 2.f), brush);
+			brush->SetColor(old_clr);
 		}
 		idx++;
 	}
@@ -324,7 +332,7 @@ bool PopupMenu::OnLBtnDown(MouseEvent* ev)
 {
 	auto wnd = GetWindow();
 	wnd->DisableFocusChange();
-	int hit = (int)(ev->y / ITEM_HEIGHT);
+	int hit = IndexFromPos(ev->y);
 	if (hit < 0 || hit >= (int)m_vecItems.size()) {
 		return false;
 	}
@@ -332,7 +340,10 @@ bool PopupMenu::OnLBtnDown(MouseEvent* ev)
 		return false;
 	}
 	auto item = m_vecItems[hit];
-	if (item && !item->sub_menu) {
+	if (!item) {
+		return true;
+	}
+	if (!item->sub_menu) {
 		SetDelegateInvoker(this);
 		item->ClickedDelegate();
 
