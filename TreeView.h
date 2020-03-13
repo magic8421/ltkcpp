@@ -42,12 +42,14 @@ public:
     void SetRect(const RectF &rc);
     RectF GetRect();
 
+    void SetDepth(int);
+
     LPCWSTR GetText();
     void SetText(LPCWSTR);
 
     bool IsExpand();
 
-    virtual void OnPaint(ID2D1RenderTarget *target, float scroll);
+    virtual void OnPaint(ID2D1RenderTarget *target, float scroll, UINT idx);
     virtual void OnLBtnDown(PointF pt, float scroll);
 
 private:
@@ -58,6 +60,7 @@ private:
     TreeView *m_treeView = nullptr;
     TreeNode *m_parent = nullptr;
     std::vector<TreeNode *> m_children;
+    int m_depth = 0;
     RectF m_rect;
     RectF m_rcExpandBtn;
     std::wstring m_text;
@@ -92,6 +95,8 @@ public:
 	void SetSelectedNode(TreeNode *);
 	TreeNode *GetSelectedNode();
 
+    void UpdateLinearView();
+
     void SetTextColor(LPCSTR style);
     void SetHoverColor(LPCSTR style);
     void SetSelectedColor(LPCSTR style);
@@ -107,9 +112,12 @@ protected:
 	virtual void OnThemeChanged() override;
 
 private:
+    void UpdateLinearViewRec(TreeNode* node, int depth);
+
     ScrollBar *m_vsb = nullptr;
     TreeNode m_root;
 	TreeNode *m_selected = nullptr;
+    std::vector<TreeNode*> m_vecLinear;
 
     static const float m_itemHeight;
     static const float m_indent;
