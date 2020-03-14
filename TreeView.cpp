@@ -45,14 +45,26 @@ TreeNode * TreeNode::GetNthChild(UINT i)
 
 void TreeNode::SetRect(const RectF &rc)
 {
-    m_rect = rc;
-    m_rcExpandBtn = RectF(rc.X + m_padding, rc.Y + (rc.Height - m_btn_size) / 2.0f,
-        m_btn_size, m_btn_size);
+    //m_rect = rc;
+    //m_rcExpandBtn = RectF(rc.X + m_padding, rc.Y + (rc.Height - m_btn_size) / 2.0f,
+    //    m_btn_size, m_btn_size);
 }
 
-RectF TreeNode::GetRect()
+RectF TreeNode::GetRect(float scroll, UINT idx)
 {
-    return m_rect;
+    RectF rcItem;
+    rcItem.X = m_depth * 15.f;
+    rcItem.Y = idx * m_treeView->GetItemHeight() - scroll;
+    rcItem.Height = m_treeView->GetItemHeight();
+    rcItem.Width = m_treeView->GetWidth() - m_depth * 15.f;;
+    return rcItem;
+}
+
+RectF TreeNode::GetExpandButtonRect(const RectF& rcItem)
+{
+    return RectF(rcItem.X + m_padding,
+        rcItem.Y + (rcItem.Height - m_btn_size) / 2.0f,
+        m_btn_size, m_btn_size);
 }
 
 void TreeNode::SetDepth(int d)
@@ -77,11 +89,7 @@ bool TreeNode::IsExpand()
 
 void TreeNode::OnPaint(ID2D1RenderTarget *target, float scroll, UINT idx)
 {
-    RectF rcItem;
-    rcItem.X = m_depth * 15.f;
-	rcItem.Y = idx * m_treeView->GetItemHeight() - scroll;
-    rcItem.Height = m_treeView->GetItemHeight();
-    rcItem.Width = m_treeView->GetWidth() - m_depth * 15.f;;
+    RectF rcItem = this->GetRect(scroll, idx);
 
 	//auto rcSprite = m_treeView->GetClientRect();
 	//if (rcItem.Y + rcItem.Height < 0.f || rcItem.Y > rcSprite.Height) {
@@ -129,17 +137,15 @@ void TreeNode::OnPaint(ID2D1RenderTarget *target, float scroll, UINT idx)
 		m_text.c_str(), m_text.size(), format, D2D1RectF(rcText), brush);
 }
 
-void TreeNode::OnLBtnDown(PointF pt, float scroll)
+void TreeNode::OnLBtnDown(PointF pt, float scroll, UINT idx)
 {
-	auto rcExpandBtn = m_rcExpandBtn;
-	rcExpandBtn.Y -= scroll;
+    auto rcItem = this->GetRect(scroll, idx);
+	auto rcExpandBtn = this->GetExpandButtonRect(rcItem);
 
     if (rcExpandBtn.Contains(pt)) {
         m_bExpand = !m_bExpand;
 		return;
     }
-	auto rcItem = m_rect;
-	rcItem.Y -= scroll;
 	if (rcItem.Contains(pt)) {
 		//LTK_LOG("SetSelectedNode %08x", this);
 		m_treeView->SetSelectedNode(this);
@@ -348,7 +354,7 @@ bool TreeView::OnLBtnDown(MouseEvent *ev)
   //  });
     int idx = (int)((ev->y + scroll) / m_itemHeight);
     LTK_ASSERT((size_t)idx < m_vecLinear.size());
-    m_vecLinear[idx]->OnLBtnDown(PointF(ev->x, ev->y), scroll);
+    m_vecLinear[idx]->OnLBtnDown(PointF(ev->x, ev->y), scroll, idx);
 
     this->DoLayout(); // TODO change callback to return bool, early abort.
     this->Invalidate();

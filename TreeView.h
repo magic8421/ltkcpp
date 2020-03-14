@@ -40,7 +40,6 @@ public:
     TreeNode *GetNthChild(UINT i);
 
     void SetRect(const RectF &rc);
-    RectF GetRect();
 
     void SetDepth(int);
 
@@ -50,7 +49,10 @@ public:
     bool IsExpand();
 
     virtual void OnPaint(ID2D1RenderTarget *target, float scroll, UINT idx);
-    virtual void OnLBtnDown(PointF pt, float scroll);
+    virtual void OnLBtnDown(PointF pt, float scroll, UINT idx);
+
+    RectF GetRect(float scroll, UINT idx);
+    RectF GetExpandButtonRect(const RectF &rc);
 
 private:
     bool m_bExpand = true;
@@ -61,8 +63,8 @@ private:
     TreeNode *m_parent = nullptr;
     std::vector<TreeNode *> m_children;
     int m_depth = 0;
-    RectF m_rect;
-    RectF m_rcExpandBtn;
+    //RectF m_rect;
+    //RectF m_rcExpandBtn;
     std::wstring m_text;
 
     static const float m_padding;
