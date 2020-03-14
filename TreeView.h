@@ -39,8 +39,6 @@ public:
     UINT GetChildCount();
     TreeNode *GetNthChild(UINT i);
 
-    void SetRect(const RectF &rc);
-
     void SetDepth(int);
 
     LPCWSTR GetText();
@@ -98,6 +96,7 @@ public:
 	TreeNode *GetSelectedNode();
 
     void UpdateLinearView();
+    void SetDirty();
 
     void SetTextColor(LPCSTR style);
     void SetHoverColor(LPCSTR style);
@@ -132,6 +131,8 @@ private:
     float m_maxHeight = 0.0f;
 
 	TreeViewColors m_colors;
+
+    bool m_bDirty = true;
 
     LPCSTR m_szTextColor = nullptr;
     LPCSTR m_szHoverColor = nullptr;

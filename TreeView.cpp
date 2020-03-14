@@ -43,13 +43,6 @@ TreeNode * TreeNode::GetNthChild(UINT i)
     return m_children[i];
 }
 
-void TreeNode::SetRect(const RectF &rc)
-{
-    //m_rect = rc;
-    //m_rcExpandBtn = RectF(rc.X + m_padding, rc.Y + (rc.Height - m_btn_size) / 2.0f,
-    //    m_btn_size, m_btn_size);
-}
-
 RectF TreeNode::GetRect(float scroll, UINT idx)
 {
     RectF rcItem;
@@ -91,15 +84,10 @@ void TreeNode::OnPaint(ID2D1RenderTarget *target, float scroll, UINT idx)
 {
     RectF rcItem = this->GetRect(scroll, idx);
 
-	//auto rcSprite = m_treeView->GetClientRect();
-	//if (rcItem.Y + rcItem.Height < 0.f || rcItem.Y > rcSprite.Height) {
-	//	return;
-	//}
-
 	auto rcExpandBtn = RectF(rcItem.X + m_padding,
         rcItem.Y + (rcItem.Height - m_btn_size) / 2.0f,
         m_btn_size, m_btn_size);
-	//rcExpandBtn.Y -= scroll;
+
 	auto colors = m_treeView->GetColorScheme();
 
 	auto brush = m_treeView->GetBrush();
@@ -144,6 +132,7 @@ void TreeNode::OnLBtnDown(PointF pt, float scroll, UINT idx)
 
     if (rcExpandBtn.Contains(pt)) {
         m_bExpand = !m_bExpand;
+        m_treeView->SetDirty();
 		return;
     }
 	if (rcItem.Contains(pt)) {
@@ -181,16 +170,7 @@ void TreeView::DoLayout()
     RectF rcSprite = GetClientRect();
     UpdateLinearView();
     m_maxHeight = m_vecLinear.size() * m_itemHeight;
-    //TraverseTree(&m_root, 0, [&, this](TreeNode *node, int depth) {
-    //    RectF rc;
-    //    rc.X = (depth - 1) * m_indent;
-    //    rc.Y = y;
-    //    rc.Width = rcSprite.Width - (depth - 1) * m_indent;
-    //    rc.Height = m_itemHeight;
-    //    node->SetRect(rc);
-    //    y += m_itemHeight;
-    //    m_maxHeight = y;
-    //});
+
     if (m_maxHeight > rcSprite.Height) {
         m_vsb->SetContentSize(m_maxHeight);
         m_vsb->SetVisible(true);
@@ -277,6 +257,11 @@ void TreeView::UpdateLinearView()
     }
 }
 
+void TreeView::SetDirty()
+{
+    m_bDirty = true;
+}
+
 void TreeView::SetTextColor(LPCSTR style)
 {
     this->m_szTextColor = StyleManager::Instance()->InternString(style);
@@ -304,15 +289,16 @@ void TreeView::SetTextFormat(LPCSTR style)
 
 bool TreeView::OnPaint(PaintEvent *ev)
 {
+    if (m_bDirty) {
+        this->DoLayout();
+        m_bDirty = false;
+    }
     auto rc = this->GetClientRect();
     if (m_scrollAni.UpdateScroll(m_maxHeight - rc.Height)) {
         this->EndAnimation();
     }
     m_vsb->SetPosition(m_scrollAni.GetScroll());
 
-    //TraverseTree(&m_root, 0, [&, this](TreeNode *node, int) {
-    //    node->OnPaint(ev->target, m_scrollAni.GetScroll());
-    //});
     UINT begin = (UINT)(m_scrollAni.GetScroll() / m_itemHeight);
     UINT end = (UINT)((m_scrollAni.GetScroll() + rc.Height) / m_itemHeight + 1);
     for (UINT i = begin; i < end; i++) {
@@ -348,22 +334,17 @@ bool TreeView::OnMouseWheel(MouseEvent *ev)
 bool TreeView::OnLBtnDown(MouseEvent *ev)
 {
 	auto scroll = m_scrollAni.GetScroll();
-  //  TraverseTree(&m_root, 0, 
-		//[ev, scroll](TreeNode *node, int) {
-  //          node->OnLBtnDown(PointF(ev->x, ev->y), scroll);
-  //  });
+
     int idx = (int)((ev->y + scroll) / m_itemHeight);
     LTK_ASSERT((size_t)idx < m_vecLinear.size());
     m_vecLinear[idx]->OnLBtnDown(PointF(ev->x, ev->y), scroll, idx);
 
-    this->DoLayout(); // TODO change callback to return bool, early abort.
     this->Invalidate();
     return true;
 }
 
 bool TreeView::OnSize(SizeEvent *ev)
 {
-    this->DoLayout();
     m_vsb->SetRect(RectF(ev->width - 8, 0, 6, ev->height));
     return false;
 }
