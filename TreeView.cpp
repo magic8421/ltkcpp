@@ -301,7 +301,7 @@ bool TreeView::OnPaint(PaintEvent *ev)
 
     UINT begin = (UINT)(m_scrollAni.GetScroll() / m_itemHeight);
     UINT end = (UINT)((m_scrollAni.GetScroll() + rc.Height) / m_itemHeight + 1);
-    for (UINT i = begin; i < end; i++) {
+    for (UINT i = begin; i < end && i < m_vecLinear.size(); i++) {
         m_vecLinear[i]->OnPaint(ev->target, m_scrollAni.GetScroll(), i);
     }
     return true;

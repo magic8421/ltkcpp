@@ -53,16 +53,15 @@ public:
     RectF GetExpandButtonRect(const RectF &rc);
 
 private:
+    std::vector<TreeNode*> m_children;
+    TreeView* m_treeView = nullptr;
+    TreeNode* m_parent = nullptr;
+
     bool m_bExpand = true;
     bool m_bMouseHover = false;
     bool m_bChecked = false;
 
-    TreeView *m_treeView = nullptr;
-    TreeNode *m_parent = nullptr;
-    std::vector<TreeNode *> m_children;
     int m_depth = 0;
-    //RectF m_rect;
-    //RectF m_rcExpandBtn;
     std::wstring m_text;
 
     static const float m_padding;

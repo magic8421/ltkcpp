@@ -9,6 +9,13 @@
 
 void CALLBACK MyEventCallback(void* userdata, LtkEvent *ev)
 {
+	static LPCSTR pszMenuNew = 0;
+	static LPCSTR pszMenuExit = 0;
+	if (!pszMenuNew) {
+		pszMenuNew = LtkInternString("menu_new");
+		pszMenuExit = LtkInternString("menu_exit");
+	}
+
 	switch (ev->id)
 	{
 	case LTK_WINDOW_DESTROY:
@@ -17,10 +24,10 @@ void CALLBACK MyEventCallback(void* userdata, LtkEvent *ev)
 	case LTK_MENU_CLICK:
 	{
 		LPCSTR name = LtkObject_GetName((LtkObject *)ev->sender); // TODO 是不是要把这个sender改为LtkObject类型？
-		if (strcmp(name, "menu_new") == 0) {
+		if (name == pszMenuNew) {
 			::MessageBox(0, L"新建", 0, 0);
 		}
-		else if (strcmp(name, "menu_exit") == 0) {
+		else if (name == pszMenuExit) {
 			::PostQuitMessage(0);
 		}
 	}
@@ -32,7 +39,7 @@ static int node_count = 0;
 
 static void RecBuildNodes(LtkTreeNode *parent, int depth)
 {
-	if (depth > 5) {
+	if (depth > 6) {
 		return;
 	}
 	int num = rand() % 13 + 3;

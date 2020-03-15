@@ -10,6 +10,7 @@
 #include "TreeView.h"
 #include "TextEdit.h"
 #include "MenuBar.h"
+#include "StyleManager.h"
 
 using namespace ltk;
 
@@ -42,6 +43,11 @@ LTK_API void WINAPI LtkFree(LtkObject *obj)
 {
 	Object *pobj = (Object *)obj;
 	delete pobj;
+}
+
+LTK_API LPCSTR WINAPI LtkInternString(LPCSTR str)
+{
+	return StyleManager::Instance()->InternString(str);
 }
 
 LTK_API void WINAPI LtkObject_SetName(LtkObject* o, LPCSTR name)

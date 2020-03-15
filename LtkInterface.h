@@ -37,6 +37,8 @@ typedef struct _LtkEvent {
 
 typedef void (CALLBACK *LtkCallback)(void* userdata, LtkEvent* ev);
 
+LTK_API LPCSTR WINAPI LtkInternString(LPCSTR str);
+
 LTK_API void WINAPI LtkObject_SetName(LtkObject* o, LPCSTR name);
 LTK_API LPCSTR WINAPI LtkObject_GetName(LtkObject* o);
 

@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "Object.h"
 #include "Common.h"
+#include "StyleManager.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW 
@@ -32,8 +33,6 @@ Object::Object()
 
 Object::~Object()
 {
-	free((void*)m_name);
-
 	// TODO lock for multithread.
 	auto iter = sObjectSet->find(this);
 	if (iter == sObjectSet->end()) {
@@ -67,8 +66,7 @@ void Object::DumpObjectLeaks()
 
 void Object::SetName(LPCSTR name)
 {
-	free((void*)m_name);
-	m_name = _strdup(name);
+	m_name = StyleManager::Instance()->InternString(name);
 }
 
 LPCSTR Object::GetName()
