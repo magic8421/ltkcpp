@@ -335,8 +335,10 @@ bool TreeView::OnLBtnDown(MouseEvent *ev)
 {
 	auto scroll = m_scrollAni.GetScroll();
 
-    int idx = (int)((ev->y + scroll) / m_itemHeight);
-    LTK_ASSERT((size_t)idx < m_vecLinear.size());
+    size_t idx = (size_t)((ev->y + scroll) / m_itemHeight);
+    if (idx >= m_vecLinear.size()) {
+        return false;
+    }
     m_vecLinear[idx]->OnLBtnDown(PointF(ev->x, ev->y), scroll, idx);
 
     this->Invalidate();

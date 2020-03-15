@@ -23,7 +23,7 @@ void CALLBACK MyEventCallback(void* userdata, LtkEvent *ev)
 		break;
 	case LTK_MENU_CLICK:
 	{
-		LPCSTR name = LtkObject_GetName((LtkObject *)ev->sender); // TODO 是不是要把这个sender改为LtkObject类型？
+		LPCSTR name = LtkObject_GetName(ev->sender);
 		if (name == pszMenuNew) {
 			::MessageBox(0, L"新建", 0, 0);
 		}
