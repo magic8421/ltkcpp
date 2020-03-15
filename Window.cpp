@@ -73,6 +73,11 @@ Window::~Window(void)
     m_atlas = INVALID_POINTER(ID2D1Bitmap);
 }
 
+void Window::Delete()
+{
+    delete this;
+}
+
 void Window::Create(Window *parent, RectF rc)
 {
     HWND hParent = NULL;
@@ -646,10 +651,10 @@ void Window::OnDestroy()
 {
 	SetDelegateInvoker(this);
 	this->DestroyDelegate();
-    LtkEvent ev = { 0 };
-    ev.id = LTK_WINDOW_DESTROY;
-    ev.sender = (LtkObject*)this;
-    FireEvent(&ev);
+    //LtkEvent ev = { 0 };
+    //ev.id = LTK_WINDOW_DESTROY;
+    //ev.sender = (LtkObject*)this;
+    //FireEvent(&ev);
 }
 
 HWND Window::Handle()

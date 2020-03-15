@@ -39,6 +39,29 @@ LTK_API void WINAPI LtkRunMessageLoop()
 	}
 }
 
+class LtkFacotry : public ILtkFactory
+{
+public:
+	void CreateWindow(HWND parent, LtkRect* rc, ILtkWindow** ppWnd) override {
+		RectF rcf = *(RectF*)rc;
+		auto wnd = new Window();
+		wnd->Create(nullptr, rcf);
+		*ppWnd = wnd;
+	}
+	void CreateWindowCentered(HWND parent, LtkSize* size, ILtkWindow** ppWnd) override {
+		SizeF sizef = *(SizeF*)size;
+		auto wnd = new Window();
+		wnd->Create(nullptr, sizef);
+		*ppWnd = wnd;
+	}
+};
+
+LTK_API void WINAPI LtkGetFactory(ILtkFactory** ppFactory)
+{
+	*ppFactory = new LtkFacotry;
+}
+
+/*
 LTK_API void WINAPI LtkFree(LtkObject *obj)
 {
 	Object *pobj = (Object *)obj;
@@ -477,3 +500,4 @@ LTK_API void WINAPI LtkPopupMenu_SetSubMenu(LtkPopupMenu* self, UINT idx, LtkPop
 	PopupMenu* thiz = (PopupMenu*)self;
 	thiz->SetSubMenu(idx, (PopupMenu*)popup);
 }
+*/

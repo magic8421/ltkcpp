@@ -6,21 +6,20 @@
 namespace ltk {
 
 
-class LTK_CPP_API Object : public RTTI
+class LTK_CPP_API Object : public RTTI, public ILtkObject
 {
 public:
 	RTTI_DECLARATIONS(Object, RTTI);
 
 	Object();
 	virtual ~Object();
+
+	void Delete() override;
+
 	static void Free();
 
 	static Object *GetDelegateInvoker();
 	static void SetDelegateInvoker(Object *);
-
-	void AddListener(void* userdata, LtkCallback callback);
-	void RemoveListener(void* userdata, LtkCallback callback);
-	void FireEvent(LtkEvent* ev);
 
 	void SetSourceLine(LPCSTR source, int line);
 	static bool CheckValid(Object* o);
@@ -30,12 +29,6 @@ public:
 	LPCSTR GetName();
 
 private:
-	struct CallbackInfo {
-		void* userdata = nullptr;
-		LtkCallback callback = nullptr;
-	};
-	std::vector<CallbackInfo> m_vecCallback;
-
 	LPCSTR m_name = nullptr;
 
 	const char* m_source = nullptr; // 好像没必要 外部使用者应该用umdh来查内存泄漏

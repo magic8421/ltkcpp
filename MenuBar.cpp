@@ -268,11 +268,11 @@ bool PopupMenu::OnKillFocus(FocusEvent* ev)
 
 void PopupMenu::SendClickEvent(MenuItem *item)
 {
-	LtkEvent ev;
-	ev.id = LTK_MENU_CLICK;
-	ev.sender = (LtkObject*)item;
-	auto wnd = this->GetWindow(); // TODO 感觉这样过于简单了
-	wnd->FireEvent(&ev);
+	//LtkEvent ev;
+	//ev.id = LTK_MENU_CLICK;
+	//ev.sender = (LtkObject*)item;
+	//auto wnd = this->GetWindow(); // TODO 感觉这样过于简单了
+	//wnd->FireEvent(&ev);
 
 	/*auto popup = this;
 	while (popup->m_parent) {

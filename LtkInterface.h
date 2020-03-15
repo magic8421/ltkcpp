@@ -10,22 +10,41 @@
 extern "C" {
 #endif
 
-#define LTK_DECLARE_TYPE(type) \
- typedef struct _##type { \
-	int dummy; \
-} type
-
-typedef struct _LtkRect {
+struct LtkRect {
 	float x;
 	float y;
 	float w;
 	float h;
-} LtkRect;
+};
+
+struct LtkSize {
+	float width;
+	float height;
+};
 
 LTK_API UINT WINAPI LtkInitialize();
 LTK_API void WINAPI LtkUninitialize();
 LTK_API void WINAPI LtkRunMessageLoop();
 
+#undef CreateWindow
+
+struct ILtkObject {
+	virtual void Delete() = 0;
+};
+
+struct ILtkWindow : public ILtkObject {
+
+};
+
+struct ILtkFactory {
+	virtual void CreateWindow(HWND parent, LtkRect* rc, ILtkWindow** ppWnd) = 0;
+	virtual void CreateWindowCentered(HWND parent, LtkSize* size, ILtkWindow** ppWnd) = 0;
+};
+
+LTK_API void WINAPI LtkGetFactory(ILtkFactory **ppFactory);
+
+
+/*
 LTK_DECLARE_TYPE(LtkObject);
 
 LTK_API void WINAPI LtkFree(LtkObject *);
@@ -203,6 +222,7 @@ LTK_API void WINAPI LtkPopupMenu_AddItem(LtkPopupMenu* self, LPCWSTR text, LPCST
 LTK_API void WINAPI LtkPopupMenu_AddSeparator(LtkPopupMenu* self);
 LTK_API void WINAPI LtkPopupMenu_SetWidth(LtkPopupMenu* self, float width);
 LTK_API void WINAPI LtkPopupMenu_SetSubMenu(LtkPopupMenu* self, UINT idx, LtkPopupMenu* popup);
+*/
 
 #ifdef __cplusplus
 } // extern "C"

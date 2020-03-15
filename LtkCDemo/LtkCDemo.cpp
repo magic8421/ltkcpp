@@ -6,6 +6,7 @@
 #include "LtkCDemo.h"
 #include "LtkInterface.h"
 
+/*
 
 void CALLBACK MyEventCallback(void* userdata, LtkEvent *ev)
 {
@@ -167,5 +168,26 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	LtkUninitialize();
 	return 0;
 }
+*/
 
 
+
+
+int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
+	_In_opt_ HINSTANCE hPrevInstance,
+	_In_ LPWSTR    lpCmdLine,
+	_In_ int       nCmdShow)
+{
+	LtkInitialize();
+
+	ILtkFactory* factory = NULL;
+	LtkGetFactory(&factory);
+	LtkSize size{ 500.f, 400.f };
+	ILtkWindow* window = NULL;
+	factory->CreateWindowCentered(NULL, &size, &window);
+
+	LtkRunMessageLoop();
+
+	LtkUninitialize();
+	return 0;
+}

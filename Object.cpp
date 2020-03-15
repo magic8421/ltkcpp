@@ -41,6 +41,11 @@ Object::~Object()
 	sObjectSet->erase(iter);
 }
 
+void Object::Delete()
+{
+	delete this;
+}
+
 void Object::Free()
 {
 	delete sObjectSet;
@@ -80,23 +85,6 @@ bool Object::CheckValid(Object* o)
 	return sObjectSet->find(o) != sObjectSet->end();
 }
 
-void Object::AddListener(void* userdata, LtkCallback callback)
-{
-	CallbackInfo info{ userdata, callback };
-	m_vecCallback.push_back(info);
-}
 
-void Object::RemoveListener(void* userdata, LtkCallback callback)
-{
-	LTK_ASSERT(false);
-}
-
-void Object::FireEvent(LtkEvent* ev)
-{
-	for (const auto& info : m_vecCallback)
-	{
-		info.callback(info.userdata, ev);
-	}
-}
 
 } // namespace ltk

@@ -21,7 +21,7 @@ class WindowLayout;
 class AbstractBackground;
 class MenuBar;
 
-class LTK_CPP_API Window : public Object
+class LTK_CPP_API Window : public Object, public ILtkWindow
 {
 public:
 	RTTI_DECLARATIONS(Window, Object);
@@ -35,6 +35,8 @@ public:
 	 * 窗口析构函数
 	 */
     virtual ~Window(void);
+
+	void Delete() override;
 
 	/**
 	 * 创建窗口
