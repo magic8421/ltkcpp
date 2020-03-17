@@ -50,6 +50,78 @@ LTK_DECLARE_TYPE(LtkWindow); // 基类：LtkObject
 
 LTK_DECLARE_TYPE(LtkSprite); // 基类：LtkObject
 
+#define LTK_CREATE			1
+#define LTK_DESTROY			2
+#define LTK_PAINT			3
+#define LTK_SIZE			4
+
+#define LTK_MOUSE_FIRST			10
+#define LTK_MOUSE_MOVE			10
+#define LTK_MOUSE_LEAVE			11
+#define LTK_MOUSE_WHEEL			12
+#define LTK_LBUTTON_DOWN		13
+#define LTK_LBUTTON_UP			14
+#define LTK_LBUTTON_DBCLICK		15
+#define LTK_RBUTTON_DOWN		16
+#define LTK_RBUTTON_UP			17
+#define LTK_MOUSE_LAST			17
+
+#define LTK_KEY_DOWN			20
+#define LTK_KEY_UP				21
+#define LTK_CHAR				22
+#define LTK_IME_INPUT			23
+
+#define LTK_SET_FOCUS			30
+#define LTK_KILL_FOCUS			31
+
+typedef struct _LtkMouseEvent
+{
+	LtkEvent hdr;
+	float x;
+	float y;
+	UINT flag;		// ctrl shift atl
+	float delta;	// wheel
+} LtkMouseEvent;
+
+typedef struct _LtkDelegateMouseEvent
+{
+	LtkEvent hdr;
+	LtkMouseEvent* data;
+	BOOL bHandled;
+} LtkDelegateMouseEvent;
+
+typedef struct _LtkKeyEvent
+{
+	LtkEvent hdr;
+	DWORD keyCode;
+	DWORD flag;
+} LtkKeyEvent;
+
+typedef struct _LtkPaintEvent
+{
+	LtkEvent hdr;
+	ID2D1RenderTarget* target;
+} LtkPaintEvent;
+
+typedef struct _LtkSizeEvent
+{
+	LtkEvent hdr;
+	float width;
+	float height;
+} LtkSizeEvent;
+
+typedef struct _LtkImeEvent
+{
+	LtkEvent hdr;
+	LPCWSTR text;
+} LtkImeEvent;
+
+typedef struct _LtkFocusEvent
+{
+	LtkEvent hdr;
+	LtkSprite* oldFocus;
+} LtkFocusEvent;
+
 LTK_DECLARE_TYPE(LtkMenuBar); // 基类：LtkSprite
 LTK_DECLARE_TYPE(LtkPopupMenu); // 基类：LtkSprite
 
