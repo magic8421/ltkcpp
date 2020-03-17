@@ -101,6 +101,9 @@ protected:
     virtual void OnParentChanged(Sprite *old, Sprite *new_){}
     virtual void OnThemeChanged() {}
 
+    bool ConvertToExternEvent(Event* pev1, LtkEvent** ppev2);
+
+
 private:
 	bool m_bVisible;
 	bool m_bClipChildren; // TODO this one is useless

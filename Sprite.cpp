@@ -134,7 +134,7 @@ void Sprite::HandlePaint( ID2D1RenderTarget *target )
     PaintEvent ev;
     ev.id = ePaint;
     ev.target = target;
-    OnPaint(&ev);
+    OnEvent(&ev);
 
     for (size_t i = 0; i < m_children.size(); i++) {
         auto sp = m_children[i];
@@ -370,6 +370,9 @@ bool Sprite::OnEvent(Event *ev)
 
     switch (id)
     {
+    case ePaint:
+        bHandled = OnPaint(static_cast<PaintEvent*>(ev));
+        break;
     case eMouseMove:
         bHandled = OnMouseMove(static_cast<MouseEvent*>(ev));
         break;
@@ -415,7 +418,32 @@ bool Sprite::OnEvent(Event *ev)
     default:
         bHandled = false;
     }
+    if (!bHandled) {
+        LtkEvent* pev2 = NULL;
+        if (ConvertToExternEvent(ev, &pev2)) {
+            this->FireEvent(pev2);
+            free((void*)pev2);
+        }
+    }
 	return bHandled;
+}
+
+bool Sprite::ConvertToExternEvent(Event* pev1, LtkEvent** ppev2)
+{
+    switch (pev1->id) {
+    case ePaint:
+        {
+        LtkPaintEvent* ev2 = (LtkPaintEvent*)malloc(sizeof(LtkPaintEvent));
+        ev2->hdr.id = LTK_PAINT;
+        ev2->hdr.sender = (LtkObject*)this;
+        ev2->target = ((PaintEvent*)pev1)->target;
+        *ppev2 = (LtkEvent*) ev2;
+        }
+        return true;
+
+    }
+    return false;
+
 }
 
 void Sprite::HandleRecreateResouce(ID2D1RenderTarget *target)

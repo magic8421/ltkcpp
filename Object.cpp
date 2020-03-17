@@ -93,6 +93,8 @@ void Object::RemoveListener(void* userdata, LtkCallback callback)
 
 BOOL Object::FireEvent(LtkEvent* ev)
 {
+	if (m_vecCallback.size() == 0)
+		return FALSE;
 	for (m_currentCallback = m_vecCallback.size() - 1;
 		m_currentCallback > 0; m_currentCallback--);
 	{
@@ -106,7 +108,9 @@ BOOL Object::FireEvent(LtkEvent* ev)
 
 BOOL Object::CallNextEventHandler(LtkEvent* ev)
 {
-	for (; m_currentCallback > 0; m_currentCallback--);
+	if (m_vecCallback.size() == 0)
+		return FALSE;
+	for (;	m_currentCallback > 0; m_currentCallback--);
 	{
 		const CallbackInfo& info = m_vecCallback[m_currentCallback];
 		if (info.callback(info.userdata, ev)) {

@@ -104,7 +104,9 @@ public:
     void SetTextFormat(LPCSTR style);
 
 protected:
-    virtual bool OnPaint(PaintEvent *ev) override;
+    static BOOL CALLBACK SpriteEventHandler(void *userdata, LtkEvent *ev);
+    BOOL TreeView::OnPaint(LtkPaintEvent* ev);
+
     virtual bool OnSize(SizeEvent *ev) override;
     virtual bool OnLBtnDown(MouseEvent *ev) override;
     virtual bool OnMouseWheel(MouseEvent *ev) override;

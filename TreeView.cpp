@@ -157,6 +157,7 @@ TreeView::TreeView() :
     m_root.SetTreeView(this);
     m_vsb = new ScrollBar(ltk::Vertical);
     this->AddChild(m_vsb);
+    this->AddListener(this, SpriteEventHandler);
 }
 
 TreeView::~TreeView()
@@ -287,7 +288,19 @@ void TreeView::SetTextFormat(LPCSTR style)
     this->m_szTextFormat = StyleManager::Instance()->InternString(style);
 }
 
-bool TreeView::OnPaint(PaintEvent *ev)
+BOOL TreeView::SpriteEventHandler(void* userdata, LtkEvent* ev)
+{
+    TreeView* self = (TreeView*)userdata;
+    switch (ev->id)
+    {
+    case LTK_PAINT:
+        return self->OnPaint((LtkPaintEvent*)ev);
+    default:
+        return FALSE;
+    }
+}
+
+BOOL TreeView::OnPaint(LtkPaintEvent *ev)
 {
     if (m_bDirty) {
         this->DoLayout();
@@ -304,7 +317,7 @@ bool TreeView::OnPaint(PaintEvent *ev)
     for (UINT i = begin; i < end && i < m_vecLinear.size(); i++) {
         m_vecLinear[i]->OnPaint(ev->target, m_scrollAni.GetScroll(), i);
     }
-    return true;
+    return TRUE;
 }
 
 void TreeView::RecreateResouce(ID2D1RenderTarget *target)

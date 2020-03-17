@@ -97,6 +97,8 @@ typedef struct _LtkKeyEvent
 	DWORD flag;
 } LtkKeyEvent;
 
+struct ID2D1RenderTarget;
+
 typedef struct _LtkPaintEvent
 {
 	LtkEvent hdr;
