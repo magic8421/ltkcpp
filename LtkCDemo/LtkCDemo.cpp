@@ -163,7 +163,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 	LtkRunMessageLoop();
 
-	LtkFree((LtkObject *)wnd);
+	LtkFree(wnd);
 	LtkUninitialize();
 	return 0;
 }

@@ -8,3 +8,12 @@
 /LtkCDemo/res
 *.log
 /docs/html
+/LtkCDemo/Release
+/.vs/ltkcpp_no_pimpl/v16
+/ipch/ltkcpp-f06e2f42/*.ipch
+/ipch/ltkcdemo-fe090cf6/*.ipch
+/*.sdf
+/*.db
+/*.pdb
+/*.vspx
+/x64/Debug/ltkcpp.tlog

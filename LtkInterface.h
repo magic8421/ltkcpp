@@ -1,7 +1,7 @@
 #pragma once
 
 #ifdef LTK_EXPORTS
-#define LTK_API __declspec(dllexport)
+#define LTK_API
 #else
 #define LTK_API __declspec(dllimport)
 #endif
@@ -145,10 +145,10 @@ LTK_API LtkObject* WINAPI LtkSplitter_New_(UINT orientation, LPCSTR source, int 
 
 LTK_API void WINAPI LtkSplitter_Resize(LtkSplitter* self, UINT n);
 LTK_API LtkSprite* WINAPI LtkSplitter_SetClientAt(LtkSplitter* self, UINT idx, LtkSprite* sp);
-LTK_API LtkSplitter* WINAPI LtkSplitter_GetClientAt(LtkSplitter* self, UINT idx);
-LTK_API	UINT WINAPI LtkSplitter_GetClientCount(LtkSplitter* self);
+//LTK_API LtkSplitter* WINAPI LtkSplitter_GetClientAt(LtkSplitter* self, UINT idx);
+//LTK_API	UINT WINAPI LtkSplitter_GetClientCount(LtkSplitter* self);
 LTK_API void WINAPI LtkSplitter_SetClientSize(LtkSplitter* self, UINT idx, float size);
-LTK_API float WINAPI LtkSplitter_GetClientSize(LtkSplitter* self, UINT idx);
+//LTK_API float WINAPI LtkSplitter_GetClientSize(LtkSplitter* self, UINT idx);
 
 LTK_DECLARE_TYPE(LtkTreeView); // »ùÀà£ºLtkSprite
 
