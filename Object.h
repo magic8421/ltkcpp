@@ -20,7 +20,8 @@ public:
 
 	void AddListener(void* userdata, LtkCallback callback);
 	void RemoveListener(void* userdata, LtkCallback callback);
-	void FireEvent(LtkEvent* ev);
+	BOOL FireEvent(LtkEvent* ev);
+	BOOL CallNextEventHandler(LtkEvent* ev);
 
 	void SetSourceLine(LPCSTR source, int line);
 	static bool CheckValid(Object* o);
@@ -35,6 +36,7 @@ private:
 		LtkCallback callback = nullptr;
 	};
 	std::vector<CallbackInfo> m_vecCallback;
+	int m_currentCallback = -1;
 
 	LPCSTR m_name = nullptr;
 

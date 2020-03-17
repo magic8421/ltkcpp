@@ -91,12 +91,29 @@ void Object::RemoveListener(void* userdata, LtkCallback callback)
 	LTK_ASSERT(false);
 }
 
-void Object::FireEvent(LtkEvent* ev)
+BOOL Object::FireEvent(LtkEvent* ev)
 {
-	for (const auto& info : m_vecCallback)
+	for (m_currentCallback = m_vecCallback.size() - 1;
+		m_currentCallback > 0; m_currentCallback--);
 	{
-		info.callback(info.userdata, ev);
+		const CallbackInfo& info = m_vecCallback[m_currentCallback];
+		if (info.callback(info.userdata, ev)) {
+			return TRUE;
+		}
 	}
+	return FALSE;
+}
+
+BOOL Object::CallNextEventHandler(LtkEvent* ev)
+{
+	for (; m_currentCallback > 0; m_currentCallback--);
+	{
+		const CallbackInfo& info = m_vecCallback[m_currentCallback];
+		if (info.callback(info.userdata, ev)) {
+			return TRUE;
+		}
+	}
+	return FALSE;
 }
 
 } // namespace ltk

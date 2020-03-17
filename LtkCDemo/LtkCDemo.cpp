@@ -7,7 +7,7 @@
 #include "LtkInterface.h"
 
 
-void CALLBACK MyEventCallback(void* userdata, LtkEvent *ev)
+BOOL CALLBACK MyEventCallback(void* userdata, LtkEvent *ev)
 {
 	static LPCSTR pszMenuNew = 0;
 	static LPCSTR pszMenuExit = 0;
@@ -33,6 +33,7 @@ void CALLBACK MyEventCallback(void* userdata, LtkEvent *ev)
 	}
 		break;
 	}
+	return FALSE;
 }
 
 static int node_count = 0;
