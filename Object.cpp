@@ -80,44 +80,48 @@ bool Object::CheckValid(Object* o)
 	return sObjectSet->find(o) != sObjectSet->end();
 }
 
-void Object::AddListener(void* userdata, LtkCallback callback)
+void Object::AddNotifyCallback(void* userdata, LtkCallback callback)
 {
 	CallbackInfo info{ userdata, callback };
 	m_vecCallback.push_back(info);
 }
 
-void Object::RemoveListener(void* userdata, LtkCallback callback)
+void Object::RemoveNotifyCallback(void* userdata, LtkCallback callback)
 {
 	LTK_ASSERT(false);
 }
 
-BOOL Object::FireEvent(LtkEvent* ev)
+BOOL Object::DispatchNotify(LtkEvent* ev)
 {
-	if (m_vecCallback.size() == 0)
-		return FALSE;
-	for (m_currentCallback = m_vecCallback.size() - 1;
-		m_currentCallback > 0; m_currentCallback--);
-	{
-		const CallbackInfo& info = m_vecCallback[m_currentCallback];
-		if (info.callback(info.userdata, ev)) {
-			return TRUE;
-		}
+	for (const auto& info : m_vecCallback) {
+		info.callback(info.userdata, ev);
 	}
 	return FALSE;
 }
 
-BOOL Object::CallNextEventHandler(LtkEvent* ev)
+void Object::SetEventCallback(void* userdata, LtkCallback callback)
 {
-	if (m_vecCallback.size() == 0)
-		return FALSE;
-	for (;	m_currentCallback > 0; m_currentCallback--);
-	{
-		const CallbackInfo& info = m_vecCallback[m_currentCallback];
-		if (info.callback(info.userdata, ev)) {
-			return TRUE;
-		}
-	}
-	return FALSE;
+	m_virtualContext = userdata;
+	m_virtualHandler = callback;
 }
+
+void* Object::GetEventContext()
+{
+	return m_virtualContext;
+}
+
+LtkCallback Object::GetEventCallback()
+{
+	return m_virtualHandler;
+}
+
+BOOL Object::CallEventCallback(LtkEvent* ev)
+{
+	if (!m_virtualContext)
+		return FALSE;
+	return m_virtualHandler(m_virtualContext, ev);
+}
+
+
 
 } // namespace ltk

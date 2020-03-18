@@ -421,7 +421,7 @@ bool Sprite::OnEvent(Event *ev)
     if (!bHandled) {
         LtkEvent* pev2 = NULL;
         if (ConvertToExternEvent(ev, &pev2)) {
-            this->FireEvent(pev2);
+            this->CallEventCallback(pev2);
             free((void*)pev2);
         }
     }

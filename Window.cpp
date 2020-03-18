@@ -649,7 +649,7 @@ void Window::OnDestroy()
     LtkEvent ev = { 0 };
     ev.id = LTK_WINDOW_DESTROY;
     ev.sender = (LtkObject*)this;
-    FireEvent(&ev);
+    DispatchNotify(&ev);
 }
 
 HWND Window::Handle()

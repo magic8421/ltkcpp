@@ -157,7 +157,7 @@ TreeView::TreeView() :
     m_root.SetTreeView(this);
     m_vsb = new ScrollBar(ltk::Vertical);
     this->AddChild(m_vsb);
-    this->AddListener(this, SpriteEventHandler);
+    this->SetEventCallback(this, SpriteEventHandler);
 }
 
 TreeView::~TreeView()

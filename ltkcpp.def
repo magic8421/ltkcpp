@@ -8,8 +8,8 @@ EXPORTS
 	LtkInternString
 	LtkObject_SetName
 	LtkObject_GetName
-	LtkObject_AddListener
-	LtkObject_RemoveListener
+	LtkObject_AddNotifyCallback
+	LtkObject_RemoveNotifyCallback
 	LtkIsSprite
 	LtkIsWindow
 	LtkWindow_New_

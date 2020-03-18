@@ -18,10 +18,14 @@ public:
 	static Object *GetDelegateInvoker();
 	static void SetDelegateInvoker(Object *);
 
-	void AddListener(void* userdata, LtkCallback callback);
-	void RemoveListener(void* userdata, LtkCallback callback);
-	BOOL FireEvent(LtkEvent* ev);
-	BOOL CallNextEventHandler(LtkEvent* ev);
+	void AddNotifyCallback(void* userdata, LtkCallback callback);
+	void RemoveNotifyCallback(void* userdata, LtkCallback callback);
+	BOOL DispatchNotify(LtkEvent* ev);
+
+	void SetEventCallback(void* userdata, LtkCallback callback);
+	void *GetEventContext();
+	LtkCallback GetEventCallback();
+	BOOL CallEventCallback(LtkEvent* ev);
 
 	void SetSourceLine(LPCSTR source, int line);
 	static bool CheckValid(Object* o);
@@ -36,7 +40,8 @@ private:
 		LtkCallback callback = nullptr;
 	};
 	std::vector<CallbackInfo> m_vecCallback;
-	int m_currentCallback = -1;
+	LtkCallback m_virtualHandler = nullptr;
+	void* m_virtualContext = nullptr;
 
 	LPCSTR m_name = nullptr;
 

@@ -67,7 +67,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 	LtkObject* wnd = LtkWindow_New();
 	//LtkWindow_SetBackground(wnd, "window_bg");
-	LtkObject_AddListener(
+	LtkObject_AddNotifyCallback(
 		(LtkObject*)wnd, NULL, MyEventCallback);
 
 	LtkObject* splitter_h = LtkSplitter_New(LTK_HORIZONTAL);

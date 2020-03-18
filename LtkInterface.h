@@ -42,8 +42,8 @@ LTK_API LPCSTR WINAPI LtkInternString(LPCSTR str);
 LTK_API void WINAPI LtkObject_SetName(LtkObject* o, LPCSTR name);
 LTK_API LPCSTR WINAPI LtkObject_GetName(LtkObject* o);
 
-LTK_API void WINAPI LtkObject_AddListener(LtkObject* o, void* userdata, LtkCallback callback);
-LTK_API void WINAPI LtkObject_RemoveListener(LtkObject* o, void* userdata, LtkCallback callback);
+LTK_API void WINAPI LtkObject_AddNotifyCallback(LtkObject* o, void* userdata, LtkCallback callback);
+LTK_API void WINAPI LtkObject_RemoveNotifyCallback(LtkObject* o, void* userdata, LtkCallback callback);
 
 
 LTK_DECLARE_TYPE(LtkWindow); // »ùÀà£ºLtkObject

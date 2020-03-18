@@ -272,7 +272,7 @@ void PopupMenu::SendClickEvent(MenuItem *item)
 	ev.id = LTK_MENU_CLICK;
 	ev.sender = (LtkObject*)item;
 	auto wnd = this->GetWindow(); // TODO 感觉这样过于简单了
-	wnd->FireEvent(&ev);
+	wnd->DispatchNotify(&ev);
 
 	/*auto popup = this;
 	while (popup->m_parent) {
