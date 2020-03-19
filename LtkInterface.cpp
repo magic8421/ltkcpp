@@ -112,7 +112,7 @@ LTK_API void WINAPI LtkWindow_Create(
 	if (parent) {
 		p2 = (Window*)parent;
 	}
-	Gdiplus::RectF rcf(rc->x, rc->y, rc->w, rc->h);
+	Gdiplus::RectF rcf(rc->x, rc->y, rc->width, rc->height);
 	Window *thiz = (Window *)self;
 	thiz->Create(p2, rcf);
 }
@@ -158,6 +158,12 @@ LTK_API void WINAPI LtkWindow_SetMenu(LtkWindow* self, LtkMenuBar* menu)
 {
 	Window* thiz = (Window*)self;
 	thiz->SetMenu((MenuBar*)menu);
+}
+
+LTK_API HWND WINAPI LtkWindow_GetHWND(LtkWindow* self)
+{
+	Window* thiz = (Window*)self;
+	return thiz->Handle();
 }
 
 

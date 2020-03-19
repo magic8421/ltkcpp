@@ -4,7 +4,6 @@
 #include "pch.h"
 #include "framework.h"
 #include "LtkCDemo.h"
-#include "LtkInterface.h"
 
 
 BOOL CALLBACK MyEventCallback(void* userdata, LtkEvent *ev)
@@ -65,10 +64,26 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 {
 	LtkInitialize();
 
+	MainWindow *main_wnd = new MainWindow;
+	main_wnd->Create();
+	LtkRunMessageLoop();
+	delete main_wnd;
+
+	LtkUninitialize();
+	return 0;
+}
+
+MainWindow::~MainWindow() 
+{
+	LtkFree(m_window);
+}
+
+void MainWindow::Create()
+{
 	LtkObject* wnd = LtkWindow_New();
+	m_window = wnd;
 	//LtkWindow_SetBackground(wnd, "window_bg");
-	LtkObject_AddNotifyCallback(
-		(LtkObject*)wnd, NULL, MyEventCallback);
+	LtkObject_AddNotifyCallback(wnd, this, MainWindow::WindowHandler);
 
 	LtkObject* splitter_h = LtkSplitter_New(LTK_HORIZONTAL);
 	LtkWindow_SetClientSprite(LTK_WINDOW(wnd), LTK_SPRITE(splitter_h));
@@ -112,7 +127,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 	LtkSplitter_SetClientAt(LTK_SPLITTER(splitter_v), 0, LTK_SPRITE(list_view));
 	LtkSplitter_SetClientSize(LTK_SPLITTER(splitter_v), 0, 350);
-	
+
 	LtkObject* text_edit = LtkTextEdit_New();
 	LtkSplitter_SetClientAt(LTK_SPLITTER(splitter_v), 1, LTK_SPRITE(text_edit));
 
@@ -162,11 +177,37 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	LtkWindow_SetCaption(LTK_WINDOW(wnd), L"Ltk测试窗口");
 	LtkWindow_UpdateTheme(LTK_WINDOW(wnd));
 
-	LtkRunMessageLoop();
+}
 
-	LtkFree(wnd);
-	LtkUninitialize();
+BOOL MainWindow::OnMenuClick(LtkEvent* ev)
+{
+	LPCSTR name = LtkObject_GetName(ev->sender);
+	static LPCSTR pszMenuNew = 0;
+	static LPCSTR pszMenuExit = 0;
+	if (!pszMenuNew) {
+		pszMenuNew = LtkInternString("menu_new");
+		pszMenuExit = LtkInternString("menu_exit");
+	}
+	if (name == pszMenuNew) {
+		::MessageBox(LtkWindow_GetHWND(LTK_WINDOW(m_window)), L"新建", 0, 0);
+	}
+	else if (name == pszMenuExit) {
+		::PostQuitMessage(0);
+	}
 	return 0;
 }
 
+BOOL MainWindow::OnWindowClose(LtkEvent* ev)
+{
+	if (::MessageBox(LtkWindow_GetHWND(LTK_WINDOW(m_window)),
+		L"确定退出吗？", NULL, MB_OKCANCEL) == IDOK) {
+			return TRUE;
+	}
+	return FALSE;
+}
 
+BOOL MainWindow::OnWindowDestroy(LtkEvent* ev)
+{
+	::PostQuitMessage(0);
+	return 0;
+}

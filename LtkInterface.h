@@ -18,8 +18,8 @@ extern "C" {
 typedef struct _LtkRect {
 	float x;
 	float y;
-	float w;
-	float h;
+	float width;
+	float height;
 } LtkRect;
 
 LTK_API UINT WINAPI LtkInitialize();
@@ -133,13 +133,13 @@ typedef struct _LtkRecreateResource {
 } LtkRecreateResource;
 
 #define LTK_CALLBACK_BEGIN(klass, name) \
-	static BOOL CALLBACK klass::name(void* userdata, LtkEvent* ev) { \
+	static BOOL CALLBACK name(void* userdata, LtkEvent* ev) { \
 		klass* self = (klass*)userdata; \
 		switch (ev->id) {
 
 #define LTK_CALLBACK_END() \
+		default: return FALSE; \
 		} \
-		return FALSE; \
 	}
 
 #define LTK_HANDLE_PAINT(func) \
@@ -168,11 +168,15 @@ LTK_DECLARE_TYPE(LtkPopupMenu); // 基类：LtkSprite
 #define LTK_SPRITE(o) LtkIsSprite(o) ? (LtkSprite*)o : NULL
 LTK_API BOOL WINAPI LtkIsSprite(LtkObject* o);
 
-// void CALLBACK OnWindowDestory(void* userdata)
-#define LTK_WINDOW_DESTROY		100
+#define LTK_WINDOW_DESTROY		101
 
-// void CALLBACK OnWindowClose(void* userdata, BOOL *pProceed);
-#define LTK_WINDOW_CLOSE		101
+#define LTK_HANDLE_WINDOW_DESTROY(func) \
+	case LTK_WINDOW_DESTROY: return self->func(ev);
+
+#define LTK_WINDOW_CLOSE		102
+
+#define LTK_HANDLE_WINDOW_CLOSE(func) \
+	case LTK_WINDOW_CLOSE: return self->func(ev);
 
 #define LTK_WINDOW(o) LtkIsWindow(o) ? (LtkWindow*)o : NULL
 LTK_API BOOL WINAPI LtkIsWindow(LtkObject* o);
@@ -187,6 +191,7 @@ LTK_API void WINAPI LtkWindow_SetBackground(LtkWindow* self, LPCSTR name);
 LTK_API void WINAPI LtkWindow_UpdateTheme(LtkWindow* self);
 LTK_API void WINAPI LtkWindow_SetClientSprite(LtkWindow* self, LtkSprite* sp);
 LTK_API void WINAPI LtkWindow_SetMenu(LtkWindow* self, LtkMenuBar* menu);
+LTK_API HWND WINAPI LtkWindow_GetHWND(LtkWindow* self);
 
 LTK_DECLARE_TYPE(LtkBoxLayout); // 基类：LtkSprite
 
@@ -264,9 +269,6 @@ LTK_API void WINAPI LtkSplitter_SetClientSize(LtkSplitter* self, UINT idx, float
 
 LTK_DECLARE_TYPE(LtkTreeView); // 基类：LtkSprite
 
-// void CALLBACK OnTreeViewSelectChange(void* userdata, LtkTreeNode* node, LtkTreeNode* oldNode)
-#define LTK_TREEVIEW_SELECT_CHANGE		401
-
 #define LTK_TREEVIEW(o) LtkIsTreeView(o) ? (LtkTreeView*)o : NULL
 LTK_API BOOL WINAPI LtkIsTreeView(LtkObject* o);
 
@@ -276,6 +278,19 @@ LTK_API LtkObject* WINAPI LtkTreeView_New_(LPCSTR source, int line);
 LTK_DECLARE_TYPE(LtkTreeNode); // 基类：LtkObject
 
 LTK_API LtkObject* WINAPI LtkTreeView_GetRootNode(LtkTreeView* self);
+
+#define LTK_TREEVIEW_FIRST 500
+#define LTK_TREEVIEW_SELECT_CHANGE (LTK_TREEVIEW_FIRST + 1)
+
+typedef struct _LtkTreeViewSelectChange {
+	LtkEvent hdr;
+	LtkTreeNode* old;
+	LtkTreeNode* new_;
+} LtkTreeViewSelectChange;
+
+#define LTK_HANDLE_TREEVIEW_SELECT_CHANGE(func) \
+	case LTK_TREEVIEW_SELECT_CHANGE: return self->func((LtkTreeViewSelectChange*)ev);
+
 
 #define LTK_TREENODE(o) LtkIsTreeNode(o) ? (LtkTreeNode*)o : NULL
 LTK_API BOOL WINAPI LtkIsTreeNode(LtkObject* o);
@@ -294,7 +309,12 @@ LTK_API BOOL WINAPI LtkIsTextEdit(LtkObject* o);
 #define LtkTextEdit_New() LtkTextEdit_New_(  __FILE__, __LINE__)
 LTK_API LtkObject* WINAPI LtkTextEdit_New_(LPCSTR source, int line);
 
+LTK_DECLARE_TYPE(LtkMenuItem);
+
 #define LTK_MENU_CLICK 501
+
+#define LTK_HANDLE_MENU_CLICK(func) \
+	case LTK_MENU_CLICK: return self->func(ev);
 
 #define LTK_MENUBAR(o) LtkIsMenuBar(o) ? (LtkMenuBar*)o : NULL
 LTK_API BOOL WINAPI LtkIsMenuBar(LtkObject* o);

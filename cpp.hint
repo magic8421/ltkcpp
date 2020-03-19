@@ -4,3 +4,5 @@
 #define LTK_CPP_API __declspec(dllexport)
 #define LTK_CPP_API __declspec(dllimport)
 #define RTTI_DECLARATIONS(Type, ParentType)
+#define LTK_CALLBACK_BEGIN(klass, name) static BOOL CALLBACK name(void* userdata, LtkEvent* ev) { klass* self = (klass*)userdata; switch (ev->id) {
+#define LTK_CALLBACK_END() } return FALSE; }

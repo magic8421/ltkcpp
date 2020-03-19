@@ -93,8 +93,11 @@ void Object::RemoveNotifyCallback(void* userdata, LtkCallback callback)
 
 BOOL Object::DispatchNotify(LtkEvent* ev)
 {
+	// TODO 反序是不是更好？
 	for (const auto& info : m_vecCallback) {
-		info.callback(info.userdata, ev);
+		if (info.callback(info.userdata, ev)) {
+			return TRUE;
+		}
 	}
 	return FALSE;
 }

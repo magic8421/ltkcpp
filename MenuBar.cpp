@@ -344,9 +344,6 @@ bool PopupMenu::OnLBtnDown(MouseEvent* ev)
 		return true;
 	}
 	if (!item->sub_menu) {
-		SetDelegateInvoker(this);
-		item->ClickedDelegate();
-
 		SendClickEvent(item);
 	}
 	int tracking = m_trackingIdx;

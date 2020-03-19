@@ -25,8 +25,6 @@ public:
 
 	enum class Type {Normal, Icon, Check, Radio};
 
-	MulticastDelegate0 ClickedDelegate;
-
 private:
 	Type type = Type::Normal;
 	std::wstring text;

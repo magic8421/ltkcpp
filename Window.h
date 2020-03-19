@@ -10,7 +10,7 @@
 #include "ShadowFrame.h"
 #include "Event.h"
 #include "ImeInput.h"
-#include "MulticastDelegate.h"
+#include "Delegate/MulticastDelegate.h"
 #include "Object.h"
 
 namespace ltk {
@@ -119,7 +119,6 @@ public:
 
 public:
 	MulticastDelegate1<BOOL*> CloseDelegate;
-	MulticastDelegate0 DestroyDelegate;
 
 private:
 	void HandleMouseMessage(UINT message, WPARAM wparam, LPARAM lparam);

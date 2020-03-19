@@ -20,6 +20,7 @@ EXPORTS
 	LtkWindow_UpdateTheme
 	LtkWindow_SetClientSprite
 	LtkWindow_SetMenu
+	LtkWindow_GetHWND
 	LtkIsBoxLayout
 	LtkBoxLayout_New_
 	LtkBoxLayout_AddLayoutItem

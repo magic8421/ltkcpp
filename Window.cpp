@@ -640,12 +640,15 @@ void Window::OnClose(BOOL* proceed)
 {
 	SetDelegateInvoker(this);
 	this->CloseDelegate(proceed);
+
+    LtkEvent ev = { 0 };
+    ev.id = LTK_WINDOW_CLOSE;
+    ev.sender = (LtkObject*)this;
+    *proceed = DispatchNotify(&ev);
 }
 
 void Window::OnDestroy()
 {
-	SetDelegateInvoker(this);
-	this->DestroyDelegate();
     LtkEvent ev = { 0 };
     ev.id = LTK_WINDOW_DESTROY;
     ev.sender = (LtkObject*)this;
