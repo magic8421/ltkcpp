@@ -109,15 +109,15 @@ protected:
         LTK_HANDLE_PAINT(OnPaint)
         LTK_HANDLE_SIZE(OnSize)
         LTK_HANDLE_LBUTTON_DOWN(OnLBtnDown)
+        LTK_HANDLE_MOUSE_WHELL(OnMouseWheel)
+        LTK_HANDLE_THEME_CHANGED(OnThemeChanged)
     LTK_CALLBACK_END()
 
-    BOOL OnPaint(LtkPaintEvent* ev);
-    BOOL OnSize(LtkSizeEvent*ev);
-    BOOL OnLBtnDown(LtkMouseEvent*ev);
-
-    virtual bool OnMouseWheel(MouseEvent *ev) override;
-    virtual void RecreateResouce(ID2D1RenderTarget *target) override;
-	virtual void OnThemeChanged() override;
+	BOOL OnPaint(LtkPaintEvent* ev);
+	BOOL OnSize(LtkSizeEvent* ev);
+	BOOL OnLBtnDown(LtkMouseEvent* ev);
+	BOOL OnMouseWheel(LtkMouseEvent* ev);
+	BOOL OnThemeChanged(LtkEvent* ev);
 
 private:
     void UpdateLinearViewRec(TreeNode* node, int depth);

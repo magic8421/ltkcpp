@@ -451,12 +451,22 @@ void Sprite::HandleRecreateResouce(ID2D1RenderTarget *target)
         auto sp = m_children[i];
         sp->HandleRecreateResouce(target);
     }
-    this->RecreateResouce(target);
+    LtkRecreateResource ev = { 0 };
+    ev.hdr.id = LTK_RECREATE_RESOURCE;
+    ev.target = target;
+    if (!this->CallEventCallback((LtkEvent*)&ev)) {
+        this->RecreateResouce(target);
+    }
 }
 
 void Sprite::HandleThemeChange()
 {
-    this->OnThemeChanged();
+    LtkEvent ev = { 0 };
+    ev.id = LTK_THEME_CHANGED;
+    if (!this->CallEventCallback(&ev)) {
+        this->OnThemeChanged();
+    }
+
     for (auto sp : m_children) {
         sp->HandleThemeChange();
     }

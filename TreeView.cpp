@@ -308,11 +308,7 @@ BOOL TreeView::OnPaint(LtkPaintEvent *ev)
     return TRUE;
 }
 
-void TreeView::RecreateResouce(ID2D1RenderTarget *target)
-{
-}
-
-void TreeView::OnThemeChanged()
+BOOL TreeView::OnThemeChanged(LtkEvent* ev)
 {
 	auto sm = StyleManager::Instance();
 	m_colors.TextColor = sm->GetColor(m_szTextColor);
@@ -323,13 +319,14 @@ void TreeView::OnThemeChanged()
 	m_format = sm->GetTextFormat(m_szTextFormat);
 	m_expandBg = sm->GetBackground("tree_expand_bg");
 	m_collapseBg = sm->GetBackground("tree_collapse_bg");
+    return TRUE;
 }
 
-bool TreeView::OnMouseWheel(MouseEvent *ev)
+BOOL TreeView::OnMouseWheel(LtkMouseEvent *ev)
 {
     m_scrollAni.BeginScroll(ev->delta);
     this->BeginAnimation();
-    return true;
+    return TRUE;
 }
 
 BOOL TreeView::OnLBtnDown(LtkMouseEvent *ev)

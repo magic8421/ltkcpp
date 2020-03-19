@@ -74,6 +74,9 @@ LTK_DECLARE_TYPE(LtkSprite); // 基类：LtkObject
 #define LTK_SET_FOCUS			19
 #define LTK_KILL_FOCUS			20
 
+#define LTK_RECREATE_RESOURCE	21
+#define LTK_THEME_CHANGED		22
+
 typedef struct _LtkMouseEvent
 {
 	LtkEvent hdr;
@@ -124,6 +127,11 @@ typedef struct _LtkFocusEvent
 	LtkSprite* oldFocus;
 } LtkFocusEvent;
 
+typedef struct _LtkRecreateResource {
+	LtkEvent hdr;
+	ID2D1RenderTarget* target;
+} LtkRecreateResource;
+
 #define LTK_CALLBACK_BEGIN(klass, name) \
 	static BOOL CALLBACK klass::name(void* userdata, LtkEvent* ev) { \
 		klass* self = (klass*)userdata; \
@@ -146,6 +154,13 @@ typedef struct _LtkFocusEvent
 		case LTK_LBUTTON_DOWN: \
 			return self->func((LtkMouseEvent*)ev);
 
+#define LTK_HANDLE_MOUSE_WHELL(func) \
+		case LTK_MOUSE_WHEEL: \
+			return self->func((LtkMouseEvent*)ev);
+
+#define LTK_HANDLE_THEME_CHANGED(func) \
+		case LTK_THEME_CHANGED: \
+			return self->func((LtkEvent*)ev);
 
 LTK_DECLARE_TYPE(LtkMenuBar); // 基类：LtkSprite
 LTK_DECLARE_TYPE(LtkPopupMenu); // 基类：LtkSprite
