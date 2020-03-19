@@ -39,18 +39,20 @@ LTK_API void WINAPI LtkRunMessageLoop();
 
 #undef CreateWindow
 
-struct LTK_DECLARE_INTERFACE("F617B2F6-EA75-41E7-AB0F-595DF6EF3B61")
-	ILtkWindowListener : public IUnknown
-{
-	STDMETHOD_(BOOL, OnClose)() PURE;
-	STDMETHOD_(void, OnDestroy)() PURE;
-};
+struct ILtkWindowListener;
 
 struct LTK_DECLARE_INTERFACE("F5A12F11-D3EE-41C8-8712-2699D2EEAD87")
 	ILtkWindow : public IUnknown 
 {
 	STDMETHOD_(void, UpdateTheme)() PURE;
 	STDMETHOD_(void, SetEventListener)(ILtkWindowListener * listener) PURE;
+};
+
+struct LTK_DECLARE_INTERFACE("F617B2F6-EA75-41E7-AB0F-595DF6EF3B61")
+	ILtkWindowListener : public IUnknown
+{
+	STDMETHOD_(BOOL, OnClose)(ILtkWindow *sender) PURE;
+	STDMETHOD_(void, OnDestroy)(ILtkWindow *sender) PURE;
 };
 
 struct LTK_DECLARE_INTERFACE("45F1AC62-D035-4223-A3EB-08961DF3A16E") 

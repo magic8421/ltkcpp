@@ -185,12 +185,12 @@ HRESULT MainWindow::QueryInterface(REFIID riid, void** ppvObject)
 	return E_NOTIMPL;
 }
 
-BOOL MainWindow::OnClose()
+BOOL MainWindow::OnClose(ILtkWindow* sender)
 {
 	return FALSE;
 }
 
-void MainWindow::OnDestroy()
+void MainWindow::OnDestroy(ILtkWindow* sender)
 {
 	::PostQuitMessage(0);
 }
@@ -216,6 +216,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	window->SetEventListener(&main_window);
 
 	LtkRunMessageLoop();
+	window->Release();
+	factory->Release();
 
 	LtkUninitialize();
 	return 0;

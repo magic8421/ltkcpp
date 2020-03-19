@@ -71,16 +71,20 @@ Window::~Window(void)
         m_atlas->Release();
     }
     m_atlas = INVALID_POINTER(ID2D1Bitmap);
+
+    if (m_listener) {
+        m_listener->Release();
+    }
 }
 
 ULONG Window::AddRef()
 {
-    return 1;
+    return Object::AddRef();
 }
 
 ULONG Window::Release()
 {
-    return 1;
+    return Object::Release();
 }
 
 HRESULT Window::QueryInterface(REFIID riid, void** ppvObject)
@@ -671,7 +675,7 @@ void Window::OnDestroy()
 	SetDelegateInvoker(this);
 	this->DestroyDelegate();
     if (m_listener) {
-        m_listener->OnDestroy();
+        m_listener->OnDestroy(this);
     }
 }
 

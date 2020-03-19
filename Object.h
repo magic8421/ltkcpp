@@ -16,6 +16,9 @@ public:
 
 	static void Free();
 
+	STDMETHOD_(ULONG, AddRef)();
+	STDMETHOD_(ULONG, Release)();
+
 	static Object *GetDelegateInvoker();
 	static void SetDelegateInvoker(Object *);
 
@@ -29,8 +32,7 @@ public:
 private:
 	LPCSTR m_name = nullptr;
 
-	const char* m_source = nullptr; // 好像没必要 外部使用者应该用umdh来查内存泄漏
-	int m_line = -1;
+	volatile ULONG m_cRef = 1;
 
 	DISALLOW_COPY_AND_ASSIGN(Object);
 };

@@ -10,8 +10,8 @@ public:
 	STDMETHOD_(ULONG, Release)();
 	STDMETHOD(QueryInterface)(REFIID riid, void** ppvObject);
 
-	STDMETHOD_(BOOL, OnClose)();
-	STDMETHOD_(void, OnDestroy)();
+	STDMETHOD_(BOOL, OnClose)(ILtkWindow* sender);
+	STDMETHOD_(void, OnDestroy)(ILtkWindow* sender);
 
 	void Create();
 };

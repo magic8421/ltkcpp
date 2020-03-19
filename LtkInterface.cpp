@@ -43,12 +43,12 @@ LTK_API void WINAPI LtkRunMessageLoop()
 	}
 }
 
-class LtkFacotry : public ILtkFactory
+class LtkFacotry : public Object, public ILtkFactory
 {
 public:
-	STDMETHOD_(ULONG, AddRef)() { return 1; }
+	STDMETHOD_(ULONG, AddRef)() { return Object::AddRef(); }
 
-	STDMETHOD_(ULONG, Release)() { return 1; }
+	STDMETHOD_(ULONG, Release)() { return Object::Release(); }
 
 	STDMETHOD(QueryInterface)(REFIID riid, void** ppvObject) { return E_NOTIMPL; }
 
