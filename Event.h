@@ -6,10 +6,11 @@ namespace ltk {
 
 enum Events
 {
-    eDestroy = 1,
-
-    eSpriteFirst,
+    eCreate = 1,
+    eDestroy,
     ePaint,
+    eSizeChanged,
+
 
     // type: MouseEvent
     eMouseFirst,
@@ -29,8 +30,6 @@ enum Events
     eImeInput,
     eSetFocus,
     eKillFocus,
-    eSizeChanged,
-    eSpriteLast, 
 
 };
 

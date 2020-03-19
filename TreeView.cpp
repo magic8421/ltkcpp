@@ -288,18 +288,6 @@ void TreeView::SetTextFormat(LPCSTR style)
     this->m_szTextFormat = StyleManager::Instance()->InternString(style);
 }
 
-BOOL TreeView::SpriteEventHandler(void* userdata, LtkEvent* ev)
-{
-    TreeView* self = (TreeView*)userdata;
-    switch (ev->id)
-    {
-    case LTK_PAINT:
-        return self->OnPaint((LtkPaintEvent*)ev);
-    default:
-        return FALSE;
-    }
-}
-
 BOOL TreeView::OnPaint(LtkPaintEvent *ev)
 {
     if (m_bDirty) {
@@ -344,7 +332,7 @@ bool TreeView::OnMouseWheel(MouseEvent *ev)
     return true;
 }
 
-bool TreeView::OnLBtnDown(MouseEvent *ev)
+BOOL TreeView::OnLBtnDown(LtkMouseEvent *ev)
 {
 	auto scroll = m_scrollAni.GetScroll();
 
@@ -358,7 +346,7 @@ bool TreeView::OnLBtnDown(MouseEvent *ev)
     return true;
 }
 
-bool TreeView::OnSize(SizeEvent *ev)
+BOOL TreeView::OnSize(LtkSizeEvent *ev)
 {
     m_vsb->SetRect(RectF(ev->width - 8, 0, 6, ev->height));
     return false;

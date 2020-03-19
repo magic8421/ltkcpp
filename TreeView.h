@@ -104,11 +104,17 @@ public:
     void SetTextFormat(LPCSTR style);
 
 protected:
-    static BOOL CALLBACK SpriteEventHandler(void *userdata, LtkEvent *ev);
-    BOOL TreeView::OnPaint(LtkPaintEvent* ev);
+    //static BOOL CALLBACK SpriteEventHandler(void *userdata, LtkEvent *ev);
+    LTK_CALLBACK_BEGIN(TreeView, SpriteEventHandler)
+        LTK_HANDLE_PAINT(OnPaint)
+        LTK_HANDLE_SIZE(OnSize)
+        LTK_HANDLE_LBUTTON_DOWN(OnLBtnDown)
+    LTK_CALLBACK_END()
 
-    virtual bool OnSize(SizeEvent *ev) override;
-    virtual bool OnLBtnDown(MouseEvent *ev) override;
+    BOOL OnPaint(LtkPaintEvent* ev);
+    BOOL OnSize(LtkSizeEvent*ev);
+    BOOL OnLBtnDown(LtkMouseEvent*ev);
+
     virtual bool OnMouseWheel(MouseEvent *ev) override;
     virtual void RecreateResouce(ID2D1RenderTarget *target) override;
 	virtual void OnThemeChanged() override;

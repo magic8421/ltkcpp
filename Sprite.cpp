@@ -419,11 +419,10 @@ bool Sprite::OnEvent(Event *ev)
         bHandled = false;
     }
     if (!bHandled) {
-        LtkEvent* pev2 = NULL;
-        if (ConvertToExternEvent(ev, &pev2)) {
-            this->CallEventCallback(pev2);
-            free((void*)pev2);
-        }
+        //if (ConvertToExternEvent(ev, &pev2)) {
+        return (bool)this->CallEventCallback((LtkEvent *)ev);
+        //   free((void*)pev2);
+        //}
     }
 	return bHandled;
 }

@@ -55,24 +55,24 @@ LTK_DECLARE_TYPE(LtkSprite); // 基类：LtkObject
 #define LTK_PAINT			3
 #define LTK_SIZE			4
 
-#define LTK_MOUSE_FIRST			10
-#define LTK_MOUSE_MOVE			10
-#define LTK_MOUSE_LEAVE			11
-#define LTK_MOUSE_WHEEL			12
-#define LTK_LBUTTON_DOWN		13
-#define LTK_LBUTTON_UP			14
-#define LTK_LBUTTON_DBCLICK		15
-#define LTK_RBUTTON_DOWN		16
-#define LTK_RBUTTON_UP			17
-#define LTK_MOUSE_LAST			17
+#define LTK_MOUSE_FIRST			5
+#define LTK_MOUSE_MOVE			6
+#define LTK_MOUSE_LEAVE			7
+#define LTK_MOUSE_WHEEL			8
+#define LTK_LBUTTON_DOWN		9
+#define LTK_LBUTTON_UP			10
+#define LTK_LBUTTON_DBCLICK		11
+#define LTK_RBUTTON_DOWN		12
+#define LTK_RBUTTON_UP			13
+#define LTK_MOUSE_LAST			14
 
-#define LTK_KEY_DOWN			20
-#define LTK_KEY_UP				21
-#define LTK_CHAR				22
-#define LTK_IME_INPUT			23
+#define LTK_KEY_DOWN			15
+#define LTK_KEY_UP				16
+#define LTK_CHAR				17
+#define LTK_IME_INPUT			18
 
-#define LTK_SET_FOCUS			30
-#define LTK_KILL_FOCUS			31
+#define LTK_SET_FOCUS			19
+#define LTK_KILL_FOCUS			20
 
 typedef struct _LtkMouseEvent
 {
@@ -123,6 +123,29 @@ typedef struct _LtkFocusEvent
 	LtkEvent hdr;
 	LtkSprite* oldFocus;
 } LtkFocusEvent;
+
+#define LTK_CALLBACK_BEGIN(klass, name) \
+	static BOOL CALLBACK klass::name(void* userdata, LtkEvent* ev) { \
+		klass* self = (klass*)userdata; \
+		switch (ev->id) {
+
+#define LTK_CALLBACK_END() \
+		} \
+		return FALSE; \
+	}
+
+#define LTK_HANDLE_PAINT(func) \
+		case LTK_PAINT: \
+			return self->func((LtkPaintEvent*)ev);
+
+#define LTK_HANDLE_SIZE(func) \
+		case LTK_SIZE: \
+			return self->func((LtkSizeEvent*)ev);
+
+#define LTK_HANDLE_LBUTTON_DOWN(func) \
+		case LTK_LBUTTON_DOWN: \
+			return self->func((LtkMouseEvent*)ev);
+
 
 LTK_DECLARE_TYPE(LtkMenuBar); // 基类：LtkSprite
 LTK_DECLARE_TYPE(LtkPopupMenu); // 基类：LtkSprite
