@@ -12,6 +12,10 @@
 #include "MenuBar.h"
 #include "StyleManager.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW 
+#endif
+
 using namespace ltk;
 
 LTK_API UINT WINAPI LtkInitialize()
@@ -42,6 +46,12 @@ LTK_API void WINAPI LtkRunMessageLoop()
 class LtkFacotry : public ILtkFactory
 {
 public:
+	STDMETHOD_(ULONG, AddRef)() { return 1; }
+
+	STDMETHOD_(ULONG, Release)() { return 1; }
+
+	STDMETHOD(QueryInterface)(REFIID riid, void** ppvObject) { return E_NOTIMPL; }
+
 	void CreateWindow(HWND parent, LtkRect* rc, ILtkWindow** ppWnd) override {
 		RectF rcf = *(RectF*)rc;
 		auto wnd = new Window();

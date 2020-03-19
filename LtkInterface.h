@@ -1,5 +1,7 @@
 #pragma once
 
+#include <unknwn.h>
+
 #ifdef LTK_EXPORTS
 #define LTK_API __declspec(dllexport)
 #else
@@ -26,17 +28,34 @@ LTK_API UINT WINAPI LtkInitialize();
 LTK_API void WINAPI LtkUninitialize();
 LTK_API void WINAPI LtkRunMessageLoop();
 
+#ifdef __cplusplus
+} // extern "C"
+#endif
+
+#ifndef LTK_DECLARE_INTERFACE
+#define LTK_DECLARE_INTERFACE(x) DECLSPEC_UUID(x) DECLSPEC_NOVTABLE
+#endif
+
+
 #undef CreateWindow
 
-struct ILtkObject {
-	virtual void Delete() = 0;
+struct LTK_DECLARE_INTERFACE("F617B2F6-EA75-41E7-AB0F-595DF6EF3B61")
+	ILtkWindowListener : public IUnknown
+{
+	STDMETHOD_(BOOL, OnClose)() PURE;
+	STDMETHOD_(void, OnDestroy)() PURE;
 };
 
-struct ILtkWindow : public ILtkObject {
-
+struct LTK_DECLARE_INTERFACE("F5A12F11-D3EE-41C8-8712-2699D2EEAD87")
+	ILtkWindow : public IUnknown 
+{
+	STDMETHOD_(void, UpdateTheme)() PURE;
+	STDMETHOD_(void, SetEventListener)(ILtkWindowListener * listener) PURE;
 };
 
-struct ILtkFactory {
+struct LTK_DECLARE_INTERFACE("45F1AC62-D035-4223-A3EB-08961DF3A16E") 
+	ILtkFactory : public IUnknown
+{
 	virtual void CreateWindow(HWND parent, LtkRect* rc, ILtkWindow** ppWnd) = 0;
 	virtual void CreateWindowCentered(HWND parent, LtkSize* size, ILtkWindow** ppWnd) = 0;
 };
@@ -224,6 +243,3 @@ LTK_API void WINAPI LtkPopupMenu_SetWidth(LtkPopupMenu* self, float width);
 LTK_API void WINAPI LtkPopupMenu_SetSubMenu(LtkPopupMenu* self, UINT idx, LtkPopupMenu* popup);
 */
 
-#ifdef __cplusplus
-} // extern "C"
-#endif

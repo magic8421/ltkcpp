@@ -84,9 +84,6 @@
     <ClCompile Include="ThreadHelper.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="TreeView.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

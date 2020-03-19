@@ -1,5 +1,8 @@
 ﻿#pragma once
 
+#define _CRTDBG_MAP_ALLOC
+#include <crtdbg.h>
+
 #include "targetver.h"
 #define WIN32_LEAN_AND_MEAN             // 从 Windows 头文件中排除极少使用的内容
 // Windows 头文件
@@ -10,4 +13,5 @@
 #include <memory.h>
 #include <tchar.h>
 #include <strsafe.h>
+
 

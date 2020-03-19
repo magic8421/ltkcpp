@@ -73,9 +73,28 @@ Window::~Window(void)
     m_atlas = INVALID_POINTER(ID2D1Bitmap);
 }
 
-void Window::Delete()
+ULONG Window::AddRef()
 {
-    delete this;
+    return 1;
+}
+
+ULONG Window::Release()
+{
+    return 1;
+}
+
+HRESULT Window::QueryInterface(REFIID riid, void** ppvObject)
+{
+    return E_NOTIMPL;
+}
+
+void Window::SetEventListener(ILtkWindowListener* listener)
+{
+    if (m_listener) {
+        m_listener->Release();
+    }
+    m_listener = listener;
+    m_listener->AddRef();
 }
 
 void Window::Create(Window *parent, RectF rc)
@@ -651,10 +670,9 @@ void Window::OnDestroy()
 {
 	SetDelegateInvoker(this);
 	this->DestroyDelegate();
-    //LtkEvent ev = { 0 };
-    //ev.id = LTK_WINDOW_DESTROY;
-    //ev.sender = (LtkObject*)this;
-    //FireEvent(&ev);
+    if (m_listener) {
+        m_listener->OnDestroy();
+    }
 }
 
 HWND Window::Handle()

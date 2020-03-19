@@ -36,7 +36,13 @@ public:
 	 */
     virtual ~Window(void);
 
-	void Delete() override;
+	STDMETHOD_(ULONG, AddRef)();
+
+	STDMETHOD_(ULONG,Release)();
+
+	STDMETHOD(QueryInterface)(REFIID riid, void** ppvObject);
+
+	STDMETHOD_(void, SetEventListener)(ILtkWindowListener* listener);
 
 	/**
 	 * ´´½¨´°¿Ú
@@ -116,7 +122,7 @@ public:
     ID2D1SolidColorBrush *GetStockBrush();
     void SetBackground(LPCSTR style);
     
-    void UpdateTheme();
+	STDMETHOD_(void, UpdateTheme)();
     virtual void OnThemeChanged() {}
 
 public:
@@ -163,6 +169,8 @@ private:
     ID2D1Bitmap *m_atlas = nullptr; // owner TODO share across multiple Window
     AbstractBackground *m_background = nullptr;
     std::string m_styleName;
+
+	ILtkWindowListener *m_listener = nullptr;
 };
 
 } // namespace ltk

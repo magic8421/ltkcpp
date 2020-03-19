@@ -170,6 +170,30 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 }
 */
 
+ULONG MainWindow::AddRef()
+{
+	return 1;
+}
+
+ULONG MainWindow::Release()
+{
+	return 1;
+}
+
+HRESULT MainWindow::QueryInterface(REFIID riid, void** ppvObject)
+{
+	return E_NOTIMPL;
+}
+
+BOOL MainWindow::OnClose()
+{
+	return FALSE;
+}
+
+void MainWindow::OnDestroy()
+{
+	::PostQuitMessage(0);
+}
 
 
 
@@ -178,6 +202,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	_In_ LPWSTR    lpCmdLine,
 	_In_ int       nCmdShow)
 {
+	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+
 	LtkInitialize();
 
 	ILtkFactory* factory = NULL;
@@ -185,6 +211,9 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	LtkSize size{ 500.f, 400.f };
 	ILtkWindow* window = NULL;
 	factory->CreateWindowCentered(NULL, &size, &window);
+	window->UpdateTheme();
+	MainWindow main_window;
+	window->SetEventListener(&main_window);
 
 	LtkRunMessageLoop();
 

@@ -10,7 +10,7 @@
 namespace ltk {
 
 static __declspec(thread) Object *sDelegateInvoker = nullptr;
-static std::unordered_set<Object*>* sObjectSet;
+static std::unordered_set<Object*>* sObjectSet; // TODO 改成双链表足以
 
 Object * Object::GetDelegateInvoker()
 {
@@ -39,11 +39,6 @@ Object::~Object()
 		LTK_ASSERT(false);
 	}
 	sObjectSet->erase(iter);
-}
-
-void Object::Delete()
-{
-	delete this;
 }
 
 void Object::Free()

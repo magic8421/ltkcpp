@@ -6,15 +6,13 @@
 namespace ltk {
 
 
-class LTK_CPP_API Object : public RTTI, public ILtkObject
+class LTK_CPP_API Object : public RTTI
 {
 public:
 	RTTI_DECLARATIONS(Object, RTTI);
 
 	Object();
 	virtual ~Object();
-
-	void Delete() override;
 
 	static void Free();
 
