@@ -18,8 +18,8 @@ public:
 	static Object *GetDelegateInvoker();
 	static void SetDelegateInvoker(Object *);
 
-	void AddNotifyCallback(void* userdata, LtkCallback callback);
-	void RemoveNotifyCallback(void* userdata, LtkCallback callback);
+	void RegisterNotify(void* userdata, LtkCallback callback);
+	void RemoveNotify(void* userdata, LtkCallback callback);
 	BOOL DispatchNotify(LtkEvent* ev);
 
 	void SetEventCallback(void* userdata, LtkCallback callback);

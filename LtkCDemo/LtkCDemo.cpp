@@ -83,7 +83,7 @@ void MainWindow::Create()
 	LtkObject* wnd = LtkWindow_New();
 	m_window = wnd;
 	//LtkWindow_SetBackground(wnd, "window_bg");
-	LtkObject_AddNotifyCallback(wnd, this, MainWindow::WindowHandler);
+	LtkObject_RegisterNotify(wnd, this, MainWindow::WindowHandler);
 
 	LtkObject* splitter_h = LtkSplitter_New(LTK_HORIZONTAL);
 	LtkWindow_SetClientSprite(LTK_WINDOW(wnd), LTK_SPRITE(splitter_h));

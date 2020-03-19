@@ -80,13 +80,13 @@ bool Object::CheckValid(Object* o)
 	return sObjectSet->find(o) != sObjectSet->end();
 }
 
-void Object::AddNotifyCallback(void* userdata, LtkCallback callback)
+void Object::RegisterNotify(void* userdata, LtkCallback callback)
 {
 	CallbackInfo info{ userdata, callback };
 	m_vecCallback.push_back(info);
 }
 
-void Object::RemoveNotifyCallback(void* userdata, LtkCallback callback)
+void Object::RemoveNotify(void* userdata, LtkCallback callback)
 {
 	LTK_ASSERT(false);
 }

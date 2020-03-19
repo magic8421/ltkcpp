@@ -60,16 +60,16 @@ LTK_API LPCSTR WINAPI LtkObject_GetName(LtkObject* o)
 	return ((Object*)(o))->GetName();
 }
 
-LTK_API void WINAPI LtkObject_AddNotifyCallback(LtkObject* o, void* userdata, LtkCallback callback)
+LTK_API void WINAPI LtkObject_RegisterNotify(LtkObject* o, void* userdata, LtkCallback callback)
 {
 	Object* pobj = (Object*)o;
-	pobj->AddNotifyCallback(userdata, callback);
+	pobj->RegisterNotify(userdata, callback);
 }
 
-LTK_API void WINAPI LtkObject_RemoveNotifyCallback(LtkObject* o, void* userdata, LtkCallback callback)
+LTK_API void WINAPI LtkObject_RemoveNotify(LtkObject* o, void* userdata, LtkCallback callback)
 {
 	Object* pobj = (Object*)o;
-	pobj->RemoveNotifyCallback(userdata, callback);
+	pobj->RemoveNotify(userdata, callback);
 }
 
 

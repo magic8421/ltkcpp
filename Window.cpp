@@ -100,6 +100,7 @@ void Window::Create(Window *parent, RectF rc)
     ::CreateWindowEx(0, ClsName, L"", style,
         (int)rc.X, (int)rc.Y, (int)rc.Width, (int)rc.Height,
         hParent, NULL, HINST_THISCOMPONENT, this);
+    //this->UpdateTheme();
 }
 
 void Window::Create(Window *parent, SizeF size)

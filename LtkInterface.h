@@ -42,8 +42,8 @@ LTK_API LPCSTR WINAPI LtkInternString(LPCSTR str);
 LTK_API void WINAPI LtkObject_SetName(LtkObject* o, LPCSTR name);
 LTK_API LPCSTR WINAPI LtkObject_GetName(LtkObject* o);
 
-LTK_API void WINAPI LtkObject_AddNotifyCallback(LtkObject* o, void* userdata, LtkCallback callback);
-LTK_API void WINAPI LtkObject_RemoveNotifyCallback(LtkObject* o, void* userdata, LtkCallback callback);
+LTK_API void WINAPI LtkObject_RegisterNotify(LtkObject* o, void* userdata, LtkCallback callback);
+LTK_API void WINAPI LtkObject_RemoveNotify(LtkObject* o, void* userdata, LtkCallback callback);
 
 
 LTK_DECLARE_TYPE(LtkWindow); // 基类：LtkObject
@@ -137,6 +137,7 @@ typedef struct _LtkRecreateResource {
 		klass* self = (klass*)userdata; \
 		switch (ev->id) {
 
+// TODO 这里有问题 如果是模拟虚函数 这里怎么调用基类呢？
 #define LTK_CALLBACK_END() \
 		default: return FALSE; \
 		} \
