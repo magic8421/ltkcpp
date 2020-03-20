@@ -48,6 +48,7 @@ struct LTK_DECLARE_INTERFACE("F5A12F11-D3EE-41C8-8712-2699D2EEAD87")
 	STDMETHOD(CreateCentered)(HWND hParent, LtkSize * size) PURE;
 	STDMETHOD_(void, UpdateTheme)() PURE;
 	STDMETHOD_(void, SetEventListener)(ILtkWindowListener * listener) PURE;
+	STDMETHOD_(HWND, GetHWND)() PURE;
 };
 
 struct LTK_DECLARE_INTERFACE("F617B2F6-EA75-41E7-AB0F-595DF6EF3B61")

@@ -81,7 +81,7 @@ public:
 
 	void OnPaint( HWND hwnd );
 
-	HWND Handle();
+	STDMETHOD_(HWND, GetHWND)();
 
 	void OnImeInput(LPCTSTR text);
 	void SetImePosition( float x, float y );
@@ -115,7 +115,7 @@ public:
 	void CloseWindow();
 
     virtual bool OnSize(float cx, float cy, DWORD flag);
-	virtual void OnClose(BOOL* proceed);
+	virtual BOOL OnClose() { return FALSE; } // ·µ»ØTRUE×èÖ¹¹Ø±Õ´°¿Ú
 	virtual void OnDestroy();
 
     ID2D1Bitmap *GetAtlasBitmap();
@@ -126,7 +126,6 @@ public:
     virtual void OnThemeChanged() {}
 
 public:
-	MulticastDelegate1<BOOL*> CloseDelegate;
 	MulticastDelegate0 DestroyDelegate;
 
 private:

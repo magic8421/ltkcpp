@@ -101,7 +101,7 @@ void Sprite::Invalidate()
 	Window *wnd = GetWindow();
     if (wnd)
 	{
-		BOOL ret = ::InvalidateRect(wnd->Handle(), NULL, FALSE);
+		BOOL ret = ::InvalidateRect(wnd->GetHWND(), NULL, FALSE);
         LTK_ASSERT(ret);
 	}
 }
@@ -349,7 +349,7 @@ void Sprite::SetCaretPos(RectF rc)
     rc2.right += arc.left;
     rc2.bottom += arc.top;
     GetWindow()->SetImePosition((float)rc2.left, (float)rc2.top);
-    HWND hwnd = GetWindow()->Handle();
+    HWND hwnd = GetWindow()->GetHWND();
     ::DestroyCaret(); // 这里销毁重新建立 才能改变高度
     ::CreateCaret(hwnd, NULL, (int)rc.Width, (int)rc.Height); // 可以加个参数制定虚线光标(HBITMAP)1
     BOOL ret = ::ShowCaret(hwnd); // TODO 这里太脏了 可能显示出来就隐藏不掉 应该一对一绑定

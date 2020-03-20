@@ -637,11 +637,15 @@ bool Window::OnSize(float cx, float cy, DWORD flag)
 
 void Window::CloseWindow()
 {
-    BOOL proceed = TRUE;
-    OnClose(&proceed);
-    if (proceed) {
-        ::DestroyWindow(m_hwnd);
+    if (m_listener) {
+        if (m_listener->OnClose(this)) {
+            return;
+        }
     }
+    if (this->OnClose()) {
+        return;
+    }
+    ::DestroyWindow(m_hwnd);
 }
 
 void Window::Minimize()
@@ -661,12 +665,6 @@ void Window::Maximize()
     }
 }
 
-void Window::OnClose(BOOL* proceed)
-{
-	SetDelegateInvoker(this);
-	this->CloseDelegate(proceed);
-}
-
 void Window::OnDestroy()
 {
 	SetDelegateInvoker(this);
@@ -676,7 +674,7 @@ void Window::OnDestroy()
     }
 }
 
-HWND Window::Handle()
+HWND Window::GetHWND()
 {
 	return m_hwnd;
 }

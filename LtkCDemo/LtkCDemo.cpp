@@ -187,7 +187,10 @@ HRESULT MainWindow::QueryInterface(REFIID riid, void** ppvObject)
 
 BOOL MainWindow::OnClose(ILtkWindow* sender)
 {
-	return FALSE;
+	if (::MessageBox(sender->GetHWND(), L"确定关闭？", NULL, MB_OKCANCEL) == IDOK) {
+		return FALSE;
+	}
+	return TRUE;
 }
 
 void MainWindow::OnDestroy(ILtkWindow* sender)

@@ -356,7 +356,7 @@ bool PopupMenu::OnLBtnDown(MouseEvent* ev)
 		tracking = menu->m_trackingIdx;
 	}
 	menu->HideAll();
-	::InvalidateRect(wnd->Handle(), NULL, FALSE);
+	::InvalidateRect(wnd->GetHWND(), NULL, FALSE);
 	return true;
 }
 
