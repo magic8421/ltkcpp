@@ -53,9 +53,13 @@ public:
 	STDMETHOD(QueryInterface)(REFIID riid, void** ppvObject) { return E_NOTIMPL; }
 
 	void WINAPI CreateWindow(ILtkWindow** ppWnd) override {
-		auto wnd = new Window();
-		*ppWnd = wnd;
+		*ppWnd = new Window();
 	}
+
+	STDMETHOD_(void, CreateSplitter)(ILtkSplitter **ppOut) override {
+		//*ppOut = new Splitter;
+	}
+
 };
 
 LTK_API void WINAPI LtkGetFactory(ILtkFactory** ppFactory)

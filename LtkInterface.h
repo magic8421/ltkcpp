@@ -61,16 +61,29 @@ struct LTK_DECLARE_INTERFACE("F617B2F6-EA75-41E7-AB0F-595DF6EF3B61")
 	STDMETHOD_(void, OnDestroy)(ILtkWindow *sender) PURE;
 };
 
+struct ILtkSplitter;
+
 struct LTK_DECLARE_INTERFACE("45F1AC62-D035-4223-A3EB-08961DF3A16E") 
 	ILtkFactory : public IUnknown
 {
-	STDMETHOD_(void, CreateWindow)(ILtkWindow** ppWnd) PURE;
+	STDMETHOD_(void, CreateWindow)(ILtkWindow** ppOut) PURE;
+	STDMETHOD_(void, CreateSplitter)(ILtkSplitter** ppOut) PURE;
 };
 
 struct LTK_DECLARE_INTERFACE("A0B263F7-0B6D-43A6-8A77-A6BF1838D927")
 	ILtkWidget : public IUnknown
 {
+	STDMETHOD_(void, SetVisible)(BOOL) PURE;
+	STDMETHOD_(BOOL, GetVisible)() PURE;
+	STDMETHOD_(void, SetRect)(LtkRect * rect) PURE;
+	STDMETHOD(AddChild)(ILtkWidget * w) PURE;
+};
 
+struct LTK_DECLARE_INTERFACE("F4241511-42F2-4E64-8FC7-6B9433D6D18A")
+	ILtkSplitter : public ILtkWidget
+{
+	STDMETHOD_(void, AddClient)(ILtkWidget * w) PURE;
+	STDMETHOD(SetClientSize)(UINT idx, float size) PURE;
 };
 
 /*

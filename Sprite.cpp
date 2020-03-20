@@ -35,6 +35,21 @@ Widget::~Widget(void)
 	}
 }
 
+ULONG Widget::AddRef()
+{
+    return Object::AddRef();
+}
+
+ULONG Widget::Release()
+{
+    return Object::Release();
+}
+
+HRESULT Widget::QueryInterface(REFIID riid, void** ppvObject)
+{
+    return E_NOTIMPL;
+}
+
 RectF Widget::GetRect()
 {
 	return m_rect;
@@ -70,6 +85,11 @@ float Widget::GetWidth()
 float Widget::GetHeight()
 {
     return m_rect.Height;
+}
+
+void Widget::SetRect(LtkRect* rect)
+{
+    this->SetRect(*(RectF*)rect);
 }
 
 void Widget::SetRect( RectF rect )
@@ -149,6 +169,13 @@ void Widget::HandlePaint( ID2D1RenderTarget *target )
 	{
         target->PopAxisAlignedClip();
 	}
+}
+
+HRESULT Widget::AddChild(ILtkWidget* w)
+{
+    Widget* sp = static_cast<Widget*>(w);
+    this->AddChild(sp);
+    return S_OK; // TODO ºÏ≤È÷ÿ∏¥œÓ
 }
 
 void Widget::AddChild(Widget *sp)
@@ -246,16 +273,16 @@ void Widget::BringToFront()
 	LTK_ASSERT(false);
 }
 
-void Widget::SetVisible( bool v )
+void Widget::SetVisible( BOOL v )
 {
-	if (m_bVisible != v)
+	if (m_bVisible != (bool)v)
 	{
 		Invalidate();
 	}
 	m_bVisible = v;
 }
 
-bool Widget::GetVisible()
+BOOL Widget::GetVisible()
 {
 	return m_bVisible;
 }

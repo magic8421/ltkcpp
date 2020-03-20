@@ -6,6 +6,7 @@ namespace ltk {
 static const float GRIP_SIZE = 5.f;
 static const float MIN_SIZE = 15.f;
 
+/*
 void Splitter::Resize(UINT n)
 {
 	if (n < m_vecItems.size()) {
@@ -23,7 +24,6 @@ void Splitter::Resize(UINT n)
 		m_vecItems.resize(n);
 	}
 }
-
 Widget* Splitter::SetClientAt(UINT idx, Widget* sp)
 {
 	auto &item = m_vecItems.at(idx);
@@ -35,18 +35,22 @@ Widget* Splitter::SetClientAt(UINT idx, Widget* sp)
 	item.client = sp;
 	return old_sp;
 }
-
-void Splitter::AddClient(Widget *sp)
+*/
+void Splitter::AddClient(ILtkWidget* sp)
 {
 	SplitterItem item;
 	item.client = sp;
-	this->AddChild(sp);
+	Widget::AddChild(sp);
 	m_vecItems.push_back(item);
 }
 
-void Splitter::SetClientSize(UINT idx, float size)
+HRESULT Splitter::SetClientSize(UINT idx, float size)
 {
+	if (idx >= m_vecItems.size()) {
+		return E_INVALIDARG;
+	}
 	m_vecItems[idx].size = size;
+	return S_OK;
 }
 
 float Splitter::GetTotolSize()
@@ -113,7 +117,7 @@ void Splitter::DoLayout()
 			y += item.size + GRIP_SIZE;
 		}
 		if (item.client) {
-			item.client->SetRect(rc);
+			item.client->SetRect((LtkRect*)&rc);
 		}
 	}
 }

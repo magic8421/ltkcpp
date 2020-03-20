@@ -4,7 +4,7 @@
 
 namespace ltk {
 
-class LTK_CPP_API Splitter : public Widget
+class LTK_CPP_API Splitter :  public ILtkSplitter, public Widget
 {
 public:
 	RTTI_DECLARATIONS(Splitter, Widget);
@@ -12,10 +12,11 @@ public:
 	explicit Splitter(Orientation m) : m_mode(m) {}
 	virtual ~Splitter() {}
 
-	void Resize(UINT n);
-	Widget* SetClientAt(UINT idx, Widget* sp);
-	void AddClient(Widget*sp);
-	void SetClientSize(UINT idx, float size);
+	//void Resize(UINT n);
+	//Widget* SetClientAt(UINT idx, Widget* sp);
+
+	STDMETHOD_(void, AddClient)(ILtkWidget* w) override;
+	STDMETHOD(SetClientSize)(UINT idx, float size) override;
 	
 	float GetTotolSize();
 	void DoLayout();
@@ -33,7 +34,7 @@ private:
 	{
 		float size = 15.f; // TODO MIN_SIZE
 		bool bFixed = false;
-		Widget* client = nullptr;
+		ILtkWidget* client = nullptr;
 	};
 	std::vector<SplitterItem> m_vecItems;
 	Orientation m_mode;

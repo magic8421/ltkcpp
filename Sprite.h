@@ -14,7 +14,7 @@ namespace ltk {
 
 class Window;
 
-class LTK_CPP_API Widget : public Object
+class LTK_CPP_API Widget : public Object, public ILtkWidget
 {
 public:
 	RTTI_DECLARATIONS(Widget, Object);
@@ -22,8 +22,14 @@ public:
     Widget(void);
     virtual ~Widget(void);
 
+    STDMETHOD_(ULONG, AddRef)() override;
+    STDMETHOD_(ULONG, Release)() override;
+    STDMETHOD(QueryInterface)(REFIID riid, void** ppvObject) override;
+
     RectF GetRect();
 	RectF GetClientRect();
+
+    STDMETHOD_(void, SetRect)(LtkRect* rect) override;
 	void SetRect( RectF rect );
 	RectF GetAbsRect();
 
@@ -35,10 +41,12 @@ public:
 	void SetWindow( Window *wnd );
 	Window *GetWindow();
 
-	void SetVisible( bool );
-	bool GetVisible();
+    STDMETHOD_(void, SetVisible)(BOOL) override;
+    STDMETHOD_(BOOL, GetVisible)() override;
 
-	void AddChild( Widget *sp );
+    STDMETHOD(AddChild)(ILtkWidget* w) override;
+
+	void AddChild(Widget *sp );
 	void RemoveChild(Widget* sp);
 
     void HandlePaint( ID2D1RenderTarget *target );
