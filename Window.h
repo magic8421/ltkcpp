@@ -36,27 +36,27 @@ public:
 	 */
     virtual ~Window(void);
 
-	STDMETHOD_(ULONG, AddRef)();
+	STDMETHOD_(ULONG, AddRef)() override;
 
-	STDMETHOD_(ULONG,Release)();
+	STDMETHOD_(ULONG,Release)() override;
 
-	STDMETHOD(QueryInterface)(REFIID riid, void** ppvObject);
+	STDMETHOD(QueryInterface)(REFIID riid, void** ppvObject) override;
 
-	STDMETHOD_(void, SetEventListener)(ILtkWindowListener* listener);
+	STDMETHOD_(void, SetEventListener)(ILtkWindowListener* listener) override;
 
 	/**
 	 * 创建窗口
 	 * @param parent 父窗口 如果为nullptr则父窗口为桌面
 	 * @param rc 窗口的大小
 	 */
-    void Create(Window *parent, RectF rc);
+    STDMETHOD(Create)(HWND hParent, LtkRect* rc) override;
 
 	/**
 	 * 创建窗口 并居中
 	 * @param parent 父窗口 如果为nullptr则父窗口为桌面
 	 * @param size 窗口的大小
 	 */
-	void Create(Window *parent, SizeF size);
+	STDMETHOD(CreateCentered)(HWND hParent, LtkSize* size) override;
 
 	/**
 	 * 设置窗口矩形 移动窗口

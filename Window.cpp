@@ -101,16 +101,10 @@ void Window::SetEventListener(ILtkWindowListener* listener)
     m_listener->AddRef();
 }
 
-void Window::Create(Window *parent, RectF rc)
+HRESULT Window::Create(HWND hParent, LtkRect* prc)
 {
-    HWND hParent = NULL;
-    if (!parent)
-    {
+    if (!hParent) {
         hParent = ::GetDesktopWindow();
-    }
-    else
-    {
-        hParent = parent->m_hwnd;
     }
     DWORD style = WS_VISIBLE;
     
@@ -123,15 +117,18 @@ void Window::Create(Window *parent, RectF rc)
 
     style |=  WS_SYSMENU | WS_MINIMIZEBOX | WS_MAXIMIZEBOX;
 
+    RectF rc = *(RectF*)prc;
     DipCoordToScreen(rc.X, rc.Y);
     DipCoordToScreen(rc.Width, rc.Height);
-    ::CreateWindowEx(0, ClsName, L"", style,
+    HWND hwnd = ::CreateWindowEx(0, ClsName, L"", style,
         (int)rc.X, (int)rc.Y, (int)rc.Width, (int)rc.Height,
         hParent, NULL, HINST_THISCOMPONENT, this);
+    return hwnd ? S_OK : E_FAIL;
 }
 
-void Window::Create(Window *parent, SizeF size)
+HRESULT Window::CreateCentered(HWND hParent, LtkSize* size)
 {
+    // TODO 这里hParent没有处理 应为在父窗口之内居中
 	POINT pt = { 0 };
 	auto ret = ::GetCursorPos(&pt);
 	LTK_ASSERT(ret);
@@ -142,12 +139,12 @@ void Window::Create(Window *parent, SizeF size)
 	ret = ::GetMonitorInfoW(monitor, &info);
 	LTK_ASSERT(monitor);
 	const auto &rc = info.rcWork;
-	RectF rcWnd;
-	rcWnd.X = (rc.right - rc.left - size.Width) / 2.f + rc.left;
-	rcWnd.Y = (rc.bottom - rc.top - size.Height) / 2.f + rc.top;
-	rcWnd.Width = size.Width;
-	rcWnd.Height = size.Height;
-	this->Create(parent, rcWnd);
+	LtkRect rcWnd;
+	rcWnd.x = (rc.right - rc.left - size->width) / 2.f + rc.left;
+	rcWnd.y = (rc.bottom - rc.top - size->height) / 2.f + rc.top;
+	rcWnd.width = size->width;
+	rcWnd.height = size->height;
+	return this->Create(hParent, &rcWnd);
 }
 
 RectF Window::GetRect()

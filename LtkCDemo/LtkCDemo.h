@@ -3,6 +3,8 @@
 #include "resource.h"
 #include "LtkInterface.h"
 
+#define SAFE_RELEASE(p) if (p) { p->Release(); p = NULL; }
+
 class MainWindow : public ILtkWindowListener
 {
 public:

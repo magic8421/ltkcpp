@@ -15,8 +15,8 @@ extern "C" {
 struct LtkRect {
 	float x;
 	float y;
-	float w;
-	float h;
+	float width;
+	float height;
 };
 
 struct LtkSize {
@@ -42,8 +42,10 @@ LTK_API void WINAPI LtkRunMessageLoop();
 struct ILtkWindowListener;
 
 struct LTK_DECLARE_INTERFACE("F5A12F11-D3EE-41C8-8712-2699D2EEAD87")
-	ILtkWindow : public IUnknown 
+	ILtkWindow : public IUnknown
 {
+	STDMETHOD(Create)(HWND hParent, LtkRect * rect) PURE;
+	STDMETHOD(CreateCentered)(HWND hParent, LtkSize * size) PURE;
 	STDMETHOD_(void, UpdateTheme)() PURE;
 	STDMETHOD_(void, SetEventListener)(ILtkWindowListener * listener) PURE;
 };
@@ -58,8 +60,7 @@ struct LTK_DECLARE_INTERFACE("F617B2F6-EA75-41E7-AB0F-595DF6EF3B61")
 struct LTK_DECLARE_INTERFACE("45F1AC62-D035-4223-A3EB-08961DF3A16E") 
 	ILtkFactory : public IUnknown
 {
-	virtual void CreateWindow(HWND parent, LtkRect* rc, ILtkWindow** ppWnd) = 0;
-	virtual void CreateWindowCentered(HWND parent, LtkSize* size, ILtkWindow** ppWnd) = 0;
+	STDMETHOD_(void, CreateWindow)(ILtkWindow** ppWnd) PURE;
 };
 
 LTK_API void WINAPI LtkGetFactory(ILtkFactory **ppFactory);

@@ -52,16 +52,8 @@ public:
 
 	STDMETHOD(QueryInterface)(REFIID riid, void** ppvObject) { return E_NOTIMPL; }
 
-	void CreateWindow(HWND parent, LtkRect* rc, ILtkWindow** ppWnd) override {
-		RectF rcf = *(RectF*)rc;
+	void WINAPI CreateWindow(ILtkWindow** ppWnd) override {
 		auto wnd = new Window();
-		wnd->Create(nullptr, rcf);
-		*ppWnd = wnd;
-	}
-	void CreateWindowCentered(HWND parent, LtkSize* size, ILtkWindow** ppWnd) override {
-		SizeF sizef = *(SizeF*)size;
-		auto wnd = new Window();
-		wnd->Create(nullptr, sizef);
 		*ppWnd = wnd;
 	}
 };

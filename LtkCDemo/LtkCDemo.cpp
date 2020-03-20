@@ -210,7 +210,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	LtkGetFactory(&factory);
 	LtkSize size{ 500.f, 400.f };
 	ILtkWindow* window = NULL;
-	factory->CreateWindowCentered(NULL, &size, &window);
+	factory->CreateWindow(&window);
+	window->CreateCentered(NULL, &size);
 	window->UpdateTheme();
 	MainWindow main_window;
 	window->SetEventListener(&main_window);
