@@ -98,7 +98,9 @@ void Window::SetEventListener(ILtkWindowListener* listener)
         m_listener->Release();
     }
     m_listener = listener;
-    m_listener->AddRef();
+    if (m_listener) {
+        m_listener->AddRef();
+    }
 }
 
 HRESULT Window::Create(HWND hParent, LtkRect* prc)

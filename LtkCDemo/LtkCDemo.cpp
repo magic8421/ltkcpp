@@ -170,14 +170,9 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 }
 */
 
-ULONG MainWindow::AddRef()
+MainWindow::~MainWindow() 
 {
-	return 1;
-}
-
-ULONG MainWindow::Release()
-{
-	return 1;
+	SAFE_RELEASE(m_window);
 }
 
 HRESULT MainWindow::QueryInterface(REFIID riid, void** ppvObject)
@@ -195,7 +190,25 @@ BOOL MainWindow::OnClose(ILtkWindow* sender)
 
 void MainWindow::OnDestroy(ILtkWindow* sender)
 {
+	sender->SetEventListener(NULL);
 	::PostQuitMessage(0);
+}
+
+void MainWindow::Create()
+{
+	ILtkFactory* factory = NULL;
+	LtkGetFactory(&factory);
+	LtkSize size{ 500.f, 400.f };
+	ILtkWindow* window = NULL;
+	factory->CreateWindow(&window);
+	window->SetEventListener(this);
+	window->CreateCentered(NULL, &size);
+	window->UpdateTheme();
+	m_window = window;
+	m_window->AddRef();
+
+	window->Release();
+	factory->Release();
 }
 
 
@@ -209,19 +222,11 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 	LtkInitialize();
 
-	ILtkFactory* factory = NULL;
-	LtkGetFactory(&factory);
-	LtkSize size{ 500.f, 400.f };
-	ILtkWindow* window = NULL;
-	factory->CreateWindow(&window);
-	window->CreateCentered(NULL, &size);
-	window->UpdateTheme();
-	MainWindow main_window;
-	window->SetEventListener(&main_window);
+	MainWindow* main_wnd = new MainWindow();
+	main_wnd->Create();
 
 	LtkRunMessageLoop();
-	window->Release();
-	factory->Release();
+	main_wnd->Release();
 
 	LtkUninitialize();
 	return 0;
