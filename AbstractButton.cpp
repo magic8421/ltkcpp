@@ -59,7 +59,7 @@ bool AbstractButton::OnEvent(Event *ev)
 		this->MouseEventDelegate(static_cast<MouseEvent *>(ev), bHandled);
     }
     if (!bHandled) {
-        return Sprite::OnEvent(ev);
+        return Widget::OnEvent(ev);
     }
     return bHandled;
 }

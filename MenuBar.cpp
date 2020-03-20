@@ -104,10 +104,10 @@ void PopupMenu::Show(Window* wnd, const RectF& rc)
 	if (!wnd) {
 		return;
 	}
-	auto root = wnd->GetRootSprite();
+	auto root = wnd->GetRootWidget();
 	root->AddChild(this);
 	this->SetRect(rc);
-	wnd->SetFocusSprite(this);
+	wnd->SetFocusWidget(this);
 	m_trackingIdx = -1;
 	
 	m_state = State::sSlideIn;
@@ -165,7 +165,7 @@ void PopupMenu::OnThemeChanged()
 	}
 }
 
-void PopupMenu::OnParentChanged(Sprite* old, Sprite* new_)
+void PopupMenu::OnParentChanged(Widget* old, Widget* new_)
 {
 	m_hoverIdx = -1;
 }

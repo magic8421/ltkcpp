@@ -41,7 +41,7 @@ WindowLayout::~WindowLayout()
 {
 }
 
-Sprite *WindowLayout::SetClientSprite(Sprite *sp)
+Widget *WindowLayout::SetClientWidget(Widget *sp)
 {
     if (m_client) {
         this->RemoveChild(m_client);
@@ -53,7 +53,7 @@ Sprite *WindowLayout::SetClientSprite(Sprite *sp)
     return old;
 }
 
-Sprite *WindowLayout::GetClientSprite()
+Widget *WindowLayout::GetClientWidget()
 {
     return m_client;
 }
@@ -127,7 +127,7 @@ void WindowLayout::DoLayout()
 
 void WindowLayout::SetWindow( Window *wnd )
 {
-    Sprite::SetWindow(wnd);
+	Widget::SetWindow(wnd);
 	// TODO remove old callbacks
 	m_minBtn->ClickedDelegate += MakeDelegate(this, &WindowLayout::OnMinBtnClicked);
 	m_maxBtn->ClickedDelegate += MakeDelegate(this, &WindowLayout::OnMaxBtnClicked);

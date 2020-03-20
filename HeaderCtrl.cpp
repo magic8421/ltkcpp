@@ -26,7 +26,7 @@ HeaderCtrl::HeaderCtrl()
     ColumnData data;
     data.button = btn;
     m_vecColumns.push_back(data);
-    Sprite::AddChild(btn);
+    Widget::AddChild(btn);
 }
 
 HeaderCtrl::~HeaderCtrl()
@@ -51,7 +51,7 @@ void HeaderCtrl::AddColumn(LPCWSTR name, float size)
     data.width = size;
     data.button = btn;
     m_vecColumns.insert(m_vecColumns.end() - 1, data);
-    Sprite::AddChild(btn);
+    Widget::AddChild(btn);
 }
 
 void HeaderCtrl::SetHScroll(float pos)

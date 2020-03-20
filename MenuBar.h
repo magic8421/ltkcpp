@@ -41,10 +41,10 @@ private:
 	DISALLOW_COPY_AND_ASSIGN(MenuItem)
 };
 
-class LTK_CPP_API PopupMenu : public Sprite
+class LTK_CPP_API PopupMenu : public Widget
 {
 public:
-	RTTI_DECLARATIONS(PopupMenu, Sprite);
+	RTTI_DECLARATIONS(PopupMenu, Widget);
 
 	PopupMenu();
 	virtual ~PopupMenu();
@@ -75,7 +75,7 @@ public:
 	virtual bool OnMouseMove(MouseEvent* ev) override;
 	virtual bool OnMouseLeave(MouseEvent* ev) override;
 	virtual void OnThemeChanged() override;
-	virtual void OnParentChanged(Sprite* old, Sprite* new_) override;
+	virtual void OnParentChanged(Widget* old, Widget* new_) override;
 
 	void SetTextColor(LPCSTR style);
 	void SetHoverColor(LPCSTR style);
@@ -119,10 +119,10 @@ struct MenuButtonParam {
 	PopupMenu *sub_menu = nullptr;
 };
 
-class LTK_CPP_API MenuBar : public Sprite
+class LTK_CPP_API MenuBar : public Widget
 {
 public:
-	RTTI_DECLARATIONS(MenuBar, Sprite);
+	RTTI_DECLARATIONS(MenuBar, Widget);
 
 	MenuBar();
 	virtual ~MenuBar();

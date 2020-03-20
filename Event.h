@@ -8,7 +8,7 @@ enum Events
 {
     eDestroy = 1,
 
-    eSpriteFirst,
+    eWidgetFirst,
     ePaint,
 
     // type: MouseEvent
@@ -30,7 +30,7 @@ enum Events
     eSetFocus,
     eKillFocus,
     eSizeChanged,
-    eSpriteLast, 
+    eWidgetLast,
 
 };
 
@@ -76,11 +76,11 @@ struct ImeEvent : public Event
     LPCWSTR text = nullptr;
 };
 
-class Sprite;
+class Widget;
 
 struct FocusEvent : public Event
 {
-    Sprite *oldFocus = nullptr;
+    Widget *oldFocus = nullptr;
 };
 
 

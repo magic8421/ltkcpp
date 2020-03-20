@@ -24,9 +24,12 @@ struct LtkSize {
 	float height;
 };
 
+struct ILtkFactory;
+
 LTK_API UINT WINAPI LtkInitialize();
 LTK_API void WINAPI LtkUninitialize();
 LTK_API void WINAPI LtkRunMessageLoop();
+LTK_API void WINAPI LtkGetFactory(ILtkFactory** ppFactory);
 
 #ifdef __cplusplus
 } // extern "C"
@@ -64,8 +67,11 @@ struct LTK_DECLARE_INTERFACE("45F1AC62-D035-4223-A3EB-08961DF3A16E")
 	STDMETHOD_(void, CreateWindow)(ILtkWindow** ppWnd) PURE;
 };
 
-LTK_API void WINAPI LtkGetFactory(ILtkFactory **ppFactory);
+struct LTK_DECLARE_INTERFACE("A0B263F7-0B6D-43A6-8A77-A6BF1838D927")
+	ILtkWidget : public IUnknown
+{
 
+};
 
 /*
 LTK_DECLARE_TYPE(LtkObject);

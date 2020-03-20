@@ -24,19 +24,19 @@ void Splitter::Resize(UINT n)
 	}
 }
 
-Sprite* Splitter::SetClientAt(UINT idx, Sprite* sp)
+Widget* Splitter::SetClientAt(UINT idx, Widget* sp)
 {
 	auto &item = m_vecItems.at(idx);
 	auto old_sp = item.client;
 	if (old_sp) {
 		GetParent()->RemoveChild(old_sp);
 	}
-	Sprite::AddChild(sp);
+	Widget::AddChild(sp);
 	item.client = sp;
 	return old_sp;
 }
 
-void Splitter::AddClient(Sprite *sp)
+void Splitter::AddClient(Widget *sp)
 {
 	SplitterItem item;
 	item.client = sp;
@@ -65,13 +65,13 @@ void Splitter::DoLayout()
 	if (m_vecItems.size() == 0) {
 		return;
 	}
-	RectF rcSprite = this->GetClientRect();
+	RectF rcWidget = this->GetClientRect();
 
 	float size_limit = 10.f;
 	if (m_mode == Horizontal) {
-		size_limit = rcSprite.Width;
+		size_limit = rcWidget.Width;
 	} else {
-		size_limit = rcSprite.Height;
+		size_limit = rcWidget.Height;
 	}
 	if (m_vecItems.size() >= 2) {
 		int i = m_vecItems.size() - 1;

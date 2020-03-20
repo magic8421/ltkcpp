@@ -37,8 +37,8 @@ m_shadowBottom(ShadowFrame::eBottom)
 	m_rectComposition.right = 5;
 	m_rectComposition.bottom = 20;
 
-    m_sprite = new WindowLayout;
-    m_sprite->SetWindow(this);
+    m_root = new WindowLayout;
+    m_root->SetWindow(this);
     
 	m_caretHeight = 20;
 
@@ -49,13 +49,13 @@ Window::~Window(void)
 {
 	::DestroyWindow(m_hwnd);
 
-    if (m_sprite) {
-        delete m_sprite;
+    if (m_root) {
+        delete m_root;
     }
 
-    m_spFocus = INVALID_POINTER(Sprite);
-    m_spCapture = INVALID_POINTER(Sprite);
-    m_spHover = INVALID_POINTER(Sprite);
+    m_spFocus = INVALID_POINTER(Widget);
+    m_spCapture = INVALID_POINTER(Widget);
+    m_spHover = INVALID_POINTER(Widget);
 
     if (m_target) {
         m_target->Release();
@@ -169,7 +169,7 @@ void Window::SetRect(RectF rc)
 void Window::SetCaption(LPCWSTR text)
 {
     ::SetWindowText(m_hwnd, text);
-    m_sprite->SetCaptionText(text);
+    m_root->SetCaptionText(text);
 }
 
 SizeF Window::GetClientSize()
@@ -237,19 +237,19 @@ void Window::HandleMouseMessage(UINT message, WPARAM wparam, LPARAM lparam)
 		ev.y -= rc.Y;
 		m_spCapture->OnEvent(&ev);
 	}
-	else if (m_sprite)
+	else if (m_root)
 	{
 		//if (WM_LBUTTONDOWN == message)
 		//{
 			m_bEnableFocusChange = true;
-			m_sprite->DispatchMouseEvent(&ev);
+			m_root->DispatchMouseEvent(&ev);
 			
-			std::vector<Sprite *> defer_remove;
+			std::vector<Widget*> defer_remove;
 			defer_remove.reserve(20);
-			for (std::unordered_set<Sprite *>::iterator iter = m_setTrackMouseLeave.begin();
+			for (std::unordered_set<Widget*>::iterator iter = m_setTrackMouseLeave.begin();
 				iter != m_setTrackMouseLeave.end(); ++iter)
 			{
-				Sprite *sp = *iter;
+                Widget *sp = *iter;
 				RectF rc = sp->GetAbsRect();
 				if (!rc.Contains(ev.x, ev.y))
 				{
@@ -281,7 +281,7 @@ void Window::HandleMouseLeave()
 {
     for (auto iter = m_setTrackMouseLeave.begin(); iter != m_setTrackMouseLeave.end(); ++iter)
     {
-        Sprite *sp = *iter;
+        Widget *sp = *iter;
         MouseEvent e2 = {0};
         e2.id = eMouseLeave;
         e2.delta = 0;
@@ -302,7 +302,7 @@ LRESULT Window::HandleNcHitTest(const POINT &pt)
     ::GetClientRect(m_hwnd, &rcWnd);
     const long width = rcWnd.right - rcWnd.left;
     const long height = rcWnd.bottom - rcWnd.top;
-    auto rcCaption = DipRectToScreen(m_sprite->GetCaptionRect());
+    auto rcCaption = DipRectToScreen(m_root->GetCaptionRect());
     
 	long caption_h = 35;
 
@@ -394,10 +394,10 @@ LRESULT Window::WndProc(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam)
 
             //LTK_LOG("WM_SIZE %d", wparam);
             if (wparam == SIZE_MAXIMIZED) {
-                m_sprite->DoLayout();
+                m_root->DoLayout();
             }
             else if (wparam == SIZE_RESTORED){
-                m_sprite->DoLayout();
+                m_root->DoLayout();
             }
             else if (wparam == SIZE_MINIMIZED) {
                 m_setAnimation.clear();
@@ -593,9 +593,9 @@ void Window::OnPaint(HWND hwnd )
             hwnd, D2D1::SizeU(rc.right, rc.bottom)), &m_target);
         assert(SUCCEEDED(hr));
 
-        if (m_sprite)
+        if (m_root)
         {
-            m_sprite->HandleRecreateResouce(m_target);
+            m_root->HandleRecreateResouce(m_target);
         }
         this->RecreateResouce();
     }
@@ -607,11 +607,11 @@ void Window::OnPaint(HWND hwnd )
     m_target->SetAntialiasMode(D2D1_ANTIALIAS_MODE_ALIASED);
     this->DrawNonClient();
 
-    if (m_sprite)
+    if (m_root)
     {
-        RectF rc = m_sprite->GetRect();
+        RectF rc = m_root->GetRect();
         TranslateTransform(m_target, rc.X, rc.Y);
-        m_sprite->HandlePaint(m_target);
+        m_root->HandlePaint(m_target);
         TranslateTransform(m_target, -rc.X, -rc.Y);
     }
 
@@ -630,9 +630,9 @@ void Window::OnPaint(HWND hwnd )
 
 bool Window::OnSize(float cx, float cy, DWORD flag)
 {
-	if (m_sprite) {
+	if (m_root) {
 		ScreenCoordToDip(cx, cy);
-		m_sprite->SetRect(RectF(1.0f, 1.0f, (float)(cx - 2.0f), (float)(cy - 1.0f)));
+		m_root->SetRect(RectF(1.0f, 1.0f, (float)(cx - 2.0f), (float)(cy - 1.0f)));
 	}
     return false;
 }
@@ -747,27 +747,27 @@ void Window::SetImePosition( float x, float y )
 	m_rectComposition.bottom = (int)y + 20;
 }
 
-Sprite *Window::GetRootSprite()
+Widget *Window::GetRootWidget()
 {
-    return m_sprite;
+    return m_root;
 }
 
-Sprite *Window::SetClientSprite(Sprite *sp)
+Widget *Window::SetClientWidget(Widget*sp)
 {
-    return m_sprite->SetClientSprite(sp);
+    return m_root->SetClientWidget(sp);
 }
 
 MenuBar *Window::SetMenu(MenuBar *m)
 {
-	return m_sprite->SetMenuBar(m);
+	return m_root->SetMenuBar(m);
 }
 
 MenuBar * Window::GetMenu()
 {
-	return m_sprite->GetMenuBar();
+	return m_root->GetMenuBar();
 }
 
-void Window::SetFocusSprite( Sprite *sp )
+void Window::SetFocusWidget(Widget *sp )
 {
 	if (m_spFocus == sp)
 	{
@@ -788,7 +788,7 @@ void Window::SetFocusSprite( Sprite *sp )
 	}
 }
 
-Sprite *Window::GetFocusSprite()
+Widget *Window::GetFocusWidget()
 {
 	return m_spFocus;
 }
@@ -802,7 +802,7 @@ void Window::OnImeInput( PCTSTR text )
 {
 	if (m_spFocus)
 	{
-		// 其他的Sprite也有可能去接受ime消息。比如再来一个RichEdit
+		// 其他的Widget也有可能去接受ime消息。比如再来一个RichEdit
 		m_spFocus->HandleImeInput(text);
 	}
 }
@@ -812,7 +812,7 @@ void Window::SetCaretHeight( float h)
 	m_caretHeight = (int)h;
 }
 
-void Window::SetCapture( Sprite *sp )
+void Window::SetCapture(Widget *sp )
 {
 	LTK_ASSERT(sp->GetWindow() == this);
 	m_spCapture = sp;
@@ -828,7 +828,7 @@ void Window::ReleaseCapture()
     //LTK_LOG("ReleaseCapture");
 }
 
-bool Window::IsCapturing(Sprite *sp)
+bool Window::IsCapturing(Widget *sp)
 {
     return m_spCapture == sp;
 }
@@ -845,7 +845,7 @@ void Window::HideCaret()
 	::HideCaret(m_hwnd);
 }
 
-void Window::TrackMouseLeave( Sprite *sp )
+void Window::TrackMouseLeave(Widget *sp )
 {
 	if (sp->GetWindow() == this)
 	{
@@ -860,7 +860,7 @@ void Window::TrackMouseLeave( Sprite *sp )
     ::TrackMouseEvent(&tme);
 }
 
-void Window::BeginAnimation(Sprite *sp)
+void Window::BeginAnimation(Widget *sp)
 {
     //if (!::IsIconic(m_hwnd)) {
         if (m_setAnimation.size() == 0)
@@ -871,7 +871,7 @@ void Window::BeginAnimation(Sprite *sp)
     //}
 }
 
-void Window::EndAnimation(Sprite *sp)
+void Window::EndAnimation(Widget *sp)
 {
     if (m_setAnimation.size() == 0)
     {
@@ -904,9 +904,9 @@ void Window::UpdateTheme()
 {
     m_background = StyleManager::Instance()->GetBackground(m_styleName.c_str());
     this->OnThemeChanged();
-	if (m_sprite) {
-		m_sprite->HandleThemeChange();
-		// TODO send a eSizeChanged to the Sprite tree.
+	if (m_root) {
+		m_root->HandleThemeChange();
+		// TODO send a eSizeChanged to the Widget tree.
 		// let the controls use the new style measure.
 		float cx, cy;
 		RECT rc;
@@ -918,7 +918,7 @@ void Window::UpdateTheme()
 		ev.id = eSizeChanged;
 		ev.width = cx;
 		ev.height = cy;
-		m_sprite->OnEvent(&ev);
+		m_root->OnEvent(&ev);
 	}
 }
 

@@ -29,7 +29,7 @@ BoxLayout::~BoxLayout()
     //}
 }
 
-bool BoxLayout::AlreadyHas(Sprite *sp)
+bool BoxLayout::AlreadyHas(Widget* sp)
 {
 	bool bHas = false;
 	for (UINT i = m_params.size(); i > 0; i --) {
@@ -42,10 +42,10 @@ bool BoxLayout::AlreadyHas(Sprite *sp)
 	return bHas;
 }
 
-void BoxLayout::AddLayoutItem(Sprite *item, float preferedSize, float growFactor)
+void BoxLayout::AddLayoutItem(Widget* item, float preferedSize, float growFactor)
 {
 	LTK_ASSERT(!AlreadyHas(item));
-    Sprite::AddChild(item);
+    Widget::AddChild(item);
     //item->AddRef();
     BoxLayoutParam param;
     param.item = item;
@@ -54,10 +54,10 @@ void BoxLayout::AddLayoutItem(Sprite *item, float preferedSize, float growFactor
     // TODO check if duplicate.
     m_params.push_back(param);
 }
-void BoxLayout::InsertLayoutItem(UINT before, Sprite *item, float preferedSize, float growFactor)
+void BoxLayout::InsertLayoutItem(UINT before, Widget *item, float preferedSize, float growFactor)
 {
 	LTK_ASSERT(!AlreadyHas(item));
-	Sprite::AddChild(item);
+    Widget::AddChild(item);
     //item->AddRef();
     BoxLayoutParam param;
     param.item = item;

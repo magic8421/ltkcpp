@@ -17,7 +17,7 @@
 
 namespace ltk {
 
-Sprite::Sprite(void)
+Widget::Widget(void)
 {
 	m_rect.X = 0;
 	m_rect.Y = 0;
@@ -28,19 +28,19 @@ Sprite::Sprite(void)
 	m_bClipChildren = false;
 }
 
-Sprite::~Sprite(void)
+Widget::~Widget(void)
 {
     for (size_t i = 0; i < m_children.size(); i++) {
         delete m_children[i];
 	}
 }
 
-RectF Sprite::GetRect()
+RectF Widget::GetRect()
 {
 	return m_rect;
 }
 
-RectF Sprite::GetClientRect()
+RectF Widget::GetClientRect()
 {
 	RectF rc = this->GetRect();
 	rc.X = 0.0f;
@@ -48,9 +48,9 @@ RectF Sprite::GetClientRect()
 	return rc;
 }
 
-RectF Sprite::GetAbsRect()
+RectF Widget::GetAbsRect()
 {
-	Sprite *sp = m_parent;
+	Widget *sp = m_parent;
 	RectF rcSelf = GetRect();
 	RectF rcParent;
 	while(sp)
@@ -62,17 +62,17 @@ RectF Sprite::GetAbsRect()
 	return rcSelf;
 }
 
-float Sprite::GetWidth()
+float Widget::GetWidth()
 {
     return m_rect.Width;
 }
 
-float Sprite::GetHeight()
+float Widget::GetHeight()
 {
     return m_rect.Height;
 }
 
-void Sprite::SetRect( RectF rect )
+void Widget::SetRect( RectF rect )
 {
 	// 检查下宽高是否小于0 是则设为0 然后0宽或0高要在OnDraw这些里面特殊处理一下
 	rect.Width = max(0.0f, rect.Width);
@@ -95,7 +95,7 @@ void Sprite::SetRect( RectF rect )
 	}
 }
 
-void Sprite::Invalidate()
+void Widget::Invalidate()
 {
 	// 0指针访问 不挂是因为x64系统一个bug 记得打开调试中的Win32异常断点
 	Window *wnd = GetWindow();
@@ -106,13 +106,13 @@ void Sprite::Invalidate()
 	}
 }
 
-void Sprite::SetWindow( Window *wnd )
+void Widget::SetWindow( Window *wnd )
 {
     //LTK_LOG("SetWindow: %08x", wnd);
 	m_window = wnd;
 }
 
-void Sprite::HandlePaint( ID2D1RenderTarget *target )
+void Widget::HandlePaint( ID2D1RenderTarget *target )
 {
 	if (!m_bVisible)
 	{
@@ -127,8 +127,8 @@ void Sprite::HandlePaint( ID2D1RenderTarget *target )
 
 	if (m_bClipChildren)
 	{
-        auto rcSprite = this->GetClientRect();
-        D2D1_RECT_F rcClip = D2D1RectF(rcSprite);
+        auto rcWidget = this->GetClientRect();
+        D2D1_RECT_F rcClip = D2D1RectF(rcWidget);
         target->PushAxisAlignedClip(rcClip, D2D1_ANTIALIAS_MODE_ALIASED);
 	}
     PaintEvent ev;
@@ -151,7 +151,7 @@ void Sprite::HandlePaint( ID2D1RenderTarget *target )
 	}
 }
 
-void Sprite::AddChild(Sprite *sp)
+void Widget::AddChild(Widget *sp)
 {
     for (UINT i =  m_children.size(); i > 0; i--) {
         if (m_children[i - 1] == sp) {
@@ -169,7 +169,7 @@ void Sprite::AddChild(Sprite *sp)
 	sp->m_parent = this;
 }
 
-void Sprite::HandleKeyEvent( UINT message, DWORD keyCode, DWORD flag )
+void Widget::HandleKeyEvent( UINT message, DWORD keyCode, DWORD flag )
 {
 	KeyEvent ev;
     ev.keyCode = keyCode;
@@ -192,7 +192,7 @@ void Sprite::HandleKeyEvent( UINT message, DWORD keyCode, DWORD flag )
 	}
 }
 
-void Sprite::HandleImeInput(LPCTSTR text)
+void Widget::HandleImeInput(LPCTSTR text)
 {
     ImeEvent ev;
     ev.id = eImeInput;
@@ -201,9 +201,9 @@ void Sprite::HandleImeInput(LPCTSTR text)
 }
 
 // return weak ref
-Window * Sprite::GetWindow()
+Window * Widget::GetWindow()
 {
-	Sprite *sp = this;
+	Widget *sp = this;
 	while (sp->m_parent)
 	{
 		sp = sp->m_parent;
@@ -211,7 +211,7 @@ Window * Sprite::GetWindow()
 	return sp->m_window;
 }
 
-void Sprite::SetCapture()
+void Widget::SetCapture()
 {
     auto wnd = GetWindow();
     LTK_ASSERT(wnd);
@@ -221,7 +221,7 @@ void Sprite::SetCapture()
 	}
 }
 
-void Sprite::ReleaseCapture()
+void Widget::ReleaseCapture()
 {
     auto wnd = GetWindow();
     LTK_ASSERT(wnd);
@@ -231,7 +231,7 @@ void Sprite::ReleaseCapture()
 	}
 }
 
-bool Sprite::IsCapturing()
+bool Widget::IsCapturing()
 {
     Window *wnd = GetWindow();
     if (wnd) {
@@ -241,12 +241,12 @@ bool Sprite::IsCapturing()
     }
 }
 
-void Sprite::BringToFront()
+void Widget::BringToFront()
 {
 	LTK_ASSERT(false);
 }
 
-void Sprite::SetVisible( bool v )
+void Widget::SetVisible( bool v )
 {
 	if (m_bVisible != v)
 	{
@@ -255,12 +255,12 @@ void Sprite::SetVisible( bool v )
 	m_bVisible = v;
 }
 
-bool Sprite::GetVisible()
+bool Widget::GetVisible()
 {
 	return m_bVisible;
 }
 
-void Sprite::EnableClipChildren( bool bClip )
+void Widget::EnableClipChildren( bool bClip )
 {
 	if (m_bClipChildren != bClip)
 	{
@@ -269,12 +269,12 @@ void Sprite::EnableClipChildren( bool bClip )
 	}
 }
 
-bool Sprite::GetClipChildren()
+bool Widget::GetClipChildren()
 {
 	return m_bClipChildren;
 }
 
-bool Sprite::DispatchMouseEvent(MouseEvent *ev)
+bool Widget::DispatchMouseEvent(MouseEvent *ev)
 {
 	if (!m_bVisible) {
 		return false;
@@ -294,9 +294,9 @@ bool Sprite::DispatchMouseEvent(MouseEvent *ev)
     return this->OnEvent(ev);
 }
 
-Sprite * Sprite::GetAncestor()
+Widget * Widget::GetAncestor()
 {
-	Sprite *sp = this;
+	Widget *sp = this;
 	while (sp->m_parent)
 	{
 		sp = sp->m_parent;
@@ -304,12 +304,12 @@ Sprite * Sprite::GetAncestor()
 	return sp;
 }
 
-Sprite * Sprite::GetParent()
+Widget * Widget::GetParent()
 {
 	return m_parent;
 }
 
-void Sprite::TrackMouseLeave()
+void Widget::TrackMouseLeave()
 {
 	Window *wnd = GetWindow();
 	if (wnd)
@@ -318,7 +318,7 @@ void Sprite::TrackMouseLeave()
 	}
 }
 
-void Sprite::RemoveChild( Sprite *sp )
+void Widget::RemoveChild( Widget *sp )
 {
     // maybe searh from the end is better, because we always push to the end.
     for (int i = m_children.size() - 1; i >= 0; i--) {
@@ -335,15 +335,15 @@ void Sprite::RemoveChild( Sprite *sp )
     }
 }
 
-void Sprite::ShowCaret()
+void Widget::ShowCaret()
 {
     GetWindow()->ShowCaret();
 }
 
-void Sprite::SetCaretPos(RectF rc)
+void Widget::SetCaretPos(RectF rc)
 {
     RECT rc2 = DipRectToScreen(rc);
-    RECT arc = DipRectToScreen(Sprite::GetAbsRect());
+    RECT arc = DipRectToScreen(Widget::GetAbsRect());
     rc2.left += arc.left;
     rc2.top += arc.top;
     rc2.right += arc.left;
@@ -358,12 +358,12 @@ void Sprite::SetCaretPos(RectF rc)
     ::SetCaretPos(rc2.left, rc2.top);
 }
 
-void Sprite::HideCaret()
+void Widget::HideCaret()
 {
     ::DestroyCaret();
 }
 
-bool Sprite::OnEvent(Event *ev)
+bool Widget::OnEvent(Event *ev)
 {
     bool bHandled = false;
     UINT id = ev->id;
@@ -418,7 +418,7 @@ bool Sprite::OnEvent(Event *ev)
 	return bHandled;
 }
 
-void Sprite::HandleRecreateResouce(ID2D1RenderTarget *target)
+void Widget::HandleRecreateResouce(ID2D1RenderTarget *target)
 {
     for (size_t i = 0; i < m_children.size(); i++) {
         auto sp = m_children[i];
@@ -427,7 +427,7 @@ void Sprite::HandleRecreateResouce(ID2D1RenderTarget *target)
     this->RecreateResouce(target);
 }
 
-void Sprite::HandleThemeChange()
+void Widget::HandleThemeChange()
 {
     this->OnThemeChanged();
     for (auto sp : m_children) {
@@ -435,14 +435,14 @@ void Sprite::HandleThemeChange()
     }
 }
 
-void Sprite::BeginAnimation()
+void Widget::BeginAnimation()
 {
     //LTK_LOG("BeginAnimation");
     Window *wnd = GetWindow();
     wnd->BeginAnimation(this);
 }
 
-void Sprite::EndAnimation()
+void Widget::EndAnimation()
 {
     //LTK_LOG("EndAnimation");
     Window *wnd = GetWindow();
@@ -451,23 +451,23 @@ void Sprite::EndAnimation()
     }
 }
 
-Sprite* Sprite::SetFocus()
+Widget* Widget::SetFocus()
 {
 	auto wnd = GetWindow();
 	if (wnd) {
-		auto old = wnd->GetFocusSprite();
-		wnd->SetFocusSprite(this);
+		auto old = wnd->GetFocusWidget();
+		wnd->SetFocusWidget(this);
 		return old;
 	}
 	return nullptr;
 }
 
-void Sprite::KillFocus()
+void Widget::KillFocus()
 {
 	auto wnd = GetWindow();
 	if (wnd) {
-		if (wnd->GetFocusSprite() == this) {
-			wnd->SetFocusSprite(nullptr);
+		if (wnd->GetFocusWidget() == this) {
+			wnd->SetFocusWidget(nullptr);
 		}
 	}
 }

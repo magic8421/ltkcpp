@@ -15,14 +15,14 @@ class Button;
 class Label;
 class MenuBar;
 
-class LTK_CPP_API WindowLayout : public Sprite
+class LTK_CPP_API WindowLayout : public Widget
 {
 public:
     WindowLayout();
     virtual ~WindowLayout();
 
-    Sprite *SetClientSprite(Sprite *sp);
-    Sprite *GetClientSprite();
+    Widget *SetClientWidget(Widget *sp);
+    Widget *GetClientWidget();
 	
 	MenuBar *SetMenuBar(MenuBar *menu);
 	MenuBar *GetMenuBar();
@@ -40,7 +40,7 @@ private:
 	void OnMaxBtnClicked();
 	void OnCloseBtnClicked();
 
-    Sprite *m_client = nullptr;
+    Widget *m_client = nullptr;
     Button *m_minBtn = nullptr;
     Button *m_maxBtn = nullptr;
     Button *m_closeBtn = nullptr;

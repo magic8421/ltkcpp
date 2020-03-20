@@ -70,10 +70,10 @@ private:
     DISALLOW_COPY_AND_ASSIGN(TreeNode)
 };
 
-class LTK_CPP_API TreeView : public Sprite
+class LTK_CPP_API TreeView : public Widget
 {
 public:
-	RTTI_DECLARATIONS(TreeView, Sprite);
+	RTTI_DECLARATIONS(TreeView, Widget);
 
     TreeView();
     virtual ~TreeView();

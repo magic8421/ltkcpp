@@ -167,11 +167,11 @@ TreeView::~TreeView()
 void TreeView::DoLayout()
 {
     float y = 0.0f;
-    RectF rcSprite = GetClientRect();
+    RectF rcWidget = GetClientRect();
     UpdateLinearView();
     m_maxHeight = m_vecLinear.size() * m_itemHeight;
 
-    if (m_maxHeight > rcSprite.Height) {
+    if (m_maxHeight > rcWidget.Height) {
         m_vsb->SetContentSize(m_maxHeight);
         m_vsb->SetVisible(true);
     } else {
