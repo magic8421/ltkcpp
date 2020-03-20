@@ -77,16 +77,6 @@ Window::~Window(void)
     }
 }
 
-ULONG Window::AddRef()
-{
-    return Object::AddRef();
-}
-
-ULONG Window::Release()
-{
-    return Object::Release();
-}
-
 HRESULT Window::QueryInterface(REFIID riid, void** ppvObject)
 {
     return E_NOTIMPL;

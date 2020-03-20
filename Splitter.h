@@ -15,6 +15,11 @@ public:
 	//void Resize(UINT n);
 	//Widget* SetClientAt(UINT idx, Widget* sp);
 
+	LTK_OBJECT_IMPL()
+	LTK_WIDGET_IMPL()
+
+	STDMETHOD(QueryInterface)(REFIID riid, void** ppvObject) override { return E_NOTIMPL; }
+
 	STDMETHOD_(void, AddClient)(ILtkWidget* w) override;
 	STDMETHOD(SetClientSize)(UINT idx, float size) override;
 	

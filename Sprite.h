@@ -14,6 +14,18 @@ namespace ltk {
 
 class Window;
 
+#define LTK_WIDGET_IMPL() \
+    STDMETHOD_(void, SetRect)(LtkRect* rect) override { \
+        Widget::SetRect(rect); } \
+    STDMETHOD_(void, SetVisible)(BOOL b) override { \
+        Widget::SetVisible(b); } \
+    STDMETHOD_(BOOL, GetVisible)() override { \
+        return Widget::GetVisible(); } \
+    STDMETHOD(AddChild)(ILtkWidget* w) override { \
+        return Widget::AddChild(w); }
+
+
+
 class LTK_CPP_API Widget : public Object, public ILtkWidget
 {
 public:
@@ -22,8 +34,7 @@ public:
     Widget(void);
     virtual ~Widget(void);
 
-    STDMETHOD_(ULONG, AddRef)() override;
-    STDMETHOD_(ULONG, Release)() override;
+    LTK_OBJECT_IMPL()
     STDMETHOD(QueryInterface)(REFIID riid, void** ppvObject) override;
 
     RectF GetRect();

@@ -36,9 +36,7 @@ public:
 	 */
     virtual ~Window(void);
 
-	STDMETHOD_(ULONG, AddRef)() override;
-
-	STDMETHOD_(ULONG,Release)() override;
+	LTK_OBJECT_IMPL()
 
 	STDMETHOD(QueryInterface)(REFIID riid, void** ppvObject) override;
 

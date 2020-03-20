@@ -35,16 +35,6 @@ Widget::~Widget(void)
 	}
 }
 
-ULONG Widget::AddRef()
-{
-    return Object::AddRef();
-}
-
-ULONG Widget::Release()
-{
-    return Object::Release();
-}
-
 HRESULT Widget::QueryInterface(REFIID riid, void** ppvObject)
 {
     return E_NOTIMPL;

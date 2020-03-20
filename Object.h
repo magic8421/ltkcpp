@@ -6,6 +6,14 @@
 namespace ltk {
 
 
+#define LTK_OBJECT_IMPL() \
+	STDMETHOD_(ULONG, AddRef)() override { \
+		return Object::AddRef(); \
+	} \
+	STDMETHOD_(ULONG, Release)() override { \
+		return Object::Release(); \
+	}
+
 class LTK_CPP_API Object : public RTTI
 {
 public:

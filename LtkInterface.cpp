@@ -57,7 +57,7 @@ public:
 	}
 
 	STDMETHOD_(void, CreateSplitter)(ILtkSplitter **ppOut) override {
-		//*ppOut = new Splitter;
+		*ppOut = new Splitter(ltk::Horizontal);
 	}
 
 };
