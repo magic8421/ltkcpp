@@ -47,6 +47,7 @@ void MainWindow::Create()
 	btn->SetText(L"Hello World");
 	btn->SetRect(10, 10, 100, 100);
 	window->SetCentralWidget(btn);
+	SAFE_RELEASE(btn);
 
 
 	window->SetEventListener(this);

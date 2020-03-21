@@ -39,6 +39,11 @@ WindowLayout::WindowLayout()
 
 WindowLayout::~WindowLayout()
 {
+	SAFE_RELEASE(m_minBtn);
+	SAFE_RELEASE(m_maxBtn);
+	SAFE_RELEASE(m_closeBtn);
+	SAFE_RELEASE(m_caption);
+	SAFE_RELEASE(m_client);
 }
 
 void WindowLayout::SetCentralWidget(Widget *sp)

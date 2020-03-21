@@ -61,7 +61,7 @@ public:
 
     STDMETHOD(AddChild)(ILtkWidget* w) override;
 
-	void AddChild(Widget *sp );
+    HRESULT AddChild(Widget *sp );
 	void RemoveChild(Widget* sp);
 
     void HandlePaint( ID2D1RenderTarget *target );

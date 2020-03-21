@@ -49,9 +49,7 @@ Window::~Window(void)
 {
 	::DestroyWindow(m_hwnd);
 
-    if (m_root) {
-        delete m_root;
-    }
+    SAFE_RELEASE(m_root);
 
     m_spFocus = INVALID_POINTER(Widget);
     m_spCapture = INVALID_POINTER(Widget);

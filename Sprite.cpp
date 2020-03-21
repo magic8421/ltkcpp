@@ -31,7 +31,7 @@ Widget::Widget(void)
 Widget::~Widget(void)
 {
     for (size_t i = 0; i < m_children.size(); i++) {
-        delete m_children[i];
+        m_children[i]->Release();
 	}
 }
 
@@ -169,16 +169,15 @@ void Widget::HandlePaint( ID2D1RenderTarget *target )
 HRESULT Widget::AddChild(ILtkWidget* w)
 {
     Widget* sp = dynamic_cast<Widget*>(w);
-    this->AddChild(sp);
-    return S_OK; // TODO 检查重复项
+    return this->AddChild(sp);
 }
 
-void Widget::AddChild(Widget *sp)
+HRESULT Widget::AddChild(Widget *sp)
 {
     for (UINT i =  m_children.size(); i > 0; i--) {
         if (m_children[i - 1] == sp) {
 			//LTK_ASSERT(false);
-			return;
+			return E_INVALIDARG; // 检查重复项
         }
     }
 	//sp->SetWindow(m_window);
@@ -189,6 +188,8 @@ void Widget::AddChild(Widget *sp)
 	m_children.push_back(sp);
 	sp->OnParentChanged(sp->m_parent, this);
 	sp->m_parent = this;
+    sp->AddRef();
+    return S_OK;
 }
 
 void Widget::HandleKeyEvent( UINT message, DWORD keyCode, DWORD flag )
@@ -346,8 +347,8 @@ void Widget::RemoveChild( Widget *sp )
     for (int i = m_children.size() - 1; i >= 0; i--) {
         auto sp2 = m_children[i];
         if (sp2 == sp) {
-            //sp2->Release();
-			sp2->m_parent = nullptr;
+            sp2->m_parent = nullptr;
+            sp2->Release();
             for (int j = i + 1; j < (int)m_children.size(); j++) {
                 m_children[j - 1] = m_children[j];
             }

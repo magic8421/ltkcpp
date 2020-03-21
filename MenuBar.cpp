@@ -34,7 +34,7 @@ PopupMenu::~PopupMenu()
 {
 	for (auto item : m_vecItems) {
 		if (item) {
-			delete item->sub_menu;
+			delete item->sub_menu; // TODO 改为引用计数
 			delete item;
 		}
 	}
