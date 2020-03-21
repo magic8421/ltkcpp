@@ -21,7 +21,7 @@ TimerWindow::TimerWindow()
 	m_timer1.TimeoutDelegate += MakeDelegate(this, &TimerWindow::OnTimer);
 
 	ltk::BoxLayout *vbox1 = new ltk::BoxLayout(ltk::Vertical);
-	this->SetClientWidget(vbox1);
+	this->SetCentralWidget(vbox1);
 
 	m_lableTime = new ltk::Label;
 	m_lableTime->SetText(L"00:00:00");

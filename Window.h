@@ -85,7 +85,7 @@ public:
 	void SetImePosition( float x, float y );
 
 	Widget *GetRootWidget();
-	STDMETHOD_(void, SetClientWidget)(ILtkWidget* w);
+	STDMETHOD_(void, SetCentralWidget)(ILtkWidget* w);
 
 	MenuBar *SetMenu(MenuBar *);
 	MenuBar *GetMenu();

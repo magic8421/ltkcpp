@@ -46,7 +46,7 @@ void MainWindow::Create()
 	factory->CreateButton(&btn);
 	btn->SetText(L"Hello World");
 	btn->SetRect(10, 10, 100, 100);
-	window->SetClientWidget(btn);
+	window->SetCentralWidget(btn);
 
 
 	window->SetEventListener(this);

@@ -41,7 +41,7 @@ WindowLayout::~WindowLayout()
 {
 }
 
-void WindowLayout::SetClientWidget(Widget *sp)
+void WindowLayout::SetCentralWidget(Widget *sp)
 {
     if (m_client) {
         this->RemoveChild(m_client);
