@@ -82,6 +82,11 @@ void Widget::SetRect(LtkRect* rect)
     this->SetRect(*(RectF*)rect);
 }
 
+void Widget::SetRect(float x, float y, float width, float height)
+{
+    this->SetRect(RectF(x, y, width, height));
+}
+
 void Widget::SetRect( RectF rect )
 {
 	// 检查下宽高是否小于0 是则设为0 然后0宽或0高要在OnDraw这些里面特殊处理一下
@@ -163,7 +168,7 @@ void Widget::HandlePaint( ID2D1RenderTarget *target )
 
 HRESULT Widget::AddChild(ILtkWidget* w)
 {
-    Widget* sp = static_cast<Widget*>(w);
+    Widget* sp = dynamic_cast<Widget*>(w);
     this->AddChild(sp);
     return S_OK; // TODO 检查重复项
 }

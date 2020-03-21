@@ -12,7 +12,7 @@
 
 namespace ltk {
 
-class LTK_CPP_API Button : public AbstractButton
+class LTK_CPP_API Button : public AbstractButton, public ILtkButton
 {
 public:
 	RTTI_DECLARATIONS(Button, AbstractButton);
@@ -20,7 +20,11 @@ public:
     Button();
     virtual ~Button();
 
-    void SetText(LPCWSTR text);
+	LTK_OBJECT_IMPL()
+	LTK_WIDGET_IMPL()
+	STDMETHOD(QueryInterface)(REFIID riid, void** ppvObject) override { return E_NOTIMPL; }
+
+	STDMETHOD_(void, SetText)(LPCWSTR);
 	void RecreateLayout();
 	SizeF GetPreferredSize();
 

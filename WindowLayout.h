@@ -21,7 +21,7 @@ public:
     WindowLayout();
     virtual ~WindowLayout();
 
-    Widget *SetClientWidget(Widget *sp);
+    void SetClientWidget(Widget *sp);
     Widget *GetClientWidget();
 	
 	MenuBar *SetMenuBar(MenuBar *menu);

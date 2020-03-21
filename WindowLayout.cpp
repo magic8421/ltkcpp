@@ -41,16 +41,16 @@ WindowLayout::~WindowLayout()
 {
 }
 
-Widget *WindowLayout::SetClientWidget(Widget *sp)
+void WindowLayout::SetClientWidget(Widget *sp)
 {
     if (m_client) {
         this->RemoveChild(m_client);
-    }
-    auto old = m_client;
+		m_client->Release();
+	}
     m_client = sp;
+	m_client->AddRef();
     this->AddChild(sp);
     this->DoLayout();
-    return old;
 }
 
 Widget *WindowLayout::GetClientWidget()
@@ -99,12 +99,12 @@ void WindowLayout::DoLayout()
 	float menu_h = 30;
 
     RectF rc = this->GetClientRect();
-    m_closeBtn->SetRect(RectF(
-		rc.Width - btn_w - sys_btn_margin, sys_btn_margin, btn_w, btn_h));
-    m_maxBtn->SetRect(RectF(
-		rc.Width - btn_w * 2 - sys_btn_margin, sys_btn_margin, btn_w, btn_h));
-    m_minBtn->SetRect(RectF(
-		rc.Width - btn_w * 3 - sys_btn_margin, sys_btn_margin, btn_w, btn_h));
+    m_closeBtn->SetRect(
+		rc.Width - btn_w - sys_btn_margin, sys_btn_margin, btn_w, btn_h);
+    m_maxBtn->SetRect(
+		rc.Width - btn_w * 2 - sys_btn_margin, sys_btn_margin, btn_w, btn_h);
+    m_minBtn->SetRect(
+		rc.Width - btn_w * 3 - sys_btn_margin, sys_btn_margin, btn_w, btn_h);
 
     m_caption->SetRect(RectF(margin, margin, 
         rc.Width - btn_w * 3 - margin * 3, caption_h));

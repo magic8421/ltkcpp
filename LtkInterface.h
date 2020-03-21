@@ -43,6 +43,9 @@ LTK_API void WINAPI LtkGetFactory(ILtkFactory** ppFactory);
 #undef CreateWindow
 
 struct ILtkWindowListener;
+struct ILtkWidget;
+struct ILtkSplitter;
+struct ILtkButton;
 
 struct LTK_DECLARE_INTERFACE("F5A12F11-D3EE-41C8-8712-2699D2EEAD87")
 	ILtkWindow : public IUnknown
@@ -52,6 +55,7 @@ struct LTK_DECLARE_INTERFACE("F5A12F11-D3EE-41C8-8712-2699D2EEAD87")
 	STDMETHOD_(void, UpdateTheme)() PURE;
 	STDMETHOD_(void, SetEventListener)(ILtkWindowListener * listener) PURE;
 	STDMETHOD_(HWND, GetHWND)() PURE;
+	STDMETHOD_(void, SetClientWidget)(ILtkWidget * w) PURE;
 };
 
 struct LTK_DECLARE_INTERFACE("F617B2F6-EA75-41E7-AB0F-595DF6EF3B61")
@@ -61,13 +65,18 @@ struct LTK_DECLARE_INTERFACE("F617B2F6-EA75-41E7-AB0F-595DF6EF3B61")
 	STDMETHOD_(void, OnDestroy)(ILtkWindow *sender) PURE;
 };
 
-struct ILtkSplitter;
+typedef enum LTK_ORIENTATION
+{
+	LTK_HORIZONTAL = 1,
+	LTK_VERTICAL = 2
+} LTK_ORIENTATION;
 
 struct LTK_DECLARE_INTERFACE("45F1AC62-D035-4223-A3EB-08961DF3A16E") 
 	ILtkFactory : public IUnknown
 {
 	STDMETHOD_(void, CreateWindow)(ILtkWindow** ppOut) PURE;
-	STDMETHOD_(void, CreateSplitter)(ILtkSplitter** ppOut) PURE;
+	STDMETHOD_(void, CreateSplitter)(LTK_ORIENTATION o, ILtkSplitter** ppOut) PURE;
+	STDMETHOD_(void, CreateButton)(ILtkButton** ppOut) PURE;
 };
 
 struct LTK_DECLARE_INTERFACE("A0B263F7-0B6D-43A6-8A77-A6BF1838D927")
@@ -76,6 +85,7 @@ struct LTK_DECLARE_INTERFACE("A0B263F7-0B6D-43A6-8A77-A6BF1838D927")
 	STDMETHOD_(void, SetVisible)(BOOL) PURE;
 	STDMETHOD_(BOOL, GetVisible)() PURE;
 	STDMETHOD_(void, SetRect)(LtkRect * rect) PURE;
+	STDMETHOD_(void, SetRect)(float x, float y, float width, float height) PURE;
 	STDMETHOD(AddChild)(ILtkWidget * w) PURE;
 };
 
@@ -84,6 +94,12 @@ struct LTK_DECLARE_INTERFACE("F4241511-42F2-4E64-8FC7-6B9433D6D18A")
 {
 	STDMETHOD_(void, AddClient)(ILtkWidget * w) PURE;
 	STDMETHOD(SetClientSize)(UINT idx, float size) PURE;
+};
+
+struct LTK_DECLARE_INTERFACE("67D14A90-8C1E-4696-B9E6-34B461ABB72E")
+	ILtkButton : public ILtkWidget
+{
+	STDMETHOD_(void, SetText)(LPCWSTR) PURE;
 };
 
 /*

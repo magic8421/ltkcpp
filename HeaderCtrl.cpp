@@ -126,7 +126,7 @@ void HeaderCtrl::DoLayout()
     float x = -m_hscroll;
     for (UINT i = 0; i < m_vecColumns.size(); i++) {
         m_vecColumns[i].button->SetRect(
-            RectF(x, 0.0f, m_vecColumns[i].width, rc.Height));
+            x, 0.0f, m_vecColumns[i].width, rc.Height);
         x += m_vecColumns[i].width;
     }
 }

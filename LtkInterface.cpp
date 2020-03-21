@@ -55,11 +55,12 @@ public:
 	void WINAPI CreateWindow(ILtkWindow** ppWnd) override {
 		*ppWnd = new Window();
 	}
-
-	STDMETHOD_(void, CreateSplitter)(ILtkSplitter **ppOut) override {
-		*ppOut = new Splitter(ltk::Horizontal);
+	STDMETHOD_(void, CreateSplitter)(LTK_ORIENTATION o, ILtkSplitter **ppOut) override {
+		*ppOut = new Splitter((ltk::Orientation)o);
 	}
-
+	STDMETHOD_(void, CreateButton)(ILtkButton ** ppOut) override {
+		*ppOut = new Button;
+	}
 };
 
 LTK_API void WINAPI LtkGetFactory(ILtkFactory** ppFactory)

@@ -38,11 +38,20 @@ void MainWindow::Create()
 	LtkSize size{ 500.f, 400.f };
 	ILtkWindow* window = NULL;
 	factory->CreateWindow(&window);
+
+	m_window = window;
+	m_window->AddRef();
+
+	ILtkButton* btn = NULL;
+	factory->CreateButton(&btn);
+	btn->SetText(L"Hello World");
+	btn->SetRect(10, 10, 100, 100);
+	window->SetClientWidget(btn);
+
+
 	window->SetEventListener(this);
 	window->CreateCentered(NULL, &size);
 	window->UpdateTheme();
-	m_window = window;
-	m_window->AddRef();
 
 	window->Release();
 	factory->Release();

@@ -22,7 +22,10 @@ class Window;
     STDMETHOD_(BOOL, GetVisible)() override { \
         return Widget::GetVisible(); } \
     STDMETHOD(AddChild)(ILtkWidget* w) override { \
-        return Widget::AddChild(w); }
+        return Widget::AddChild(w); } \
+    STDMETHOD_(void, SetRect)(float x, float y, float width, float height) override { \
+        Widget::SetRect(x, y, width, height); }
+
 
 
 
@@ -41,6 +44,7 @@ public:
 	RectF GetClientRect();
 
     STDMETHOD_(void, SetRect)(LtkRect* rect) override;
+    STDMETHOD_(void, SetRect)(float x, float y, float width, float height) override;
 	void SetRect( RectF rect );
 	RectF GetAbsRect();
 

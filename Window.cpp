@@ -742,9 +742,9 @@ Widget *Window::GetRootWidget()
     return m_root;
 }
 
-Widget *Window::SetClientWidget(Widget*sp)
+void Window::SetClientWidget(ILtkWidget* w)
 {
-    return m_root->SetClientWidget(sp);
+    m_root->SetClientWidget(dynamic_cast<Widget*>(w));
 }
 
 MenuBar *Window::SetMenu(MenuBar *m)

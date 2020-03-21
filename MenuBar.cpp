@@ -489,9 +489,9 @@ void MenuBar::DoLayout()
 	for (UINT i = 0; i < m_vecMenuItems.size(); i ++) {
 		auto param = m_vecMenuItems[i];
 		SizeF size = param.button->GetPreferredSize();
-		RectF rc(x, 0.f, size.Width, this->GetHeight());
+		LtkRect rc{x, 0.f, size.Width, this->GetHeight()};
 		//LTK_LOG("menu_btn: %.1f,%.1f,%.1f,%.1f", rc.X, rc.Y, rc.Width, rc.Height);
-		param.button->SetRect(rc);
+		param.button->SetRect(&rc);
 		x += size.Width;
 	}
 }

@@ -71,12 +71,12 @@ void ScrollBar::Update()
     float slider_pos = m_position / (m_contentSize - view_size)
         * (view_size - slider_size);
 
-    RectF rc2;
+    LtkRect rc2;
     if (m_mode == Horizontal) {
-        rc2.X = slider_pos;
-        rc2.Y = 1;
-        rc2.Width = slider_size;
-        rc2.Height = rc.Height - 1;
+        rc2.x = slider_pos;
+        rc2.y = 1;
+        rc2.width = slider_size;
+        rc2.height = rc.Height - 1;
         /*
         LTK_LOG("hsb: %.1f %.1f %.1f %.1f | %.1f %.1f %.1f %.1f",
             rc2.X, rc2.Y, rc2.Width, rc2.Height,
@@ -84,12 +84,12 @@ void ScrollBar::Update()
         */
     }
     else {
-        rc2.X = 1;
-        rc2.Y = slider_pos;
-        rc2.Width = rc.Width - 1;
-        rc2.Height = slider_size;
+        rc2.x = 1;
+        rc2.y = slider_pos;
+        rc2.width = rc.Width - 1;
+        rc2.height = slider_size;
     }
-    m_slider->SetRect(rc2);
+    m_slider->SetRect(&rc2);
 }
 
 bool ScrollBar::OnPaint(PaintEvent *ev)
@@ -118,7 +118,7 @@ bool ScrollBar::OnMouseMove(MouseEvent *ev)
             x = min(x, rcRoot.Width - rcSlider.Width);
             y = max(y, 0.0f);
             //LTK_LOG("m_slider->SetRect %f 1.0", x);
-            m_slider->SetRect(RectF(x, 1.0f, rcSlider.Width, rcSlider.Height));
+            m_slider->SetRect(x, 1.0f, rcSlider.Width, rcSlider.Height);
             m_position = x / (rcRoot.Width - rcSlider.Width) * (m_contentSize - rcRoot.Width);
         }
         else {
@@ -126,7 +126,7 @@ bool ScrollBar::OnMouseMove(MouseEvent *ev)
             y = max(y, 0.0f);
             y = min(y, rcRoot.Height - rcSlider.Height);
             //LTK_LOG("m_slider->SetRect 1.0 %f", y);
-            m_slider->SetRect(RectF(1.0f, y, rcSlider.Width, rcSlider.Height));
+            m_slider->SetRect(1.0f, y, rcSlider.Width, rcSlider.Height);
             m_position = y / (rcRoot.Height - rcSlider.Height) * (m_contentSize - rcRoot.Height);
         }
         this->OnValueChanged(m_position);

@@ -126,9 +126,6 @@
     <ClCompile Include="Delegate\ThreadWin.cpp">
       <Filter>DelegateLib\Source</Filter>
     </ClCompile>
-    <ClCompile Include="TimerWindow.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="LtkInterface.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -292,12 +289,6 @@
     </ClInclude>
     <ClInclude Include="Delegate\UserMsgs.h">
       <Filter>DelegateLib\Header</Filter>
-    </ClInclude>
-    <ClInclude Include="Main.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="TimerWindow.h">
-      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="LtkInterface.h">
       <Filter>Header Files</Filter>
