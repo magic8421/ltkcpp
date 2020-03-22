@@ -26,7 +26,9 @@ struct LtkSize {
 
 struct ILtkFactory;
 
-LTK_API UINT WINAPI LtkInitialize();
+#define LTK_VERSION "20200322"
+
+LTK_API UINT WINAPI LtkInitialize(LPCSTR version);
 LTK_API void WINAPI LtkUninitialize();
 LTK_API void WINAPI LtkRunMessageLoop();
 LTK_API void WINAPI LtkGetFactory(ILtkFactory** ppFactory);
@@ -61,8 +63,8 @@ struct LTK_DECLARE_INTERFACE("F5A12F11-D3EE-41C8-8712-2699D2EEAD87")
 struct LTK_DECLARE_INTERFACE("F617B2F6-EA75-41E7-AB0F-595DF6EF3B61")
 	ILtkWindowListener : public IUnknown
 {
-	STDMETHOD_(BOOL, OnClose)(ILtkWindow *sender) PURE;
-	STDMETHOD_(void, OnDestroy)(ILtkWindow *sender) PURE;
+	STDMETHOD_(BOOL, OnClose)(ILtkWindow *sender) { return FALSE; }
+	STDMETHOD_(void, OnDestroy)(ILtkWindow *sender) {}
 };
 
 typedef enum LTK_ORIENTATION

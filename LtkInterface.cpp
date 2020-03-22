@@ -18,8 +18,12 @@
 
 using namespace ltk;
 
-LTK_API UINT WINAPI LtkInitialize()
+LTK_API UINT WINAPI LtkInitialize(LPCSTR version)
 {
+	if (strcmp(version, LTK_VERSION) != 0) {
+		::MessageBox(0, L"Ltk界面库版本不匹配", 0, 0);
+		::TerminateProcess(::GetCurrentProcess(), 1);
+	}
 	ltk::LtkInitialize();
 	return 0;
 }

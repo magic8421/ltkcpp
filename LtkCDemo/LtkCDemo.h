@@ -33,7 +33,7 @@ public:
 	STDMETHOD_(ULONG, Release)() { return RefCounted::Release(); }
 	STDMETHOD(QueryInterface)(REFIID riid, void** ppvObject);
 
-	STDMETHOD_(BOOL, OnClose)(ILtkWindow* sender);
+	//STDMETHOD_(BOOL, OnClose)(ILtkWindow* sender);
 	STDMETHOD_(void, OnDestroy)(ILtkWindow* sender);
 
 	void Create();

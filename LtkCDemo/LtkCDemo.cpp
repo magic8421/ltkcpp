@@ -16,7 +16,7 @@ HRESULT MainWindow::QueryInterface(REFIID riid, void** ppvObject)
 {
 	return E_NOTIMPL;
 }
-
+/*
 BOOL MainWindow::OnClose(ILtkWindow* sender)
 {
 	if (::MessageBox(sender->GetHWND(), L"确定关闭？", NULL, MB_OKCANCEL) == IDOK) {
@@ -24,7 +24,7 @@ BOOL MainWindow::OnClose(ILtkWindow* sender)
 	}
 	return TRUE;
 }
-
+*/
 void MainWindow::OnDestroy(ILtkWindow* sender)
 {
 	sender->SetEventListener(NULL);
@@ -78,7 +78,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 {
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 
-	LtkInitialize();
+	LtkInitialize(LTK_VERSION);
 
 	MainWindow* main_wnd = new MainWindow();
 	main_wnd->Create();
