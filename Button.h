@@ -12,7 +12,7 @@
 
 namespace ltk {
 
-class LTK_CPP_API Button : public AbstractButton, public ILtkButton
+class LTK_CPP_API Button : public AbstractButton, virtual public ILtkButton
 {
 public:
 	RTTI_DECLARATIONS(Button, AbstractButton);

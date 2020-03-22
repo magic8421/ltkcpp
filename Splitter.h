@@ -4,7 +4,7 @@
 
 namespace ltk {
 
-class LTK_CPP_API Splitter :  public ILtkSplitter, public Widget
+class LTK_CPP_API Splitter : public Widget, virtual public ILtkSplitter
 {
 public:
 	RTTI_DECLARATIONS(Splitter, Widget);
@@ -24,7 +24,7 @@ public:
 	STDMETHOD(SetClientSize)(UINT idx, float size) override;
 	
 	float GetTotolSize();
-	void DoLayout();
+	STDMETHOD_(void, DoLayout)();
 	int HitTest(float x, float y);
 	float PosFromIdx(UINT idx);
 

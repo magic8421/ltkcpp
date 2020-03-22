@@ -42,20 +42,31 @@ void MainWindow::Create()
 	m_window = window;
 	m_window->AddRef();
 
-	ILtkButton* btn = NULL;
-	factory->CreateButton(&btn);
-	btn->SetText(L"Hello World");
-	btn->SetRect(10, 10, 100, 100);
-	window->SetCentralWidget(btn);
-	SAFE_RELEASE(btn);
+	ILtkSplitter *splitter1 = NULL;
+	factory->CreateSplitter(LTK_HORIZONTAL, &splitter1);
 
+	ILtkButton* btn1 = NULL;
+	factory->CreateButton(&btn1);
+	btn1->SetText(L"Left");
+	splitter1->AddClient(btn1);
+	splitter1->SetClientSize(0, 200);
+	SAFE_RELEASE(btn1);
 
+	ILtkButton* btn2 = NULL;
+	factory->CreateButton(&btn2);
+	btn2->SetText(L"Right");
+	splitter1->AddClient(btn2);
+	SAFE_RELEASE(btn2);
+
+	//splitter1->DoLayout();
+	window->SetCentralWidget(splitter1);
+	SAFE_RELEASE(splitter1);
 	window->SetEventListener(this);
 	window->CreateCentered(NULL, &size);
 	window->UpdateTheme();
 
-	window->Release();
-	factory->Release();
+	SAFE_RELEASE(window);
+	SAFE_RELEASE(factory);
 }
 
 

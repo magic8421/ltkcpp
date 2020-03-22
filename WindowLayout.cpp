@@ -55,7 +55,7 @@ void WindowLayout::SetCentralWidget(Widget *sp)
     m_client = sp;
 	m_client->AddRef();
     this->AddChild(sp);
-    this->DoLayout();
+    //this->DoLayout();
 }
 
 Widget *WindowLayout::GetClientWidget()

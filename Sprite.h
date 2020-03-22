@@ -29,7 +29,7 @@ class Window;
 
 
 
-class LTK_CPP_API Widget : public Object, public ILtkWidget
+class LTK_CPP_API Widget : public Object, virtual public ILtkWidget
 {
 public:
 	RTTI_DECLARATIONS(Widget, Object);
