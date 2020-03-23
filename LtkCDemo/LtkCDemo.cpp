@@ -58,7 +58,11 @@ void MainWindow::Create()
 	splitter1->AddClient(btn2);
 	SAFE_RELEASE(btn2);
 
-	//splitter1->DoLayout();
+	ILtkMenuBar *menu_bar = NULL;
+	BuildMenu(&menu_bar);
+	window->SetMenuBar(menu_bar);
+	SAFE_RELEASE(menu_bar);
+	
 	window->SetCentralWidget(splitter1);
 	SAFE_RELEASE(splitter1);
 	window->SetEventListener(this);
@@ -66,6 +70,71 @@ void MainWindow::Create()
 	window->UpdateTheme();
 
 	SAFE_RELEASE(window);
+	SAFE_RELEASE(factory);
+}
+
+void MainWindow::BuildMenu(ILtkMenuBar ** ppMenu)
+{
+	ILtkFactory* factory = NULL;
+	LtkGetFactory(&factory);
+
+	ILtkMenuBar *menu_bar = NULL;
+	factory->CreateMenuBar(&menu_bar);
+	menu_bar->AddItem(L"文件");
+	menu_bar->AddItem(L"编辑");
+	menu_bar->AddItem(L"自适应长度");
+	menu_bar->AddItem(L"帮助");
+
+	ILtkPopupMenu *popup = NULL;
+	factory->CreatePopupMenu(&popup);
+	popup->SetWidth(120.f);
+	popup->AddItem(L"新建", "");
+	popup->AddItem(L"打开", "");
+	popup->AddItem(L"历史记录", "");
+	popup->AddItem(L"保存", "");
+	popup->AddItem(L"另存为", "");
+	popup->AddItem(L"退出", "");
+	menu_bar->SetPopupMenu(0, popup);
+
+
+	ILtkPopupMenu *popup2 = NULL;
+	factory->CreatePopupMenu(&popup2);
+	popup2->SetWidth(220.f);
+	popup2->AddItem(L"C:\\My Document\\file.txt", "");
+	popup2->AddItem(L"C:\\My Document\\file2.txt", "");
+	popup2->AddItem(L"C:\\My Document\\file3.txt", "");
+	popup->SetSubMenu(2, popup2);
+	SAFE_RELEASE(popup2);
+	SAFE_RELEASE(popup);
+
+	factory->CreatePopupMenu(&popup);
+	popup->SetWidth(120.f);
+	popup->AddItem(L"撤销", "");
+	popup->AddItem(L"重做", "");
+	popup->AddSeparator();
+	popup->AddItem(L"复制", "");
+	popup->AddItem(L"剪切", "");
+	popup->AddItem(L"粘贴", "");
+	menu_bar->SetPopupMenu(1, popup);
+	SAFE_RELEASE(popup);
+
+	factory->CreatePopupMenu(&popup);
+	popup->SetWidth(120.f);
+	popup->AddItem(L"选择", "");
+	popup->AddItem(L"钢笔", "");
+	popup->AddItem(L"铅笔", "");
+	popup->AddItem(L"橡皮擦", "");
+	menu_bar->SetPopupMenu(2, popup);
+	SAFE_RELEASE(popup);
+
+	factory->CreatePopupMenu(&popup);
+	popup->SetWidth(120.f);
+	popup->AddItem(L"在线文档", "");
+	popup->AddItem(L"关于", "");
+	menu_bar->SetPopupMenu(3, popup);
+	SAFE_RELEASE(popup);
+
+	*ppMenu = menu_bar;
 	SAFE_RELEASE(factory);
 }
 

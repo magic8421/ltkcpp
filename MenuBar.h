@@ -17,7 +17,6 @@ class AbstractBackground;
 class MenuBar;
 class PopupMenu;
 
-// TODO 吧这个类暴露到C接口里 这样LTK_MENU_CLICK就可以直接用LtkEvent然后sender填写这个类就行了
 class MenuItem : public Object
 {
 public:
@@ -41,23 +40,28 @@ private:
 	DISALLOW_COPY_AND_ASSIGN(MenuItem)
 };
 
-class PopupMenu : public Widget
+class PopupMenu : public ILtkPopupMenu, public Widget
 {
 public:
 	PopupMenu();
 	virtual ~PopupMenu();
 
-	void AddItem(LPCWSTR text, LPCSTR name);
-	void AddSeparator();
+	LTK_OBJECT_IMPL()
+	LTK_WIDGET_IMPL()
+	STDMETHOD(QueryInterface)(REFIID riid, void** ppvObject) override { return E_NOTIMPL; }
+
+	STDMETHOD_(void, AddItem)(LPCWSTR text, LPCSTR name) override;
+	STDMETHOD_(void, AddSeparator)() override;
 
 	UINT GetMenuItemCount();
 	MenuItem *GetMenuItemAt(UINT idx);
 
 	float GetHeight();
 	
-	void SetWidth(float);
+	STDMETHOD_(void, SetWidth)(float) override;
 	float GetWidth();
 
+	STDMETHOD_(void,  SetSubMenu)(UINT idx, ILtkPopupMenu *popup) override;
 	void SetSubMenu(UINT idx, PopupMenu *popup);
 	void SetMenuBar(MenuBar*);
 
@@ -117,13 +121,19 @@ struct MenuButtonParam {
 	PopupMenu *sub_menu = nullptr;
 };
 
-class MenuBar : public Widget
+class MenuBar : public ILtkMenuBar, public Widget
 {
 public:
 	MenuBar();
 	virtual ~MenuBar();
 
-	void AddItem(LPCWSTR text);
+	LTK_OBJECT_IMPL()
+	LTK_WIDGET_IMPL()
+	STDMETHOD(QueryInterface)(REFIID riid, void** ppvObject) override { return E_NOTIMPL; }
+
+	STDMETHOD_(void, AddItem)(LPCWSTR text) override;
+	STDMETHOD_(void, SetPopupMenu)(UINT idx, ILtkPopupMenu *menu) override;
+	//void AddItem(LPCWSTR text);
 	void SetPopupMenu(UINT idx, PopupMenu *menu);
 	UINT GetItemCount();
 	void DoLayout();

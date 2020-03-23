@@ -24,7 +24,7 @@ public:
     void SetCentralWidget(Widget *sp);
     Widget *GetClientWidget();
 	
-	MenuBar *SetMenuBar(MenuBar *menu);
+	void SetMenuBar(MenuBar *menu);
 	MenuBar *GetMenuBar();
 
     void DoLayout();

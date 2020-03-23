@@ -65,6 +65,12 @@ public:
 	STDMETHOD_(void, CreateButton)(ILtkButton ** ppOut) override {
 		*ppOut = new Button;
 	}
+	STDMETHOD_(void, CreateMenuBar)(ILtkMenuBar ** ppOut) override {
+		*ppOut = new MenuBar;
+	}
+	STDMETHOD_(void, CreatePopupMenu)(ILtkPopupMenu ** ppOut) override {
+		*ppOut = new PopupMenu;
+	}
 };
 
 LTK_API void WINAPI LtkGetFactory(ILtkFactory** ppFactory)

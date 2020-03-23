@@ -37,6 +37,7 @@ public:
 	STDMETHOD_(void, OnDestroy)(ILtkWindow* sender);
 
 	void Create();
+	void BuildMenu(ILtkMenuBar **ppMenu);
 
 private:
 	ILtkWindow* m_window = nullptr;

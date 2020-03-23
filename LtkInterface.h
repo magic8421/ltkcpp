@@ -49,6 +49,7 @@ interface ILtkWidget;
 interface ILtkSplitter;
 interface ILtkButton;
 interface ILtkPopupMenu;
+interface ILtkMenuBar;
 
 interface LTK_DECLARE_INTERFACE("F5A12F11-D3EE-41C8-8712-2699D2EEAD87")
 	ILtkWindow : public IUnknown
@@ -59,6 +60,8 @@ interface LTK_DECLARE_INTERFACE("F5A12F11-D3EE-41C8-8712-2699D2EEAD87")
 	STDMETHOD_(void, SetEventListener)(ILtkWindowListener * listener) PURE;
 	STDMETHOD_(HWND, GetHWND)() PURE;
 	STDMETHOD_(void, SetCentralWidget)(ILtkWidget * w) PURE;
+	STDMETHOD_(void, SetMenuBar)(ILtkMenuBar * mb) PURE;
+	//STDMETHOD_(ILtkMenuBar*, GetMenuBar)() PURE; // TODO 改为**参数
 };
 
 interface LTK_DECLARE_INTERFACE("F617B2F6-EA75-41E7-AB0F-595DF6EF3B61")
@@ -80,6 +83,8 @@ interface LTK_DECLARE_INTERFACE("45F1AC62-D035-4223-A3EB-08961DF3A16E")
 	STDMETHOD_(void, CreateWindow)(ILtkWindow** ppOut) PURE;
 	STDMETHOD_(void, CreateSplitter)(LTK_ORIENTATION o, ILtkSplitter** ppOut) PURE;
 	STDMETHOD_(void, CreateButton)(ILtkButton** ppOut) PURE;
+	STDMETHOD_(void, CreateMenuBar)(ILtkMenuBar** ppOut) PURE;
+	STDMETHOD_(void, CreatePopupMenu)(ILtkPopupMenu** ppOut) PURE;
 };
 
 interface LTK_DECLARE_INTERFACE("A0B263F7-0B6D-43A6-8A77-A6BF1838D927")
@@ -117,6 +122,8 @@ interface LTK_DECLARE_INTERFACE("8DAA2BFB-B41D-4B9C-BA68-CDF37F503421")
 {
 	STDMETHOD_(void, AddItem)(LPCWSTR text, LPCSTR name) PURE;
 	STDMETHOD_(void, AddSeparator)() PURE;
+	STDMETHOD_(void, SetWidth)(float) PURE;
+	STDMETHOD_(void, SetSubMenu)(UINT idx, ILtkPopupMenu *popup) PURE;
 };
 
 /*

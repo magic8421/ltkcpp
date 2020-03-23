@@ -745,12 +745,19 @@ void Window::SetCentralWidget(ILtkWidget* w)
     m_root->SetCentralWidget(dynamic_cast<Widget*>(w));
 }
 
-MenuBar *Window::SetMenu(MenuBar *m)
+void Window::SetMenuBar(ILtkMenuBar * mb)
 {
-	return m_root->SetMenuBar(m);
+    MenuBar *mb2 = dynamic_cast<MenuBar*>(mb);
+    this->SetMenuBar(mb2);
 }
 
-MenuBar * Window::GetMenu()
+
+void Window::SetMenuBar(MenuBar *m)
+{
+	m_root->SetMenuBar(m);
+}
+
+ILtkMenuBar * Window::GetMenuBar()
 {
 	return m_root->GetMenuBar();
 }

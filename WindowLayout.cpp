@@ -44,6 +44,7 @@ WindowLayout::~WindowLayout()
 	SAFE_RELEASE(m_closeBtn);
 	SAFE_RELEASE(m_caption);
 	SAFE_RELEASE(m_client);
+	SAFE_RELEASE(m_menu);
 }
 
 void WindowLayout::SetCentralWidget(Widget *sp)
@@ -63,15 +64,16 @@ Widget *WindowLayout::GetClientWidget()
     return m_client;
 }
 
-MenuBar *WindowLayout::SetMenuBar(MenuBar *menu)
+void WindowLayout::SetMenuBar(MenuBar *menu)
 {
 	auto old = m_menu;
 	if (old) {
+		old->Release();
 		this->RemoveChild(old);
 	}
 	m_menu = menu;
 	this->AddChild(m_menu);
-	return old;
+	m_menu->AddRef();
 }
 
 MenuBar *WindowLayout::GetMenuBar()
@@ -115,16 +117,16 @@ void WindowLayout::DoLayout()
         rc.Width - btn_w * 3 - margin * 3, caption_h));
 
 	if (m_menu) {
-		m_menu->SetRect(RectF(margin, caption_h,
-			rc.Width - margin * 2, menu_h));
+		m_menu->SetRect(margin, caption_h,
+			rc.Width - margin * 2, menu_h);
 		if (m_client) {
-			m_client->SetRect(RectF(margin, caption_h + menu_h + margin,
-				rc.Width - margin * 2, rc.Height - margin * 2 - caption_h - menu_h));
+			m_client->SetRect(margin, caption_h + menu_h + margin,
+				rc.Width - margin * 2, rc.Height - margin * 2 - caption_h - menu_h);
 		}
 	} else {
 		if (m_client) {
-			m_client->SetRect(RectF(margin, caption_h + margin,
-				rc.Width - margin * 2, rc.Height - margin * 2 - caption_h));
+			m_client->SetRect(margin, caption_h + margin,
+				rc.Width - margin * 2, rc.Height - margin * 2 - caption_h);
 		}
 	}
 

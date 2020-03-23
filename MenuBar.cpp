@@ -12,6 +12,10 @@
 #include "Window.h"
 #include "TimerManager.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW 
+#endif
+
 namespace ltk {
 
 const static float ITEM_HEIGHT = 30.f;
@@ -34,8 +38,10 @@ PopupMenu::~PopupMenu()
 {
 	for (auto item : m_vecItems) {
 		if (item) {
-			delete item->sub_menu; // TODO 改为引用计数
-			delete item;
+			if (item->sub_menu) {
+				item->sub_menu->Release();
+			}
+			item->Release();
 		}
 	}
 }
@@ -87,11 +93,19 @@ float PopupMenu::GetWidth()
 	return m_width;
 }
 
+void PopupMenu::SetSubMenu(UINT idx, ILtkPopupMenu * popup)
+{
+	auto popup2 = dynamic_cast<PopupMenu*>(popup);
+	this->SetSubMenu(idx, popup2);
+}
+
 void PopupMenu::SetSubMenu(UINT idx, PopupMenu *popup)
 {
-	LTK_ASSERT(m_vecItems[idx]->sub_menu == nullptr);
+	auto old = m_vecItems[idx]->sub_menu;
+	SAFE_RELEASE(old);
 	popup->m_parent = this;
 	m_vecItems[idx]->sub_menu = popup;
+	popup->AddRef();
 }
 
 void PopupMenu::SetMenuBar(MenuBar *b)
@@ -106,7 +120,7 @@ void PopupMenu::Show(Window* wnd, const RectF& rc)
 	}
 	auto root = wnd->GetRootWidget();
 	root->AddChild(this);
-	this->SetRect(rc);
+	this->SetRect(rc.X, rc.Y, rc.Width, rc.Height);
 	wnd->SetFocusWidget(this);
 	m_trackingIdx = -1;
 	
@@ -415,7 +429,10 @@ MenuBar::MenuBar()
 MenuBar::~MenuBar()
 {
 	for (auto &item : m_vecMenuItems) {
-		delete item.sub_menu;
+		item.button->Release();
+		if (item.sub_menu) {
+			item.sub_menu->Release();
+		}
 	}
 }
 
@@ -426,7 +443,7 @@ void MenuBar::AddItem(LPCWSTR text)
 	btn->SetText(text);
 	btn->SetBackground("menu_bar_btn_bg");
 	//btn->ObjectName = "menu_btn";
-	this->AddChild(btn);
+	Widget::AddChild(btn);
 	MenuButtonParam param;
 	param.button = btn;
 	m_vecMenuItems.push_back(param);
@@ -434,12 +451,20 @@ void MenuBar::AddItem(LPCWSTR text)
 	btn->MouseEventDelegate += MakeDelegate(this, &MenuBar::OnButtonMouseEvent);
 }
 
+void MenuBar::SetPopupMenu(UINT idx, ILtkPopupMenu* menu)
+{
+	auto menu2 = dynamic_cast<PopupMenu*>(menu);
+	this->SetPopupMenu(idx, menu2);
+}
+
 void MenuBar::SetPopupMenu(UINT idx, PopupMenu *menu)
 {
-	LTK_ASSERT(m_vecMenuItems[idx].sub_menu == nullptr);
+	auto old = m_vecMenuItems[idx].sub_menu;
+	SAFE_RELEASE(old);
 	menu->OnThemeChanged();
 	m_vecMenuItems[idx].sub_menu = menu;
 	menu->SetMenuBar(this);
+	menu->AddRef();
 }
 
 void MenuBar::OnMenuBtnClicked()

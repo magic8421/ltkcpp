@@ -21,7 +21,7 @@ class WindowLayout;
 class AbstractBackground;
 class MenuBar;
 
-class Window : public Object, public ILtkWindow
+class Window : public ILtkWindow, public Object
 {
 public:
 	/**
@@ -85,8 +85,9 @@ public:
 	Widget *GetRootWidget();
 	STDMETHOD_(void, SetCentralWidget)(ILtkWidget* w);
 
-	MenuBar *SetMenu(MenuBar *);
-	MenuBar *GetMenu();
+	STDMETHOD_(void, SetMenuBar)(ILtkMenuBar * mb) override;
+	void SetMenuBar(MenuBar *);
+	STDMETHOD_(ILtkMenuBar*, GetMenuBar)();
 
 	void SetFocusWidget(Widget *sp);
 	Widget *GetFocusWidget();
