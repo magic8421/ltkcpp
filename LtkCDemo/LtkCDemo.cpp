@@ -87,7 +87,6 @@ void MainWindow::BuildMenu(ILtkMenuBar ** ppMenu)
 
 	ILtkPopupMenu *popup = NULL;
 	factory->CreatePopupMenu(&popup);
-	popup->SetWidth(120.f);
 	popup->AddItem(L"新建", "");
 	popup->AddItem(L"打开", "");
 	popup->AddItem(L"历史记录", "");
@@ -99,7 +98,6 @@ void MainWindow::BuildMenu(ILtkMenuBar ** ppMenu)
 
 	ILtkPopupMenu *popup2 = NULL;
 	factory->CreatePopupMenu(&popup2);
-	popup2->SetWidth(220.f);
 	popup2->AddItem(L"C:\\My Document\\file.txt", "");
 	popup2->AddItem(L"C:\\My Document\\file2.txt", "");
 	popup2->AddItem(L"C:\\My Document\\file3.txt", "");
@@ -108,7 +106,6 @@ void MainWindow::BuildMenu(ILtkMenuBar ** ppMenu)
 	SAFE_RELEASE(popup);
 
 	factory->CreatePopupMenu(&popup);
-	popup->SetWidth(120.f);
 	popup->AddItem(L"撤销", "");
 	popup->AddItem(L"重做", "");
 	popup->AddSeparator();
@@ -119,7 +116,6 @@ void MainWindow::BuildMenu(ILtkMenuBar ** ppMenu)
 	SAFE_RELEASE(popup);
 
 	factory->CreatePopupMenu(&popup);
-	popup->SetWidth(120.f);
 	popup->AddItem(L"选择", "");
 	popup->AddItem(L"钢笔", "");
 	popup->AddItem(L"铅笔", "");
@@ -128,7 +124,6 @@ void MainWindow::BuildMenu(ILtkMenuBar ** ppMenu)
 	SAFE_RELEASE(popup);
 
 	factory->CreatePopupMenu(&popup);
-	popup->SetWidth(120.f);
 	popup->AddItem(L"在线文档", "");
 	popup->AddItem(L"关于", "");
 	menu_bar->SetPopupMenu(3, popup);

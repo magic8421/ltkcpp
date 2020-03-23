@@ -60,6 +60,7 @@ public:
 	
 	STDMETHOD_(void, SetWidth)(float) override;
 	float GetWidth();
+	void CalcWidth();
 
 	STDMETHOD_(void,  SetSubMenu)(UINT idx, ILtkPopupMenu *popup) override;
 	void SetSubMenu(UINT idx, PopupMenu *popup);
@@ -83,6 +84,8 @@ public:
 	void SetHoverColor(LPCSTR style);
 	void SetTextFormat(LPCSTR style);
 	void SetBackground(LPCSTR style);
+
+	static HRESULT GetTextExtent(LPCWSTR str, IDWriteTextFormat *format, LtkSize *size);
 
 private:
 	void SendClickEvent(MenuItem* item);

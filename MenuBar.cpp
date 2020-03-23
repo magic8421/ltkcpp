@@ -22,7 +22,7 @@ const static float ITEM_HEIGHT = 30.f;
 const static float SEPARATOR_HEIGHT = 10.f;
 const static float MENU_WIDTH = 300.f;
 const static float ICON_WIDTH = 16.f;
-const static float PADDING = 5.f;
+const static float PADDING = 15.f;
 
 PopupMenu::PopupMenu() :
 	m_szTextColor("item_text_clr"),
@@ -204,6 +204,43 @@ void PopupMenu::SetBackground(LPCSTR style)
 	this->m_szBackground = StyleManager::Instance()->InternString(style);
 }
 
+HRESULT PopupMenu::GetTextExtent(LPCWSTR str, IDWriteTextFormat *format, LtkSize *size)
+{
+	IDWriteTextLayout *layout = nullptr;
+	if (format->GetTextAlignment() != DWRITE_TEXT_ALIGNMENT_LEADING) 
+		return E_INVALIDARG;
+	if (format->GetParagraphAlignment() != DWRITE_PARAGRAPH_ALIGNMENT_NEAR)
+		return E_INVALIDARG;
+
+	HRESULT hr = GetDWriteFactory()->CreateTextLayout(
+		str, wcslen(str), format, 9999, 9999, &layout);
+	if (FAILED(hr))
+		return hr;
+
+	DWRITE_TEXT_METRICS dtm = { 0 };
+	layout->GetMetrics(&dtm);
+	size->width = dtm.width;
+	size->height = dtm.height;
+
+	return S_OK;
+}
+
+void PopupMenu::CalcWidth()
+{
+	LtkSize size = {10.f, 00.f};
+	float max = 10.f;
+	for (auto item : m_vecItems) {
+		if (item) {
+			auto hr = GetTextExtent(item->text.c_str(), m_format, &size);
+			LTK_ASSERT(SUCCEEDED(hr));
+			if (size.width > max) {
+				max = size.width;
+			}
+		}
+	}
+	m_width = max + PADDING * 2 + ICON_WIDTH;
+}
+
 bool PopupMenu::OnPaint(PaintEvent *ev)
 {
 	auto rcbg = this->GetClientRect();
@@ -238,7 +275,7 @@ bool PopupMenu::OnPaint(PaintEvent *ev)
 			//	brush);
 			auto rc = RectFromIndex(idx);
 			rc.X += PADDING + ICON_WIDTH;
-			rc.Width -= PADDING + ICON_WIDTH;
+			rc.Width -= PADDING * 2 + ICON_WIDTH;
 			ev->target->DrawText(item->text.c_str(), item->text.size(), m_format,
 				ltk::D2D1RectF(rc), brush);
 		}
@@ -247,7 +284,7 @@ bool PopupMenu::OnPaint(PaintEvent *ev)
 			auto old_clr = brush->GetColor();
 			brush->SetColor(D2D1::ColorF(D2D1::ColorF::Gray));
 			ev->target->DrawLine(D2D1::Point2F(rc.X + PADDING, rc.Y + rc.Height / 2.f),
-				D2D1::Point2F(rc.Width - PADDING * 2.f, rc.Y + rc.Height / 2.f), brush);
+				D2D1::Point2F(rc.Width - PADDING, rc.Y + rc.Height / 2.f), brush);
 			brush->SetColor(old_clr);
 		}
 		idx++;
@@ -383,6 +420,7 @@ void PopupMenu::TrackPopupMenu(int idx)
 		m_trackingIdx = idx;
 		auto arc = this->GetAbsRect();
 		auto mrc = this->RectFromIndex(idx);
+		menu->CalcWidth();
 		menu->Show(GetWindow(), RectF(
 			arc.X + this->GetWidth(), arc.Y + mrc.Y, menu->GetWidth(), menu->GetHeight()));
 		Invalidate();
@@ -478,6 +516,7 @@ void MenuBar::OnMenuBtnClicked()
 	}
 	auto arc = m_vecMenuItems[idx].button->GetAbsRect();
 
+	menu->CalcWidth();
 	menu->Show(this->GetWindow(), RectF(arc.X, arc.Y + arc.Height,
 		m_vecMenuItems[idx].sub_menu->GetWidth(), menu->GetHeight()));
 	m_trackingIdx = idx;
