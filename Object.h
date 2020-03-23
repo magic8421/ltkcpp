@@ -1,5 +1,4 @@
 #pragma once
-#include "RTTI.h"
 #include "Common.h"
 #include "LtkInterface.h"
 
@@ -14,11 +13,9 @@ namespace ltk {
 		return Object::Release(); \
 	}
 
-class LTK_CPP_API Object : public RTTI
+class Object
 {
 public:
-	RTTI_DECLARATIONS(Object, RTTI);
-
 	Object();
 	virtual ~Object();
 

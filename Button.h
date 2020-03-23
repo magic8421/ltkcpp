@@ -15,8 +15,6 @@ namespace ltk {
 class Button : public ILtkButton, public AbstractButton
 {
 public:
-	RTTI_DECLARATIONS(Button, AbstractButton);
-
     Button();
     virtual ~Button();
 

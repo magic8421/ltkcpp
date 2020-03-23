@@ -11,7 +11,7 @@
 namespace ltk {
     struct Event;
 
-	class LTK_CPP_API RTTI
+	class RTTI
     {
     public:
         virtual bool OnEvent(Event *ev) { return false; }

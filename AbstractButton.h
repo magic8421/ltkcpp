@@ -12,11 +12,9 @@
 
 namespace ltk {
 
-class LTK_CPP_API AbstractButton : public Widget
+class AbstractButton : public Widget
 {
 public:
-	RTTI_DECLARATIONS(AbstractButton, Widget);
-
     AbstractButton() {}
     virtual ~AbstractButton();
 

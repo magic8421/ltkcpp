@@ -32,8 +32,6 @@ class Window;
 class Widget : public ILtkWidget, public Object
 {
 public:
-	RTTI_DECLARATIONS(Widget, Object);
-
     Widget(void);
     virtual ~Widget(void);
 
@@ -100,7 +98,7 @@ public:
 	Widget *SetFocus();
 	void KillFocus();
 
-    virtual bool OnEvent(Event *ev) override;
+    virtual bool OnEvent(Event *ev);
 
 protected:
     virtual bool OnPaint            (PaintEvent *ev) { return false; }

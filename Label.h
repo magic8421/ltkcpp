@@ -11,7 +11,7 @@
 
 namespace ltk {
 
-class LTK_CPP_API Label : public Widget
+class Label : public Widget
 {
 public:
     Label();

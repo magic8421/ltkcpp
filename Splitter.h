@@ -7,8 +7,6 @@ namespace ltk {
 class Splitter : public ILtkSplitter, public Widget
 {
 public:
-	RTTI_DECLARATIONS(Splitter, Widget);
-
 	explicit Splitter(Orientation m) : m_mode(m) {}
 	virtual ~Splitter() {}
 

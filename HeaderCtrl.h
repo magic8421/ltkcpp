@@ -20,7 +20,7 @@ struct ColumnData {
     HeaderButton *button = nullptr;
 };
 
-class LTK_CPP_API HeaderCtrl : public Widget
+class HeaderCtrl : public Widget
 {
 public:
     HeaderCtrl();

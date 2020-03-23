@@ -15,7 +15,7 @@ class Button;
 class Label;
 class MenuBar;
 
-class LTK_CPP_API WindowLayout : public Widget
+class WindowLayout : public Widget
 {
 public:
     WindowLayout();

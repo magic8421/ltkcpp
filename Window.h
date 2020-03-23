@@ -21,11 +21,9 @@ class WindowLayout;
 class AbstractBackground;
 class MenuBar;
 
-class LTK_CPP_API Window : public Object, public ILtkWindow
+class Window : public Object, public ILtkWindow
 {
 public:
-	RTTI_DECLARATIONS(Window, Object);
-
 	/**
 	 * 窗口构造函数
 	 */

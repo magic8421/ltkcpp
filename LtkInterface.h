@@ -12,19 +12,19 @@
 extern "C" {
 #endif
 
-struct LtkRect {
+typedef struct LtkRect {
 	float x;
 	float y;
 	float width;
 	float height;
-};
+} LtkRect;
 
-struct LtkSize {
+typedef struct LtkSize {
 	float width;
 	float height;
-};
+} LtkSize;
 
-struct ILtkFactory;
+interface ILtkFactory;
 
 #define LTK_VERSION "20200322"
 
@@ -44,12 +44,13 @@ LTK_API void WINAPI LtkGetFactory(ILtkFactory** ppFactory);
 
 #undef CreateWindow
 
-struct ILtkWindowListener;
-struct ILtkWidget;
-struct ILtkSplitter;
-struct ILtkButton;
+interface ILtkWindowListener;
+interface ILtkWidget;
+interface ILtkSplitter;
+interface ILtkButton;
+interface ILtkPopupMenu;
 
-struct LTK_DECLARE_INTERFACE("F5A12F11-D3EE-41C8-8712-2699D2EEAD87")
+interface LTK_DECLARE_INTERFACE("F5A12F11-D3EE-41C8-8712-2699D2EEAD87")
 	ILtkWindow : public IUnknown
 {
 	STDMETHOD(Create)(HWND hParent, LtkRect * rect) PURE;
@@ -60,7 +61,7 @@ struct LTK_DECLARE_INTERFACE("F5A12F11-D3EE-41C8-8712-2699D2EEAD87")
 	STDMETHOD_(void, SetCentralWidget)(ILtkWidget * w) PURE;
 };
 
-struct LTK_DECLARE_INTERFACE("F617B2F6-EA75-41E7-AB0F-595DF6EF3B61")
+interface LTK_DECLARE_INTERFACE("F617B2F6-EA75-41E7-AB0F-595DF6EF3B61")
 	ILtkWindowListener : public IUnknown
 {
 	STDMETHOD_(BOOL, OnClose)(ILtkWindow *sender) { return FALSE; }
@@ -73,7 +74,7 @@ typedef enum LTK_ORIENTATION
 	LTK_VERTICAL = 2
 } LTK_ORIENTATION;
 
-struct LTK_DECLARE_INTERFACE("45F1AC62-D035-4223-A3EB-08961DF3A16E") 
+interface LTK_DECLARE_INTERFACE("45F1AC62-D035-4223-A3EB-08961DF3A16E") 
 	ILtkFactory : public IUnknown
 {
 	STDMETHOD_(void, CreateWindow)(ILtkWindow** ppOut) PURE;
@@ -81,7 +82,7 @@ struct LTK_DECLARE_INTERFACE("45F1AC62-D035-4223-A3EB-08961DF3A16E")
 	STDMETHOD_(void, CreateButton)(ILtkButton** ppOut) PURE;
 };
 
-struct LTK_DECLARE_INTERFACE("A0B263F7-0B6D-43A6-8A77-A6BF1838D927")
+interface LTK_DECLARE_INTERFACE("A0B263F7-0B6D-43A6-8A77-A6BF1838D927")
 	ILtkWidget : public IUnknown
 {
 	STDMETHOD_(void, SetVisible)(BOOL) PURE;
@@ -91,17 +92,31 @@ struct LTK_DECLARE_INTERFACE("A0B263F7-0B6D-43A6-8A77-A6BF1838D927")
 	STDMETHOD(AddChild)(ILtkWidget * w) PURE;
 };
 
-struct LTK_DECLARE_INTERFACE("F4241511-42F2-4E64-8FC7-6B9433D6D18A")
+interface LTK_DECLARE_INTERFACE("F4241511-42F2-4E64-8FC7-6B9433D6D18A")
 	ILtkSplitter : public ILtkWidget
 {
 	STDMETHOD_(void, AddClient)(ILtkWidget * w) PURE;
 	STDMETHOD(SetClientSize)(UINT idx, float size) PURE;
 };
 
-struct LTK_DECLARE_INTERFACE("67D14A90-8C1E-4696-B9E6-34B461ABB72E")
+interface LTK_DECLARE_INTERFACE("67D14A90-8C1E-4696-B9E6-34B461ABB72E")
 	ILtkButton : public ILtkWidget
 {
 	STDMETHOD_(void, SetText)(LPCWSTR) PURE;
+};
+
+interface LTK_DECLARE_INTERFACE("24DB015C-87D9-40F3-ABF8-30AE2E9DB96A")
+	ILtkMenuBar : public ILtkWidget
+{
+	STDMETHOD_(void, AddItem)(LPCWSTR text) PURE;
+	STDMETHOD_(void, SetPopupMenu)(UINT idx, ILtkPopupMenu *menu) PURE;
+};
+
+interface LTK_DECLARE_INTERFACE("8DAA2BFB-B41D-4B9C-BA68-CDF37F503421")
+	ILtkPopupMenu : public ILtkWidget
+{
+	STDMETHOD_(void, AddItem)(LPCWSTR text, LPCSTR name) PURE;
+	STDMETHOD_(void, AddSeparator)() PURE;
 };
 
 /*

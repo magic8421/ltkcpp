@@ -444,7 +444,7 @@ void MenuBar::SetPopupMenu(UINT idx, PopupMenu *menu)
 
 void MenuBar::OnMenuBtnClicked()
 {
-	Button* btn = Object::GetDelegateInvoker()->As<Button>();
+	Button* btn = static_cast<Button *>(Object::GetDelegateInvoker());
 	int idx = FindMenuButtonIdx(btn);
 	LTK_ASSERT(idx < (int)m_vecMenuItems.size());
 	PopupMenu *menu = m_vecMenuItems[idx].sub_menu;
@@ -473,7 +473,7 @@ int MenuBar::FindMenuButtonIdx(Button *btn)
 
 void MenuBar::OnButtonMouseEvent(MouseEvent* ev, bool& bHandled)
 {
-	Button* btn = Object::GetDelegateInvoker()->As<Button>();
+	Button* btn = static_cast<Button *>(Object::GetDelegateInvoker());
 
 	if (ev->id == eMouseMove && m_trackingIdx >= 0) {
 		int idx = FindMenuButtonIdx(btn);

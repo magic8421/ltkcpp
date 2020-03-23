@@ -10,7 +10,7 @@
 
 namespace ltk {
 
-class LTK_CPP_API ScrollAnimation : public Object
+class ScrollAnimation : public Object
 {
 public:
     ScrollAnimation();

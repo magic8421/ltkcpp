@@ -14,7 +14,7 @@ namespace ltk {
 
 class Button;
 
-class LTK_CPP_API ScrollBar : public Widget
+class ScrollBar : public Widget
 {
 public:
     explicit ScrollBar(Orientation mode);

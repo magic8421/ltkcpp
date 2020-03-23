@@ -14,11 +14,9 @@ namespace ltk {
 
 class ScrollBar;
 
-class LTK_CPP_API TextEdit : public Widget
+class TextEdit : public Widget
 {
 public:
-	RTTI_DECLARATIONS(TextEdit, Widget);
-
     TextEdit();
     ~TextEdit();
 

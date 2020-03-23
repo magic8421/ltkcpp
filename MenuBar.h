@@ -18,7 +18,7 @@ class MenuBar;
 class PopupMenu;
 
 // TODO 吧这个类暴露到C接口里 这样LTK_MENU_CLICK就可以直接用LtkEvent然后sender填写这个类就行了
-class LTK_CPP_API MenuItem : public Object
+class MenuItem : public Object
 {
 public:
 	MenuItem() {}
@@ -41,11 +41,9 @@ private:
 	DISALLOW_COPY_AND_ASSIGN(MenuItem)
 };
 
-class LTK_CPP_API PopupMenu : public Widget
+class PopupMenu : public Widget
 {
 public:
-	RTTI_DECLARATIONS(PopupMenu, Widget);
-
 	PopupMenu();
 	virtual ~PopupMenu();
 
@@ -119,11 +117,9 @@ struct MenuButtonParam {
 	PopupMenu *sub_menu = nullptr;
 };
 
-class LTK_CPP_API MenuBar : public Widget
+class MenuBar : public Widget
 {
 public:
-	RTTI_DECLARATIONS(MenuBar, Widget);
-
 	MenuBar();
 	virtual ~MenuBar();
 
