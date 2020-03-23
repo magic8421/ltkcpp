@@ -4,7 +4,7 @@
 
 namespace ltk {
 
-class LTK_CPP_API Splitter : public Widget, virtual public ILtkSplitter
+class Splitter : public ILtkSplitter, public Widget
 {
 public:
 	RTTI_DECLARATIONS(Splitter, Widget);
