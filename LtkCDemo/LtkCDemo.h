@@ -24,7 +24,8 @@ private:
 	volatile ULONG m_cRef = 1;
 };
 
-class MainWindow : public RefCounted, public ILtkWindowListener
+class MainWindow : public ILtkWindowListener, public ILtkActionListener,
+	public RefCounted
 {
 public:
 	virtual ~MainWindow();
@@ -35,6 +36,7 @@ public:
 
 	//STDMETHOD_(BOOL, OnClose)(ILtkWindow* sender);
 	STDMETHOD_(void, OnDestroy)(ILtkWindow* sender);
+	STDMETHOD_(void, OnClick)(IUnknown* sender, LPCSTR name);
 
 	void Create();
 	void BuildMenu(ILtkMenuBar **ppMenu);

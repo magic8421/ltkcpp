@@ -27,7 +27,7 @@ BOOL MainWindow::OnClose(ILtkWindow* sender)
 */
 void MainWindow::OnDestroy(ILtkWindow* sender)
 {
-	sender->SetEventListener(NULL);
+	m_window->Dispose();
 	::PostQuitMessage(0);
 }
 
@@ -65,8 +65,10 @@ void MainWindow::Create()
 	
 	window->SetCentralWidget(splitter1);
 	SAFE_RELEASE(splitter1);
-	window->SetEventListener(this);
+	window->SetWindowListener(this);
+	window->SetActionListener(this);
 	window->CreateCentered(NULL, &size);
+	window->SetCaption(L"Hello World");
 	window->UpdateTheme();
 
 	SAFE_RELEASE(window);
@@ -92,7 +94,7 @@ void MainWindow::BuildMenu(ILtkMenuBar ** ppMenu)
 	popup->AddItem(L"历史记录", "");
 	popup->AddItem(L"保存", "");
 	popup->AddItem(L"另存为", "");
-	popup->AddItem(L"退出", "");
+	popup->AddItem(L"退出", "app_exit");
 	menu_bar->SetPopupMenu(0, popup);
 
 
@@ -131,6 +133,16 @@ void MainWindow::BuildMenu(ILtkMenuBar ** ppMenu)
 
 	*ppMenu = menu_bar;
 	SAFE_RELEASE(factory);
+}
+
+void MainWindow::OnClick(IUnknown* sender, LPCSTR name)
+{
+	if (!name)
+		return;
+	if (!strcmp(name, "app_exit")) {
+		m_window->Dispose();
+		::PostQuitMessage(0);
+	}
 }
 
 

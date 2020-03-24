@@ -24,8 +24,6 @@ public:
 
 	enum class Type {Normal, Icon, Check, Radio};
 
-	MulticastDelegate0 ClickedDelegate;
-
 private:
 	Type type = Type::Normal;
 	std::wstring text;
@@ -88,7 +86,6 @@ public:
 	static HRESULT GetTextExtent(LPCWSTR str, IDWriteTextFormat *format, LtkSize *size);
 
 private:
-	void SendClickEvent(MenuItem* item);
 	int IndexFromPos(float y);
 	RectF RectFromIndex(int idx);
 

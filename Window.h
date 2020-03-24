@@ -38,7 +38,12 @@ public:
 
 	STDMETHOD(QueryInterface)(REFIID riid, void** ppvObject) override;
 
-	STDMETHOD_(void, SetEventListener)(ILtkWindowListener* listener) override;
+	STDMETHOD_(void, Dispose)() override;
+
+	STDMETHOD_(void, SetWindowListener)(ILtkWindowListener* listener) override;
+	STDMETHOD_(void, SetActionListener)(ILtkActionListener* listener) override;
+
+	void TriggerOnClick(IUnknown *sender, LPCSTR name);
 
 	/**
 	 * ´´½¨´°¿Ú
@@ -68,7 +73,7 @@ public:
 
     SizeF GetClientSize();
 
-    void SetCaption(LPCWSTR text);
+	STDMETHOD_(void, SetCaption)(LPCWSTR text) override;
 
 	static void RegisterWndClass();
 
@@ -87,7 +92,7 @@ public:
 
 	STDMETHOD_(void, SetMenuBar)(ILtkMenuBar * mb) override;
 	void SetMenuBar(MenuBar *);
-	STDMETHOD_(ILtkMenuBar*, GetMenuBar)();
+	STDMETHOD_(void, GetMenuBar)(ILtkMenuBar** ppMenu);
 
 	void SetFocusWidget(Widget *sp);
 	Widget *GetFocusWidget();
@@ -166,8 +171,10 @@ private:
     AbstractBackground *m_background = nullptr;
     std::string m_styleName;
 
-	ILtkWindowListener *m_listener = nullptr;
 	UINT m_timerResolution = 1;
+
+	ILtkWindowListener *m_wndListener = nullptr;
+	ILtkActionListener *m_actionListener = nullptr;
 };
 
 } // namespace ltk

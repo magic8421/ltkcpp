@@ -51,24 +51,28 @@ LTK_API void WINAPI LtkGetFactory(ILtkFactory** ppFactory);
 
 #undef CreateWindow
 
-interface ILtkWindowListener;
 interface ILtkWidget;
 interface ILtkSplitter;
 interface ILtkButton;
 interface ILtkPopupMenu;
 interface ILtkMenuBar;
+interface ILtkWindowListener;
+interface ILtkActionListener;
 
 interface LTK_DECLARE_INTERFACE("F5A12F11-D3EE-41C8-8712-2699D2EEAD87")
 	ILtkWindow : public IUnknown
 {
 	STDMETHOD(Create)(HWND hParent, LtkRect * rect) PURE;
 	STDMETHOD(CreateCentered)(HWND hParent, LtkSize * size) PURE;
+	STDMETHOD_(void, Dispose)() PURE;
 	STDMETHOD_(void, UpdateTheme)() PURE;
-	STDMETHOD_(void, SetEventListener)(ILtkWindowListener * listener) PURE;
 	STDMETHOD_(HWND, GetHWND)() PURE;
 	STDMETHOD_(void, SetCentralWidget)(ILtkWidget * w) PURE;
 	STDMETHOD_(void, SetMenuBar)(ILtkMenuBar * mb) PURE;
-	//STDMETHOD_(ILtkMenuBar*, GetMenuBar)() PURE; // TODO 改为**参数
+	STDMETHOD_(void, GetMenuBar)(ILtkMenuBar ** ) PURE;
+	STDMETHOD_(void, SetCaption)(LPCWSTR text) PURE;
+	STDMETHOD_(void, SetWindowListener)(ILtkWindowListener * listener) PURE;
+	STDMETHOD_(void, SetActionListener)(ILtkActionListener* listener) PURE;
 };
 
 interface LTK_DECLARE_INTERFACE("F617B2F6-EA75-41E7-AB0F-595DF6EF3B61")
@@ -131,6 +135,17 @@ interface LTK_DECLARE_INTERFACE("8DAA2BFB-B41D-4B9C-BA68-CDF37F503421")
 	STDMETHOD_(void, AddSeparator)() PURE;
 	STDMETHOD_(void, SetWidth)(float) PURE;
 	STDMETHOD_(void, SetSubMenu)(UINT idx, ILtkPopupMenu *popup) PURE;
+};
+
+interface ILtkAction : public IUnknown // TODO 
+{
+
+};
+
+interface LTK_DECLARE_INTERFACE("4DD8353D-2D90-489E-A9C3-49B8341279B8")
+	ILtkActionListener : public IUnknown
+{
+	STDMETHOD_(void, OnClick)(IUnknown *sender, LPCSTR name) PURE;
 };
 
 /*

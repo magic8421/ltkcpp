@@ -70,8 +70,8 @@ Window::~Window(void)
     }
     m_atlas = INVALID_POINTER(ID2D1Bitmap);
 
-    if (m_listener) {
-        m_listener->Release();
+    if (m_wndListener) {
+        m_wndListener->Release();
     }
 }
 
@@ -80,14 +80,36 @@ HRESULT Window::QueryInterface(REFIID riid, void** ppvObject)
     return E_NOTIMPL;
 }
 
-void Window::SetEventListener(ILtkWindowListener* listener)
+void Window::Dispose()
 {
-    if (m_listener) {
-        m_listener->Release();
+    SAFE_RELEASE(m_wndListener);
+    SAFE_RELEASE(m_actionListener);
+}
+
+void Window::SetWindowListener(ILtkWindowListener* listener)
+{
+    if (m_wndListener) {
+        m_wndListener->Release();
     }
-    m_listener = listener;
-    if (m_listener) {
-        m_listener->AddRef();
+    m_wndListener = listener;
+    if (m_wndListener) {
+        m_wndListener->AddRef();
+    }
+}
+
+void Window::SetActionListener(ILtkActionListener* listener)
+{
+    SAFE_RELEASE(m_actionListener);
+    m_actionListener = listener;
+    if (m_actionListener) {
+        m_actionListener->AddRef();
+    }
+}
+
+void Window::TriggerOnClick(IUnknown* sender, LPCSTR name)
+{
+    if (m_actionListener) {
+        m_actionListener->OnClick(sender, name);
     }
 }
 
@@ -629,8 +651,8 @@ bool Window::OnSize(float cx, float cy, DWORD flag)
 
 void Window::CloseWindow()
 {
-    if (m_listener) {
-        if (m_listener->OnClose(this)) {
+    if (m_wndListener) {
+        if (m_wndListener->OnClose(this)) {
             return;
         }
     }
@@ -661,8 +683,8 @@ void Window::OnDestroy()
 {
 	SetDelegateInvoker(this);
 	this->DestroyDelegate();
-    if (m_listener) {
-        m_listener->OnDestroy(this);
+    if (m_wndListener) {
+        m_wndListener->OnDestroy(this);
     }
 }
 
@@ -759,9 +781,11 @@ void Window::SetMenuBar(MenuBar *m)
 	m_root->SetMenuBar(m);
 }
 
-ILtkMenuBar * Window::GetMenuBar()
+void Window::GetMenuBar(ILtkMenuBar** ppMenu)
 {
-	return m_root->GetMenuBar();
+	auto menu = m_root->GetMenuBar();
+    *ppMenu = menu;
+    menu->AddRef();
 }
 
 void Window::SetFocusWidget(Widget *sp )

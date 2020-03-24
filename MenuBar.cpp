@@ -327,23 +327,6 @@ bool PopupMenu::OnKillFocus(FocusEvent* ev)
 	return false;
 }
 
-void PopupMenu::SendClickEvent(MenuItem *item)
-{
-	//LtkEvent ev;
-	//ev.id = LTK_MENU_CLICK;
-	//ev.sender = (LtkObject*)item;
-	//auto wnd = this->GetWindow(); // TODO 感觉这样过于简单了
-	//wnd->FireEvent(&ev);
-
-	/*auto popup = this;
-	while (popup->m_parent) {
-		popup = m_parent;
-	}
-	if (popup->m_menuBar)
-	{
-	}*/
-}
-
 int PopupMenu::IndexFromPos(float y)
 {
 	float pos = SHADOW_SIZE;
@@ -410,10 +393,7 @@ bool PopupMenu::OnLBtnDown(MouseEvent* ev)
 		return true;
 	}
 	if (!item->sub_menu) {
-		SetDelegateInvoker(this);
-		item->ClickedDelegate();
-
-		SendClickEvent(item);
+		wnd->TriggerOnClick(static_cast<ILtkPopupMenu *>(this), item->GetName());
 	}
 	int tracking = m_trackingIdx;
 	PopupMenu* menu = this;
