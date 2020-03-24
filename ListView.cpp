@@ -50,6 +50,12 @@ ListView::~ListView()
 {
 }
 
+void ListView::AddColumn(LPCWSTR text, float size)
+{
+    m_header->AddColumn(text, size);
+}
+
+
 void ListView::OnThemeChanged()
 {
 	auto sm = StyleManager::Instance();
@@ -155,11 +161,11 @@ UINT ListView::AddRow()
 	return m_vecData.size() - 1;
 }
 
-bool ListView::SetCellText(UINT row, UINT col, LPCWSTR text)
+HRESULT ListView::SetCellText(UINT row, UINT col, LPCWSTR text)
 {
 	LTK_ASSERT(col < 999);
     if (row >= m_vecData.size()) {
-        return false;
+        return E_INVALIDARG;
     }
     auto &row_data = m_vecData[row];
     while ((int)row_data.cells.size() - 1 < (int)col) {
@@ -168,7 +174,7 @@ bool ListView::SetCellText(UINT row, UINT col, LPCWSTR text)
     row_data.cells[col] = text;
     this->Invalidate();
 
-    return true;
+    return S_OK;
 }
 
 LPCWSTR ListView::GetCellText(UINT row, UINT col)

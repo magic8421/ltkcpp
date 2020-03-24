@@ -16,14 +16,22 @@ namespace ltk {
 
 class ScrollBar;
 
-class ListView : public Widget
+class ListView : public ILtkListView, public Widget
 {
 public:
     ListView();
     virtual ~ListView();
 
-	UINT AddRow();
-    bool SetCellText(UINT row, UINT col, LPCWSTR text);
+	LTK_OBJECT_IMPL()
+	LTK_WIDGET_IMPL()
+	STDMETHOD(QueryInterface)(REFIID riid, void** ppvObject) { return E_NOTIMPL; }
+
+	STDMETHOD_(void, AddColumn)(LPCWSTR text, float size) override;
+
+	STDMETHOD_(UINT, AddRow)() override;
+
+	STDMETHOD(SetCellText)(UINT row, UINT col, LPCWSTR text) override;
+
 	LPCWSTR GetCellText(UINT row, UINT col);
     float GetTotalHeight();
     int GetSelectedRow();
