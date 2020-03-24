@@ -391,6 +391,7 @@ LRESULT Window::WndProc(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam)
                 m_setAnimation.clear();
                 ::ReleaseCapture();
                 ::KillTimer(hwnd, TIMER_ANIMATION);
+                ::timeEndPeriod(m_timerResolution);
                 LTK_LOG("WM_SIZE KillTimer");
             }
         } while (0);
@@ -443,6 +444,7 @@ LRESULT Window::WndProc(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam)
         }
         LTK_LOG("WM_KILLFOCUS KillTimer");
         KillTimer(hwnd, TIMER_ANIMATION);
+        ::timeEndPeriod(m_timerResolution);
         m_setAnimation.clear();
         ::ReleaseCapture();
         return 0;
@@ -860,7 +862,17 @@ void Window::BeginAnimation(Widget *sp)
     //if (!::IsIconic(m_hwnd)) {
         if (m_setAnimation.size() == 0)
         {
-            ::SetTimer(m_hwnd, TIMER_ANIMATION, 0, NULL);
+            const int  TARGET_RESOLUTION = 1;         // 1-millisecond target resolution
+            TIMECAPS tc;
+            UINT     wTimerRes;
+
+            if (::timeGetDevCaps(&tc, sizeof(TIMECAPS)) == TIMERR_NOERROR) 
+            {
+                wTimerRes = min(max(tc.wPeriodMin, TARGET_RESOLUTION), tc.wPeriodMax);
+                ::timeBeginPeriod(wTimerRes); 
+                m_timerResolution = wTimerRes;
+            }
+            ::SetTimer(m_hwnd, TIMER_ANIMATION, 15, NULL);
         }
         m_setAnimation.insert(sp);
     //}
@@ -871,6 +883,7 @@ void Window::EndAnimation(Widget *sp)
     if (m_setAnimation.size() == 0)
     {
         ::KillTimer(m_hwnd, TIMER_ANIMATION);
+        ::timeEndPeriod(m_timerResolution);
         return;
     }
     auto iter = m_setAnimation.find(sp);
@@ -880,6 +893,7 @@ void Window::EndAnimation(Widget *sp)
         if (m_setAnimation.size() == 0)
         {
             ::KillTimer(m_hwnd, TIMER_ANIMATION);
+            ::timeEndPeriod(m_timerResolution);
         }
     }
 }

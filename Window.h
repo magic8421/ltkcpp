@@ -167,6 +167,7 @@ private:
     std::string m_styleName;
 
 	ILtkWindowListener *m_listener = nullptr;
+	UINT m_timerResolution = 1;
 };
 
 } // namespace ltk
