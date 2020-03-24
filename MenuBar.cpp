@@ -21,8 +21,10 @@ namespace ltk {
 const static float ITEM_HEIGHT = 30.f;
 const static float SEPARATOR_HEIGHT = 10.f;
 const static float MENU_WIDTH = 300.f;
-const static float ICON_WIDTH = 16.f;
-const static float PADDING = 15.f;
+const static float ICON_WIDTH = 0.f;
+const static float PADDING_V = 4.f;
+const static float PADDING_H = 15.f;
+const static float SHADOW_SIZE = 7.F;
 
 PopupMenu::PopupMenu() :
 	m_szTextColor("item_text_clr"),
@@ -71,15 +73,17 @@ MenuItem * PopupMenu::GetMenuItemAt(UINT idx)
 
 float PopupMenu::GetHeight()
 {
-	float h = 0.f;
+	float h = SHADOW_SIZE;
 	for (auto item : m_vecItems) {
 		if (item) {
-			h += ITEM_HEIGHT;
+			h += PADDING_V * 2;
+			h += m_text_h;
 		}
 		else {
 			h += SEPARATOR_HEIGHT;
 		}
 	}
+	h += SHADOW_SIZE;
 	return h;
 }
 
@@ -228,23 +232,28 @@ HRESULT PopupMenu::GetTextExtent(LPCWSTR str, IDWriteTextFormat *format, LtkSize
 void PopupMenu::CalcWidth()
 {
 	LtkSize size = {10.f, 00.f};
-	float max = 10.f;
+	float max_w = 10.f;
+	float max_h = 10.f;
 	for (auto item : m_vecItems) {
 		if (item) {
 			auto hr = GetTextExtent(item->text.c_str(), m_format, &size);
 			LTK_ASSERT(SUCCEEDED(hr));
-			if (size.width > max) {
-				max = size.width;
+			if (size.width > max_w) {
+				max_w = size.width;
+			}
+			if (size.height > max_h) {
+				max_h = size.height;
 			}
 		}
 	}
-	m_width = max + PADDING * 2 + ICON_WIDTH;
+	m_width = max_w + SHADOW_SIZE * 2 + PADDING_H * 2 + ICON_WIDTH;
+	m_text_h = max_h;
 }
 
 bool PopupMenu::OnPaint(PaintEvent *ev)
 {
 	auto rcbg = this->GetClientRect();
-	rcbg.Inflate(7, 7);
+	rcbg.Inflate(SHADOW_SIZE, SHADOW_SIZE);
 
 	float slide_h = 0.f;
 	if (m_state == State::sSlideIn) {
@@ -274,8 +283,9 @@ bool PopupMenu::OnPaint(PaintEvent *ev)
 			//	D2D1::RectF(PADDING + ICON_WIDTH, y, this->GetWidth(), y + ITEM_HEIGHT),
 			//	brush);
 			auto rc = RectFromIndex(idx);
-			rc.X += PADDING + ICON_WIDTH;
-			rc.Width -= PADDING * 2 + ICON_WIDTH;
+			rc.X += PADDING_H + ICON_WIDTH;
+			rc.Width -= PADDING_H * 2 + ICON_WIDTH;
+			rc.Y += PADDING_V;
 			ev->target->DrawText(item->text.c_str(), item->text.size(), m_format,
 				ltk::D2D1RectF(rc), brush);
 		}
@@ -283,8 +293,8 @@ bool PopupMenu::OnPaint(PaintEvent *ev)
 			auto rc = RectFromIndex(idx);
 			auto old_clr = brush->GetColor();
 			brush->SetColor(D2D1::ColorF(D2D1::ColorF::Gray));
-			ev->target->DrawLine(D2D1::Point2F(rc.X + PADDING, rc.Y + rc.Height / 2.f),
-				D2D1::Point2F(rc.Width - PADDING, rc.Y + rc.Height / 2.f), brush);
+			ev->target->DrawLine(D2D1::Point2F(rc.X + PADDING_H, rc.Y + rc.Height / 2.f),
+				D2D1::Point2F(rc.Width - PADDING_H, rc.Y + rc.Height / 2.f), brush);
 			brush->SetColor(old_clr);
 		}
 		idx++;
@@ -336,11 +346,13 @@ void PopupMenu::SendClickEvent(MenuItem *item)
 
 int PopupMenu::IndexFromPos(float y)
 {
-	float pos = 0.f;
+	float pos = SHADOW_SIZE;
+	if (y < pos)
+		return -1;
 	int idx = 0;
 	for (auto item : m_vecItems) {
 		if (item) {
-			pos += ITEM_HEIGHT;
+			pos += PADDING_V * 2 + m_text_h;
 		}
 		else {
 			pos += SEPARATOR_HEIGHT;
@@ -357,12 +369,15 @@ RectF PopupMenu::RectFromIndex(int idx)
 {
 	LTK_ASSERT(idx >= 0);
 	RectF rc;
-	rc.Width = this->GetWidth();
+	rc.Y = SHADOW_SIZE;
+	rc.X = SHADOW_SIZE;
+	rc.Width = this->GetWidth() - SHADOW_SIZE * 2;
 
 	for (int i = 0; i < idx; i ++) {
 		auto item = m_vecItems[i];
 		if (item) {
-			rc.Y += ITEM_HEIGHT;
+			rc.Y += PADDING_V * 2;
+			rc.Y += m_text_h;
 		}
 		else {
 			rc.Y += SEPARATOR_HEIGHT;
@@ -371,7 +386,7 @@ RectF PopupMenu::RectFromIndex(int idx)
 	auto item = m_vecItems[idx];
 
 	if (item) {
-		rc.Height = ITEM_HEIGHT;
+		rc.Height = m_text_h + PADDING_V * 2;
 	}
 	else {
 		rc.Height = SEPARATOR_HEIGHT;

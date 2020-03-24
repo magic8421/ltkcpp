@@ -24,6 +24,13 @@ typedef struct LtkSize {
 	float height;
 } LtkSize;
 
+typedef struct LtkMargin {
+	float left;
+	float top;
+	float right;
+	float bottom;
+} LtkMargin;
+
 interface ILtkFactory;
 
 #define LTK_VERSION "20200322"

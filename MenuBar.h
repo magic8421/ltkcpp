@@ -96,7 +96,7 @@ private:
 	std::vector<MenuItem *> m_vecItems;
 	PopupMenu* m_parent = nullptr;
 	MenuBar* m_menuBar = nullptr;
-	float m_width = 100.0f;
+
 	int m_hoverIdx = -1;
 	int m_trackingIdx = -1;
 	bool m_bTrackingPopup = false; // TODO 这个能和m_trackingIdx合并吗？
@@ -107,6 +107,9 @@ private:
 	float m_aniProgress = 0.f;
 	const float AniDelta = 1.f / 300.f;
 	DWORD m_lastTick = 0;
+
+	float m_width = 100.0f;
+	float m_text_h = 10.f;
 
 	IDWriteTextFormat* m_format = nullptr;
 	D2D1_COLOR_F m_textColor;
