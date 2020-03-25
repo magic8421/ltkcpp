@@ -67,6 +67,28 @@ MenuItem * PopupMenu::GetMenuItemAt(UINT idx)
 	return m_vecItems[idx];
 }
 
+MenuItem* PopupMenu::FindChildItem(LPCSTR name)
+{
+	auto i_name = StyleManager::Instance()->InternString(name);
+	return FindChildItemInterned(i_name);
+}
+
+MenuItem* PopupMenu::FindChildItemInterned(LPCSTR name)
+{
+	for (auto item : m_vecItems) {
+		if (item->GetName() == name) {
+			return item;
+		}
+		if (item->sub_menu) {
+			auto found = item->sub_menu->FindChildItem(name);
+			if (found) {
+				return found;
+			}
+		}
+	}
+	return nullptr;
+}
+
 float PopupMenu::GetHeight()
 {
 	float h = SHADOW_SIZE;

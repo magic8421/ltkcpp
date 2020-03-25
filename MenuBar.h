@@ -54,6 +54,9 @@ public:
 	UINT GetMenuItemCount();
 	MenuItem *GetMenuItemAt(UINT idx);
 
+	MenuItem *FindChildItem(LPCSTR name);
+	MenuItem *FindChildItemInterned(LPCSTR name); // name必须内部化
+
 	float GetHeight();
 	
 	void SetWidth(float);
