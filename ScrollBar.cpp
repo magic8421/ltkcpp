@@ -35,6 +35,7 @@ ScrollBar::ScrollBar(Orientation mode) : m_mode(mode)
 
 ScrollBar::~ScrollBar()
 {
+    SAFE_RELEASE(m_slider);
     RELEASE_AND_INVALIDATE(ID2D1SolidColorBrush, m_brush);
 }
 

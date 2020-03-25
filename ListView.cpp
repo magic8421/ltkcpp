@@ -48,11 +48,15 @@ ListView::ListView() :
 
 ListView::~ListView()
 {
+    SAFE_RELEASE(m_hsb);
+    SAFE_RELEASE(m_vsb);
+    SAFE_RELEASE(m_header);
 }
 
 void ListView::AddColumn(LPCWSTR text, float size)
 {
     m_header->AddColumn(text, size);
+    this->UpdateColumnWidth();
 }
 
 

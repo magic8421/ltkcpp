@@ -31,6 +31,21 @@ void MainWindow::OnDestroy(ILtkWindow* sender)
 	::PostQuitMessage(0);
 }
 
+void MainWindow::FillListView(ILtkListView* listview)
+{
+	UINT num = rand() % 200;
+	wchar_t text[64];
+	for (UINT i = 0; i < num; i++) {
+		listview->AddRow();
+		StringCbPrintf(text, sizeof(text), L"item:%d", i);
+		listview->SetCellText(i, 0, text);
+		StringCbPrintf(text, sizeof(text), L"subitem1:%d", i);
+		listview->SetCellText(i, 1, text);
+		StringCbPrintf(text, sizeof(text), L"subitem2:%d", i);
+		listview->SetCellText(i, 2, text);
+	}
+}
+
 void MainWindow::Create()
 {
 	ILtkFactory* factory = NULL;
@@ -52,11 +67,14 @@ void MainWindow::Create()
 	splitter1->SetClientSize(0, 200);
 	SAFE_RELEASE(btn1);
 
-	ILtkButton* btn2 = NULL;
-	factory->CreateButton(&btn2);
-	btn2->SetText(L"Right");
-	splitter1->AddClient(btn2);
-	SAFE_RELEASE(btn2);
+	ILtkListView* listview = NULL;
+	factory->CreateListView(&listview);
+	listview->AddColumn(L"Col1", 200);
+	listview->AddColumn(L"Col2", 200);
+	listview->AddColumn(L"Col3", 200);
+	FillListView(listview);
+	splitter1->AddClient(listview);
+	SAFE_RELEASE(listview);
 
 	ILtkMenuBar *menu_bar = NULL;
 	BuildMenu(&menu_bar);

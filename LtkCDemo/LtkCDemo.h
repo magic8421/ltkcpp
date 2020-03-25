@@ -30,6 +30,8 @@ class MainWindow : public ILtkWindowListener, public ILtkActionListener,
 public:
 	virtual ~MainWindow();
 
+	void Create();
+
 	STDMETHOD_(ULONG, AddRef)() { return RefCounted::AddRef(); }
 	STDMETHOD_(ULONG, Release)() { return RefCounted::Release(); }
 	STDMETHOD(QueryInterface)(REFIID riid, void** ppvObject);
@@ -38,8 +40,10 @@ public:
 	STDMETHOD_(void, OnDestroy)(ILtkWindow* sender);
 	STDMETHOD_(void, OnClick)(IUnknown* sender, LPCSTR name);
 
-	void Create();
+
+protected:
 	void BuildMenu(ILtkMenuBar **ppMenu);
+	void FillListView(ILtkListView* listview);
 
 private:
 	ILtkWindow* m_window = nullptr;
