@@ -44,6 +44,7 @@ public:
 protected:
 	void BuildMenu(ILtkMenuBar **ppMenu);
 	void FillListView(ILtkListView* listview);
+	void FillTreeView(ILtkFactory *factory, ILtkTreeNode* parent, int depth);
 
 private:
 	ILtkWindow* m_window = nullptr;

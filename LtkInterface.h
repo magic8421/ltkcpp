@@ -59,6 +59,8 @@ interface ILtkMenuBar;
 interface ILtkWindowListener;
 interface ILtkActionListener;
 interface ILtkListView;
+interface ILtkTreeView;
+interface ILtkTreeNode;
 
 interface LTK_DECLARE_INTERFACE("F5A12F11-D3EE-41C8-8712-2699D2EEAD87")
 	ILtkWindow : public IUnknown
@@ -98,6 +100,8 @@ interface LTK_DECLARE_INTERFACE("45F1AC62-D035-4223-A3EB-08961DF3A16E")
 	STDMETHOD_(void, CreateMenuBar)(ILtkMenuBar** ppOut) PURE;
 	STDMETHOD_(void, CreatePopupMenu)(ILtkPopupMenu** ppOut) PURE;
 	STDMETHOD_(void, CreateListView)(ILtkListView** ppOut) PURE;
+	STDMETHOD_(void, CreateTreeView)(ILtkTreeView** ppOut) PURE;
+	STDMETHOD_(void, CreateTreeNode)(ILtkTreeNode** ppOut) PURE;
 };
 
 interface LTK_DECLARE_INTERFACE("A0B263F7-0B6D-43A6-8A77-A6BF1838D927")
@@ -146,6 +150,19 @@ interface LTK_DECLARE_INTERFACE("5BCFA56C-3332-4088-90CB-5070F3F55B2A")
 	STDMETHOD_(UINT, AddRow)() PURE;
 	STDMETHOD(SetCellText)(UINT row, UINT col, LPCWSTR text) PURE;
 
+};
+
+interface LTK_DECLARE_INTERFACE("51B6E813-AE89-4394-86C4-2EE96EE1150F")
+	ILtkTreeView : public ILtkWidget
+{
+	STDMETHOD_(ILtkTreeNode*, GetRootNode)() PURE;
+};
+
+interface LTK_DECLARE_INTERFACE("187888DE-0539-46CE-A499-A765A7BC9205")
+	ILtkTreeNode : public IUnknown
+{
+	STDMETHOD_(void, SetText)(LPCWSTR) PURE;
+	STDMETHOD_(void, AddChildNode)(ILtkTreeNode *) PURE;
 };
 
 interface ILtkAction : public IUnknown // TODO 

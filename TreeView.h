@@ -24,15 +24,18 @@ struct TreeViewColors
 	D2D1_COLOR_F SelectedTextColor;
 };
 
-class TreeNode : public Object
+class TreeNode : public ILtkTreeNode, public Object
 {
 public:
     TreeNode() {}
     virtual ~TreeNode();
 
+    LTK_OBJECT_IMPL()
+    STDMETHOD(QueryInterface)(REFIID riid, void** ppvObject) override { return E_NOTIMPL; }
+
     void SetTreeView(TreeView *tree);
 
-    void AddChild(TreeNode *);
+    STDMETHOD_(void, AddChildNode)(ILtkTreeNode *) override;
     void InsertChild(TreeNode *);
     UINT GetChildCount();
     TreeNode *GetNthChild(UINT i);
@@ -40,7 +43,7 @@ public:
     void SetDepth(int);
 
     LPCWSTR GetText();
-    void SetText(LPCWSTR);
+    STDMETHOD_(void, SetText)(LPCWSTR);
 
     bool IsExpand();
 
@@ -68,11 +71,15 @@ private:
     DISALLOW_COPY_AND_ASSIGN(TreeNode)
 };
 
-class TreeView : public Widget
+class TreeView : public ILtkTreeView, public Widget
 {
 public:
     TreeView();
     virtual ~TreeView();
+
+    LTK_OBJECT_IMPL()
+    LTK_WIDGET_IMPL()
+    STDMETHOD(QueryInterface)(REFIID riid, void** ppvObject) override { return E_NOTIMPL; }
 
     void DoLayout();
 
@@ -86,7 +93,7 @@ public:
 	AbstractBackground *GetCollapseIcon();
 	float GetItemHeight();
 
-    TreeNode *GetRootNode();
+    STDMETHOD_(ILtkTreeNode*, GetRootNode)() override;
 	void SetSelectedNode(TreeNode *);
 	TreeNode *GetSelectedNode();
 

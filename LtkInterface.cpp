@@ -74,6 +74,13 @@ public:
 	STDMETHOD_(void, CreateListView)(ILtkListView** ppOut) override {
 		*ppOut = new ListView;
 	}
+	STDMETHOD_(void, CreateTreeView)(ILtkTreeView** ppOut) override {
+		*ppOut = new TreeView;
+	}
+	STDMETHOD_(void, CreateTreeNode)(ILtkTreeNode** ppOut) override {
+		*ppOut = new TreeNode;
+	}
+
 };
 
 LTK_API void WINAPI LtkGetFactory(ILtkFactory** ppFactory)

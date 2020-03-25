@@ -46,6 +46,28 @@ void MainWindow::FillListView(ILtkListView* listview)
 	}
 }
 
+void MainWindow::FillTreeView(ILtkFactory *factory, ILtkTreeNode* parent, int depth)
+{
+	static int node_count = 0;
+
+	if (depth > 4) {
+		return;
+	}
+	int num = rand() % 13 + 3;
+	wchar_t text[64];
+	for (int i = 0; i < num; i++) {
+		ILtkTreeNode *node = nullptr;
+		factory->CreateTreeNode(&node);
+		StringCbPrintf(text, sizeof(text), L"TreeNode: %d", node_count);
+		node->SetText(text);
+		parent->AddChildNode(node);
+		node_count++;
+		if (rand() % 100 < 35) {
+			FillTreeView(factory, node, depth + 1);
+		}
+	}
+}
+
 void MainWindow::Create()
 {
 	ILtkFactory* factory = NULL;
@@ -60,12 +82,12 @@ void MainWindow::Create()
 	ILtkSplitter *splitter1 = NULL;
 	factory->CreateSplitter(LTK_HORIZONTAL, &splitter1);
 
-	ILtkButton* btn1 = NULL;
-	factory->CreateButton(&btn1);
-	btn1->SetText(L"Left");
-	splitter1->AddClient(btn1);
+	ILtkTreeView* treeview = NULL;
+	factory->CreateTreeView(&treeview);
+	FillTreeView(factory, treeview->GetRootNode(), 0);
+	splitter1->AddClient(treeview);
 	splitter1->SetClientSize(0, 200);
-	SAFE_RELEASE(btn1);
+	SAFE_RELEASE(treeview);
 
 	ILtkListView* listview = NULL;
 	factory->CreateListView(&listview);

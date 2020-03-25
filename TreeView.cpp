@@ -23,8 +23,9 @@ void TreeNode::SetTreeView(TreeView *tree)
     m_treeView = tree;
 }
 
-void TreeNode::AddChild(TreeNode *node)
+void TreeNode::AddChildNode(ILtkTreeNode *node_i)
 {
+    auto node = dynamic_cast<TreeNode *>(node_i);
     LTK_ASSERT(node->m_parent == nullptr);
     LTK_ASSERT(node != this);
 
@@ -223,7 +224,7 @@ float TreeView::GetItemHeight()
 	return m_itemHeight;
 }
 
-TreeNode * TreeView::GetRootNode()
+ILtkTreeNode* TreeView::GetRootNode()
 {
     return &m_root;
 }
