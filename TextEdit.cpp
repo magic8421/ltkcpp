@@ -36,6 +36,7 @@ TextEdit::TextEdit()
 
 TextEdit::~TextEdit()
 {
+    SAFE_RELEASE(m_vsb);
     SAFE_RELEASE(m_format);
     SAFE_RELEASE(m_layout);
     SAFE_RELEASE(m_brushSelectedText);

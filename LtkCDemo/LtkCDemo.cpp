@@ -16,6 +16,7 @@ HRESULT MainWindow::QueryInterface(REFIID riid, void** ppvObject)
 {
 	return E_NOTIMPL;
 }
+
 /*
 BOOL MainWindow::OnClose(ILtkWindow* sender)
 {
@@ -25,6 +26,7 @@ BOOL MainWindow::OnClose(ILtkWindow* sender)
 	return TRUE;
 }
 */
+
 void MainWindow::OnDestroy(ILtkWindow* sender)
 {
 	m_window->Dispose();
@@ -73,7 +75,7 @@ void MainWindow::Create()
 {
 	ILtkFactory* factory = NULL;
 	LtkGetFactory(&factory);
-	LtkSize size{ 500.f, 400.f };
+	LtkSize size{ 600.f, 500.f };
 	ILtkWindow* window = NULL;
 	factory->CreateWindow(&window);
 
@@ -93,14 +95,26 @@ void MainWindow::Create()
 	SAFE_RELEASE(root_node);
 	SAFE_RELEASE(treeview);
 
+	ILtkSplitter *splitter2 = NULL;
+	factory->CreateSplitter(LTK_VERTICAL, &splitter2);
+	splitter1->AddClient(splitter2);
+
+
 	ILtkListView* listview = NULL;
 	factory->CreateListView(&listview);
 	listview->AddColumn(L"Col1", 200);
 	listview->AddColumn(L"Col2", 200);
 	listview->AddColumn(L"Col3", 200);
 	FillListView(listview);
-	splitter1->AddClient(listview);
+	splitter2->AddClient(listview);
+	splitter2->SetClientSize(0, 200);
 	SAFE_RELEASE(listview);
+
+	ILtkEdit* edit = NULL;
+	factory->CreateEdit(&edit);
+	splitter2->AddClient(edit);
+	SAFE_RELEASE(edit);
+	SAFE_RELEASE(splitter2);
 
 	ILtkMenuBar *menu_bar = NULL;
 	BuildMenu(&menu_bar);

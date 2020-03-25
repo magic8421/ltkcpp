@@ -61,6 +61,7 @@ interface ILtkActionListener;
 interface ILtkListView;
 interface ILtkTreeView;
 interface ILtkTreeNode;
+interface ILtkEdit;
 
 interface LTK_DECLARE_INTERFACE("F5A12F11-D3EE-41C8-8712-2699D2EEAD87")
 	ILtkWindow : public IUnknown
@@ -102,6 +103,7 @@ interface LTK_DECLARE_INTERFACE("45F1AC62-D035-4223-A3EB-08961DF3A16E")
 	STDMETHOD_(void, CreateListView)(ILtkListView** ppOut) PURE;
 	STDMETHOD_(void, CreateTreeView)(ILtkTreeView** ppOut) PURE;
 	STDMETHOD_(void, CreateTreeNode)(ILtkTreeNode** ppOut) PURE;
+	STDMETHOD_(void, CreateEdit)(ILtkEdit** ppOut) PURE;
 };
 
 interface LTK_DECLARE_INTERFACE("A0B263F7-0B6D-43A6-8A77-A6BF1838D927")
@@ -165,7 +167,8 @@ interface LTK_DECLARE_INTERFACE("187888DE-0539-46CE-A499-A765A7BC9205")
 	STDMETHOD_(void, AddChildNode)(ILtkTreeNode *) PURE;
 };
 
-interface ILtkAction : public IUnknown // TODO 
+interface LTK_DECLARE_INTERFACE("B10FB998-5778-4FEA-8D01-E62F6C2A7382")
+	ILtkEdit : public ILtkWidget
 {
 
 };

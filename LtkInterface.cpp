@@ -80,6 +80,9 @@ public:
 	STDMETHOD_(void, CreateTreeNode)(ILtkTreeNode** ppOut) override {
 		*ppOut = new TreeNode;
 	}
+	STDMETHOD_(void, CreateEdit)(ILtkEdit** ppOut) override {
+		*ppOut = new TextEdit;
+	}
 
 };
 

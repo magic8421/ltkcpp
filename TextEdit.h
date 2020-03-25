@@ -14,11 +14,15 @@ namespace ltk {
 
 class ScrollBar;
 
-class TextEdit : public Widget
+class TextEdit : public ILtkEdit, public Widget
 {
 public:
     TextEdit();
     ~TextEdit();
+
+    LTK_OBJECT_IMPL()
+    LTK_WIDGET_IMPL()
+    STDMETHOD(QueryInterface)(REFIID riid, void** ppvObject) override { return E_NOTIMPL; }
 
     void SetText(LPCWSTR);
     LPCWSTR GetText();
