@@ -12,12 +12,19 @@
 #include "Window.h"
 #include "TimerManager.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW 
+#endif
+
 namespace ltk {
 
 const static float ITEM_HEIGHT = 30.f;
+const static float SEPARATOR_HEIGHT = 10.f;
 const static float MENU_WIDTH = 300.f;
-const static float ICON_WIDTH = 16.f;
-const static float PADDING = 5.f;
+const static float ICON_WIDTH = 0.f;
+const static float PADDING_V = 4.f;
+const static float PADDING_H = 15.f;
+const static float SHADOW_SIZE = 7.F;
 
 PopupMenu::PopupMenu() :
 	m_szTextColor("item_text_clr"),
@@ -37,11 +44,17 @@ PopupMenu::~PopupMenu()
 	}
 }
 
-void PopupMenu::AddItem(LPCWSTR text)
+void PopupMenu::AddItem(LPCWSTR text, LPCSTR name)
 {
 	auto item = new MenuItem;
 	item->text = text;
+	item->SetName(name);
 	m_vecItems.push_back(item);
+}
+
+void PopupMenu::AddSeparator()
+{
+	m_vecItems.push_back(nullptr);
 }
 
 UINT PopupMenu::GetMenuItemCount()
@@ -52,6 +65,22 @@ UINT PopupMenu::GetMenuItemCount()
 MenuItem * PopupMenu::GetMenuItemAt(UINT idx)
 {
 	return m_vecItems[idx];
+}
+
+float PopupMenu::GetHeight()
+{
+	float h = SHADOW_SIZE;
+	for (auto item : m_vecItems) {
+		if (item) {
+			h += PADDING_V * 2;
+			h += m_text_h;
+		}
+		else {
+			h += SEPARATOR_HEIGHT;
+		}
+	}
+	h += SHADOW_SIZE;
+	return h;
 }
 
 void PopupMenu::SetWidth(float w)
@@ -81,10 +110,10 @@ void PopupMenu::Show(Window* wnd, const RectF& rc)
 	if (!wnd) {
 		return;
 	}
-	auto root = wnd->GetRootSprite();
+	auto root = wnd->GetRootWidget();
 	root->AddChild(this);
 	this->SetRect(rc);
-	wnd->SetFocusSprite(this);
+	wnd->SetFocusWidget(this);
 	m_trackingIdx = -1;
 	
 	m_state = State::sSlideIn;
@@ -136,13 +165,13 @@ void PopupMenu::OnThemeChanged()
 	m_background = sm->GetBackground(this->m_szBackground);
 
 	for (auto item : m_vecItems) {
-		if (item->sub_menu) {
+		if (item && item->sub_menu) {
 			item->sub_menu->OnThemeChanged();
 		}
 	}
 }
 
-void PopupMenu::OnParentChanged(Sprite* old, Sprite* new_)
+void PopupMenu::OnParentChanged(Widget* old, Widget* new_)
 {
 	m_hoverIdx = -1;
 }
@@ -167,10 +196,52 @@ void PopupMenu::SetBackground(LPCSTR style)
 	this->m_szBackground = StyleManager::Instance()->InternString(style);
 }
 
+HRESULT PopupMenu::GetTextExtent(LPCWSTR str, IDWriteTextFormat *format, SizeF &size)
+{
+	IDWriteTextLayout *layout = nullptr;
+	if (format->GetTextAlignment() != DWRITE_TEXT_ALIGNMENT_LEADING) 
+		return E_INVALIDARG;
+	if (format->GetParagraphAlignment() != DWRITE_PARAGRAPH_ALIGNMENT_NEAR)
+		return E_INVALIDARG;
+
+	HRESULT hr = GetDWriteFactory()->CreateTextLayout(
+		str, wcslen(str), format, 9999, 9999, &layout);
+	if (FAILED(hr))
+		return hr;
+
+	DWRITE_TEXT_METRICS dtm = { 0 };
+	layout->GetMetrics(&dtm);
+	size.Width = dtm.width;
+	size.Height = dtm.height;
+
+	return S_OK;
+}
+
+void PopupMenu::CalcWidth()
+{
+	SizeF size;
+	float max_w = 10.f;
+	float max_h = 10.f;
+	for (auto item : m_vecItems) {
+		if (item) {
+			auto hr = GetTextExtent(item->text.c_str(), m_format, size);
+			LTK_ASSERT(SUCCEEDED(hr));
+			if (size.Width > max_w) {
+				max_w = size.Width;
+			}
+			if (size.Height > max_h) {
+				max_h = size.Height;
+			}
+		}
+	}
+	m_width = max_w + SHADOW_SIZE * 2 + PADDING_H * 2 + ICON_WIDTH;
+	m_text_h = max_h;
+}
+
 bool PopupMenu::OnPaint(PaintEvent *ev)
 {
 	auto rcbg = this->GetClientRect();
-	rcbg.Inflate(7, 7);
+	rcbg.Inflate(SHADOW_SIZE, SHADOW_SIZE);
 
 	float slide_h = 0.f;
 	if (m_state == State::sSlideIn) {
@@ -185,19 +256,36 @@ bool PopupMenu::OnPaint(PaintEvent *ev)
 	m_background->Draw(GetWindow(), ev->target,
 		rcbg, 
 		AbstractBackground::Normal, 1.f);
-	float y = 0;
+
 	auto brush = GetWindow()->GetStockBrush();
-	if (m_hoverIdx >= 0) {
+	if (m_hoverIdx >= 0 && m_vecItems[m_hoverIdx]) {
 		brush->SetColor(m_hoverColor);
-		ev->target->FillRectangle(ltk::D2D1RectF(RectF(0.f, m_hoverIdx * ITEM_HEIGHT,
-			this->GetWidth(), ITEM_HEIGHT)), brush);
+		RectF rcHover = RectFromIndex(m_hoverIdx);
+		ev->target->FillRectangle(ltk::D2D1RectF(rcHover), brush);
 	}
 	brush->SetColor(m_textColor);
+	int idx = 0;
 	for (auto item : m_vecItems) {
-		ev->target->DrawText(item->text.c_str(), item->text.size(), m_format,
-			D2D1::RectF(PADDING + ICON_WIDTH, y, this->GetWidth(), y + ITEM_HEIGHT),
-			brush);
-		y += ITEM_HEIGHT;
+		if (item) {
+			//ev->target->DrawText(item->text.c_str(), item->text.size(), m_format,
+			//	D2D1::RectF(PADDING + ICON_WIDTH, y, this->GetWidth(), y + ITEM_HEIGHT),
+			//	brush);
+			auto rc = RectFromIndex(idx);
+			rc.X += PADDING_H + ICON_WIDTH;
+			rc.Width -= PADDING_H * 2 + ICON_WIDTH;
+			rc.Y += PADDING_V;
+			ev->target->DrawText(item->text.c_str(), item->text.size(), m_format,
+				ltk::D2D1RectF(rc), brush);
+		}
+		else {
+			auto rc = RectFromIndex(idx);
+			auto old_clr = brush->GetColor();
+			brush->SetColor(D2D1::ColorF(D2D1::ColorF::Gray));
+			ev->target->DrawLine(D2D1::Point2F(rc.X + PADDING_H, rc.Y + rc.Height / 2.f),
+				D2D1::Point2F(rc.Width - PADDING_H, rc.Y + rc.Height / 2.f), brush);
+			brush->SetColor(old_clr);
+		}
+		idx++;
 	}
 
 	if (m_state == State::sSlideIn) {
@@ -227,11 +315,61 @@ bool PopupMenu::OnKillFocus(FocusEvent* ev)
 	return false;
 }
 
+int PopupMenu::IndexFromPos(float y)
+{
+	float pos = SHADOW_SIZE;
+	if (y < pos)
+		return -1;
+	int idx = 0;
+	for (auto item : m_vecItems) {
+		if (item) {
+			pos += PADDING_V * 2 + m_text_h;
+		}
+		else {
+			pos += SEPARATOR_HEIGHT;
+		}
+		if (y < pos) {
+			return idx;
+		}
+		idx++;
+	}
+	return -1;
+}
+
+RectF PopupMenu::RectFromIndex(int idx)
+{
+	LTK_ASSERT(idx >= 0);
+	RectF rc;
+	rc.Y = SHADOW_SIZE;
+	rc.X = SHADOW_SIZE;
+	rc.Width = this->GetWidth() - SHADOW_SIZE * 2;
+
+	for (int i = 0; i < idx; i ++) {
+		auto item = m_vecItems[i];
+		if (item) {
+			rc.Y += PADDING_V * 2;
+			rc.Y += m_text_h;
+		}
+		else {
+			rc.Y += SEPARATOR_HEIGHT;
+		}
+	}
+	auto item = m_vecItems[idx];
+
+	if (item) {
+		rc.Height = m_text_h + PADDING_V * 2;
+	}
+	else {
+		rc.Height = SEPARATOR_HEIGHT;
+	}
+	return rc;
+}
+
 bool PopupMenu::OnLBtnDown(MouseEvent* ev)
 {
 	auto wnd = GetWindow();
 	wnd->DisableFocusChange();
-	int hit = (int)(ev->y / ITEM_HEIGHT);
+	int hit = IndexFromPos(ev->y);
 	if (hit < 0 || hit >= (int)m_vecItems.size()) {
 		return false;
 	}
@@ -239,6 +377,9 @@ bool PopupMenu::OnLBtnDown(MouseEvent* ev)
 		return false;
 	}
 	auto item = m_vecItems[hit];
+	if (!item) {
+		return true;
+	}
 	if (!item->sub_menu) {
 		SetDelegateInvoker(this);
 		item->ClickedDelegate();
@@ -250,19 +391,22 @@ bool PopupMenu::OnLBtnDown(MouseEvent* ev)
 		tracking = menu->m_trackingIdx;
 	}
 	menu->HideAll();
-	::InvalidateRect(wnd->Handle(), NULL, FALSE);
+	::InvalidateRect(wnd->GetHWND(), NULL, FALSE);
 	return true;
 }
 
-void PopupMenu::TrackPopupMenu(UINT idx)
+void PopupMenu::TrackPopupMenu(int idx)
 {
+	if (idx < 0 || !m_vecItems[idx])
+		return;
 	auto menu = m_vecItems[idx]->sub_menu;
 	if (menu) {
 		m_trackingIdx = idx;
 		auto arc = this->GetAbsRect();
+		auto mrc = this->RectFromIndex(idx);
+		menu->CalcWidth();
 		menu->Show(GetWindow(), RectF(
-			arc.X + this->GetWidth(), arc.Y + idx * ITEM_HEIGHT,
-			menu->GetWidth(), menu->GetMenuItemCount() * ITEM_HEIGHT));
+			arc.X + this->GetWidth(), arc.Y + mrc.Y, menu->GetWidth(), menu->GetHeight()));
 		Invalidate();
 	}
 }
@@ -270,7 +414,7 @@ void PopupMenu::TrackPopupMenu(UINT idx)
 bool PopupMenu::OnMouseMove(MouseEvent* ev)
 {
 	TrackMouseLeave();
-	int hover = (int)(ev->y / ITEM_HEIGHT);
+	int hover = IndexFromPos(ev->y);
 	if (hover != m_hoverIdx) {
 		m_hoverIdx = hover;
 		Invalidate();
@@ -318,7 +462,7 @@ void MenuBar::AddItem(LPCWSTR text)
 	btn->SetText(text);
 	btn->SetBackground("menu_bar_btn_bg");
 	//btn->ObjectName = "menu_btn";
-	this->AddChild(btn);
+	Widget::AddChild(btn);
 	MenuButtonParam param;
 	param.button = btn;
 	m_vecMenuItems.push_back(param);
@@ -345,8 +489,9 @@ void MenuBar::OnMenuBtnClicked()
 	}
 	auto arc = m_vecMenuItems[idx].button->GetAbsRect();
 
+	menu->CalcWidth();
 	menu->Show(this->GetWindow(), RectF(arc.X, arc.Y + arc.Height,
-		m_vecMenuItems[idx].sub_menu->GetWidth(), menu->GetMenuItemCount() * ITEM_HEIGHT));
+		m_vecMenuItems[idx].sub_menu->GetWidth(), menu->GetHeight()));
 	m_trackingIdx = idx;
 }
 

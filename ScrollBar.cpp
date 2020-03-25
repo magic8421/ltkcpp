@@ -168,7 +168,7 @@ void ScrollBar::OnSilderEvent(MouseEvent *ev, bool &bHandled)
         m_bDrag = true;
         m_deltaX = ev->x;
         m_deltaY = ev->y;
-        LTK_ASSERT(::GetForegroundWindow() == this->GetWindow()->Handle());
+        LTK_ASSERT(::GetForegroundWindow() == this->GetWindow()->GetHWND());
         this->SetCapture();
         break;
     case eLBtnUp:

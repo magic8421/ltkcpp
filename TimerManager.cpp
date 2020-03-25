@@ -78,7 +78,7 @@ TimerManager::TimerManager()
     wc.lpfnWndProc = MyWndProc;
     ::RegisterClass(&wc);
 
-    m_hwnd = ::CreateWindow(L"LtkTimerManager", L"", WS_POPUP, 0, 0, 10, 10, 
+    m_hwnd = ::CreateWindowW(L"LtkTimerManager", L"", WS_POPUP, 0, 0, 10, 10, 
         HWND_MESSAGE, NULL, HINST_THISCOMPONENT, NULL);
     LTK_ASSERT(::IsWindow(m_hwnd));
     ::SetWindowLongPtr(m_hwnd, GWLP_USERDATA,reinterpret_cast<LPARAM>(this));

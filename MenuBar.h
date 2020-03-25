@@ -17,7 +17,7 @@ class AbstractBackground;
 class MenuBar;
 class PopupMenu;
 
-struct LTK_CPP_API MenuItem
+struct LTK_CPP_API MenuItem : public Object
 {
 public:
 	MenuItem() {}
@@ -40,20 +40,25 @@ private:
 	DISALLOW_COPY_AND_ASSIGN(MenuItem)
 };
 
-class LTK_CPP_API PopupMenu : public Sprite
+class LTK_CPP_API PopupMenu : public Widget
 {
 public:
-	RTTI_DECLARATIONS(PopupMenu, Sprite);
+	RTTI_DECLARATIONS(PopupMenu, Widget);
 
 	PopupMenu();
 	virtual ~PopupMenu();
 
-	void AddItem(LPCWSTR text);
+	void AddItem(LPCWSTR text, LPCSTR name);
+	void AddSeparator();
+
 	UINT GetMenuItemCount();
 	MenuItem *GetMenuItemAt(UINT idx);
+
+	float GetHeight();
 	
 	void SetWidth(float);
 	float GetWidth();
+	void CalcWidth();
 
 	void SetSubMenu(UINT idx, PopupMenu *popup);
 	void SetMenuBar(MenuBar*);
@@ -61,7 +66,7 @@ public:
 	void Show(Window *wnd, const RectF &rc);
 	void Hide();
 	void HideAll();
-	void TrackPopupMenu(UINT idx);
+	void TrackPopupMenu(int idx);
 
 
 	virtual bool OnPaint(PaintEvent *ev) override;
@@ -70,21 +75,27 @@ public:
 	virtual bool OnMouseMove(MouseEvent* ev) override;
 	virtual bool OnMouseLeave(MouseEvent* ev) override;
 	virtual void OnThemeChanged() override;
-	virtual void OnParentChanged(Sprite* old, Sprite* new_) override;
+	virtual void OnParentChanged(Widget* old, Widget* new_) override;
 
 	void SetTextColor(LPCSTR style);
 	void SetHoverColor(LPCSTR style);
 	void SetTextFormat(LPCSTR style);
 	void SetBackground(LPCSTR style);
 
+	static HRESULT GetTextExtent(LPCWSTR str, IDWriteTextFormat *format, SizeF &size);
+
+private:
+	int IndexFromPos(float y);
+	RectF RectFromIndex(int idx);
+
 private:
 	std::vector<MenuItem *> m_vecItems;
 	PopupMenu* m_parent = nullptr;
 	MenuBar* m_menuBar = nullptr;
-	float m_width = 100.0f;
+
 	int m_hoverIdx = -1;
 	int m_trackingIdx = -1;
-	bool m_bTrackingPopup = false; // TODO 这个能和m_trackingIdx合并吗？
+	bool m_bTrackingPopup = false; // TODO 闸??铜_trackingIdx?喜?掳??
 	bool m_bHiding = false;
 
 	enum class State {sHide, sSlideIn, sShow};
@@ -92,6 +103,9 @@ private:
 	float m_aniProgress = 0.f;
 	const float AniDelta = 1.f / 300.f;
 	DWORD m_lastTick = 0;
+
+	float m_width = 100.0f;
+	float m_text_h = 10.f;
 
 	IDWriteTextFormat* m_format = nullptr;
 	D2D1_COLOR_F m_textColor;
@@ -109,10 +123,10 @@ struct MenuButtonParam {
 	PopupMenu *sub_menu = nullptr;
 };
 
-class LTK_CPP_API MenuBar : public Sprite
+class LTK_CPP_API MenuBar : public Widget
 {
 public:
-	RTTI_DECLARATIONS(MenuBar, Sprite);
+	RTTI_DECLARATIONS(MenuBar, Widget);
 
 	MenuBar();
 	virtual ~MenuBar();

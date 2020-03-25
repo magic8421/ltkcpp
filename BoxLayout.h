@@ -13,12 +13,12 @@
 namespace ltk {
 
 struct BoxLayoutParam {
-    Sprite *item = nullptr;
+    Widget *item = nullptr;
     float size = 20.0f;
     float growFactor = 0.0f;
 };
 
-class LTK_CPP_API BoxLayout : public Sprite
+class LTK_CPP_API BoxLayout : public Widget
 {
 public:
 	explicit BoxLayout(Orientation);
@@ -28,16 +28,16 @@ public:
 
     void SetSpacing(float spacing);
 
-    void AddLayoutItem(Sprite *sp, float preferedSize, float growFactor = 0.0f);
+    void AddLayoutItem(Widget *sp, float preferedSize, float growFactor = 0.0f);
 
-    void InsertLayoutItem(UINT before, Sprite *item, float preferedSize, float growFactor);
+    void InsertLayoutItem(UINT before, Widget *item, float preferedSize, float growFactor);
 
     void AddSpaceItem(float preferedSize, float growFactor);
 
     void DoLayout();
 
 private:
-	bool AlreadyHas(Sprite *item);
+	bool AlreadyHas(Widget *item);
 
 	std::vector<BoxLayoutParam> m_params; // item: owner
 	Orientation m_mode;

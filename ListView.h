@@ -16,7 +16,7 @@ namespace ltk {
 
 class ScrollBar;
 
-class LTK_CPP_API ListView : public Sprite
+class LTK_CPP_API ListView : public Widget
 {
 public:
     ListView();

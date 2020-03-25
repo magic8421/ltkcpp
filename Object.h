@@ -16,7 +16,11 @@ public:
 	static Object *GetDelegateInvoker();
 	static void SetDelegateInvoker(Object *);
 
+	void SetName(LPCSTR name);
+	LPCSTR GetName();
+
 private:
+	LPCSTR m_name = nullptr;
 	DISALLOW_COPY_AND_ASSIGN(Object);
 };
 

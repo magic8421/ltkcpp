@@ -37,6 +37,7 @@ using std::vector;
 // Windows Header Files:
 #include <windows.h>
 #include <commdlg.h>
+#include <timeapi.h>
 
 #include <tchar.h>
 #include <strsafe.h>

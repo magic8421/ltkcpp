@@ -73,19 +73,19 @@ public:
 
 	void OnPaint( HWND hwnd );
 
-	HWND Handle();
+	HWND GetHWND();
 
 	void OnImeInput(LPCTSTR text);
 	void SetImePosition( float x, float y );
 
-    Sprite *GetRootSprite();
-    Sprite *SetClientSprite(Sprite *sp);
+    Widget *GetRootWidget();
+    Widget *SetCentralWidget(Widget *sp);
 
 	MenuBar *SetMenu(MenuBar *);
 	MenuBar *GetMenu();
 
-	void SetFocusSprite(Sprite *sp);
-	Sprite *GetFocusSprite();
+	void SetFocusWidget(Widget *sp);
+	Widget *GetFocusWidget();
 	void DisableFocusChange();
 
 	void SetCaretHeight(float);
@@ -93,14 +93,14 @@ public:
 	void ShowCaret();
 	void HideCaret();
 
-	void SetCapture(Sprite *sp);
+	void SetCapture(Widget *sp);
 	void ReleaseCapture();
-    bool IsCapturing(Sprite *sp);
+    bool IsCapturing(Widget *sp);
 
-    void TrackMouseLeave(Sprite *sp);
+    void TrackMouseLeave(Widget *sp);
 
-    void BeginAnimation(Sprite *sp);
-    void EndAnimation(Sprite *sp);
+    void BeginAnimation(Widget *sp);
+    void EndAnimation(Widget *sp);
 
     void Minimize();
     void Maximize();
@@ -141,14 +141,14 @@ private:
 	RECT m_rectComposition;
 	int m_caretHeight;
 
-	WindowLayout *m_sprite = nullptr; // owner
+	WindowLayout *m_root = nullptr; // owner
 
 	bool m_bEnableFocusChange = true;
-    Sprite *m_spFocus = nullptr;
-    Sprite *m_spCapture = nullptr;
-    Sprite *m_spHover = nullptr;
-	std::unordered_set<Sprite *> m_setTrackMouseLeave;
-    std::unordered_set<Sprite *> m_setAnimation;
+	Widget *m_spFocus = nullptr;
+	Widget *m_spCapture = nullptr;
+	Widget *m_spHover = nullptr;
+	std::unordered_set<Widget *> m_setTrackMouseLeave;
+    std::unordered_set<Widget *> m_setAnimation;
 
     ID2D1HwndRenderTarget *m_target = nullptr; // owner
     ID2D1SolidColorBrush *m_brush = nullptr; // owner
@@ -161,6 +161,7 @@ private:
     ID2D1Bitmap *m_atlas = nullptr; // owner TODO share across multiple Window
     AbstractBackground *m_background = nullptr;
     std::string m_styleName;
+	UINT m_timerResolution = 1;
 };
 
 } // namespace ltk

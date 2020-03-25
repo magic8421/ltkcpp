@@ -39,27 +39,30 @@ public:
     UINT GetChildCount();
     TreeNode *GetNthChild(UINT i);
 
-    void SetRect(const RectF &rc);
     RectF GetRect();
+    
+    void SetDepth(int);
 
     LPCWSTR GetText();
     void SetText(LPCWSTR);
 
     bool IsExpand();
+    virtual void OnPaint(ID2D1RenderTarget *target, float scroll, UINT idx);
+    virtual void OnLBtnDown(PointF pt, float scroll, UINT idx);
 
-    virtual void OnPaint(ID2D1RenderTarget *target, float scroll);
-    virtual void OnLBtnDown(PointF pt, float scroll);
+    RectF GetRect(float scroll, UINT idx);
+    RectF GetExpandButtonRect(const RectF &rc);
 
 private:
+    std::vector<TreeNode*> m_children;
+    TreeView* m_treeView = nullptr;
+    TreeNode* m_parent = nullptr;
+
     bool m_bExpand = true;
     bool m_bMouseHover = false;
     bool m_bChecked = false;
 
-    TreeView *m_treeView = nullptr;
-    TreeNode *m_parent = nullptr;
-    std::vector<TreeNode *> m_children;
-    RectF m_rect;
-    RectF m_rcExpandBtn;
+    int m_depth = 0;
     std::wstring m_text;
 
     static const float m_padding;
@@ -68,18 +71,15 @@ private:
     DISALLOW_COPY_AND_ASSIGN(TreeNode)
 };
 
-class LTK_CPP_API TreeView : public Sprite
+class LTK_CPP_API TreeView : public Widget
 {
 public:
-	RTTI_DECLARATIONS(TreeView, Sprite);
+	RTTI_DECLARATIONS(TreeView, Widget);
 
     TreeView();
     virtual ~TreeView();
 
     void DoLayout();
-
-    void TraverseTree(TreeNode *node, int depth,
-        const std::function<void(TreeNode *, int)> &cb);
 
     ID2D1SolidColorBrush *GetBrush();
     IDWriteTextFormat *GetTextFormat();
@@ -91,6 +91,9 @@ public:
     TreeNode *GetRootNode();
 	void SetSelectedNode(TreeNode *);
 	TreeNode *GetSelectedNode();
+
+    void UpdateLinearView();
+    void SetDirty();
 
     void SetTextColor(LPCSTR style);
     void SetHoverColor(LPCSTR style);
@@ -107,9 +110,12 @@ protected:
 	virtual void OnThemeChanged() override;
 
 private:
+    void UpdateLinearViewRec(TreeNode* node, int depth);
+
     ScrollBar *m_vsb = nullptr;
-    TreeNode m_root;
+    TreeNode *m_root;
 	TreeNode *m_selected = nullptr;
+    std::vector<TreeNode*> m_vecLinear;
 
     static const float m_itemHeight;
     static const float m_indent;
@@ -122,6 +128,8 @@ private:
     float m_maxHeight = 0.0f;
 
 	TreeViewColors m_colors;
+
+    bool m_bDirty = true;
 
     LPCSTR m_szTextColor = nullptr;
     LPCSTR m_szHoverColor = nullptr;

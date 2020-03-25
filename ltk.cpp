@@ -415,7 +415,7 @@ static void size_test()
     LTK_LOG("fn1: %d", sizeof(fn1));
     std::function<void(int, float, std::string)> fn2;
     LTK_LOG("fn2: %d", sizeof(fn2));
-    LTK_LOG("Sprite: %d", sizeof(Sprite));
+    LTK_LOG("Widget: %d", sizeof(Widget));
     LTK_LOG("RefCounted: %d",sizeof(RefCounted));
     std::forward_list<int> slist;
     LTK_LOG("forward_list: %d", sizeof(slist));
@@ -475,15 +475,15 @@ int luaopen_ltk(lua_State *L)
     ApiBindingInit(L);
     Window::RegisterWndClass();
     LuaRegisterClass<Window>(L, "LtkWindow");
-    LuaRegisterClass<Sprite>(L, "LtkSprite");
+    LuaRegisterClass<Widget>(L, "LtkWidget");
     LuaRegisterClass<Button>(L, "LtkButton");
     LuaRegisterClass<BoxLayout>(L, "LtkBoxLayout");
     LuaRegisterClass<Label>(L, "LtkLabel");
     LuaRegisterClass<Serializer>(L, "LtkSerializer");
     LuaRegisterClass<StyleManager>(L, "LtkStyleManager");
-    LuaRegisterClass<IconSprite>(L, "LtkIconSprite");
-    LuaRegisterClass<TextureSprite>(L, "LtkTextureSprite");
-    LuaRegisterClass<ImageSprite>(L, "LtkImageSprite");
+    LuaRegisterClass<IconWidget>(L, "LtkIconWidget");
+    LuaRegisterClass<TextureWidget>(L, "LtkTextureWidget");
+    LuaRegisterClass<ImageWidget>(L, "LtkImageWidget");
     LuaRegisterClass<ScrollBar>(L, "LtkScrollBar");
     LuaRegisterClass<CheckBox>(L, "LtkCheckBox");
     LuaRegisterClass<RadioGroup>(L, "LtkRadioGroup");

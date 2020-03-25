@@ -67,24 +67,24 @@ bool ListView::OnEvent(Event *ev)
 		MouseEvent *mev = static_cast<MouseEvent *>(ev);
 		mev->y -= m_headerHeight;
 	}
-	return Sprite::OnEvent(ev);
+	return Widget::OnEvent(ev);
 }
 
 bool ListView::OnPaint(PaintEvent *ev)
 {
     ID2D1RenderTarget *target = ev->target;
 
-    RectF rcSprite = this->GetRect();
-    if (m_scroll.UpdateScroll(this->GetTotalHeight() - rcSprite.Height)) {
+    RectF rcWidget = this->GetRect();
+    if (m_scroll.UpdateScroll(this->GetTotalHeight() - rcWidget.Height)) {
         this->EndAnimation();
     }
     m_vsb->SetPosition(m_scroll.GetScroll());
 
     D2D1_RECT_F rcClip;
     rcClip.left = 0;
-    rcClip.right = rcSprite.Width;
+    rcClip.right = rcWidget.Width;
     rcClip.top = 0;
-    rcClip.bottom = rcSprite.Height;
+    rcClip.bottom = rcWidget.Height;
     target->PushAxisAlignedClip(rcClip, D2D1_ANTIALIAS_MODE_ALIASED);
 	TranslateTransform(target, -m_hscroll, m_headerHeight);
     auto guard = LtkScopeGuard([&]() {
@@ -98,11 +98,11 @@ bool ListView::OnPaint(PaintEvent *ev)
     int i = (int)(m_scroll.GetScroll() / ItemHeight);
     i = max(i, 0);
     rcItem.top = -m_scroll.GetScroll() + i * ItemHeight;
-    int display_max = (int)(rcSprite.Height / ItemHeight + i + 1.5f);
+    int display_max = (int)(rcWidget.Height / ItemHeight + i + 1.5f);
     //LTK_LOG("I: %d display_max: %d", i, display_max);
     for (; i < (int)m_vecData.size() && i < display_max; i++) {
         rcItem.left = m_hscroll;
-        rcItem.right = rcSprite.Width + m_hscroll;
+        rcItem.right = rcWidget.Width + m_hscroll;
         rcItem.bottom = rcItem.top + ItemHeight;
         if (m_selectedRow == i) {
 			brush->SetColor(m_selectedColor);
@@ -291,8 +291,8 @@ UINT ListView::GetItemCount()
 
 void ListView::ScrollToBottom()
 {
-    RectF rcSprite = this->GetRect();
-    m_scroll.SetScroll(this->GetTotalHeight() - rcSprite.Height);
+    RectF rcWidget = this->GetRect();
+    m_scroll.SetScroll(this->GetTotalHeight() - rcWidget.Height);
     this->Invalidate();
 }
 

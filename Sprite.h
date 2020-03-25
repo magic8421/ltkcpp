@@ -14,13 +14,13 @@ namespace ltk {
 
 class Window;
 
-class LTK_CPP_API Sprite : public Object
+class LTK_CPP_API Widget : public Object
 {
 public:
-	RTTI_DECLARATIONS(Sprite, Object);
+	RTTI_DECLARATIONS(Widget, Object);
 
-    Sprite(void);
-    virtual ~Sprite(void);
+    Widget(void);
+    virtual ~Widget(void);
 
     RectF GetRect();
 	RectF GetClientRect();
@@ -38,8 +38,8 @@ public:
 	void SetVisible( bool );
 	bool GetVisible();
 
-	void AddChild( Sprite *sp );
-	void RemoveChild(Sprite* sp);
+	void AddChild( Widget *sp );
+	void RemoveChild(Widget* sp);
 
     void HandlePaint( ID2D1RenderTarget *target );
 
@@ -64,8 +64,8 @@ public:
 
 	bool DispatchMouseEvent(MouseEvent *ev);
 
-	Sprite *GetAncestor();
-	Sprite *GetParent();
+	Widget *GetAncestor();
+	Widget *GetParent();
 
     void ShowCaret();
     void SetCaretPos(RectF rc);
@@ -74,7 +74,7 @@ public:
     void BeginAnimation();
     void EndAnimation();
 
-	Sprite *SetFocus();
+	Widget *SetFocus();
 	void KillFocus();
 
     virtual bool OnEvent(Event *ev) override;
@@ -98,7 +98,7 @@ protected:
     virtual bool OnKillFocus        (FocusEvent *ev) { return false; }
 
     virtual void RecreateResouce(ID2D1RenderTarget *target){}
-    virtual void OnParentChanged(Sprite *old, Sprite *new_){}
+    virtual void OnParentChanged(Widget *old, Widget *new_){}
     virtual void OnThemeChanged() {}
 
 private:
@@ -108,10 +108,10 @@ private:
     RectF m_rect;
     Window *m_window = nullptr;
 
-    std::vector<Sprite *> m_children;
-    Sprite *m_parent = nullptr;
+    std::vector<Widget *> m_children;
+    Widget *m_parent = nullptr;
 
-	DISALLOW_COPY_AND_ASSIGN(Sprite);
+	DISALLOW_COPY_AND_ASSIGN(Widget);
 };
 
 } // namespace ltk

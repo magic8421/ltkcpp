@@ -77,5 +77,5 @@
 	<TextFormat name="item_text_fmt" font_family="微软雅黑" font_size="14" />
 	<TextFormat name="tree_item_text_fmt" font_family="微软雅黑" font_size="14" halign="left" />
 	<TextFormat name="caption_fmt" font_family="宋体" font_size="12" valign="top"/>
-	<TextFormat name="popup_menu_fmt" font_family="微软雅黑" font_size="14" />
+	<TextFormat name="popup_menu_fmt" font_family="微软雅黑" font_size="14" halign="left" valign="top"/>
 </Theme>

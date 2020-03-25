@@ -98,7 +98,7 @@ void Button::RecreateLayout()
 	LTK_ASSERT(m_format->GetParagraphAlignment() == DWRITE_PARAGRAPH_ALIGNMENT_NEAR);
 	HRESULT hr = GetDWriteFactory()->CreateTextLayout(
 		m_text.c_str(), m_text.size(), m_format,
-		999, 999, &m_layout);
+		9999, 9999, &m_layout);
 	LTK_ASSERT(SUCCEEDED(hr));
 }
 
