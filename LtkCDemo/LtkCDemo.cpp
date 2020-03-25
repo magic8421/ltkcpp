@@ -65,6 +65,7 @@ void MainWindow::FillTreeView(ILtkFactory *factory, ILtkTreeNode* parent, int de
 		if (rand() % 100 < 35) {
 			FillTreeView(factory, node, depth + 1);
 		}
+		SAFE_RELEASE(node);
 	}
 }
 
@@ -84,9 +85,12 @@ void MainWindow::Create()
 
 	ILtkTreeView* treeview = NULL;
 	factory->CreateTreeView(&treeview);
-	FillTreeView(factory, treeview->GetRootNode(), 0);
+	ILtkTreeNode *root_node = NULL;
+	treeview->GetRootNode(&root_node);
+	FillTreeView(factory, root_node, 0);
 	splitter1->AddClient(treeview);
 	splitter1->SetClientSize(0, 200);
+	SAFE_RELEASE(root_node);
 	SAFE_RELEASE(treeview);
 
 	ILtkListView* listview = NULL;

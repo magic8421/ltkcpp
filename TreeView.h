@@ -81,10 +81,9 @@ public:
     LTK_WIDGET_IMPL()
     STDMETHOD(QueryInterface)(REFIID riid, void** ppvObject) override { return E_NOTIMPL; }
 
-    void DoLayout();
+    STDMETHOD_(void, GetRootNode)(ILtkTreeNode **ppNode) override;
 
-    void TraverseTree(TreeNode *node, int depth,
-        const std::function<void(TreeNode *, int)> &cb);
+    void DoLayout();
 
     ID2D1SolidColorBrush *GetBrush();
     IDWriteTextFormat *GetTextFormat();
@@ -93,7 +92,6 @@ public:
 	AbstractBackground *GetCollapseIcon();
 	float GetItemHeight();
 
-    STDMETHOD_(ILtkTreeNode*, GetRootNode)() override;
 	void SetSelectedNode(TreeNode *);
 	TreeNode *GetSelectedNode();
 
@@ -118,7 +116,7 @@ private:
     void UpdateLinearViewRec(TreeNode* node, int depth);
 
     ScrollBar *m_vsb = nullptr;
-    TreeNode m_root;
+    TreeNode *m_root;
 	TreeNode *m_selected = nullptr;
     std::vector<TreeNode*> m_vecLinear;
 

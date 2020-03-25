@@ -14,7 +14,7 @@ namespace ltk
 TreeNode::~TreeNode()
 {
     for (auto node : m_children) {
-        delete node;
+        node->Release();
     }
 }
 
@@ -32,6 +32,7 @@ void TreeNode::AddChildNode(ILtkTreeNode *node_i)
     node->m_parent = this;
     node->m_treeView = m_treeView;
     m_children.push_back(node);
+    node->AddRef();
 }
 
 UINT TreeNode::GetChildCount()
@@ -155,15 +156,17 @@ TreeView::TreeView() :
 	m_szTextFormat("tree_item_text_fmt")
 {
     this->EnableClipChildren(true);
-    m_root.SetTreeView(this);
+    m_root = new TreeNode;
+    m_root->SetTreeView(this);
     m_vsb = new ScrollBar(ltk::Vertical);
     this->AddChild(m_vsb);
 }
 
 TreeView::~TreeView()
 {
+    SAFE_RELEASE(m_root);
+    SAFE_RELEASE(m_vsb);
 }
-
 
 void TreeView::DoLayout()
 {
@@ -178,19 +181,6 @@ void TreeView::DoLayout()
     } else {
         m_vsb->SetVisible(false);
         m_scrollAni.SetScroll(0);
-    }
-}
-
-void TreeView::TraverseTree(TreeNode *node, int depth, 
-    const std::function<void(TreeNode *, int)> &cb)
-{
-    if (node != &m_root) {
-        cb(node, depth);
-    }
-    if (node->IsExpand()) {
-        for (UINT i = 0; i < node->GetChildCount(); i++) {
-            TraverseTree(node->GetNthChild(i), depth + 1, cb);
-        }
     }
 }
 
@@ -224,9 +214,10 @@ float TreeView::GetItemHeight()
 	return m_itemHeight;
 }
 
-ILtkTreeNode* TreeView::GetRootNode()
+void TreeView::GetRootNode(ILtkTreeNode **ppNode)
 {
-    return &m_root;
+    *ppNode = m_root;
+    m_root->AddRef();
 }
 
 void TreeView::SetSelectedNode(TreeNode* node)
@@ -253,8 +244,8 @@ void TreeView::UpdateLinearViewRec(TreeNode* node, int depth)
 void TreeView::UpdateLinearView()
 {
     m_vecLinear.clear();
-    for (UINT i = 0; i < m_root.GetChildCount(); i++) {
-        UpdateLinearViewRec(m_root.GetNthChild(i), 0);
+    for (UINT i = 0; i < m_root->GetChildCount(); i++) {
+        UpdateLinearViewRec(m_root->GetNthChild(i), 0);
     }
 }
 
