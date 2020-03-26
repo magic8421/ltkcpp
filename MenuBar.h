@@ -98,7 +98,7 @@ private:
 
 	int m_hoverIdx = -1;
 	int m_trackingIdx = -1;
-	bool m_bTrackingPopup = false; // TODO բ??ͭ_trackingIdx?ϲ?°??
+	bool m_bTrackingPopup = false;
 	bool m_bHiding = false;
 
 	enum class State {sHide, sSlideIn, sShow};

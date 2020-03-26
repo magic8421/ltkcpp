@@ -129,9 +129,6 @@
     <ClCompile Include="Delegate\ThreadWin.cpp">
       <Filter>DelegateLib\Source</Filter>
     </ClCompile>
-    <ClCompile Include="TimerWindow.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -294,9 +291,6 @@
       <Filter>DelegateLib\Header</Filter>
     </ClInclude>
     <ClInclude Include="Main.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="TimerWindow.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="LtkInterface.h">

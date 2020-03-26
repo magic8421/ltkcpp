@@ -175,7 +175,7 @@ void Window::RegisterWndClass()
 void Window::HandleMouseMessage(UINT message, WPARAM wparam, LPARAM lparam)
 {
     //LTK_LOG("Mouse Message: %d %08x %d %d", message, wparam, (short)LOWORD(lparam), (short)HIWORD(lparam));
-    MouseEvent ev = {0};
+    MouseEvent ev;
 	ev.id = TranslateMessageCode(message);
 	ev.flag = LOWORD(wparam);
 
@@ -255,7 +255,7 @@ void Window::HandleMouseLeave()
     for (auto iter = m_setTrackMouseLeave.begin(); iter != m_setTrackMouseLeave.end(); ++iter)
     {
         Widget *sp = *iter;
-        MouseEvent e2 = {0};
+        MouseEvent e2;
         e2.id = eMouseLeave;
         e2.delta = 0;
         e2.flag = 0;
