@@ -39,8 +39,10 @@ PopupMenu::PopupMenu() :
 PopupMenu::~PopupMenu()
 {
 	for (auto item : m_vecItems) {
-		delete item->sub_menu;
-		delete item;
+		if (item) {
+			delete item->sub_menu;
+			delete item;
+		}
 	}
 }
 

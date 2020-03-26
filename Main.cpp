@@ -31,17 +31,17 @@ static int node_count = 0;
 
 static void RecBuildNodes(TreeNode *parent, int depth)
 {
-	if (depth > 4) {
+	if (depth > 5) {
 		return;
 	}
 	int num = rand() % 13 + 3;
 	for (int i = 0; i < num; i++) {
 		TreeNode *node = new TreeNode;
 		auto text = WStringFormat(L"TreeNode: %d", node_count);
-		node->SetText(text);
+		node->SetText(text.c_str());
 		parent->AddChild(node);
 		node_count++;
-		if (rand() % 100 < 35) {
+		if (rand() % 100 < 99) {
 			RecBuildNodes(node, depth + 1);
 		}
 	}
@@ -99,11 +99,11 @@ void DemoWindow::BuildDemoWindow()
 	for (UINT i = 0; i < num; i++) {
 		listview1->AddRow();
 		auto text = WStringFormat(L"item:%d", i);
-		listview1->SetCellText(i, 0, text);
+		listview1->SetCellText(i, 0, text.c_str());
 		auto text2 = WStringFormat(L"subitem1:%d", i);
-		listview1->SetCellText(i, 1, text2);
+		listview1->SetCellText(i, 1, text2.c_str());
 		auto text3 = WStringFormat(L"subitem2:%d", i);
-		listview1->SetCellText(i, 2, text3);
+		listview1->SetCellText(i, 2, text3.c_str());
 	}
 
 	TextEdit *edit1 = new TextEdit;
@@ -183,6 +183,7 @@ void DemoWindow::BuildDemoWindow()
 	popup->SetWidth(120.f);
 	popup->AddItem(L"撤销", "");
 	popup->AddItem(L"重做", "");
+	popup->AddSeparator();
 	popup->AddItem(L"复制", "");
 	popup->AddItem(L"剪切", "");
 	popup->AddItem(L"粘贴", "");
