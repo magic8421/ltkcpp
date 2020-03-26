@@ -130,6 +130,21 @@ bool HeaderCtrl::OnLBtnUp(MouseEvent *ev)
         m_resizingCol = -1;
     }
     if (m_reorderCol >= 0) {
+        auto x = ev->x;
+        //x -= m_dragPoint.X;
+        x += m_hscroll;
+        int i = 0;
+        for (; i < (int)m_vecColumns.size() && x > 0.f; i ++) {
+            x -= m_vecColumns[i].width;
+        }
+        i --;
+        if (i >= 0 && i < m_vecColumns.size() - 1) { // 最后有个假按钮
+            LTK_LOG("reorder: %d", i);
+            auto tmp = m_vecColumns[m_reorderCol];
+            m_vecColumns[m_reorderCol] = m_vecColumns[i];
+            m_vecColumns[i] = tmp;
+        }
+        this->DoLayout();
         m_reorderCol = -1;
     }
     this->ReleaseCapture();
