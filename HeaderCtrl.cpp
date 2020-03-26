@@ -41,6 +41,14 @@ void HeaderCtrl::GetColumnWidth(std::vector<float> &vecColumns)
     }
 }
 
+void HeaderCtrl::GetColumnOrder(std::vector<int>& vecOrder)
+{
+    vecOrder.clear();
+    for (const auto& col : m_vecColumns) {
+        vecOrder.push_back(col.order);
+    }
+}
+
 void HeaderCtrl::AddColumn(LPCWSTR name, float size)
 {
     auto btn = new HeaderButton(this);
@@ -50,6 +58,7 @@ void HeaderCtrl::AddColumn(LPCWSTR name, float size)
     data.name = name;
     data.width = size;
     data.button = btn;
+    data.order = m_vecColumns.size();
     m_vecColumns.insert(m_vecColumns.end() - 1, data);
     Widget::AddChild(btn);
 }
@@ -138,11 +147,14 @@ bool HeaderCtrl::OnLBtnUp(MouseEvent *ev)
             x -= m_vecColumns[i].width;
         }
         i --;
-        if (i >= 0 && i < m_vecColumns.size() - 1) { // 最后有个假按钮
+        if (i >= 0 && i < m_vecColumns.size() - 1) { // the last button is a placeholder.
             LTK_LOG("reorder: %d", i);
             auto tmp = m_vecColumns[m_reorderCol];
             m_vecColumns[m_reorderCol] = m_vecColumns[i];
             m_vecColumns[i] = tmp;
+            std::vector<int> vecOrder;
+            this->GetColumnOrder(vecOrder);
+            this->ColumnOrderChanged(vecOrder);
         }
         this->DoLayout();
         m_reorderCol = -1;

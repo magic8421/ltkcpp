@@ -27,6 +27,8 @@ public:
     virtual ~HeaderCtrl();
 
     void GetColumnWidth(std::vector<float> &vecColumns);
+    void GetColumnOrder(std::vector<int> &vecOrder);
+
     void AddColumn(LPCWSTR name, float size);
     void SetHScroll(float pos);
     void DoLayout();
@@ -37,6 +39,7 @@ public:
 
 	MulticastDelegate0 ResizingDelegate;
 	MulticastDelegate0 ResizeEndDelegate;
+    MulticastDelegate1<const std::vector<int> &> ColumnOrderChanged;
 
     virtual bool OnSize(SizeEvent *ev) override;
     virtual bool OnMouseMove(MouseEvent *ev) override;

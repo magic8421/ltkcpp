@@ -44,6 +44,7 @@ ListView::ListView() :
 	this->AddChild(m_header);
 	m_header->ResizingDelegate += MakeDelegate(this, &ListView::UpdateColumnWidth);
 	m_header->ResizeEndDelegate += MakeDelegate(this, &ListView::HandleResizeEnd);
+    m_header->ColumnOrderChanged += MakeDelegate(this, &ListView::HandleColumnOrderChanged);
 }
 
 ListView::~ListView()
@@ -249,6 +250,12 @@ void ListView::HandleHScrollBar(float pos)
     if (m_header) {
         m_header->SetHScroll(m_hscroll);
     }
+    this->Invalidate();
+}
+
+void ListView::HandleColumnOrderChanged(const std::vector<int>& vecOrder)
+{
+    m_vecOrder = vecOrder;
     this->Invalidate();
 }
 

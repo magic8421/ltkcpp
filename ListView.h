@@ -55,6 +55,7 @@ public:
 
 	void HandleVScrollBar(float pos);
 	void HandleHScrollBar(float pos);
+	void HandleColumnOrderChanged(const std::vector<int> &vecOrder);
 
 	MulticastDelegate2<int, int> SelectChangeDelegate;
 
@@ -76,6 +77,7 @@ private:
     int m_hoverItem = -1;
     int m_selectedRow = -1;
     std::vector<float> m_vecColumns;
+	std::vector<int> m_vecOrder;
     float m_hscroll = 0.0f;
 
     const float ItemHeight = 25.0f;
