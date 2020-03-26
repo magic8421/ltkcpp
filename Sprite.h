@@ -24,11 +24,16 @@ public:
 
     RectF GetRect();
 	RectF GetClientRect();
-	void SetRect( RectF rect );
 	RectF GetAbsRect();
-
+    float GetX();
+    float GetY();
     float GetWidth();
     float GetHeight();
+
+    void SetRect(RectF rect);
+    void SetRect(float x, float y, float width, float height);
+    void SetPosition(float x, float y);
+    void SetSize(float width, float height);
 
 	void Invalidate();
 

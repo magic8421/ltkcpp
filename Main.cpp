@@ -41,7 +41,7 @@ static void RecBuildNodes(TreeNode *parent, int depth)
 		node->SetText(text.c_str());
 		parent->AddChild(node);
 		node_count++;
-		if (rand() % 100 < 99) {
+		if (rand() % 100 < 35) {
 			RecBuildNodes(node, depth + 1);
 		}
 	}

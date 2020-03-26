@@ -62,6 +62,16 @@ RectF Widget::GetAbsRect()
 	return rcSelf;
 }
 
+float Widget::GetX()
+{
+    return m_rect.X;
+}
+
+float Widget::GetY()
+{
+    return m_rect.Y;
+}
+
 float Widget::GetWidth()
 {
     return m_rect.Width;
@@ -72,7 +82,22 @@ float Widget::GetHeight()
     return m_rect.Height;
 }
 
-void Widget::SetRect( RectF rect )
+void Widget::SetRect(float x, float y, float width, float height)
+{
+    this->SetRect(RectF(x, y, width, height));
+}
+
+void Widget::SetPosition(float x, float y)
+{
+    this->SetRect(RectF(x, y, this->GetWidth(), this->GetHeight()));
+}
+
+void Widget::SetSize(float width, float height)
+{
+    this->SetRect(RectF(this->GetX(), this->GetY(), width, height));
+}
+
+void Widget::SetRect(RectF rect)
 {
 	// 检查下宽高是否小于0 是则设为0 然后0宽或0高要在OnDraw这些里面特殊处理一下
 	rect.Width = max(0.0f, rect.Width);
@@ -243,7 +268,9 @@ bool Widget::IsCapturing()
 
 void Widget::BringToFront()
 {
-	LTK_ASSERT(false);
+    auto parent = m_parent;
+	m_parent->RemoveChild(this);
+    parent->AddChild(this);
 }
 
 void Widget::SetVisible( bool v )

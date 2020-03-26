@@ -236,6 +236,7 @@
     <ClInclude Include="Main.h" />
     <ClInclude Include="MenuBar.h" />
     <ClInclude Include="Object.h" />
+    <ClInclude Include="RTTI.h" />
     <ClInclude Include="ScrollBar.h" />
     <ClInclude Include="SetupStyles.h" />
     <ClInclude Include="ShadowFrame.h" />
