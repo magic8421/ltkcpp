@@ -144,18 +144,21 @@ bool HeaderCtrl::OnLBtnUp(MouseEvent *ev)
     }
     if (m_reorderCol >= 0) {
         auto x = ev->x;
-        //x -= m_dragPoint.X;
+        //x -= m_dragPoint.X; // drop at mouse cursor is better than drop at left edge
         x += m_hscroll;
         int i = 0;
         for (; i < (int)m_vecColumns.size() && x > 0.f; i ++) {
             x -= m_vecColumns[i].width;
         }
-        i --;
-        if (i >= 0 && i < m_vecColumns.size() - 1) { // the last button is a placeholder.
+        i --; // the target
+        if (i >= 0 && i < (int)m_vecColumns.size() - 1) { // the last button is a placeholder.
             LTK_LOG("reorder: %d", i);
             auto tmp = m_vecColumns[m_reorderCol];
-            m_vecColumns[m_reorderCol] = m_vecColumns[i];
-            m_vecColumns[i] = tmp;
+            for (int j = m_reorderCol + 1; j < (int)m_vecColumns.size(); j++) {
+                m_vecColumns[j - 1] = m_vecColumns[j];
+            }
+            m_vecColumns.pop_back();
+            m_vecColumns.insert(m_vecColumns.begin() + i, tmp);
             std::vector<int> vecOrder;
             this->GetColumnOrder(vecOrder);
             this->ColumnOrderChanged(vecOrder);
