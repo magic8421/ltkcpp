@@ -87,9 +87,9 @@ void DemoWindow::BuildDemoWindow()
 
 	ListView *listview1 = new ListView();
 	HeaderCtrl *header = listview1->GetHeaderCtrl();
-	header->AddColumn(L"项目名", 100);
-	header->AddColumn(L"工程名", 200);
-	header->AddColumn(L"负责人", 200);
+	header->AddColumn(L"Column0", 100);
+	header->AddColumn(L"Column1", 200);
+	header->AddColumn(L"Column2", 200);
 	listview1->UpdateColumnWidth();
 	vboxRightPanel->AddLayoutItem(listview1, 0.0f, 1.0f);
 	listview1->SelectChangeDelegate += MakeDelegate(this, &DemoWindow::OnListViewSelectChange);
@@ -98,11 +98,11 @@ void DemoWindow::BuildDemoWindow()
 	UINT num = rand() % 200;
 	for (UINT i = 0; i < num; i++) {
 		listview1->AddRow();
-		auto text = WStringFormat(L"item:%d", i);
+		auto text = WStringFormat(L"col:0 row:%d", i);
 		listview1->SetCellText(i, 0, text.c_str());
-		auto text2 = WStringFormat(L"subitem1:%d", i);
+		auto text2 = WStringFormat(L"col:1 row:%d", i);
 		listview1->SetCellText(i, 1, text2.c_str());
-		auto text3 = WStringFormat(L"subitem2:%d", i);
+		auto text3 = WStringFormat(L"col:2 row:%d", i);
 		listview1->SetCellText(i, 2, text3.c_str());
 	}
 

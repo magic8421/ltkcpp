@@ -44,8 +44,8 @@ void HeaderCtrl::GetColumnWidth(std::vector<float> &vecColumns)
 void HeaderCtrl::GetColumnOrder(std::vector<int>& vecOrder)
 {
     vecOrder.clear();
-    for (const auto& col : m_vecColumns) {
-        vecOrder.push_back(col.order);
+    for (size_t i = 0; i < m_vecColumns.size() - 1; i++) {
+        vecOrder.push_back(m_vecColumns[i].order);
     }
 }
 
@@ -58,9 +58,13 @@ void HeaderCtrl::AddColumn(LPCWSTR name, float size)
     data.name = name;
     data.width = size;
     data.button = btn;
-    data.order = m_vecColumns.size();
+    data.order = m_vecColumns.size() - 1;
     m_vecColumns.insert(m_vecColumns.end() - 1, data);
     Widget::AddChild(btn);
+
+    std::vector<int> vecOrder;
+    this->GetColumnOrder(vecOrder);
+    this->ColumnOrderChanged(vecOrder);
 }
 
 void HeaderCtrl::SetHScroll(float pos)

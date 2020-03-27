@@ -114,8 +114,8 @@ bool ListView::OnPaint(PaintEvent *ev)
             target->FillRectangle(rcItem, brush);
         }
         auto &line = m_vecData.at(i);
-        auto text = line.cells.at(0).data();
-        auto len = line.cells.at(0).length();
+        //auto text = line.cells.at(0).data();
+        //auto len = line.cells.at(0).length();
         rcItem.left = 0.0f;
         if (m_selectedRow == i) {
 			brush->SetColor(m_selectedTextColor);
@@ -125,19 +125,21 @@ bool ListView::OnPaint(PaintEvent *ev)
         if (m_vecColumns.size() > 0) {
             rcItem.right = m_vecColumns[0];
         }
-        target->DrawText(text, len, m_textFormat, rcItem, brush);
+        //target->DrawText(text, len, m_textFormat, rcItem, brush);
 
         if (m_vecColumns.size() > 0) {
             float x = 0.0f;
-            for (size_t j = 1; j < m_vecColumns.size(); j++) {
-                x += m_vecColumns.at(j - 1);
-                if (j < line.cells.size() && j < m_vecColumns.size()) {
-                    text = line.cells.at(j).data();
-                    len = line.cells.at(j).length();
+            for (size_t j = 0; j < m_vecOrder.size(); j++) {
+                auto idx = m_vecOrder[j];
+                auto width = m_vecColumns[j];
+                if (idx < line.cells.size()) {
+                    auto text = line.cells[idx].data();
+                    auto len = line.cells[idx].length();
                     rcItem.left = x;
-                    rcItem.right = x + m_vecColumns.at(j);
+                    rcItem.right = x + width;
                     target->DrawText(text, len, m_textFormat, rcItem, brush);
                 }
+                x += width;
             }
         }
         rcItem.top += ItemHeight;
@@ -256,6 +258,7 @@ void ListView::HandleHScrollBar(float pos)
 void ListView::HandleColumnOrderChanged(const std::vector<int>& vecOrder)
 {
     m_vecOrder = vecOrder;
+    this->UpdateColumnWidth();
     this->Invalidate();
 }
 
