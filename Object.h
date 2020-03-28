@@ -26,6 +26,9 @@ public:
 	Object *GetNthChild(size_t i) { return m_children[i]; }
 	size_t GetChildCount() { return m_children.size(); }
 	Object *GetParent() { return m_parent; }
+	void SetParent(Object *);
+
+	virtual void SetAttribute(LPCSTR name, LPCSTR value) {}
 
 protected:
 	bool m_bWidget = false;

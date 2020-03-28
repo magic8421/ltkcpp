@@ -14,6 +14,7 @@ namespace ltk {
 	LTK_CPP_API ID2D1Factory *GetD2DFactory();
 	LTK_CPP_API IWICImagingFactory *GetWICFactory();
 	LTK_CPP_API IDWriteFactory *GetDWriteFactory();
+    LTK_CPP_API LPCSTR InternString(LPCSTR psz);
 	LTK_CPP_API void TranslateTransform(ID2D1RenderTarget *target, float dx, float dy);
 	LTK_CPP_API D2D1_RECT_F D2D1RectF(const RectF &rc);
 	LTK_CPP_API HRESULT LoadBitmapFromFile(ID2D1RenderTarget * target, LPCWSTR path, ID2D1Bitmap ** bitmap);

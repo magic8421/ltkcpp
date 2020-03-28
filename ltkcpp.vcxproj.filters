@@ -129,6 +129,9 @@
     <ClCompile Include="Delegate\ThreadWin.cpp">
       <Filter>DelegateLib\Source</Filter>
     </ClCompile>
+    <ClCompile Include="Builder.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -300,6 +303,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="RTTI.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Builder.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

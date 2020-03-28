@@ -15,6 +15,7 @@ static __declspec(thread) Object *sDelegateInvoker = nullptr;
 Object::~Object() 
 {
 	for (size_t i = 0; i < m_children.size(); i++) {
+		// TODO if we delete a object which is not the root object, something goes wrong.
 		delete m_children.IndexNoCheck(i);
 	}
 }
@@ -64,6 +65,11 @@ void Object::RemoveChild(Object* o)
 			i--;
 		}
 	}
+}
+
+void Object::SetParent(Object* p)
+{
+	p->AddChild(this);
 }
 
 } // namespace ltk

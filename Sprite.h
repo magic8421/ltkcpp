@@ -43,16 +43,6 @@ public:
 	void SetVisible( bool );
 	bool GetVisible();
 
-    void HandlePaint( ID2D1RenderTarget *target );
-
-	void HandleKeyEvent( UINT message, DWORD keyCode, DWORD flag );
-
-	void HandleImeInput( LPCTSTR text );
-
-    void HandleRecreateResouce( ID2D1RenderTarget *target );
-
-    void HandleThemeChange();
-
 	void SetCapture();
 	void ReleaseCapture();
     bool IsCapturing();
@@ -63,8 +53,6 @@ public:
 	bool GetClipChildren();
 
 	void TrackMouseLeave();
-
-	bool DispatchMouseEvent(MouseEvent *ev);
 
     Widget *GetParentWidget();
 	Widget *GetAncestor();
@@ -78,6 +66,13 @@ public:
 
 	Widget *SetFocus();
 	void KillFocus();
+
+    bool DispatchMouseEvent(MouseEvent *ev);
+    void HandlePaint( ID2D1RenderTarget *target );
+    void HandleKeyEvent( UINT message, DWORD keyCode, DWORD flag );
+    void HandleImeInput( LPCTSTR text );
+    void HandleRecreateResouce( ID2D1RenderTarget *target );
+    void HandleThemeChange();
 
     virtual bool OnEvent(Event *ev) override;
 
