@@ -1,6 +1,7 @@
 #pragma once
 #include "RTTI.h"
 #include "Common.h"
+#include "Container.h"
 
 namespace ltk {
 
@@ -11,7 +12,7 @@ public:
 	RTTI_DECLARATIONS(Object, RTTI);
 
 	Object() {}
-	virtual ~Object() {}
+	virtual ~Object();
 
 	static Object *GetDelegateInvoker();
 	static void SetDelegateInvoker(Object *);
@@ -19,14 +20,20 @@ public:
 	void SetName(LPCSTR name);
 	LPCSTR GetName();
 
-	bool IsWidget();
+	bool IsWidget() { return m_bWidget; }
 	void AddChild(Object *);
-	Object *GetNthChild(size_t i);
-	size_t GetChildCount();
+	void RemoveChild(Object *o);
+	Object *GetNthChild(size_t i) { return m_children[i]; }
+	size_t GetChildCount() { return m_children.size(); }
+	Object *GetParent() { return m_parent; }
+
+protected:
+	bool m_bWidget = false;
 
 private:
 	LPCSTR m_name = nullptr;
-	bool m_bWidget = false;
+	Object *m_parent = nullptr;
+	ArrayList<Object *> m_children;
 	DISALLOW_COPY_AND_ASSIGN(Object);
 };
 

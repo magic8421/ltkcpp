@@ -43,9 +43,6 @@ public:
 	void SetVisible( bool );
 	bool GetVisible();
 
-	void AddChild( Widget *sp );
-	void RemoveChild(Widget* sp);
-
     void HandlePaint( ID2D1RenderTarget *target );
 
 	void HandleKeyEvent( UINT message, DWORD keyCode, DWORD flag );
@@ -69,8 +66,8 @@ public:
 
 	bool DispatchMouseEvent(MouseEvent *ev);
 
+    Widget *GetParentWidget();
 	Widget *GetAncestor();
-	Widget *GetParent();
 
     void ShowCaret();
     void SetCaretPos(RectF rc);
@@ -112,9 +109,6 @@ private:
 
     RectF m_rect;
     Window *m_window = nullptr;
-
-    std::vector<Widget *> m_children;
-    Widget *m_parent = nullptr;
 
 	DISALLOW_COPY_AND_ASSIGN(Widget);
 };

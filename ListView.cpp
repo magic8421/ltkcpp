@@ -132,7 +132,7 @@ bool ListView::OnPaint(PaintEvent *ev)
             for (size_t j = 0; j < m_vecOrder.size(); j++) {
                 auto idx = m_vecOrder[j];
                 auto width = m_vecColumns[j];
-                if (idx < line.cells.size()) {
+                if ((size_t)idx < line.cells.size()) {
                     auto text = line.cells[idx].data();
                     auto len = line.cells[idx].length();
                     rcItem.left = x;

@@ -55,7 +55,7 @@ public:
 	MenuItem *GetMenuItemAt(UINT idx);
 
 	MenuItem *FindChildItem(LPCSTR name);
-	MenuItem *FindChildItemInterned(LPCSTR name); // nameå¿…é¡»å†…éƒ¨åŒ–
+	MenuItem *FindChildItemInterned(LPCSTR name); // name±ØÐëÄÚ²¿»¯
 
 	float GetHeight();
 	

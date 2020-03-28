@@ -178,7 +178,7 @@ public:
         }
     }
 
-    void pop_bak()
+    void pop_back()
     {
         if (!m_d || m_d->size == 0) {
             __debugbreak();
@@ -187,10 +187,10 @@ public:
         m_d->size--;
     }
 
-    void insert(UINT idx, const T &v)
+    void insert(size_t idx, const T &v)
     {}
 
-    void erase(UINT idx)
+    void erase(size_t idx)
     {}
 
     void clear()
@@ -204,7 +204,7 @@ public:
         }
     }
 
-    UINT size()
+    size_t size()
     {
         if (m_d) {
             return m_d->size;
@@ -214,7 +214,7 @@ public:
         }
     }
 
-    T &operator[](UINT i)
+    T &operator[](size_t i)
     {
         if (i >= m_d->size) {
             __debugbreak();
@@ -222,17 +222,22 @@ public:
         return m_d->data[i];
     }
 
+    T& IndexNoCheck(size_t i)
+    {
+        return m_d->data[i];
+    }
+
 private:
     struct Data {
-        UINT size;
-        UINT capacity;
+        size_t size;
+        size_t capacity;
         T data[1];
     };
 
     void EnsureSpace()
     {
         if (m_d->size == m_d->capacity) {
-            UINT capacity = m_d->size + 1;
+            size_t capacity = m_d->size + 1;
             capacity += capacity / 2;
             Data *new_d = (Data *)malloc(sizeof(Data) + sizeof(T) * (capacity - 1));
             for (size_t i = 0; i < m_d->size; i++) {
