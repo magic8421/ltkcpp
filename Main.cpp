@@ -51,18 +51,18 @@ static void RecBuildNodes(TreeNode *parent, int depth)
 DemoWindow::DemoWindow()
 {
 	m_timer = new Timer;
+	m_timer->SetParent(this);
 	m_timer->SetInterval(1000);
 	m_timer->TimeoutDelegate += MakeDelegate(this, &DemoWindow::OnTimer);
 
 	m_onceTimer = new Timer;
+	m_onceTimer->SetParent(this);
 	m_onceTimer->SetInterval(1000);
 	m_onceTimer->TimeoutDelegate += MakeDelegate(this, &DemoWindow::OnOnceTimer);
 }
 
 DemoWindow::~DemoWindow()
 {
-	delete m_timer;
-	delete m_onceTimer;
 }
 
 void DemoWindow::BuildDemoWindow()
@@ -90,6 +90,9 @@ void DemoWindow::BuildDemoWindow()
 	header->AddColumn(L"Column0", 100);
 	header->AddColumn(L"Column1", 200);
 	header->AddColumn(L"Column2", 200);
+	header->AddColumn(L"Column3", 200);
+	header->AddColumn(L"Column4", 200);
+	header->AddColumn(L"Column5", 200);
 	listview1->UpdateColumnWidth();
 	vboxRightPanel->AddLayoutItem(listview1, 0.0f, 1.0f);
 	listview1->SelectChangeDelegate += MakeDelegate(this, &DemoWindow::OnListViewSelectChange);
@@ -100,10 +103,16 @@ void DemoWindow::BuildDemoWindow()
 		listview1->AddRow();
 		auto text = WStringFormat(L"col:0 row:%d", i);
 		listview1->SetCellText(i, 0, text.c_str());
-		auto text2 = WStringFormat(L"col:1 row:%d", i);
-		listview1->SetCellText(i, 1, text2.c_str());
-		auto text3 = WStringFormat(L"col:2 row:%d", i);
-		listview1->SetCellText(i, 2, text3.c_str());
+		text = WStringFormat(L"col:1 row:%d", i);
+		listview1->SetCellText(i, 1, text.c_str());
+		text = WStringFormat(L"col:2 row:%d", i);
+		listview1->SetCellText(i, 2, text.c_str());
+		text = WStringFormat(L"col:3 row:%d", i);
+		listview1->SetCellText(i, 3, text.c_str());
+		text = WStringFormat(L"col:4 row:%d", i);
+		listview1->SetCellText(i, 4, text.c_str());
+		text = WStringFormat(L"col:5 row:%d", i);
+		listview1->SetCellText(i, 5, text.c_str());
 	}
 
 	TextEdit *edit1 = new TextEdit;
@@ -304,6 +313,11 @@ void DemoWindow::OnClose(BOOL* proceed)
 void DemoWindow::OnListViewSelectChange(int row, int oldRow)
 {
 	LTK_LOG("OnListViewSelectChange: %d %d", row, oldRow);
+}
+
+void DemoWindow::InternStringTest()
+{
+	
 }
 
 static void SetupAppStyle()

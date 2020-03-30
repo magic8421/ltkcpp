@@ -252,27 +252,27 @@ void TreeView::SetDirty()
 
 void TreeView::SetTextColor(LPCSTR style)
 {
-    this->m_szTextColor = StyleManager::Instance()->InternString(style);
+    this->m_szTextColor = ltk::InternString(style);
 }
 
 void TreeView::SetHoverColor(LPCSTR style)
 {
-    this->m_szHoverColor = StyleManager::Instance()->InternString(style);
+    this->m_szHoverColor = ltk::InternString(style);
 }
 
 void TreeView::SetSelectedColor(LPCSTR style)
 {
-    this->m_szSelectedColor = StyleManager::Instance()->InternString(style);
+    this->m_szSelectedColor = ltk::InternString(style);
 }
 
 void TreeView::SetSelectedTextColor(LPCSTR style)
 {
-    this->m_szSelectedTextColor = StyleManager::Instance()->InternString(style);
+    this->m_szSelectedTextColor = ltk::InternString(style);
 }
 
 void TreeView::SetTextFormat(LPCSTR style)
 {
-    this->m_szTextFormat = StyleManager::Instance()->InternString(style);
+    this->m_szTextFormat = ltk::InternString(style);
 }
 
 bool TreeView::OnPaint(PaintEvent *ev)

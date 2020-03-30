@@ -32,6 +32,7 @@ public:
 
 protected:
 	bool m_bWidget = false;
+	bool m_bDeleting = false;
 
 private:
 	LPCSTR m_name = nullptr;

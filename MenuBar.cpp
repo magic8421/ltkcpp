@@ -71,7 +71,7 @@ MenuItem * PopupMenu::GetMenuItemAt(UINT idx)
 
 MenuItem* PopupMenu::FindChildItem(LPCSTR name)
 {
-	auto i_name = StyleManager::Instance()->InternString(name);
+	auto i_name = ltk::InternString(name);
 	return FindChildItemInterned(i_name);
 }
 
@@ -202,22 +202,22 @@ void PopupMenu::OnParentChanged(Widget* old, Widget* new_)
 
 void PopupMenu::SetTextColor(LPCSTR style)
 {
-	this->m_szTextColor = StyleManager::Instance()->InternString(style);
+	this->m_szTextColor = ltk::InternString(style);
 }
 
 void PopupMenu::SetHoverColor(LPCSTR style)
 {
-	this->m_szHoverColor = StyleManager::Instance()->InternString(style);
+	this->m_szHoverColor = ltk::InternString(style);
 }
 
 void PopupMenu::SetTextFormat(LPCSTR style)
 {
-	this->m_szTextFormat = StyleManager::Instance()->InternString(style);
+	this->m_szTextFormat = ltk::InternString(style);
 }
 
 void PopupMenu::SetBackground(LPCSTR style)
 {
-	this->m_szBackground = StyleManager::Instance()->InternString(style);
+	this->m_szBackground = ltk::InternString(style);
 }
 
 HRESULT PopupMenu::GetTextExtent(LPCWSTR str, IDWriteTextFormat *format, SizeF &size)

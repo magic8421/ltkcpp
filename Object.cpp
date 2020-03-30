@@ -14,9 +14,13 @@ static __declspec(thread) Object *sDelegateInvoker = nullptr;
 
 Object::~Object() 
 {
+	m_bDeleting = true;
 	for (size_t i = 0; i < m_children.size(); i++) {
-		// TODO if we delete a object which is not the root object, something goes wrong.
 		delete m_children.IndexNoCheck(i);
+	}
+	// if we delete an object which is not the root object
+	if (m_parent && !m_parent->m_bDeleting) {
+		m_parent->RemoveChild(this);
 	}
 }
 
@@ -32,7 +36,7 @@ void Object::SetDelegateInvoker(Object *sender)
 
 void Object::SetName(LPCSTR name)
 {
-	m_name = StyleManager::Instance()->InternString(name);
+	m_name = ltk::InternString(name);
 }
 
 LPCSTR Object::GetName()
@@ -62,7 +66,7 @@ void Object::RemoveChild(Object* o)
 				m_children[j - 1] = m_children[j];
 			}
 			m_children.pop_back();
-			i--;
+			return;
 		}
 	}
 }

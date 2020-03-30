@@ -14,6 +14,12 @@ namespace ltk {
 
 class Window;
 
+struct LayoutParam
+{
+    SizeF preferred_ize;
+    PointF grow_factor;
+};
+
 class LTK_CPP_API Widget : public Object
 {
 public:

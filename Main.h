@@ -32,6 +32,8 @@ public:
 
 	void OnListViewSelectChange(int row, int oldRow);
 
+	void InternStringTest();
+
 private:
 	ltk::Timer *m_timer = nullptr;
 	ltk::Timer *m_onceTimer = nullptr;
