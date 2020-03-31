@@ -117,10 +117,10 @@ private:
 };
 
 std::wstring Utf8ToUtf16(LPCSTR strA, int len = -1);
-CStringA Utf16ToUtf8(LPCTSTR strW, int len);
-CStringA Utf16ToGbk(LPCTSTR strW, int len);
+std::string Utf16ToUtf8(LPCTSTR strW, int len);
+std::string Utf16ToGbk(LPCTSTR strW, int len);
 
-ImmutableWString WStringFormat(LPCWSTR format, ...);
+std::wstring WStringFormat(LPCWSTR format, ...);
 
 
 #define LOGW(msg) do\

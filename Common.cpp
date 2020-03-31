@@ -18,12 +18,6 @@ std::wstring Utf8ToUtf16(LPCSTR strA, int len)
 	if(len < 0) {
 		len = (int)strlen(strA);
 	}
-	//CStringW strW;
-	//int lenW = UTF16Length(strA, len);
-	//wchar_t *pbuff = strW.GetBuffer(lenW + 1);
-	//int ret = UTF16FromUTF8(strA, len, pbuff, lenW);
-	//strW.ReleaseBuffer(ret);
-	//return strW;
     std::wstring strW;
     int lenW = UTF16Length(strA, len);
     strW.resize(lenW);
@@ -31,45 +25,43 @@ std::wstring Utf8ToUtf16(LPCSTR strA, int len)
     return std::move(strW);
 }
 
-CStringA Utf16ToUtf8(LPCTSTR strW, int len)
+std::string Utf16ToUtf8(LPCTSTR strW, int len)
 {
     if (len < 0) {
         len = (int)wcslen(strW);
     }
-	CStringA strA;
+    std::string strA;
 	int lenA = UTF8Length(strW, len);
-	char *pbuff = strA.GetBuffer(lenA + 1);
-	UTF8FromUTF16(strW, len, pbuff, lenA);
-	strA.ReleaseBuffer(lenA);
-	return strA;
+    strA.resize(lenA);
+
+	UTF8FromUTF16(strW, len, &strA[0], lenA);
+
+	return std::move(strA);
 }
 
-CStringA Utf16ToGbk(LPCTSTR strW, int len)
+std::string Utf16ToGbk(LPCTSTR strW, int len)
 {
     if (len < 0) {
         len = (int)wcslen(strW);
     }
     int lenA = ::WideCharToMultiByte(936, 0, strW, len, NULL, 0, NULL, NULL);
-    CStringA strA;
-    char *pbuff = strA.GetBuffer(lenA);
-    ::WideCharToMultiByte(936, 0, strW, len, pbuff, lenA, NULL, NULL);
-    strA.ReleaseBuffer(lenA);
-    return strA;
+    std::string strA;
+    strA.resize(lenA);
+    ::WideCharToMultiByte(936, 0, strW, len, &strA[0], lenA, NULL, NULL);
+    return std::move(strA);
 }
 
-ImmutableWString WStringFormat(LPCWSTR format, ...)
+std::wstring WStringFormat(LPCWSTR format, ...)
 {
-#pragma warning(push)
-#pragma warning(disable:4996)
-	ImmutableWString str;
+	std::wstring str;
     va_list arg;
     va_start(arg, format);
     auto len = _vscwprintf(format, arg);
-    auto buf = str.Allocate(len);
-	vswprintf(buf, format, arg);
+    str.resize(len);
+    //auto buf = str.Allocate(len);
+	vswprintf(&str[0], len + 1,format, arg);
     va_end(arg);
     return std::move(str);
-#pragma warning(pop)
 }
 
 ///////////////////////////////////////////////////////////////////////////////

@@ -116,17 +116,17 @@ SizeF Button::GetPreferredSize()
 
 void Button::SetBackground(LPCSTR style)
 {
-	this->m_szBackground = StyleManager::Instance()->InternString(style);
+	this->m_szBackground = ltk::InternString(style);
 }
 
 void Button::SetTextFormat(LPCSTR style)
 {
-	this->m_szTextFormat = StyleManager::Instance()->InternString(style);
+	this->m_szTextFormat = ltk::InternString(style);
 }
 
 void Button::SetTextColor(LPCSTR style)
 {
-	this->m_szTextColor = StyleManager::Instance()->InternString(style);
+	this->m_szTextColor = ltk::InternString(style);
 }
 
 bool Button::OnSize(SizeEvent *ev)

@@ -44,8 +44,12 @@ public:
     STDMETHOD_(void, SetRect)(LtkRect* rect) override;
     STDMETHOD_(void, SetRect)(float x, float y, float width, float height) override;
 	void SetRect( RectF rect );
+    void SetPosition(float x, float y);
+
 	RectF GetAbsRect();
 
+    float GetX();
+    float GetY();
     float GetWidth();
     float GetHeight();
 

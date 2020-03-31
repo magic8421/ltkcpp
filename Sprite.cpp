@@ -67,6 +67,16 @@ RectF Widget::GetAbsRect()
 	return rcSelf;
 }
 
+float Widget::GetX()
+{
+    return m_rect.X;
+}
+
+float Widget::GetY()
+{
+    return m_rect.Y;
+}
+
 float Widget::GetWidth()
 {
     return m_rect.Width;
@@ -85,6 +95,11 @@ void Widget::SetRect(LtkRect* rect)
 void Widget::SetRect(float x, float y, float width, float height)
 {
     this->SetRect(RectF(x, y, width, height));
+}
+
+void Widget::SetPosition(float x, float y)
+{
+    this->SetRect(RectF(x, y, this->GetWidth(), this->GetHeight()));
 }
 
 void Widget::SetRect( RectF rect )
@@ -266,7 +281,13 @@ bool Widget::IsCapturing()
 
 void Widget::BringToFront()
 {
-	LTK_ASSERT(false);
+    auto parent = m_parent;
+    if (parent) {
+        this->AddRef();
+        parent->RemoveChild(this);
+        parent->AddChild(this);
+        this->Release();
+    }
 }
 
 void Widget::SetVisible( BOOL v )

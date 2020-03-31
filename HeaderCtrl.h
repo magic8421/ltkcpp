@@ -27,15 +27,19 @@ public:
     virtual ~HeaderCtrl();
 
     void GetColumnWidth(std::vector<float> &vecColumns);
+    void GetColumnOrder(std::vector<int> &vecOrder);
+
     void AddColumn(LPCWSTR name, float size);
     void SetHScroll(float pos);
     void DoLayout();
 	float GetTotalWidth(); // including the tail dummy button
 
-    void OnColumnResizeBegin(HeaderButton *btn, PointF pt);
+    void OnColumnResizeBegin(HeaderButton *btn, const PointF& pt);
+    void OnColumnReorderBegin(HeaderButton *btn, const PointF& pt);
 
 	MulticastDelegate0 ResizingDelegate;
 	MulticastDelegate0 ResizeEndDelegate;
+    MulticastDelegate1<const std::vector<int> &> ColumnOrderChanged;
 
     virtual bool OnSize(SizeEvent *ev) override;
     virtual bool OnMouseMove(MouseEvent *ev) override;
@@ -46,6 +50,7 @@ private:
     PointF m_dragPoint;
     HeaderButton *m_draggingButton = nullptr;
     int m_resizingCol = -1;
+    int m_reorderCol = -1;
     float m_hscroll = 0.0f;
 	static const float DummyButtonWidth;
 };

@@ -31,6 +31,11 @@ namespace ltk {
     IWICImagingFactory *GetWICFactory() { return g_wic_factory; }
     IDWriteFactory *GetDWriteFactory() { return g_dw_factory; }
 
+    LPCSTR InternString(LPCSTR psz)
+    {
+        return StyleManager::Instance()->InternString(psz);
+    }
+
     // convert DIP to screen
     void DipCoordToScreen(float &x, float &y) 
     {

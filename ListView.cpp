@@ -44,6 +44,7 @@ ListView::ListView() :
 	this->AddChild(m_header);
 	m_header->ResizingDelegate += MakeDelegate(this, &ListView::UpdateColumnWidth);
 	m_header->ResizeEndDelegate += MakeDelegate(this, &ListView::HandleResizeEnd);
+    m_header->ColumnOrderChanged += MakeDelegate(this, &ListView::HandleColumnOrderChanged);
 }
 
 ListView::~ListView()
@@ -123,8 +124,8 @@ bool ListView::OnPaint(PaintEvent *ev)
             target->FillRectangle(rcItem, brush);
         }
         auto &line = m_vecData.at(i);
-        auto text = line.cells.at(0).data();
-        auto len = line.cells.at(0).length();
+        //auto text = line.cells.at(0).data();
+        //auto len = line.cells.at(0).length();
         rcItem.left = 0.0f;
         if (m_selectedRow == i) {
 			brush->SetColor(m_selectedTextColor);
@@ -134,19 +135,21 @@ bool ListView::OnPaint(PaintEvent *ev)
         if (m_vecColumns.size() > 0) {
             rcItem.right = m_vecColumns[0];
         }
-        target->DrawText(text, len, m_textFormat, rcItem, brush);
+        //target->DrawText(text, len, m_textFormat, rcItem, brush);
 
         if (m_vecColumns.size() > 0) {
             float x = 0.0f;
-            for (size_t j = 1; j < m_vecColumns.size(); j++) {
-                x += m_vecColumns.at(j - 1);
-                if (j < line.cells.size() && j < m_vecColumns.size()) {
-                    text = line.cells.at(j).data();
-                    len = line.cells.at(j).length();
+            for (size_t j = 0; j < m_vecOrder.size(); j++) {
+                auto idx = m_vecOrder[j];
+                auto width = m_vecColumns[j];
+                if ((size_t)idx < line.cells.size()) {
+                    auto text = line.cells[idx].data();
+                    auto len = line.cells[idx].length();
                     rcItem.left = x;
-                    rcItem.right = x + m_vecColumns.at(j);
+                    rcItem.right = x + width;
                     target->DrawText(text, len, m_textFormat, rcItem, brush);
                 }
+                x += width;
             }
         }
         rcItem.top += ItemHeight;
@@ -262,6 +265,13 @@ void ListView::HandleHScrollBar(float pos)
     this->Invalidate();
 }
 
+void ListView::HandleColumnOrderChanged(const std::vector<int>& vecOrder)
+{
+    m_vecOrder = vecOrder;
+    this->UpdateColumnWidth();
+    this->Invalidate();
+}
+
 bool ListView::OnSize(SizeEvent *ev)
 {
 	this->HandleResizeEnd();
@@ -345,27 +355,27 @@ void ListView::HandleResizeEnd()
 
 void ListView::SetTextColor(LPCSTR style)
 {
-    this->m_szTextColor = StyleManager::Instance()->InternString(style);
+    this->m_szTextColor = ltk::InternString(style);
 }
 
 void ListView::SetHoverColor(LPCSTR style)
 {
-    this->m_szHoverColor = StyleManager::Instance()->InternString(style);
+    this->m_szHoverColor = ltk::InternString(style);
 }
 
 void ListView::SetSelectedColor(LPCSTR style)
 {
-    this->m_szSelectedColor = StyleManager::Instance()->InternString(style);
+    this->m_szSelectedColor = ltk::InternString(style);
 }
 
 void ListView::SetSelectedTextColor(LPCSTR style)
 {
-    this->m_szSelectedTextColor = StyleManager::Instance()->InternString(style);
+    this->m_szSelectedTextColor = ltk::InternString(style);
 }
 
 void ListView::SetTextFormat(LPCSTR style)
 {
-    this->m_szTextFormat = StyleManager::Instance()->InternString(style);
+    this->m_szTextFormat = ltk::InternString(style);
 }
 
 } // namespace ltk

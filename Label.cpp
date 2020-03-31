@@ -54,12 +54,12 @@ void Label::SetText(LPCWSTR t)
 
 void Label::SetTextFormat(LPCSTR style)
 {
-    this->m_szTextFormat = StyleManager::Instance()->InternString(style);
+    this->m_szTextFormat = ltk::InternString(style);
 }
 
 void Label::SetTextColor(LPCSTR style)
 {
-    this->m_szTextColor = StyleManager::Instance()->InternString(style);
+    this->m_szTextColor = ltk::InternString(style);
 }
 
 void Label::OnThemeChanged()

@@ -71,6 +71,28 @@ MenuItem * PopupMenu::GetMenuItemAt(UINT idx)
 	return m_vecItems[idx];
 }
 
+MenuItem* PopupMenu::FindChildItem(LPCSTR name)
+{
+	auto i_name = ltk::InternString(name);
+	return FindChildItemInterned(i_name);
+}
+
+MenuItem* PopupMenu::FindChildItemInterned(LPCSTR name)
+{
+	for (auto item : m_vecItems) {
+		if (item->GetName() == name) {
+			return item;
+		}
+		if (item->sub_menu) {
+			auto found = item->sub_menu->FindChildItem(name);
+			if (found) {
+				return found;
+			}
+		}
+	}
+	return nullptr;
+}
+
 float PopupMenu::GetHeight()
 {
 	float h = SHADOW_SIZE;
@@ -190,22 +212,22 @@ void PopupMenu::OnParentChanged(Widget* old, Widget* new_)
 
 void PopupMenu::SetTextColor(LPCSTR style)
 {
-	this->m_szTextColor = StyleManager::Instance()->InternString(style);
+	this->m_szTextColor = ltk::InternString(style);
 }
 
 void PopupMenu::SetHoverColor(LPCSTR style)
 {
-	this->m_szHoverColor = StyleManager::Instance()->InternString(style);
+	this->m_szHoverColor = ltk::InternString(style);
 }
 
 void PopupMenu::SetTextFormat(LPCSTR style)
 {
-	this->m_szTextFormat = StyleManager::Instance()->InternString(style);
+	this->m_szTextFormat = ltk::InternString(style);
 }
 
 void PopupMenu::SetBackground(LPCSTR style)
 {
-	this->m_szBackground = StyleManager::Instance()->InternString(style);
+	this->m_szBackground = ltk::InternString(style);
 }
 
 HRESULT PopupMenu::GetTextExtent(LPCWSTR str, IDWriteTextFormat *format, LtkSize *size)

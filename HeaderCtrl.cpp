@@ -42,6 +42,14 @@ void HeaderCtrl::GetColumnWidth(std::vector<float> &vecColumns)
     }
 }
 
+void HeaderCtrl::GetColumnOrder(std::vector<int>& vecOrder)
+{
+    vecOrder.clear();
+    for (size_t i = 0; i < m_vecColumns.size() - 1; i++) {
+        vecOrder.push_back(m_vecColumns[i].order);
+    }
+}
+
 void HeaderCtrl::AddColumn(LPCWSTR name, float size)
 {
     auto btn = new HeaderButton(this);
@@ -51,9 +59,13 @@ void HeaderCtrl::AddColumn(LPCWSTR name, float size)
     data.name = name;
     data.width = size;
     data.button = btn;
+    data.order = m_vecColumns.size() - 1;
     m_vecColumns.insert(m_vecColumns.end() - 1, data);
     Widget::AddChild(btn);
     SAFE_RELEASE(btn);
+    std::vector<int> vecOrder;
+    this->GetColumnOrder(vecOrder);
+    this->ColumnOrderChanged(vecOrder);
 }
 
 void HeaderCtrl::SetHScroll(float pos)
@@ -70,7 +82,7 @@ bool HeaderCtrl::OnSize(SizeEvent *ev)
     return true;
 }
 
-void HeaderCtrl::OnColumnResizeBegin(HeaderButton *btn, PointF pt)
+void HeaderCtrl::OnColumnResizeBegin(HeaderButton *btn, const PointF& pt)
 {
     m_dragPoint = pt;
     m_draggingButton = btn;
@@ -81,8 +93,25 @@ void HeaderCtrl::OnColumnResizeBegin(HeaderButton *btn, PointF pt)
         }
     }
     i--;
-    if (i >= 0) {
+    if (i >= 0 && i < (int)m_vecColumns.size()) {
         m_resizingCol = i;
+    }
+    this->SetCapture();
+}
+
+void HeaderCtrl::OnColumnReorderBegin(HeaderButton *btn, const PointF& pt)
+{
+    m_dragPoint = pt;
+    m_draggingButton = btn;
+    int i = 0;
+    for (; i < (int)m_vecColumns.size(); i ++) {
+        if (m_vecColumns[i].button == btn) {
+            break;
+        }
+    }
+    if (i < (int)m_vecColumns.size()) {
+        m_reorderCol = i;
+        m_draggingButton->BringToFront();
     }
     this->SetCapture();
 }
@@ -102,14 +131,43 @@ bool HeaderCtrl::OnMouseMove(MouseEvent *ev)
 		SetDelegateInvoker(this);
         this->ResizingDelegate();
     }
+    else if (m_reorderCol >= 0) {
+        m_draggingButton->SetPosition(ev->x - m_dragPoint.X, m_draggingButton->GetY());
+    }
     return false;
 }
 
 bool HeaderCtrl::OnLBtnUp(MouseEvent *ev)
 {
-    m_resizingCol = -1;
+    if (m_resizingCol >= 0) {
+        this->ResizeEndDelegate();
+        m_resizingCol = -1;
+    }
+    if (m_reorderCol >= 0) {
+        auto x = ev->x;
+        //x -= m_dragPoint.X; // drop at mouse cursor is better than drop at left edge
+        x += m_hscroll;
+        int i = 0;
+        for (; i < (int)m_vecColumns.size() && x > 0.f; i ++) {
+            x -= m_vecColumns[i].width;
+        }
+        i --; // the target
+        if (i >= 0 && i < (int)m_vecColumns.size() - 1) { // the last button is a placeholder.
+            LTK_LOG("reorder: %d", i);
+            auto tmp = m_vecColumns[m_reorderCol];
+            for (int j = m_reorderCol + 1; j < (int)m_vecColumns.size(); j++) {
+                m_vecColumns[j - 1] = m_vecColumns[j];
+            }
+            m_vecColumns.pop_back();
+            m_vecColumns.insert(m_vecColumns.begin() + i, tmp);
+            std::vector<int> vecOrder;
+            this->GetColumnOrder(vecOrder);
+            this->ColumnOrderChanged(vecOrder);
+        }
+        this->DoLayout();
+        m_reorderCol = -1;
+    }
     this->ReleaseCapture();
-	this->ResizeEndDelegate();
     return false;
 }
 
@@ -164,7 +222,11 @@ bool HeaderButton::OnLBtnDown(MouseEvent *ev)
 {
     if (ev->x < 5.0f) {
         m_parent->OnColumnResizeBegin(this, PointF(ev->x, ev->y));
-    } else {
+    } 
+    else if (ev->x < this->GetWidth() - 5.f) {
+        m_parent->OnColumnReorderBegin(this, PointF(ev->x, ev->y));
+    }
+    else {
         Button::OnLBtnDown(ev);
     }
     return true;

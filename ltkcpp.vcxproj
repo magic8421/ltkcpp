@@ -159,6 +159,7 @@
     <ClCompile Include="AbstractButton.cpp" />
     <ClCompile Include="Animation.cpp" />
     <ClCompile Include="BoxLayout.cpp" />
+    <ClCompile Include="Builder.cpp" />
     <ClCompile Include="Button.cpp" />
     <ClCompile Include="Common.cpp" />
     <ClCompile Include="Delegate\Allocator.cpp" />
@@ -199,6 +200,7 @@
     <ClInclude Include="AbstractButton.h" />
     <ClInclude Include="Animation.h" />
     <ClInclude Include="BoxLayout.h" />
+    <ClInclude Include="Builder.h" />
     <ClInclude Include="Button.h" />
     <ClInclude Include="Common.h" />
     <ClInclude Include="Container.h" />

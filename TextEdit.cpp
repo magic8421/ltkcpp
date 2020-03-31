@@ -28,7 +28,7 @@ TextEdit::TextEdit()
         &m_format);
     LTK_ASSERT(SUCCEEDED(hr));
 
-    this->EnableClipChildren(true);
+    //this->SetClipChildren(true);
 
 	m_vsb = new ScrollBar(ltk::Vertical);
     this->AddChild(m_vsb);
@@ -42,6 +42,20 @@ TextEdit::~TextEdit()
     SAFE_RELEASE(m_brushSelectedText);
 }
 
+void TextEdit::SetText(LPCWSTR t)
+{
+	m_text = t;
+	m_selection = -1;
+	this->RecreateLayout();
+	this->HideCaret();
+	Invalidate();
+}
+
+LPCWSTR TextEdit::GetText()
+{
+	return m_text.c_str();
+}
+
 bool TextEdit::OnPaint(PaintEvent *ev)
 {
 	if (!m_layout) {
@@ -49,6 +63,9 @@ bool TextEdit::OnPaint(PaintEvent *ev)
 	}
     auto target = ev->target;
     auto rc = this->GetClientRect();
+
+	D2D1_RECT_F rcClip = D2D1RectF(rc);
+	target->PushAxisAlignedClip(rcClip, D2D1_ANTIALIAS_MODE_ALIASED);
 
     HRESULT hr = S_OK;
     DWRITE_TEXT_METRICS textMetrics;
@@ -69,15 +86,18 @@ bool TextEdit::OnPaint(PaintEvent *ev)
 	brush->SetColor(StyleManager::ColorFromString("#000000"));
     target->DrawRectangle(D2D1RectF(rc), brush);
 
-    if (m_selection > 0) {
+    if (m_selection >= 0) {
         UINT32 begin = m_cursorPos;
         UINT32 end = m_selection;
         if (begin > end) {
             std::swap(begin, end);
         }
+		if (begin == 0) {
+			//__debugbreak();
+		}
         UINT32 len = 0;
         std::vector<DWRITE_HIT_TEST_METRICS> vecMetrics;
-        m_layout->HitTestTextRange(begin, end - begin, 0.0f, 0.0f,
+        m_layout->HitTestTextRange(begin, end - begin, m_padding, 0.0f,
             NULL, 0, &len);
         LTK_ASSERT(SUCCEEDED(hr));
         //LTK_LOG("HitTestTextRange: %d metrics", len);
@@ -86,7 +106,7 @@ bool TextEdit::OnPaint(PaintEvent *ev)
             &vecMetrics[0], len, &len);
         LTK_ASSERT(SUCCEEDED(hr));
 		brush->SetColor(StyleManager::ColorFromString("#0000ff"));
-        for (auto &m : vecMetrics) {
+        for (const auto &m : vecMetrics) {
             D2D1_RECT_F rc2;
             rc2.left = m.left;
             rc2.right = rc2.left + m.width;
@@ -102,7 +122,8 @@ bool TextEdit::OnPaint(PaintEvent *ev)
 	brush->SetColor(StyleManager::ColorFromString("#000000"));
     target->DrawTextLayout(pt, m_layout, brush);
 
-    return false;
+	target->PopAxisAlignedClip();
+	return false;
 }
 
 void TextEdit::DeleteSelected()
@@ -153,7 +174,7 @@ bool TextEdit::OnChar(KeyEvent *ev)
 bool TextEdit::OnKeyDown(KeyEvent *ev)
 {
 	if (!m_layout) {
-		return true;
+		return false;
 	}
     wchar_t ch = (wchar_t)ev->keyCode;
     HRESULT hr = S_OK;
@@ -214,11 +235,11 @@ void TextEdit::RecreateLayout()
     HRESULT hr = GetDWriteFactory()->CreateTextLayout(
         m_text.c_str(), m_text.size(), m_format,
         rc.Width - m_padding * 2, 0.0f, &m_layout);
+    //LTK_ASSERT(SUCCEEDED(hr));
 	if (!m_layout) {
 		return;
 	}
-
-    if (m_selection > 0) {
+    if (m_selection >= 0) {
         UINT32 begin = m_cursorPos;
         UINT32 end = m_selection;
         if (begin > end) {
@@ -280,7 +301,6 @@ void TextEdit::UpdateCursor(bool bEnsureVisible)
 
 bool TextEdit::OnMouseWheel(MouseEvent *ev)
 {
-	//LTK_LOG("delta %.2f", ev->delta);
     m_scrollAni.BeginScroll(ev->delta);
     this->HideCaret();
     this->BeginAnimation();
@@ -293,6 +313,7 @@ int TextEdit::HitTest(float x, float y)
 		return -1;
 	}
     int pos = -1;
+	x = max(0.001f, x);
     y += m_scrollAni.GetScroll();
     BOOL isTrailingHit = FALSE;
     BOOL isInside = FALSE;
@@ -303,6 +324,7 @@ int TextEdit::HitTest(float x, float y)
     //LTK_LOG("isTrailingHit: %d, isInside: %d", isTrailingHit, isInside);
     m_isInside = isInside ? true : false;
 
+
     if (!isTrailingHit) {
         pos = dhtm.textPosition;
     } else {
@@ -311,11 +333,17 @@ int TextEdit::HitTest(float x, float y)
     if (pos > (int)m_text.size()) {
         __debugbreak();
     }
+	//LTK_LOG("TextEdit::HitTest() x: %.2f textPosition: %d pos: %d", x, dhtm.textPosition, pos);
+
+	if (pos == -1) {
+		LTK_ASSERT(false);
+	}
     return pos;
 }
 
 bool TextEdit::OnLBtnDown(MouseEvent *ev)
 {
+	GetWindow()->SetFocusWidget(this);
     ev->x -= m_padding;
     m_scrollAni.Stop();
     this->EndAnimation();
@@ -328,8 +356,8 @@ bool TextEdit::OnLBtnDown(MouseEvent *ev)
     }
     this->UpdateCursor(false);
     this->SetCapture();
+	LTK_LOG("TextEdit SetCapture");
     m_bCapture = true;
-	this->SetFocus();
     return false;
 }
 
@@ -337,6 +365,7 @@ bool TextEdit::OnLBtnUp(MouseEvent *ev)
 {
     m_bCapture = false;
     this->ReleaseCapture();
+	LTK_LOG("TextEdit ReleaseCapture");
     return false;
 }
 
@@ -345,6 +374,7 @@ bool TextEdit::OnMouseMove(MouseEvent *ev)
     if (!m_bCapture) {
         return false;
     }
+	ev->x -= m_padding;
     m_selection = HitTest(ev->x, ev->y);
     //LTK_LOG("m_selection:%d", m_selection);
     if (m_selection != m_prevSelection) {

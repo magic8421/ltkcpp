@@ -54,6 +54,9 @@ public:
 	UINT GetMenuItemCount();
 	MenuItem *GetMenuItemAt(UINT idx);
 
+	MenuItem *FindChildItem(LPCSTR name);
+	MenuItem *FindChildItemInterned(LPCSTR name); // name必须内部化
+
 	float GetHeight();
 	
 	STDMETHOD_(void, SetWidth)(float) override;
@@ -96,7 +99,7 @@ private:
 
 	int m_hoverIdx = -1;
 	int m_trackingIdx = -1;
-	bool m_bTrackingPopup = false; // TODO 这个能和m_trackingIdx合并吗？
+	bool m_bTrackingPopup = false;
 	bool m_bHiding = false;
 
 	enum class State {sHide, sSlideIn, sShow};

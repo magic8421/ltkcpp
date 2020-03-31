@@ -36,7 +36,6 @@ enum Events
 struct Event
 {
     UINT id = 0;
-    void* sender;
 };
 
 struct MouseEvent : public Event
