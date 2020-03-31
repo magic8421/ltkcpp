@@ -10,6 +10,7 @@
 #include "TreeView.h"
 #include "TextEdit.h"
 #include "MenuBar.h"
+#include "StyleManager.h"
 
 using namespace ltk;
 
@@ -44,17 +45,34 @@ LTK_API void WINAPI LtkFree(LtkObject *obj)
 	delete pobj;
 }
 
-LTK_API void WINAPI LtkObject_RegisterCallback(
-	LtkObject * obj, UINT event_id, LtkCallback cb, void* userdata)
+LTK_API LPCSTR WINAPI LtkInternString(LPCSTR str)
 {
-	Object* thiz = (Object*)obj;
-	thiz->RegisterCallback(event_id, cb, userdata);
+	return StyleManager::Instance()->InternString(str);
 }
 
-LTK_API LtkObject * WINAPI LtkCallbackInvoker()
+LTK_API void WINAPI LtkObject_SetName(LtkObject* o, LPCSTR name)
 {
-	return (LtkObject *)Object::GetEventSender();
+	((Object*)(o))->SetName(name);
 }
+
+LTK_API LPCSTR WINAPI LtkObject_GetName(LtkObject* o)
+{
+	return ((Object*)(o))->GetName();
+}
+
+LTK_API void WINAPI LtkObject_RegisterNotify(LtkObject* o, void* userdata, LtkCallback callback)
+{
+	Object* pobj = (Object*)o;
+	pobj->RegisterNotify(userdata, callback);
+}
+
+LTK_API void WINAPI LtkObject_RemoveNotify(LtkObject* o, void* userdata, LtkCallback callback)
+{
+	Object* pobj = (Object*)o;
+	pobj->RemoveNotify(userdata, callback);
+}
+
+
 
 //////////////////////////////////////////////////////////////////////////
 // Sprite
@@ -94,7 +112,7 @@ LTK_API void WINAPI LtkWindow_Create(
 	if (parent) {
 		p2 = (Window*)parent;
 	}
-	Gdiplus::RectF rcf(rc->x, rc->y, rc->w, rc->h);
+	Gdiplus::RectF rcf(rc->x, rc->y, rc->width, rc->height);
 	Window *thiz = (Window *)self;
 	thiz->Create(p2, rcf);
 }
@@ -140,6 +158,12 @@ LTK_API void WINAPI LtkWindow_SetMenu(LtkWindow* self, LtkMenuBar* menu)
 {
 	Window* thiz = (Window*)self;
 	thiz->SetMenu((MenuBar*)menu);
+}
+
+LTK_API HWND WINAPI LtkWindow_GetHWND(LtkWindow* self)
+{
+	Window* thiz = (Window*)self;
+	return thiz->Handle();
 }
 
 
@@ -436,10 +460,16 @@ LTK_API LtkObject* WINAPI LtkPopupMenu_New_(LPCSTR source, int line)
 	return (LtkObject*)obj;
 }
 
-LTK_API void WINAPI LtkPopupMenu_AddItem(LtkPopupMenu* self, LPCWSTR text)
+LTK_API void WINAPI LtkPopupMenu_AddItem(LtkPopupMenu* self, LPCWSTR text, LPCSTR name)
 {
 	PopupMenu* thiz = (PopupMenu*)self;
-	thiz->AddItem(text);
+	thiz->AddItem(text, name);
+}
+
+LTK_API void WINAPI LtkPopupMenu_AddSeparator(LtkPopupMenu* self)
+{
+	PopupMenu* thiz = (PopupMenu*)self;
+	thiz->AddSeparator();
 }
 
 LTK_API void WINAPI LtkPopupMenu_SetWidth(LtkPopupMenu* self, float width)

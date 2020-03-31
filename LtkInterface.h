@@ -1,7 +1,7 @@
 #pragma once
 
 #ifdef LTK_EXPORTS
-#define LTK_API __declspec(dllexport)
+#define LTK_API
 #else
 #define LTK_API __declspec(dllimport)
 #endif
@@ -18,8 +18,8 @@ extern "C" {
 typedef struct _LtkRect {
 	float x;
 	float y;
-	float w;
-	float h;
+	float width;
+	float height;
 } LtkRect;
 
 LTK_API UINT WINAPI LtkInitialize();
@@ -30,15 +30,138 @@ LTK_DECLARE_TYPE(LtkObject);
 
 LTK_API void WINAPI LtkFree(LtkObject *);
 
-typedef void (CALLBACK *LtkCallback)();
+typedef struct _LtkEvent {
+	UINT id;
+	LtkObject* sender;
+} LtkEvent;
 
-LTK_API void WINAPI LtkObject_RegisterCallback(
-	LtkObject * obj, UINT event_id, LtkCallback cb, void* userdata);
-LTK_API LtkObject* WINAPI LtkCallbackInvoker();
+typedef BOOL (CALLBACK *LtkCallback)(void* userdata, LtkEvent* ev);
+
+LTK_API LPCSTR WINAPI LtkInternString(LPCSTR str);
+
+LTK_API void WINAPI LtkObject_SetName(LtkObject* o, LPCSTR name);
+LTK_API LPCSTR WINAPI LtkObject_GetName(LtkObject* o);
+
+LTK_API void WINAPI LtkRegisterEvent(LtkObject* o, void* userdata, LtkCallback callback);
+LTK_API void WINAPI LtkUnregisterEvent(LtkObject* o, void* userdata, LtkCallback callback);
+
 
 LTK_DECLARE_TYPE(LtkWindow); // 基类：LtkObject
 
 LTK_DECLARE_TYPE(LtkSprite); // 基类：LtkObject
+
+#define LTK_CREATE			1
+#define LTK_DESTROY			2
+#define LTK_PAINT			3
+#define LTK_SIZE			4
+
+#define LTK_MOUSE_FIRST			5
+#define LTK_MOUSE_MOVE			6
+#define LTK_MOUSE_LEAVE			7
+#define LTK_MOUSE_WHEEL			8
+#define LTK_LBUTTON_DOWN		9
+#define LTK_LBUTTON_UP			10
+#define LTK_LBUTTON_DBCLICK		11
+#define LTK_RBUTTON_DOWN		12
+#define LTK_RBUTTON_UP			13
+#define LTK_MOUSE_LAST			14
+
+#define LTK_KEY_DOWN			15
+#define LTK_KEY_UP				16
+#define LTK_CHAR				17
+#define LTK_IME_INPUT			18
+
+#define LTK_SET_FOCUS			19
+#define LTK_KILL_FOCUS			20
+
+#define LTK_RECREATE_RESOURCE	21
+#define LTK_THEME_CHANGED		22
+
+typedef struct _LtkMouseEvent
+{
+	LtkEvent hdr;
+	float x;
+	float y;
+	UINT flag;		// ctrl shift atl
+	float delta;	// wheel
+} LtkMouseEvent;
+
+typedef struct _LtkDelegateMouseEvent
+{
+	LtkEvent hdr;
+	LtkMouseEvent* data;
+	BOOL bHandled;
+} LtkDelegateMouseEvent;
+
+typedef struct _LtkKeyEvent
+{
+	LtkEvent hdr;
+	DWORD keyCode;
+	DWORD flag;
+} LtkKeyEvent;
+
+struct ID2D1RenderTarget;
+
+typedef struct _LtkPaintEvent
+{
+	LtkEvent hdr;
+	ID2D1RenderTarget* target;
+} LtkPaintEvent;
+
+typedef struct _LtkSizeEvent
+{
+	LtkEvent hdr;
+	float width;
+	float height;
+} LtkSizeEvent;
+
+typedef struct _LtkImeEvent
+{
+	LtkEvent hdr;
+	LPCWSTR text;
+} LtkImeEvent;
+
+typedef struct _LtkFocusEvent
+{
+	LtkEvent hdr;
+	LtkSprite* oldFocus;
+} LtkFocusEvent;
+
+typedef struct _LtkRecreateResource {
+	LtkEvent hdr;
+	ID2D1RenderTarget* target;
+} LtkRecreateResource;
+
+#define LTK_CALLBACK_BEGIN(klass, name) \
+	static BOOL CALLBACK name(void* userdata, LtkEvent* ev) { \
+		klass* self = (klass*)userdata; \
+		switch (ev->id) {
+
+// TODO 这里有问题 如果是模拟虚函数 这里怎么调用基类呢？
+#define LTK_CALLBACK_END() \
+		default: return FALSE; \
+		} \
+	}
+
+#define LTK_HANDLE_PAINT(func) \
+		case LTK_PAINT: \
+			return self->func((LtkPaintEvent*)ev);
+
+#define LTK_HANDLE_SIZE(func) \
+		case LTK_SIZE: \
+			return self->func((LtkSizeEvent*)ev);
+
+#define LTK_HANDLE_LBUTTON_DOWN(func) \
+		case LTK_LBUTTON_DOWN: \
+			return self->func((LtkMouseEvent*)ev);
+
+#define LTK_HANDLE_MOUSE_WHELL(func) \
+		case LTK_MOUSE_WHEEL: \
+			return self->func((LtkMouseEvent*)ev);
+
+#define LTK_HANDLE_THEME_CHANGED(func) \
+		case LTK_THEME_CHANGED: \
+			return self->func((LtkEvent*)ev);
 
 LTK_DECLARE_TYPE(LtkMenuBar); // 基类：LtkSprite
 LTK_DECLARE_TYPE(LtkPopupMenu); // 基类：LtkSprite
@@ -46,11 +169,15 @@ LTK_DECLARE_TYPE(LtkPopupMenu); // 基类：LtkSprite
 #define LTK_SPRITE(o) LtkIsSprite(o) ? (LtkSprite*)o : NULL
 LTK_API BOOL WINAPI LtkIsSprite(LtkObject* o);
 
-// void CALLBACK OnWindowDestory(void* userdata)
-#define LTK_WINDOW_DESTROY		100
+#define LTK_WINDOW_DESTROY		101
 
-// void CALLBACK OnWindowClose(void* userdata, BOOL *pProceed);
-#define LTK_WINDOW_CLOSE		101
+#define LTK_HANDLE_WINDOW_DESTROY(func) \
+	case LTK_WINDOW_DESTROY: return self->func(ev);
+
+#define LTK_WINDOW_CLOSE		102
+
+#define LTK_HANDLE_WINDOW_CLOSE(func) \
+	case LTK_WINDOW_CLOSE: return self->func(ev);
 
 #define LTK_WINDOW(o) LtkIsWindow(o) ? (LtkWindow*)o : NULL
 LTK_API BOOL WINAPI LtkIsWindow(LtkObject* o);
@@ -65,6 +192,7 @@ LTK_API void WINAPI LtkWindow_SetBackground(LtkWindow* self, LPCSTR name);
 LTK_API void WINAPI LtkWindow_UpdateTheme(LtkWindow* self);
 LTK_API void WINAPI LtkWindow_SetClientSprite(LtkWindow* self, LtkSprite* sp);
 LTK_API void WINAPI LtkWindow_SetMenu(LtkWindow* self, LtkMenuBar* menu);
+LTK_API HWND WINAPI LtkWindow_GetHWND(LtkWindow* self);
 
 LTK_DECLARE_TYPE(LtkBoxLayout); // 基类：LtkSprite
 
@@ -135,15 +263,12 @@ LTK_API LtkObject* WINAPI LtkSplitter_New_(UINT orientation, LPCSTR source, int 
 
 LTK_API void WINAPI LtkSplitter_Resize(LtkSplitter* self, UINT n);
 LTK_API LtkSprite* WINAPI LtkSplitter_SetClientAt(LtkSplitter* self, UINT idx, LtkSprite* sp);
-LTK_API LtkSplitter* WINAPI LtkSplitter_GetClientAt(LtkSplitter* self, UINT idx);
-LTK_API	UINT WINAPI LtkSplitter_GetClientCount(LtkSplitter* self);
+//LTK_API LtkSplitter* WINAPI LtkSplitter_GetClientAt(LtkSplitter* self, UINT idx);
+//LTK_API	UINT WINAPI LtkSplitter_GetClientCount(LtkSplitter* self);
 LTK_API void WINAPI LtkSplitter_SetClientSize(LtkSplitter* self, UINT idx, float size);
-LTK_API float WINAPI LtkSplitter_GetClientSize(LtkSplitter* self, UINT idx);
+//LTK_API float WINAPI LtkSplitter_GetClientSize(LtkSplitter* self, UINT idx);
 
 LTK_DECLARE_TYPE(LtkTreeView); // 基类：LtkSprite
-
-// void CALLBACK OnTreeViewSelectChange(void* userdata, LtkTreeNode* node, LtkTreeNode* oldNode)
-#define LTK_TREEVIEW_SELECT_CHANGE		401
 
 #define LTK_TREEVIEW(o) LtkIsTreeView(o) ? (LtkTreeView*)o : NULL
 LTK_API BOOL WINAPI LtkIsTreeView(LtkObject* o);
@@ -154,6 +279,19 @@ LTK_API LtkObject* WINAPI LtkTreeView_New_(LPCSTR source, int line);
 LTK_DECLARE_TYPE(LtkTreeNode); // 基类：LtkObject
 
 LTK_API LtkObject* WINAPI LtkTreeView_GetRootNode(LtkTreeView* self);
+
+#define LTK_TREEVIEW_FIRST 500
+#define LTK_TREEVIEW_SELECT_CHANGE (LTK_TREEVIEW_FIRST + 1)
+
+typedef struct _LtkTreeViewSelectChange {
+	LtkEvent hdr;
+	LtkTreeNode* old;
+	LtkTreeNode* new_;
+} LtkTreeViewSelectChange;
+
+#define LTK_HANDLE_TREEVIEW_SELECT_CHANGE(func) \
+	case LTK_TREEVIEW_SELECT_CHANGE: return self->func((LtkTreeViewSelectChange*)ev);
+
 
 #define LTK_TREENODE(o) LtkIsTreeNode(o) ? (LtkTreeNode*)o : NULL
 LTK_API BOOL WINAPI LtkIsTreeNode(LtkObject* o);
@@ -172,6 +310,13 @@ LTK_API BOOL WINAPI LtkIsTextEdit(LtkObject* o);
 #define LtkTextEdit_New() LtkTextEdit_New_(  __FILE__, __LINE__)
 LTK_API LtkObject* WINAPI LtkTextEdit_New_(LPCSTR source, int line);
 
+LTK_DECLARE_TYPE(LtkMenuItem);
+
+#define LTK_MENU_CLICK 501
+
+#define LTK_HANDLE_MENU_CLICK(func) \
+	case LTK_MENU_CLICK: return self->func(ev);
+
 #define LTK_MENUBAR(o) LtkIsMenuBar(o) ? (LtkMenuBar*)o : NULL
 LTK_API BOOL WINAPI LtkIsMenuBar(LtkObject* o);
 
@@ -187,7 +332,8 @@ LTK_API BOOL WINAPI LtkIsPopupMenu(LtkObject* o);
 #define LtkPopupMenu_New() LtkPopupMenu_New_(  __FILE__, __LINE__)
 LTK_API LtkObject* WINAPI LtkPopupMenu_New_(LPCSTR source, int line);
 
-LTK_API void WINAPI LtkPopupMenu_AddItem(LtkPopupMenu* self, LPCWSTR text);
+LTK_API void WINAPI LtkPopupMenu_AddItem(LtkPopupMenu* self, LPCWSTR text, LPCSTR name);
+LTK_API void WINAPI LtkPopupMenu_AddSeparator(LtkPopupMenu* self);
 LTK_API void WINAPI LtkPopupMenu_SetWidth(LtkPopupMenu* self, float width);
 LTK_API void WINAPI LtkPopupMenu_SetSubMenu(LtkPopupMenu* self, UINT idx, LtkPopupMenu* popup);
 

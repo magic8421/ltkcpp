@@ -76,4 +76,38 @@ void Object::SetParent(Object* p)
 	p->AddChild(this);
 }
 
+/////////////////////////////////////////////////////////////////
+
+void Object::RegisterEvent(UINT code, LtkCallback callback, void* userdata)
+{
+	auto iter = m_mapCallback.find(code);
+	if (iter != m_mapCallback.end()) { // exist in map
+		AddEventToList(iter->second, callback, userdata);
+	}
+	else {
+		auto [iter2, bSucceed] = m_mapCallback.emplace(
+			std::make_pair(code, std::vector <CallbackInfo>()));
+		LTK_ASSERT(bSucceed);
+		AddEventToList(iter2->second, callback, userdata);
+	}
+}
+
+void Object::AddEventToList(std::vector<CallbackInfo>& list, LtkCallback callback, void* userdata)
+{
+	bool bFound = false;
+	// find duplicate
+	for (size_t i = list.size(); i > 0; i --) { // maybe better in reversed order.
+		const auto& item = list[i - 1];
+		if (item.callback == callback && item.userdata == userdata) {
+			bFound = true;
+			break;
+		}
+	}
+	if (bFound) {
+		return;
+	}
+	list.push_back(CallbackInfo{userdata, callback});
+}
+
+
 } // namespace ltk
