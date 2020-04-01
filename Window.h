@@ -121,6 +121,10 @@ public:
 	MulticastDelegate1<BOOL*> CloseDelegate;
 	MulticastDelegate0 DestroyDelegate;
 
+protected:
+	void DoInvokeCallback(
+		UINT event_id, LtkCallback cb, void* userdata, va_list args, BOOL *bHandled) override;
+
 private:
 	void HandleMouseMessage(UINT message, WPARAM wparam, LPARAM lparam);
     void HandleMouseLeave();

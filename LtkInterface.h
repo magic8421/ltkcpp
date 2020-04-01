@@ -176,11 +176,9 @@ LTK_DECLARE_TYPE(LtkPopupMenu); // »ùÀà£ºLtkSprite
 #define LTK_SPRITE(o) LtkIsSprite(o) ? (LtkSprite*)o : NULL
 LTK_API BOOL WINAPI LtkIsSprite(HLTK o);
 
+// (void *userdata, BOOL *bHandled)
 #define LTK_WINDOW_DESTROY		101
-
-#define LTK_HANDLE_WINDOW_DESTROY(func) \
-	case LTK_WINDOW_DESTROY: return self->func(ev);
-
+// (void *userdata, BOOL *pProceed, BOOL *bHandled)
 #define LTK_WINDOW_CLOSE		102
 
 #define LTK_HANDLE_WINDOW_CLOSE(func) \

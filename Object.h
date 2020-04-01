@@ -2,8 +2,7 @@
 #include "RTTI.h"
 #include "Common.h"
 #include "Container.h"
-
-typedef void (CALLBACK *LtkCallback)();
+#include "LtkInterface.h"
 
 namespace ltk {
 
@@ -43,7 +42,7 @@ public:
 
 protected:
 	virtual void DoInvokeCallback(
-		UINT event_id, LtkCallback cb, void* userdata, va_list args) {}
+		UINT event_id, LtkCallback cb, void* userdata, va_list args, BOOL *bHandled) {}
 
 private:
 	struct CallbackInfo {

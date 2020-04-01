@@ -146,11 +146,13 @@ void Object::InvokeCallback(UINT event_id, ...)
 		return;
 	}
 	auto& vecCallbacks = iter->second; // TODO copy?
+	BOOL bHandled = FALSE;
+
 	for (UINT i = vecCallbacks.size(); i > 0; i--) {
 		const CallbackInfo &info = vecCallbacks[i - 1];
 		va_list args;
 		va_start(args, event_id);
-		DoInvokeCallback(event_id, info.callback, info.userdata, args);
+		DoInvokeCallback(event_id, info.callback, info.userdata, args, &bHandled);
 		va_end(args);
 	}
 }

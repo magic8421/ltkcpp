@@ -642,12 +642,14 @@ void Window::OnClose(BOOL* proceed)
 {
 	SetDelegateInvoker(this);
 	this->CloseDelegate(proceed);
+    this->InvokeCallback(LTK_WINDOW_CLOSE, proceed);
 }
 
 void Window::OnDestroy()
 {
 	SetDelegateInvoker(this);
 	this->DestroyDelegate();
+    this->InvokeCallback(LTK_WINDOW_DESTROY);
 }
 
 HWND Window::GetHWND()

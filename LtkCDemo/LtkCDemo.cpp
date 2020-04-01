@@ -6,8 +6,14 @@
 #include "LtkCDemo.h"
 #include "LtkInterface.h"
 
+void CALLBACK OnWindowClose(void* userdata, BOOL* proceed, BOOL* bHandled)
+{
+	if (::MessageBox(0, L"close ?", 0, MB_OKCANCEL) == IDCANCEL) {
+		*proceed = FALSE;
+	}
+}
 
-void CALLBACK MyEventCallback(void* userdata)
+void CALLBACK OnWindowDestroy(void* userdata, BOOL *bHandled)
 {
 	::PostQuitMessage(0);
 }
@@ -39,12 +45,15 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
                      _In_ LPWSTR    lpCmdLine,
                      _In_ int       nCmdShow)
 {
+	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 	LtkInitialize();
 
 	HLTK wnd = LtkWindow_New();
 	//LtkWindow_SetBackground(wnd, "window_bg");
 	LtkRegisterCallback(
-		wnd, LTK_WINDOW_DESTROY, (LtkCallback)MyEventCallback, NULL);
+		wnd, LTK_WINDOW_DESTROY, (LtkCallback)OnWindowDestroy, NULL);
+	LtkRegisterCallback(
+		wnd, LTK_WINDOW_CLOSE, (LtkCallback)OnWindowClose, NULL);
 
 	HLTK splitter_h = LtkSplitter_New(LTK_HORIZONTAL);
 	LtkWindow_SetClientSprite(LTK_WINDOW(wnd), LTK_SPRITE(splitter_h));
