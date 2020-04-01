@@ -3,3 +3,4 @@
 // 有关详细信息，请参见 https://go.microsoft.com/fwlink/?linkid=865984
 #define LTK_CPP_API 
 #define RTTI_DECLARATIONS(base, derived)
+#define DISALLOW_COPY_AND_ASSIGN(type)

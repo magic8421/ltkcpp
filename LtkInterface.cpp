@@ -39,7 +39,7 @@ LTK_API void WINAPI LtkRunMessageLoop()
 	}
 }
 
-LTK_API void WINAPI LtkFree(LtkObject *obj)
+LTK_API void WINAPI LtkFree(HLTK obj)
 {
 	Object *pobj = (Object *)obj;
 	delete pobj;
@@ -50,39 +50,39 @@ LTK_API LPCSTR WINAPI LtkInternString(LPCSTR str)
 	return StyleManager::Instance()->InternString(str);
 }
 
-LTK_API void WINAPI LtkObject_SetName(LtkObject* o, LPCSTR name)
+LTK_API void WINAPI LtkSetName(HLTK o, LPCSTR name)
 {
 	((Object*)(o))->SetName(name);
 }
 
-LTK_API LPCSTR WINAPI LtkObject_GetName(LtkObject* o)
+LTK_API LPCSTR WINAPI LtkGetName(HLTK o)
 {
 	return ((Object*)(o))->GetName();
 }
 
-LTK_API void WINAPI LtkObject_RegisterNotify(LtkObject* o, void* userdata, LtkCallback callback)
+LTK_API void WINAPI LtkRegisterCallback(HLTK obj, UINT event_id, LtkCallback cb, void* userdata)
 {
-	Object* pobj = (Object*)o;
-	pobj->RegisterNotify(userdata, callback);
+	Object* pobj = (Object*)obj;
+	pobj->RegisterCallback(event_id, cb, userdata);
 }
 
-LTK_API void WINAPI LtkObject_RemoveNotify(LtkObject* o, void* userdata, LtkCallback callback)
+LTK_API void WINAPI LtkUnregisterCallback(HLTK obj, UINT event_id, LtkCallback cb, void* userdata)
 {
-	Object* pobj = (Object*)o;
-	pobj->RemoveNotify(userdata, callback);
+	Object* pobj = (Object*)obj;
+	// TODO
 }
 
 
 
 //////////////////////////////////////////////////////////////////////////
-// Sprite
+// Widget
 //////////////////////////////////////////////////////////////////////////
 
-LTK_API BOOL WINAPI LtkIsSprite(LtkObject* o)
+LTK_API BOOL WINAPI LtkIsSprite(HLTK o)
 {
 	Object *obj = (Object *)o;
 	if (!Object::CheckValid(obj)) return FALSE;
-	return obj->Is(Sprite::TypeIdClass()) ? TRUE : FALSE;
+	return obj->Is(Widget::TypeIdClass()) ? TRUE : FALSE;
 }
 
 
@@ -91,14 +91,14 @@ LTK_API BOOL WINAPI LtkIsSprite(LtkObject* o)
 //////////////////////////////////////////////////////////////////////////
 
 
-LTK_API LtkObject* WINAPI LtkWindow_New_(LPCSTR source, int line)
+LTK_API HLTK WINAPI LtkWindow_New_(LPCSTR source, int line)
 {
 	auto obj = new Window;
 	obj->SetSourceLine(source, line);
-	return (LtkObject*)obj;
+	return (HLTK)obj;
 }
 
-LTK_API BOOL WINAPI LtkIsWindow(LtkObject* o)
+LTK_API BOOL WINAPI LtkIsWindow(HLTK o)
 {
 	Object *obj = (Object *)o;
 	if (!Object::CheckValid(obj)) return FALSE;
@@ -151,7 +151,7 @@ LTK_API void WINAPI LtkWindow_UpdateTheme(LtkWindow* wnd)
 LTK_API void WINAPI LtkWindow_SetClientSprite(LtkWindow* self, LtkSprite* sp)
 {
 	Window* thiz = (Window*)self;
-	thiz->SetClientSprite((Sprite*)sp);
+	thiz->SetCentralWidget((Widget*)sp);
 }
 
 LTK_API void WINAPI LtkWindow_SetMenu(LtkWindow* self, LtkMenuBar* menu)
@@ -163,7 +163,7 @@ LTK_API void WINAPI LtkWindow_SetMenu(LtkWindow* self, LtkMenuBar* menu)
 LTK_API HWND WINAPI LtkWindow_GetHWND(LtkWindow* self)
 {
 	Window* thiz = (Window*)self;
-	return thiz->Handle();
+	return thiz->GetHWND();
 }
 
 
@@ -171,16 +171,16 @@ LTK_API HWND WINAPI LtkWindow_GetHWND(LtkWindow* self)
 // BoxLayout
 //////////////////////////////////////////////////////////////////////////
 
-LTK_API LtkObject* WINAPI LtkBoxLayout_New_(UINT orientation, LPCSTR source, int line)
+LTK_API HLTK WINAPI LtkBoxLayout_New_(UINT orientation, LPCSTR source, int line)
 {
 	auto obj = new BoxLayout((ltk::Orientation)orientation);
 	obj->SetSourceLine(source, line);
-	return (LtkObject*)obj;
+	return (HLTK)obj;
 }
 
-LTK_API BOOL WINAPI LtkIsBoxLayout(LtkObject* o)
+LTK_API BOOL WINAPI LtkIsBoxLayout(HLTK o)
 {
-	Object *obj = (Object *)o;
+	auto obj = (Object *)o;
 	if (!Object::CheckValid(obj)) return FALSE;
 	return obj->Is(BoxLayout::TypeIdClass()) ? TRUE : FALSE;
 }
@@ -189,7 +189,7 @@ LTK_API void WINAPI LtkBoxLayout_AddLayoutItem(
 	LtkBoxLayout* self, LtkSprite *sp, float preferedSize, float growFactor)
 {
 	BoxLayout* thiz = (BoxLayout *)self;
-	thiz->AddLayoutItem((Sprite*)sp, preferedSize, growFactor);
+	thiz->AddLayoutItem((Widget*)sp, preferedSize, growFactor);
 }
 
 LTK_API void WINAPI LtkBoxLayout_AddSpaceItem(LtkBoxLayout* self, float preferedSize, float growFactor)
@@ -208,14 +208,14 @@ LTK_API void WINAPI LtkBoxLayout_SetSpacing(LtkBoxLayout* self, float spacing)
 // Button
 //////////////////////////////////////////////////////////////////////////
 
-LTK_API LtkObject* WINAPI LtkButton_New_(LPCSTR source, int line)
+LTK_API HLTK WINAPI LtkButton_New_(LPCSTR source, int line)
 {
 	auto obj = new Button;
 	obj->SetSourceLine(source, line);
-	return (LtkObject*)obj;
+	return (HLTK)obj;
 }
 
-LTK_API BOOL WINAPI LtkIsButton(LtkObject* o)
+LTK_API BOOL WINAPI LtkIsButton(HLTK o)
 {
 	Object *obj = (Object *)o;
 	if (!Object::CheckValid(obj)) return FALSE;
@@ -232,18 +232,18 @@ LTK_API void WINAPI LtkButton_SetText(LtkButton* self, LPCWSTR text)
 // HeaderCtrl
 //////////////////////////////////////////////////////////////////////////
 
-LTK_API BOOL WINAPI LtkIsHeaderCtrl(LtkObject* o)
+LTK_API BOOL WINAPI LtkIsHeaderCtrl(HLTK o)
 {
 	Object *obj = (Object *)o;
 	if (!Object::CheckValid(obj)) return FALSE;
 	return obj->Is(HeaderCtrl::TypeIdClass()) ? TRUE : FALSE;
 }
 
-LTK_API LtkObject* WINAPI LtkHeaderCtrl_New_(LPCSTR source, int line)
+LTK_API HLTK WINAPI LtkHeaderCtrl_New_(LPCSTR source, int line)
 {
 	auto obj = new HeaderCtrl();
 	obj->SetSourceLine(source, line);
-	return (LtkObject*)obj;
+	return (HLTK)obj;
 }
 
 LTK_API void WINAPI LtkHeaderCtrl_AddColumn(LtkHeaderCtrl* self, LPCWSTR text, float width)
@@ -256,12 +256,12 @@ LTK_API void WINAPI LtkHeaderCtrl_AddColumn(LtkHeaderCtrl* self, LPCWSTR text, f
 // ListView
 //////////////////////////////////////////////////////////////////////////
 
-LTK_API LtkObject* WINAPI LtkListView_New_(LPCSTR source, int line)
+LTK_API HLTK WINAPI LtkListView_New_(LPCSTR source, int line)
 {
-	return (LtkObject*)new ListView;
+	return (HLTK)new ListView;
 }
 
-LTK_API BOOL WINAPI LtkIsListView(LtkObject* o)
+LTK_API BOOL WINAPI LtkIsListView(HLTK o)
 {
 	Object *obj = (Object *)o;
 	if (!Object::CheckValid(obj)) return FALSE;
@@ -292,10 +292,10 @@ LTK_API int WINAPI LtkListView_GetSelectedRow(LtkListView* self)
 	return thiz->GetSelectedRow();
 }
 
-LTK_API LtkObject* WINAPI LtkListView_GetHeaderCtrl(LtkListView* self)
+LTK_API HLTK WINAPI LtkListView_GetHeaderCtrl(LtkListView* self)
 {
 	ListView* thiz = (ListView *)self;
-	return (LtkObject*)thiz->GetHeaderCtrl();
+	return (HLTK)thiz->GetHeaderCtrl();
 }
 
 LTK_API void WINAPI LtkListView_UpdateColumnWidth(LtkListView* self)
@@ -308,14 +308,14 @@ LTK_API void WINAPI LtkListView_UpdateColumnWidth(LtkListView* self)
 // Splitter
 //////////////////////////////////////////////////////////////////////////
 
-LTK_API LtkObject* WINAPI LtkSplitter_New_(UINT orientation, LPCSTR source, int line)
+LTK_API HLTK WINAPI LtkSplitter_New_(UINT orientation, LPCSTR source, int line)
 {
 	auto obj = new Splitter((Orientation)orientation);
 	obj->SetSourceLine(source, line);
-	return (LtkObject*)obj;
+	return (HLTK)obj;
 }
 
-LTK_API BOOL WINAPI LtkIsSplitter(LtkObject *o)
+LTK_API BOOL WINAPI LtkIsSplitter(HLTK o)
 {
 	Object *obj = (Object *)o;
 	if (!Object::CheckValid(obj)) return FALSE;
@@ -331,7 +331,7 @@ LTK_API void WINAPI LtkSplitter_Resize(LtkSplitter* self, UINT n)
 LTK_API LtkSprite* WINAPI LtkSplitter_SetClientAt(LtkSplitter* self, UINT idx, LtkSprite* sp)
 {
 	Splitter* thiz = (Splitter*)self;
-	return (LtkSprite*)thiz->SetClientAt(idx, (Sprite*)sp);
+	return (LtkSprite*)thiz->SetClientAt(idx, (Widget*)sp);
 }
 
 LTK_API void WINAPI LtkSplitter_SetClientSize(LtkSplitter* self, UINT idx, float size)
@@ -344,42 +344,42 @@ LTK_API void WINAPI LtkSplitter_SetClientSize(LtkSplitter* self, UINT idx, float
 // TreeView
 //////////////////////////////////////////////////////////////////////////
 
-LTK_API BOOL WINAPI LtkIsTreeView(LtkObject* o)
+LTK_API BOOL WINAPI LtkIsTreeView(HLTK o)
 {
 	Object *obj = (Object *)o;
 	if (!Object::CheckValid(obj)) return FALSE;
 	return obj->Is(TreeView::TypeIdClass()) ? TRUE : FALSE;
 }
 
-LTK_API LtkObject* WINAPI LtkTreeView_New_(LPCSTR source, int line)
+LTK_API HLTK WINAPI LtkTreeView_New_(LPCSTR source, int line)
 {
 	auto obj = new TreeView();
 	obj->SetSourceLine(source, line);
-	return (LtkObject*)obj;
+	return (HLTK)obj;
 }
 
-LTK_API LtkObject* WINAPI LtkTreeView_GetRootNode(LtkTreeView* self)
+LTK_API HLTK WINAPI LtkTreeView_GetRootNode(LtkTreeView* self)
 {
 	TreeView* thiz = (TreeView*)self;
-	return (LtkObject*)thiz->GetRootNode();
+	return (HLTK)thiz->GetRootNode();
 }
 
 //////////////////////////////////////////////////////////////////////////
 // TreeNode
 //////////////////////////////////////////////////////////////////////////
 
-LTK_API BOOL WINAPI LtkIsTreeNode(LtkObject* o)
+LTK_API BOOL WINAPI LtkIsTreeNode(HLTK o)
 {
 	Object *obj = (Object *)o;
 	if (!Object::CheckValid(obj)) return FALSE;
 	return obj->Is(TreeNode::TypeIdClass()) ? TRUE : FALSE;
 }
 
-LTK_API LtkObject* WINAPI LtkTreeNode_New_(LPCSTR source, int line)
+LTK_API HLTK WINAPI LtkTreeNode_New_(LPCSTR source, int line)
 {
 	auto obj = new TreeNode();
 	obj->SetSourceLine(source, line);
-	return (LtkObject*)obj;
+	return (HLTK)obj;
 }
 
 LTK_API void WINAPI LtkTreeNode_AddChild(LtkTreeNode* self, LtkTreeNode* node)
@@ -398,36 +398,36 @@ LTK_API void WINAPI LtkTreeNode_SetText(LtkTreeNode* self, LPCWSTR text)
 // TextEdit
 //////////////////////////////////////////////////////////////////////////
 
-LTK_API BOOL WINAPI LtkIsTextEdit(LtkObject* o)
+LTK_API BOOL WINAPI LtkIsTextEdit(HLTK o)
 {
 	Object *obj = (Object *)o;
 	if (!Object::CheckValid(obj)) return FALSE;
 	return obj->Is(TextEdit::TypeIdClass()) ? TRUE : FALSE;
 }
 
-LTK_API LtkObject* WINAPI LtkTextEdit_New_(LPCSTR source, int line)
+LTK_API HLTK WINAPI LtkTextEdit_New_(LPCSTR source, int line)
 {
 	auto obj = new TextEdit();
 	obj->SetSourceLine(source, line);
-	return (LtkObject*)obj;
+	return (HLTK)obj;
 }
 
 //////////////////////////////////////////////////////////////////////////
 // MenuBar
 //////////////////////////////////////////////////////////////////////////
 
-LTK_API BOOL WINAPI LtkIsMenuBar(LtkObject* o)
+LTK_API BOOL WINAPI LtkIsMenuBar(HLTK o)
 {
 	Object *obj = (Object *)o;
 	if (!Object::CheckValid(obj)) return FALSE;
 	return obj->Is(MenuBar::TypeIdClass()) ? TRUE : FALSE;
 }
 
-LTK_API LtkObject* WINAPI LtkMenuBar_New_(LPCSTR source, int line)
+LTK_API HLTK WINAPI LtkMenuBar_New_(LPCSTR source, int line)
 {
 	auto obj = new MenuBar();
 	obj->SetSourceLine(source, line);
-	return (LtkObject*)obj;
+	return (HLTK)obj;
 }
 
 LTK_API void WINAPI LtkMenuBar_AddItem(LtkMenuBar* self, LPCWSTR text)
@@ -446,18 +446,18 @@ LTK_API void WINAPI LtkMenuBar_SetPopupMenu(LtkMenuBar* self, UINT idx, LtkPopup
 // PopupMenu
 //////////////////////////////////////////////////////////////////////////
 
-LTK_API BOOL WINAPI LtkIsPopupMenu(LtkObject* o)
+LTK_API BOOL WINAPI LtkIsPopupMenu(HLTK o)
 {
 	Object *obj = (Object *)o;
 	if (!Object::CheckValid(obj)) return FALSE;
 	return obj->Is(PopupMenu::TypeIdClass()) ? TRUE : FALSE;
 }
 
-LTK_API LtkObject* WINAPI LtkPopupMenu_New_(LPCSTR source, int line)
+LTK_API HLTK WINAPI LtkPopupMenu_New_(LPCSTR source, int line)
 {
 	auto obj = new PopupMenu();
 	obj->SetSourceLine(source, line);
-	return (LtkObject*)obj;
+	return (HLTK)obj;
 }
 
 LTK_API void WINAPI LtkPopupMenu_AddItem(LtkPopupMenu* self, LPCWSTR text, LPCSTR name)

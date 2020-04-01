@@ -360,6 +360,7 @@ namespace ltk {
 		ShadowFrame::Free();
         StyleManager::Free();
         TimerManager::Free();
+        Object::Free();
 
         g_dw_factory->Release();
         g_wic_factory->Release();

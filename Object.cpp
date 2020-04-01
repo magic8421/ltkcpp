@@ -10,9 +10,18 @@
 namespace ltk {
 
 static __declspec(thread) Object *sDelegateInvoker = nullptr;
+static std::unordered_set<Object*>* sObjectSet;
 
+Object::Object()
+{
+	// TODO lock for multithread.
+	if (!sObjectSet) {
+		sObjectSet = new std::unordered_set<Object*>;
+	}
+	sObjectSet->insert(this);
+}
 
-Object::~Object() 
+Object::~Object()
 {
 	m_bDeleting = true;
 	for (size_t i = 0; i < m_children.size(); i++) {
@@ -22,6 +31,17 @@ Object::~Object()
 	if (m_parent && !m_parent->m_bDeleting) {
 		m_parent->RemoveChild(this);
 	}
+	// TODO lock for multithread.
+	auto iter = sObjectSet->find(this);
+	if (iter == sObjectSet->end()) {
+		LTK_ASSERT(false);
+	}
+	sObjectSet->erase(iter);
+}
+
+void Object::Free()
+{
+	delete sObjectSet;
 }
 
 Object * Object::GetDelegateInvoker()
@@ -37,11 +57,6 @@ void Object::SetDelegateInvoker(Object *sender)
 void Object::SetName(LPCSTR name)
 {
 	m_name = ltk::InternString(name);
-}
-
-LPCSTR Object::GetName()
-{
-	return m_name;
 }
 
 void Object::AddChild(Object* o)
@@ -78,35 +93,66 @@ void Object::SetParent(Object* p)
 
 /////////////////////////////////////////////////////////////////
 
-void Object::RegisterEvent(UINT code, LtkCallback callback, void* userdata)
+void Object::SetSourceLine(LPCSTR source, int line)
 {
-	auto iter = m_mapCallback.find(code);
-	if (iter != m_mapCallback.end()) { // exist in map
-		AddEventToList(iter->second, callback, userdata);
-	}
-	else {
-		auto [iter2, bSucceed] = m_mapCallback.emplace(
-			std::make_pair(code, std::vector <CallbackInfo>()));
-		LTK_ASSERT(bSucceed);
-		AddEventToList(iter2->second, callback, userdata);
+	m_source = source;
+	m_line = line;
+}
+
+bool Object::CheckValid(Object* o)
+{
+	// TODO lock for multithread.
+	return sObjectSet->find(o) != sObjectSet->end();
+}
+
+void Object::DumpObjectLeaks()
+{
+	// TODO lock for multithread.
+	char buf[512];
+	for (Object* obj : *sObjectSet) {
+		::StringCbPrintfA(
+			buf, sizeof(buf), "LtkObject leak: [%s] %s(%d)\r\n",
+			obj->TypeNameInstance(), obj->m_source, obj->m_line);
+		::OutputDebugStringA(buf);
 	}
 }
 
-void Object::AddEventToList(std::vector<CallbackInfo>& list, LtkCallback callback, void* userdata)
+void Object::RegisterCallback(UINT event_id, LtkCallback cb, void* userdata)
 {
+	auto& vecCallbacks = m_mapCallbacks[event_id];
 	bool bFound = false;
-	// find duplicate
-	for (size_t i = list.size(); i > 0; i --) { // maybe better in reversed order.
-		const auto& item = list[i - 1];
-		if (item.callback == callback && item.userdata == userdata) {
+	for (auto info : vecCallbacks) {
+		if (info.userdata == userdata) {
 			bFound = true;
 			break;
 		}
 	}
 	if (bFound) {
+		LTK_LOG("RegisterCallback duplicated userdata, event_id: %d", event_id);
 		return;
 	}
-	list.push_back(CallbackInfo{userdata, callback});
+	CallbackInfo info;
+	info.callback = cb;
+	info.userdata = userdata;
+	vecCallbacks.push_back(info);
+}
+
+void Object::InvokeCallback(UINT event_id, ...)
+{
+	//m_staticSender = this; // TODO
+
+	auto iter = m_mapCallbacks.find(event_id);
+	if (iter == m_mapCallbacks.end()) {
+		return;
+	}
+	auto& vecCallbacks = iter->second; // TODO copy?
+	for (UINT i = vecCallbacks.size(); i > 0; i--) {
+		const CallbackInfo &info = vecCallbacks[i - 1];
+		va_list args;
+		va_start(args, event_id);
+		DoInvokeCallback(event_id, info.callback, info.userdata, args);
+		va_end(args);
+	}
 }
 
 

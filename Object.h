@@ -2,7 +2,8 @@
 #include "RTTI.h"
 #include "Common.h"
 #include "Container.h"
-#include "LtkInterface.h"
+
+typedef void (CALLBACK *LtkCallback)();
 
 namespace ltk {
 
@@ -12,14 +13,16 @@ class LTK_CPP_API Object : public RTTI
 public:
 	RTTI_DECLARATIONS(Object, RTTI);
 
-	Object() {}
+	static void Free();
+
+	Object();
 	virtual ~Object();
 
 	static Object *GetDelegateInvoker();
 	static void SetDelegateInvoker(Object *);
 
 	void SetName(LPCSTR name);
-	LPCSTR GetName();
+	LPCSTR GetName() { return m_name; }
 
 	bool IsWidget() { return m_bWidget; }
 	void AddChild(Object *);
@@ -32,15 +35,21 @@ public:
 	virtual void SetAttribute(LPCSTR name, LPCSTR value) {}
 
 	/////////////////////////////////////////////////////////////////
-	
-	void RegisterEvent(UINT code, LtkCallback cb, void *userdata);
+	void SetSourceLine(LPCSTR source, int line);
+	static bool CheckValid(Object* o);
+	static void DumpObjectLeaks();
+	void RegisterCallback(UINT event_id, LtkCallback cb, void* userdata);
+	void InvokeCallback(UINT event_id, ...);
+
+protected:
+	virtual void DoInvokeCallback(
+		UINT event_id, LtkCallback cb, void* userdata, va_list args) {}
 
 private:
 	struct CallbackInfo {
-		void* userdata = nullptr;
 		LtkCallback callback = nullptr;
+		void* userdata = nullptr;
 	};
-	void AddEventToList(std::vector<CallbackInfo>& list, LtkCallback callback, void* userdata);
 
 protected:
 	bool m_bWidget = false;
@@ -51,8 +60,10 @@ private:
 	Object *m_parent = nullptr;
 	ArrayList<Object *> m_children;
 
+	std::map<UINT, std::vector<CallbackInfo>> m_mapCallbacks;
 
-	std::unordered_map<UINT, std::vector<CallbackInfo>> m_mapCallback;
+	const char* m_source = nullptr; // 好像没必要 外部使用者应该用umdh来查内存泄漏
+	int m_line = -1;
 
 	DISALLOW_COPY_AND_ASSIGN(Object);
 };
