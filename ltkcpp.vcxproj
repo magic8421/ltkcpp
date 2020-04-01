@@ -38,7 +38,6 @@
     <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
-    <EnableASAN>true</EnableASAN>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -97,6 +96,7 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>D2d1.lib;Windowscodecs.lib;Dwrite.lib;gdiplus.lib;Winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <ModuleDefinitionFile>ltkcpp.def</ModuleDefinitionFile>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -132,6 +132,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>D2d1.lib;Windowscodecs.lib;Dwrite.lib;gdiplus.lib;Winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <StripPrivateSymbols>striped.pdb</StripPrivateSymbols>
+      <ModuleDefinitionFile>ltkcpp.def</ModuleDefinitionFile>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -255,6 +256,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />
+    <None Include="ltkcpp.def" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -1,0 +1,7 @@
+LIBRARY "ltkcpp.dll"
+
+EXPORTS
+	LtkInitialize
+	LtkUninitialize
+	LtkRunMessageLoop
+	LtkGetFactory
