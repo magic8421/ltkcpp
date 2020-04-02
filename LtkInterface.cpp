@@ -14,6 +14,8 @@
 
 using namespace ltk;
 
+static BOOL sApiCheck = TRUE;
+
 LTK_API UINT WINAPI LtkInitialize()
 {
 	ltk::LtkInitialize();
@@ -72,6 +74,11 @@ LTK_API void WINAPI LtkUnregisterCallback(HLTK obj, UINT event_id, LtkCallback c
 	// TODO
 }
 
+LTK_API HLTK WINAPI LtkGetEventSender()
+{
+	return (HLTK)Object::GetDelegateInvoker();
+}
+
 
 
 //////////////////////////////////////////////////////////////////////////
@@ -98,71 +105,66 @@ LTK_API HLTK WINAPI LtkWindow_New_(LPCSTR source, int line)
 	return (HLTK)obj;
 }
 
-LTK_API BOOL WINAPI LtkIsWindow(HLTK o)
+template<typename T>
+T* LtkCheckType(HLTK o)
 {
-	Object *obj = (Object *)o;
-	if (!Object::CheckValid(obj)) return FALSE;
-	return obj->Is(Window::TypeIdClass()) ? TRUE : FALSE;
+	if (sApiCheck) {
+		Object* obj = (Object*)o;
+		if (!Object::CheckValid(obj)) __debugbreak();
+		if (!obj->Is(T::TypeIdClass())) __debugbreak();
+	}
+	return (T *) o;
 }
 
-LTK_API void WINAPI LtkWindow_Create(
-	LtkWindow* self, LtkWindow* parent, LtkRect *rc)
+LTK_API void WINAPI LtkWindow_Create(HLTK self, HWND parent, LtkRect* rc)
 {
-	Window* p2 = nullptr;
-	if (parent) {
-		p2 = (Window*)parent;
-	}
 	Gdiplus::RectF rcf(rc->x, rc->y, rc->width, rc->height);
-	Window *thiz = (Window *)self;
-	thiz->Create(p2, rcf);
+	Window *thiz = LtkCheckType<Window>(self);
+	thiz->Create(0, rcf);
 }
 
-
-LTK_API void WINAPI LtkWindow_CreateCenter(
-	LtkWindow*self, LtkWindow* parent, float width, float height)
+LTK_API void WINAPI LtkWindow_CreateCenter(HLTK self, HWND parent, float width, float height)
 {
-	Window* p2 = nullptr;
-	if (parent) {
-		p2 = (Window*)parent;
-	}
 	Gdiplus::SizeF size(width, height);
-	Window *thiz = (Window *)self;
-	thiz->Create(p2, size);
+	Window *thiz = LtkCheckType<Window>(self);
+	thiz->Create(0, size);
 }
 
-LTK_API void WINAPI LtkWindow_SetCaption(LtkWindow*self, LPCWSTR text)
+LTK_API void WINAPI LtkWindow_SetCaption(HLTK self, LPCWSTR text)
 {
-	Window* thiz = (Window*)self;
+	Window* thiz = LtkCheckType<Window>(self);
 	thiz->SetCaption(text);
 }
 
-LTK_API void WINAPI LtkWindow_SetBackground(LtkWindow* self, LPCSTR name)
+LTK_API void WINAPI LtkWindow_SetBackground(HLTK self, LPCSTR name)
 {
-	Window* thiz = (Window*)self;
+	Window* thiz = LtkCheckType<Window>(self);
 	thiz->SetBackground(name);
 }
 
-LTK_API void WINAPI LtkWindow_UpdateTheme(LtkWindow* wnd)
+LTK_API void WINAPI LtkWindow_UpdateTheme(HLTK self)
 {
-	Window* thiz = (Window*)wnd;
+	Window* thiz = LtkCheckType<Window>(self);
 	thiz->UpdateTheme();
 }
 
-LTK_API void WINAPI LtkWindow_SetClientSprite(LtkWindow* self, LtkSprite* sp)
+LTK_API void WINAPI LtkWindow_SetCentralWidget(HLTK self, HLTK widget)
 {
-	Window* thiz = (Window*)self;
-	thiz->SetCentralWidget((Widget*)sp);
+	Window* thiz = LtkCheckType<Window>(self);
+	Widget* w = LtkCheckType<Widget>(widget);
+	thiz->SetCentralWidget(w);
 }
 
-LTK_API void WINAPI LtkWindow_SetMenu(LtkWindow* self, LtkMenuBar* menu)
+LTK_API void WINAPI LtkWindow_SetMenu(HLTK self, HLTK menu_bar)
 {
-	Window* thiz = (Window*)self;
-	thiz->SetMenu((MenuBar*)menu);
+	Window* thiz = LtkCheckType<Window>(self);
+	MenuBar* mb = LtkCheckType<MenuBar>(menu_bar);
+	thiz->SetMenu(mb);
 }
 
-LTK_API HWND WINAPI LtkWindow_GetHWND(LtkWindow* self)
+LTK_API HWND WINAPI LtkWindow_GetHWND(HLTK self)
 {
-	Window* thiz = (Window*)self;
+	Window* thiz = LtkCheckType<Window>(self);
 	return thiz->GetHWND();
 }
 

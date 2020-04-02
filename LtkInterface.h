@@ -49,11 +49,11 @@ LTK_API void WINAPI LtkRegisterCallback(HLTK obj, UINT event_id, LtkCallback cb,
 LTK_API void WINAPI LtkUnregisterCallback(HLTK obj, UINT event_id, LtkCallback cb, void* userdata);
 LTK_API void WINAPI LtkUnregisterCallbackByUserdata(HLTK obj, UINT event_id, void* userdata);
 
+LTK_API HLTK WINAPI LtkGetEventSender();
+
 LTK_API void* WINAPI LtkGetProp(LPCSTR name);
 LTK_API void WINAPI LtkSetProp(LPCSTR name, void *data);
 
-
-LTK_DECLARE_TYPE(LtkWindow); // 基类：LtkObject
 
 LTK_DECLARE_TYPE(LtkSprite); // 基类：LtkObject
 
@@ -139,16 +139,6 @@ typedef struct _LtkRecreateResource {
 	ID2D1RenderTarget* target;
 } LtkRecreateResource;
 
-#define LTK_CALLBACK_BEGIN(klass, name) \
-	static BOOL CALLBACK name(void* userdata, LtkEvent* ev) { \
-		klass* self = (klass*)userdata; \
-		switch (ev->id) {
-
-// TODO 这里有问题 如果是模拟虚函数 这里怎么调用基类呢？
-#define LTK_CALLBACK_END() \
-		default: return FALSE; \
-		} \
-	}
 
 #define LTK_HANDLE_PAINT(func) \
 		case LTK_PAINT: \
@@ -181,23 +171,18 @@ LTK_API BOOL WINAPI LtkIsSprite(HLTK o);
 // (void *userdata, BOOL *pProceed, BOOL *bHandled)
 #define LTK_WINDOW_CLOSE		102
 
-#define LTK_HANDLE_WINDOW_CLOSE(func) \
-	case LTK_WINDOW_CLOSE: return self->func(ev);
-
-#define LTK_WINDOW(o) LtkIsWindow(o) ? (LtkWindow*)o : NULL
-LTK_API BOOL WINAPI LtkIsWindow(HLTK o);
 
 #define LtkWindow_New() LtkWindow_New_(__FILE__, __LINE__)
 LTK_API HLTK WINAPI LtkWindow_New_(LPCSTR source, int line);
 
-LTK_API void WINAPI LtkWindow_Create(LtkWindow*self, LtkWindow* parent, LtkRect* rc);
-LTK_API void WINAPI LtkWindow_CreateCenter(LtkWindow*self, LtkWindow* parent, float width, float height);
-LTK_API void WINAPI LtkWindow_SetCaption(LtkWindow*self, LPCWSTR text);
-LTK_API void WINAPI LtkWindow_SetBackground(LtkWindow* self, LPCSTR name);
-LTK_API void WINAPI LtkWindow_UpdateTheme(LtkWindow* self);
-LTK_API void WINAPI LtkWindow_SetClientSprite(LtkWindow* self, LtkSprite* sp);
-LTK_API void WINAPI LtkWindow_SetMenu(LtkWindow* self, LtkMenuBar* menu);
-LTK_API HWND WINAPI LtkWindow_GetHWND(LtkWindow* self);
+LTK_API void WINAPI LtkWindow_Create(HLTK self, HWND parent, LtkRect* rc);
+LTK_API void WINAPI LtkWindow_CreateCenter(HLTK self, HWND parent, float width, float height);
+LTK_API void WINAPI LtkWindow_SetCaption(HLTK self, LPCWSTR text);
+LTK_API void WINAPI LtkWindow_SetBackground(HLTK self, LPCSTR name);
+LTK_API void WINAPI LtkWindow_UpdateTheme(HLTK self);
+LTK_API void WINAPI LtkWindow_SetCentralWidget(HLTK self, HLTK widget);
+LTK_API void WINAPI LtkWindow_SetMenu(HLTK self, HLTK menu_bar);
+LTK_API HWND WINAPI LtkWindow_GetHWND(HLTK self);
 
 LTK_DECLARE_TYPE(LtkBoxLayout); // 基类：LtkSprite
 

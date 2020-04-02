@@ -8,7 +8,8 @@
 
 void CALLBACK OnWindowClose(void* userdata, BOOL* proceed, BOOL* bHandled)
 {
-	if (::MessageBox(0, L"close ?", 0, MB_OKCANCEL) == IDCANCEL) {
+	HLTK wnd = LtkGetEventSender();
+	if (::MessageBox(LtkWindow_GetHWND(wnd), L"close ?", 0, MB_OKCANCEL) == IDCANCEL) {
 		*proceed = FALSE;
 	}
 }
@@ -56,7 +57,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 		wnd, LTK_WINDOW_CLOSE, (LtkCallback)OnWindowClose, NULL);
 
 	HLTK splitter_h = LtkSplitter_New(LTK_HORIZONTAL);
-	LtkWindow_SetClientSprite(LTK_WINDOW(wnd), LTK_SPRITE(splitter_h));
+	LtkWindow_SetCentralWidget(wnd, splitter_h);
 
 	LtkSplitter_Resize(LTK_SPLITTER(splitter_h), 2);
 
@@ -103,7 +104,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	LtkMenuBar_AddItem(LTK_MENUBAR(menu_bar), L"编辑");
 	LtkMenuBar_AddItem(LTK_MENUBAR(menu_bar), L"皮肤");
 	LtkMenuBar_AddItem(LTK_MENUBAR(menu_bar), L"帮助");
-	LtkWindow_SetMenu(LTK_WINDOW(wnd), LTK_MENUBAR(menu_bar));
+	LtkWindow_SetMenu(wnd, menu_bar);
 
 	HLTK popup_menu = LtkPopupMenu_New();
 	LtkPopupMenu_AddItem(LTK_POPUPMENU(popup_menu), L"新建", "");
@@ -120,9 +121,9 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	LtkPopupMenu_AddItem(LTK_POPUPMENU(popup2), L"C:\\路径\\文件", "");
 	LtkPopupMenu_SetSubMenu(LTK_POPUPMENU(popup_menu), 2, LTK_POPUPMENU(popup2));
 
-	LtkWindow_CreateCenter(LTK_WINDOW(wnd), NULL, 800, 600);
-	LtkWindow_SetCaption(LTK_WINDOW(wnd), L"Ltk测试窗口");
-	LtkWindow_UpdateTheme(LTK_WINDOW(wnd));
+	LtkWindow_CreateCenter(wnd, NULL, 800, 600);
+	LtkWindow_SetCaption(wnd, L"Ltk测试窗口");
+	LtkWindow_UpdateTheme(wnd);
 
 	LtkRunMessageLoop();
 
