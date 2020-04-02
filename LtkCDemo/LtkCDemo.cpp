@@ -59,7 +59,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	HLTK splitter_h = LtkSplitter_New(LTK_HORIZONTAL);
 	LtkWindow_SetCentralWidget(wnd, splitter_h);
 
-	LtkSplitter_Resize(LTK_SPLITTER(splitter_h), 2);
+	LtkSplitter_Resize(splitter_h, 2);
 
 	HLTK tree_view = LtkTreeView_New();
 	RecBuildNodes(LTK_TREENODE(
@@ -67,37 +67,40 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 	HLTK btn = NULL;
 	//HLTK btn = LtkButton_New();
-	LtkSplitter_SetClientAt(LTK_SPLITTER(splitter_h), 0, LTK_SPRITE(tree_view));
-	LtkSplitter_SetClientSize(LTK_SPLITTER(splitter_h), 0, 200);
+	LtkSplitter_SetClientAt(splitter_h, 0, tree_view);
+	LtkSplitter_SetClientSize(splitter_h, 0, 200);
 
 	HLTK splitter_v = LtkSplitter_New(LTK_VERTICAL);
-	LtkSplitter_Resize(LTK_SPLITTER(splitter_v), 2);
-	LtkSplitter_SetClientAt(LTK_SPLITTER(splitter_h), 1, LTK_SPRITE(splitter_v));
+	LtkSplitter_Resize(splitter_v, 2);
+	LtkSplitter_SetClientAt(splitter_h, 1, splitter_v);
 
 	HLTK list_view = LtkListView_New();
 	HLTK header = LtkListView_GetHeaderCtrl(LTK_LISTVIEW(list_view));
 	LtkHeaderCtrl_AddColumn(LTK_HEADERCTRL(header), L"项目名", 100);
 	LtkHeaderCtrl_AddColumn(LTK_HEADERCTRL(header), L"工程名", 200);
 	LtkHeaderCtrl_AddColumn(LTK_HEADERCTRL(header), L"负责人", 200);
+	LtkHeaderCtrl_AddColumn(LTK_HEADERCTRL(header), L"资金", 100);
 	LtkListView_UpdateColumnWidth(LTK_LISTVIEW(list_view));
 
 	UINT num = rand() % 200;
 	for (UINT i = 0; i < num; i++) {
 		wchar_t buf[128];
 		LtkListView_AddRow(LTK_LISTVIEW(list_view));
-		StringCbPrintf(buf, sizeof(buf), L"item:%d", i);
+		StringCbPrintf(buf, sizeof(buf), L"col:0 row:%d", i);
 		LtkListView_SetCellText(LTK_LISTVIEW(list_view), i, 0, buf);
-		StringCbPrintf(buf, sizeof(buf), L"subitem1:%d", i);
+		StringCbPrintf(buf, sizeof(buf), L"col:1 row:%d", i);
 		LtkListView_SetCellText(LTK_LISTVIEW(list_view), i, 1, buf);
-		StringCbPrintf(buf, sizeof(buf), L"subitem2:%d", i);
+		StringCbPrintf(buf, sizeof(buf), L"col:2 row:%d", i);
 		LtkListView_SetCellText(LTK_LISTVIEW(list_view), i, 2, buf);
+		StringCbPrintf(buf, sizeof(buf), L"col:3 row:%d", i);
+		LtkListView_SetCellText(LTK_LISTVIEW(list_view), i, 3, buf);
 	}
 
-	LtkSplitter_SetClientAt(LTK_SPLITTER(splitter_v), 0, LTK_SPRITE(list_view));
-	LtkSplitter_SetClientSize(LTK_SPLITTER(splitter_v), 0, 350);
+	LtkSplitter_SetClientAt(splitter_v, 0, list_view);
+	LtkSplitter_SetClientSize(splitter_v, 0, 350);
 	
 	HLTK text_edit = LtkTextEdit_New();
-	LtkSplitter_SetClientAt(LTK_SPLITTER(splitter_v), 1, LTK_SPRITE(text_edit));
+	LtkSplitter_SetClientAt(splitter_v, 1, text_edit);
 
 	HLTK menu_bar = LtkMenuBar_New();
 	LtkMenuBar_AddItem(LTK_MENUBAR(menu_bar), L"文件");

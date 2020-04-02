@@ -85,13 +85,6 @@ LTK_API HLTK WINAPI LtkGetEventSender()
 // Widget
 //////////////////////////////////////////////////////////////////////////
 
-LTK_API BOOL WINAPI LtkIsSprite(HLTK o)
-{
-	Object *obj = (Object *)o;
-	if (!Object::CheckValid(obj)) return FALSE;
-	return obj->Is(Widget::TypeIdClass()) ? TRUE : FALSE;
-}
-
 
 //////////////////////////////////////////////////////////////////////////
 // Window
@@ -199,29 +192,22 @@ LTK_API HLTK WINAPI LtkBoxLayout_New_(UINT orientation, LPCSTR source, int line)
 	return (HLTK)obj;
 }
 
-LTK_API BOOL WINAPI LtkIsBoxLayout(HLTK o)
-{
-	auto obj = (Object *)o;
-	if (!Object::CheckValid(obj)) return FALSE;
-	return obj->Is(BoxLayout::TypeIdClass()) ? TRUE : FALSE;
-}
-
 LTK_API void WINAPI LtkBoxLayout_AddLayoutItem(
-	LtkBoxLayout* self, LtkSprite *sp, float preferedSize, float growFactor)
+	HLTK self, HLTK widget, float preferedSize, float growFactor)
 {
-	BoxLayout* thiz = (BoxLayout *)self;
-	thiz->AddLayoutItem((Widget*)sp, preferedSize, growFactor);
+	BoxLayout* thiz = LtkCheckType<BoxLayout>(self);
+	thiz->AddLayoutItem(LtkCheckType<Widget>(widget), preferedSize, growFactor);
 }
 
-LTK_API void WINAPI LtkBoxLayout_AddSpaceItem(LtkBoxLayout* self, float preferedSize, float growFactor)
+LTK_API void WINAPI LtkBoxLayout_AddSpaceItem(HLTK self, float preferedSize, float growFactor)
 {
-	BoxLayout* thiz = (BoxLayout *)self;
+	BoxLayout* thiz = LtkCheckType<BoxLayout>(self);
 	thiz->AddSpaceItem(preferedSize, growFactor);
 }
 
-LTK_API void WINAPI LtkBoxLayout_SetSpacing(LtkBoxLayout* self, float spacing)
+LTK_API void WINAPI LtkBoxLayout_SetSpacing(HLTK self, float spacing)
 {
-	BoxLayout* thiz = (BoxLayout *)self;
+	BoxLayout* thiz = LtkCheckType<BoxLayout>(self);
 	thiz->SetSpacing(spacing);
 }
 
@@ -236,16 +222,9 @@ LTK_API HLTK WINAPI LtkButton_New_(LPCSTR source, int line)
 	return (HLTK)obj;
 }
 
-LTK_API BOOL WINAPI LtkIsButton(HLTK o)
+LTK_API void WINAPI LtkButton_SetText(HLTK self, LPCWSTR text)
 {
-	Object *obj = (Object *)o;
-	if (!Object::CheckValid(obj)) return FALSE;
-	return obj->Is(Button::TypeIdClass()) ? TRUE : FALSE;
-}
-
-LTK_API void WINAPI LtkButton_SetText(LtkButton* self, LPCWSTR text)
-{
-	Button* thiz = (Button*)self;
+	Button* thiz = LtkCheckType<Button>(self);
 	thiz->SetText(text);
 }
 
@@ -336,28 +315,21 @@ LTK_API HLTK WINAPI LtkSplitter_New_(UINT orientation, LPCSTR source, int line)
 	return (HLTK)obj;
 }
 
-LTK_API BOOL WINAPI LtkIsSplitter(HLTK o)
+LTK_API void WINAPI LtkSplitter_Resize(HLTK self, UINT n)
 {
-	Object *obj = (Object *)o;
-	if (!Object::CheckValid(obj)) return FALSE;
-	return obj->Is(Splitter::TypeIdClass()) ? TRUE : FALSE;
-}
-
-LTK_API void WINAPI LtkSplitter_Resize(LtkSplitter* self, UINT n)
-{
-	Splitter* thiz = (Splitter*)self;
+	Splitter* thiz = LtkCheckType<Splitter>(self);
 	thiz->Resize(n);
 }
 
-LTK_API LtkSprite* WINAPI LtkSplitter_SetClientAt(LtkSplitter* self, UINT idx, LtkSprite* sp)
+LTK_API HLTK WINAPI LtkSplitter_SetClientAt(HLTK self, UINT idx, HLTK widget)
 {
-	Splitter* thiz = (Splitter*)self;
-	return (LtkSprite*)thiz->SetClientAt(idx, (Widget*)sp);
+	Splitter* thiz = LtkCheckType<Splitter>(self);
+	return (HLTK)thiz->SetClientAt(idx, LtkCheckType<Widget>(widget));
 }
 
-LTK_API void WINAPI LtkSplitter_SetClientSize(LtkSplitter* self, UINT idx, float size)
+LTK_API void WINAPI LtkSplitter_SetClientSize(HLTK self, UINT idx, float size)
 {
-	Splitter* thiz = (Splitter*)self;
+	Splitter* thiz = LtkCheckType<Splitter>(self);
 	thiz->SetClientSize(idx, size);
 }
 

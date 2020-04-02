@@ -55,8 +55,6 @@ LTK_API void* WINAPI LtkGetProp(LPCSTR name);
 LTK_API void WINAPI LtkSetProp(LPCSTR name, void *data);
 
 
-LTK_DECLARE_TYPE(LtkSprite); // 基类：LtkObject
-
 #define LTK_CREATE			1
 #define LTK_DESTROY			2
 #define LTK_PAINT			3
@@ -131,7 +129,7 @@ typedef struct _LtkImeEvent
 typedef struct _LtkFocusEvent
 {
 	LtkEvent hdr;
-	LtkSprite* oldFocus;
+	HLTK oldFocus;
 } LtkFocusEvent;
 
 typedef struct _LtkRecreateResource {
@@ -140,31 +138,9 @@ typedef struct _LtkRecreateResource {
 } LtkRecreateResource;
 
 
-#define LTK_HANDLE_PAINT(func) \
-		case LTK_PAINT: \
-			return self->func((LtkPaintEvent*)ev);
+LTK_DECLARE_TYPE(LtkMenuBar); // 基类：LtkWidget
+LTK_DECLARE_TYPE(LtkPopupMenu); // 基类：LtkWidget
 
-#define LTK_HANDLE_SIZE(func) \
-		case LTK_SIZE: \
-			return self->func((LtkSizeEvent*)ev);
-
-#define LTK_HANDLE_LBUTTON_DOWN(func) \
-		case LTK_LBUTTON_DOWN: \
-			return self->func((LtkMouseEvent*)ev);
-
-#define LTK_HANDLE_MOUSE_WHELL(func) \
-		case LTK_MOUSE_WHEEL: \
-			return self->func((LtkMouseEvent*)ev);
-
-#define LTK_HANDLE_THEME_CHANGED(func) \
-		case LTK_THEME_CHANGED: \
-			return self->func((LtkEvent*)ev);
-
-LTK_DECLARE_TYPE(LtkMenuBar); // 基类：LtkSprite
-LTK_DECLARE_TYPE(LtkPopupMenu); // 基类：LtkSprite
-
-#define LTK_SPRITE(o) LtkIsSprite(o) ? (LtkSprite*)o : NULL
-LTK_API BOOL WINAPI LtkIsSprite(HLTK o);
 
 // (void *userdata, BOOL *bHandled)
 #define LTK_WINDOW_DESTROY		101
@@ -184,35 +160,29 @@ LTK_API void WINAPI LtkWindow_SetCentralWidget(HLTK self, HLTK widget);
 LTK_API void WINAPI LtkWindow_SetMenu(HLTK self, HLTK menu_bar);
 LTK_API HWND WINAPI LtkWindow_GetHWND(HLTK self);
 
-LTK_DECLARE_TYPE(LtkBoxLayout); // 基类：LtkSprite
+// LtkBoxLayout 基类：LtkWidget
 
 #define LTK_HORIZONTAL  1
 #define LTK_VERTICAL    2
 
-#define LTK_BOXLAYOUT(o) LtkIsBoxLayout(o) ? (LtkBoxLayout*)o
-LTK_API BOOL WINAPI LtkIsBoxLayout(HLTK o);
-
 #define LtkBoxLayout_New(o) LtkBoxLayout_New_(o, __FILE__, __LINE__)
 LTK_API HLTK WINAPI LtkBoxLayout_New_(UINT orientation, LPCSTR source, int line);
 
-LTK_API void WINAPI LtkBoxLayout_AddLayoutItem(LtkBoxLayout* self, LtkSprite *sp, float preferedSize, float growFactor);
-LTK_API void WINAPI LtkBoxLayout_AddSpaceItem(LtkBoxLayout* self, float preferedSize, float growFactor);
-LTK_API void WINAPI LtkBoxLayout_SetSpacing(LtkBoxLayout* self, float spacing);
+LTK_API void WINAPI LtkBoxLayout_AddLayoutItem(HLTK self, HLTK widget, float preferedSize, float growFactor);
+LTK_API void WINAPI LtkBoxLayout_AddSpaceItem(HLTK self, float preferedSize, float growFactor);
+LTK_API void WINAPI LtkBoxLayout_SetSpacing(HLTK self, float spacing);
 
-LTK_DECLARE_TYPE(LtkButton); // 基类：LtkSprite
+// LtkButton 基类：LtkWidget
 
 // void CALLBACK OnButtonClicked(void* userdata)
 #define LTK_BUTTON_CLICKED		201
 
-#define LTK_BUTTON(o) LtkIsButton(o) ? (LtkButton*)o : NULL
-LTK_API BOOL WINAPI LtkIsButton(HLTK o);
-
 #define LtkButton_New() LtkButton_New_(__FILE__, __LINE__)
 LTK_API HLTK WINAPI LtkButton_New_(LPCSTR source, int line);
 
-LTK_API void WINAPI LtkButton_SetText(LtkButton* self, LPCWSTR);
+LTK_API void WINAPI LtkButton_SetText(HLTK self, LPCWSTR);
 
-LTK_DECLARE_TYPE(LtkHeaderCtrl); // 基类：LtkSprite
+LTK_DECLARE_TYPE(LtkHeaderCtrl); // 基类：LtkWidget
 
 #define LTK_HEADERCTRL(o) LtkIsHeaderCtrl(o) ? (LtkHeaderCtrl*)o : NULL
 LTK_API BOOL WINAPI LtkIsHeaderCtrl(HLTK o);
@@ -222,7 +192,7 @@ LTK_API HLTK WINAPI LtkHeaderCtrl_New_(LPCSTR source, int line);
 
 LTK_API void WINAPI LtkHeaderCtrl_AddColumn(LtkHeaderCtrl* self, LPCWSTR text, float width);
 
-LTK_DECLARE_TYPE(LtkListView); // 基类：LtkSprite
+LTK_DECLARE_TYPE(LtkListView); // 基类：LtkWidget
 
 // void CALLBACK OnListViewSelectChange(void* userdata, int row, int oldRow)
 #define LTK_LISTVIEW_SELECT_CHANGE		301
@@ -243,22 +213,19 @@ LTK_API int WINAPI LtkListView_GetSelectedRow(LtkListView* self);
 LTK_API HLTK WINAPI LtkListView_GetHeaderCtrl(LtkListView* self);
 LTK_API void WINAPI LtkListView_UpdateColumnWidth(LtkListView* self);
 
-LTK_DECLARE_TYPE(LtkSplitter); // 基类：LtkSprite
-
-#define LTK_SPLITTER(o) LtkIsSplitter(o) ? (LtkSplitter*)o : NULL
-LTK_API BOOL WINAPI LtkIsSplitter(HLTK o);
+// LtkSplitter 基类：LtkWidget
 
 #define LtkSplitter_New(o) LtkSplitter_New_(o,  __FILE__, __LINE__)
 LTK_API HLTK WINAPI LtkSplitter_New_(UINT orientation, LPCSTR source, int line);
 
-LTK_API void WINAPI LtkSplitter_Resize(LtkSplitter* self, UINT n);
-LTK_API LtkSprite* WINAPI LtkSplitter_SetClientAt(LtkSplitter* self, UINT idx, LtkSprite* sp);
+LTK_API void WINAPI LtkSplitter_Resize(HLTK self, UINT n);
+LTK_API HLTK WINAPI LtkSplitter_SetClientAt(HLTK self, UINT idx, HLTK widget);
 //LTK_API LtkSplitter* WINAPI LtkSplitter_GetClientAt(LtkSplitter* self, UINT idx);
 //LTK_API	UINT WINAPI LtkSplitter_GetClientCount(LtkSplitter* self);
-LTK_API void WINAPI LtkSplitter_SetClientSize(LtkSplitter* self, UINT idx, float size);
+LTK_API void WINAPI LtkSplitter_SetClientSize(HLTK self, UINT idx, float size);
 //LTK_API float WINAPI LtkSplitter_GetClientSize(LtkSplitter* self, UINT idx);
 
-LTK_DECLARE_TYPE(LtkTreeView); // 基类：LtkSprite
+LTK_DECLARE_TYPE(LtkTreeView); // 基类：LtkWidget
 
 #define LTK_TREEVIEW(o) LtkIsTreeView(o) ? (LtkTreeView*)o : NULL
 LTK_API BOOL WINAPI LtkIsTreeView(HLTK o);
@@ -292,7 +259,7 @@ LTK_API HLTK WINAPI LtkTreeNode_New_(LPCSTR source, int line);
 LTK_API void WINAPI LtkTreeNode_AddChild(LtkTreeNode* self, LtkTreeNode* node);
 LTK_API void WINAPI LtkTreeNode_SetText(LtkTreeNode* self, LPCWSTR text);
 
-LTK_DECLARE_TYPE(LtkTextEdit); // 基类：LtkSprite
+LTK_DECLARE_TYPE(LtkTextEdit); // 基类：LtkWidget
 
 #define LTK_TEXTEDIT(o) LtkIsTextEdit(o) ? (LtkTextEdit*)o : NULL
 LTK_API BOOL WINAPI LtkIsTextEdit(HLTK o);
