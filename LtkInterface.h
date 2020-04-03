@@ -138,8 +138,8 @@ typedef struct _LtkRecreateResource {
 } LtkRecreateResource;
 
 
-LTK_DECLARE_TYPE(LtkMenuBar); // 基类：LtkWidget
-LTK_DECLARE_TYPE(LtkPopupMenu); // 基类：LtkWidget
+// LtkMenuBar 基类：LtkWidget
+// LtkPopupMenu 基类：LtkWidget
 
 
 // (void *userdata, BOOL *bHandled)
@@ -182,17 +182,16 @@ LTK_API HLTK WINAPI LtkButton_New_(LPCSTR source, int line);
 
 LTK_API void WINAPI LtkButton_SetText(HLTK self, LPCWSTR);
 
-LTK_DECLARE_TYPE(LtkHeaderCtrl); // 基类：LtkWidget
-
-#define LTK_HEADERCTRL(o) LtkIsHeaderCtrl(o) ? (LtkHeaderCtrl*)o : NULL
-LTK_API BOOL WINAPI LtkIsHeaderCtrl(HLTK o);
+// LtkHeaderCtrl 基类：LtkWidget
 
 #define LtkHeaderCtrl_New() LtkHeaderCtrl_New_(  __FILE__, __LINE__)
 LTK_API HLTK WINAPI LtkHeaderCtrl_New_(LPCSTR source, int line);
 
-LTK_API void WINAPI LtkHeaderCtrl_AddColumn(LtkHeaderCtrl* self, LPCWSTR text, float width);
+LTK_API void WINAPI LtkHeaderCtrl_AddColumn(HLTK self, LPCWSTR text, float width);
 
-LTK_DECLARE_TYPE(LtkListView); // 基类：LtkWidget
+
+
+// LtkListView 基类：LtkWidget
 
 // void CALLBACK OnListViewSelectChange(void* userdata, int row, int oldRow)
 #define LTK_LISTVIEW_SELECT_CHANGE		301
@@ -200,18 +199,16 @@ LTK_DECLARE_TYPE(LtkListView); // 基类：LtkWidget
 // void CALLBACK OnListViewDbClick(void* userdata, int row) // TODO NOT IMPLEMENTED
 #define LTK_LISTVIEW_DBCLICK			302
 
-#define LTK_LISTVIEW(o) LtkIsListView(o) ? (LtkListView*)o : NULL
-LTK_API BOOL WINAPI LtkIsListView(HLTK o);
 
 #define LtkListView_New() LtkListView_New_( __FILE__, __LINE__)
 LTK_API HLTK WINAPI LtkListView_New_(LPCSTR source, int line);
 
-LTK_API UINT WINAPI LtkListView_AddRow(LtkListView* self);
-LTK_API void WINAPI LtkListView_SetCellText(LtkListView* self, UINT row, UINT col, LPCWSTR text);
-LTK_API LPCWSTR WINAPI LtkListView_GetCellText(LtkListView* self, UINT row, UINT col);
-LTK_API int WINAPI LtkListView_GetSelectedRow(LtkListView* self);
-LTK_API HLTK WINAPI LtkListView_GetHeaderCtrl(LtkListView* self);
-LTK_API void WINAPI LtkListView_UpdateColumnWidth(LtkListView* self);
+LTK_API UINT WINAPI LtkListView_AddRow(HLTK self);
+LTK_API void WINAPI LtkListView_SetCellText(HLTK self, UINT row, UINT col, LPCWSTR text);
+LTK_API LPCWSTR WINAPI LtkListView_GetCellText(HLTK self, UINT row, UINT col);
+LTK_API int WINAPI LtkListView_GetSelectedRow(HLTK self);
+LTK_API HLTK WINAPI LtkListView_GetHeaderCtrl(HLTK self);
+LTK_API void WINAPI LtkListView_UpdateColumnWidth(HLTK self);
 
 // LtkSplitter 基类：LtkWidget
 
@@ -225,39 +222,23 @@ LTK_API HLTK WINAPI LtkSplitter_SetClientAt(HLTK self, UINT idx, HLTK widget);
 LTK_API void WINAPI LtkSplitter_SetClientSize(HLTK self, UINT idx, float size);
 //LTK_API float WINAPI LtkSplitter_GetClientSize(LtkSplitter* self, UINT idx);
 
-LTK_DECLARE_TYPE(LtkTreeView); // 基类：LtkWidget
-
-#define LTK_TREEVIEW(o) LtkIsTreeView(o) ? (LtkTreeView*)o : NULL
-LTK_API BOOL WINAPI LtkIsTreeView(HLTK o);
+// LtkTreeView 基类：LtkWidget
 
 #define LtkTreeView_New() LtkTreeView_New_(  __FILE__, __LINE__)
 LTK_API HLTK WINAPI LtkTreeView_New_(LPCSTR source, int line);
 
-LTK_DECLARE_TYPE(LtkTreeNode); // 基类：LtkObject
+// LtkTreeNode 基类：LtkObject
 
-LTK_API HLTK WINAPI LtkTreeView_GetRootNode(LtkTreeView* self);
+LTK_API HLTK WINAPI LtkTreeView_GetRootNode(HLTK self);
 
 #define LTK_TREEVIEW_FIRST 500
 #define LTK_TREEVIEW_SELECT_CHANGE (LTK_TREEVIEW_FIRST + 1)
 
-typedef struct _LtkTreeViewSelectChange {
-	LtkEvent hdr;
-	LtkTreeNode* old;
-	LtkTreeNode* new_;
-} LtkTreeViewSelectChange;
-
-#define LTK_HANDLE_TREEVIEW_SELECT_CHANGE(func) \
-	case LTK_TREEVIEW_SELECT_CHANGE: return self->func((LtkTreeViewSelectChange*)ev);
-
-
-#define LTK_TREENODE(o) LtkIsTreeNode(o) ? (LtkTreeNode*)o : NULL
-LTK_API BOOL WINAPI LtkIsTreeNode(HLTK o);
-
 #define LtkTreeNode_New() LtkTreeNode_New_(  __FILE__, __LINE__)
 LTK_API HLTK WINAPI LtkTreeNode_New_(LPCSTR source, int line);
 
-LTK_API void WINAPI LtkTreeNode_AddChild(LtkTreeNode* self, LtkTreeNode* node);
-LTK_API void WINAPI LtkTreeNode_SetText(LtkTreeNode* self, LPCWSTR text);
+LTK_API void WINAPI LtkTreeNode_AddChild(HLTK self, HLTK node);
+LTK_API void WINAPI LtkTreeNode_SetText(HLTK self, LPCWSTR text);
 
 LTK_DECLARE_TYPE(LtkTextEdit); // 基类：LtkWidget
 
@@ -269,30 +250,21 @@ LTK_API HLTK WINAPI LtkTextEdit_New_(LPCSTR source, int line);
 
 LTK_DECLARE_TYPE(LtkMenuItem);
 
-#define LTK_MENU_CLICK 501
-
-#define LTK_HANDLE_MENU_CLICK(func) \
-	case LTK_MENU_CLICK: return self->func(ev);
-
-#define LTK_MENUBAR(o) LtkIsMenuBar(o) ? (LtkMenuBar*)o : NULL
-LTK_API BOOL WINAPI LtkIsMenuBar(HLTK o);
+#define LTK_MENU_CLICK 601
 
 #define LtkMenuBar_New() LtkMenuBar_New_(  __FILE__, __LINE__)
 LTK_API HLTK WINAPI LtkMenuBar_New_(LPCSTR source, int line);
 
-LTK_API void WINAPI LtkMenuBar_AddItem(LtkMenuBar* self, LPCWSTR text);
-LTK_API void WINAPI LtkMenuBar_SetPopupMenu(LtkMenuBar* self, UINT idx, LtkPopupMenu* popup);
-
-#define LTK_POPUPMENU(o) LtkIsPopupMenu(o) ? (LtkPopupMenu*)o : NULL
-LTK_API BOOL WINAPI LtkIsPopupMenu(HLTK o);
+LTK_API void WINAPI LtkMenuBar_AddItem(HLTK self, LPCWSTR text);
+LTK_API void WINAPI LtkMenuBar_SetPopupMenu(HLTK self, UINT idx, HLTK popup);
 
 #define LtkPopupMenu_New() LtkPopupMenu_New_(  __FILE__, __LINE__)
 LTK_API HLTK WINAPI LtkPopupMenu_New_(LPCSTR source, int line);
 
-LTK_API void WINAPI LtkPopupMenu_AddItem(LtkPopupMenu* self, LPCWSTR text, LPCSTR name);
-LTK_API void WINAPI LtkPopupMenu_AddSeparator(LtkPopupMenu* self);
-LTK_API void WINAPI LtkPopupMenu_SetWidth(LtkPopupMenu* self, float width);
-LTK_API void WINAPI LtkPopupMenu_SetSubMenu(LtkPopupMenu* self, UINT idx, LtkPopupMenu* popup);
+LTK_API void WINAPI LtkPopupMenu_AddItem(HLTK self, LPCWSTR text, LPCSTR name);
+LTK_API void WINAPI LtkPopupMenu_AddSeparator(HLTK self);
+LTK_API void WINAPI LtkPopupMenu_SetWidth(HLTK self, float width);
+LTK_API void WINAPI LtkPopupMenu_SetSubMenu(HLTK self, UINT idx, HLTK popup);
 
 #ifdef __cplusplus
 } // extern "C"

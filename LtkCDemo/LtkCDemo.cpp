@@ -21,7 +21,7 @@ void CALLBACK OnWindowDestroy(void* userdata, BOOL *bHandled)
 
 static int node_count = 0;
 
-static void RecBuildNodes(LtkTreeNode *parent, int depth)
+static void RecBuildNodes(HLTK parent, int depth)
 {
 	if (depth > 4) {
 		return;
@@ -31,11 +31,11 @@ static void RecBuildNodes(LtkTreeNode *parent, int depth)
 	for (int i = 0; i < num; i++) {
 		HLTK node = LtkTreeNode_New();
 		StringCbPrintf(buf, sizeof(buf), L"TreeNode: %d", node_count);
-		LtkTreeNode_SetText((LtkTreeNode*)node, buf); // 内层循环建议不做类型检查
-		LtkTreeNode_AddChild((LtkTreeNode*)parent, (LtkTreeNode*)node);
+		LtkTreeNode_SetText(node, buf); // 内层循环建议不做类型检查
+		LtkTreeNode_AddChild(parent, node);
 		node_count++;
 		if (rand() % 100 < 35) {
-			RecBuildNodes((LtkTreeNode*)node, depth + 1);
+			RecBuildNodes(node, depth + 1);
 		}
 	}
 }
@@ -62,8 +62,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	LtkSplitter_Resize(splitter_h, 2);
 
 	HLTK tree_view = LtkTreeView_New();
-	RecBuildNodes(LTK_TREENODE(
-		LtkTreeView_GetRootNode(LTK_TREEVIEW(tree_view))), 0);
+	RecBuildNodes(LtkTreeView_GetRootNode(tree_view), 0);
 
 	HLTK btn = NULL;
 	//HLTK btn = LtkButton_New();
@@ -75,25 +74,25 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	LtkSplitter_SetClientAt(splitter_h, 1, splitter_v);
 
 	HLTK list_view = LtkListView_New();
-	HLTK header = LtkListView_GetHeaderCtrl(LTK_LISTVIEW(list_view));
-	LtkHeaderCtrl_AddColumn(LTK_HEADERCTRL(header), L"项目名", 100);
-	LtkHeaderCtrl_AddColumn(LTK_HEADERCTRL(header), L"工程名", 200);
-	LtkHeaderCtrl_AddColumn(LTK_HEADERCTRL(header), L"负责人", 200);
-	LtkHeaderCtrl_AddColumn(LTK_HEADERCTRL(header), L"资金", 100);
-	LtkListView_UpdateColumnWidth(LTK_LISTVIEW(list_view));
+	HLTK header = LtkListView_GetHeaderCtrl(list_view);
+	LtkHeaderCtrl_AddColumn(header, L"项目名", 100);
+	LtkHeaderCtrl_AddColumn(header, L"工程名", 200);
+	LtkHeaderCtrl_AddColumn(header, L"负责人", 200);
+	LtkHeaderCtrl_AddColumn(header, L"资金", 100);
+	LtkListView_UpdateColumnWidth(list_view);
 
 	UINT num = rand() % 200;
 	for (UINT i = 0; i < num; i++) {
 		wchar_t buf[128];
-		LtkListView_AddRow(LTK_LISTVIEW(list_view));
+		LtkListView_AddRow(list_view);
 		StringCbPrintf(buf, sizeof(buf), L"col:0 row:%d", i);
-		LtkListView_SetCellText(LTK_LISTVIEW(list_view), i, 0, buf);
+		LtkListView_SetCellText(list_view, i, 0, buf);
 		StringCbPrintf(buf, sizeof(buf), L"col:1 row:%d", i);
-		LtkListView_SetCellText(LTK_LISTVIEW(list_view), i, 1, buf);
+		LtkListView_SetCellText(list_view, i, 1, buf);
 		StringCbPrintf(buf, sizeof(buf), L"col:2 row:%d", i);
-		LtkListView_SetCellText(LTK_LISTVIEW(list_view), i, 2, buf);
+		LtkListView_SetCellText(list_view, i, 2, buf);
 		StringCbPrintf(buf, sizeof(buf), L"col:3 row:%d", i);
-		LtkListView_SetCellText(LTK_LISTVIEW(list_view), i, 3, buf);
+		LtkListView_SetCellText(list_view, i, 3, buf);
 	}
 
 	LtkSplitter_SetClientAt(splitter_v, 0, list_view);
@@ -103,26 +102,26 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	LtkSplitter_SetClientAt(splitter_v, 1, text_edit);
 
 	HLTK menu_bar = LtkMenuBar_New();
-	LtkMenuBar_AddItem(LTK_MENUBAR(menu_bar), L"文件");
-	LtkMenuBar_AddItem(LTK_MENUBAR(menu_bar), L"编辑");
-	LtkMenuBar_AddItem(LTK_MENUBAR(menu_bar), L"皮肤");
-	LtkMenuBar_AddItem(LTK_MENUBAR(menu_bar), L"帮助");
+	LtkMenuBar_AddItem(menu_bar, L"文件");
+	LtkMenuBar_AddItem(menu_bar, L"编辑");
+	LtkMenuBar_AddItem(menu_bar, L"皮肤");
+	LtkMenuBar_AddItem(menu_bar, L"帮助");
 	LtkWindow_SetMenu(wnd, menu_bar);
 
 	HLTK popup_menu = LtkPopupMenu_New();
-	LtkPopupMenu_AddItem(LTK_POPUPMENU(popup_menu), L"新建", "");
-	LtkPopupMenu_AddItem(LTK_POPUPMENU(popup_menu), L"打开", "");
-	LtkPopupMenu_AddItem(LTK_POPUPMENU(popup_menu), L"最近", "");
-	LtkPopupMenu_AddItem(LTK_POPUPMENU(popup_menu), L"关闭", "");
-	LtkPopupMenu_AddItem(LTK_POPUPMENU(popup_menu), L"退出", "");
-	LtkMenuBar_SetPopupMenu(LTK_MENUBAR(menu_bar), 0, LTK_POPUPMENU(popup_menu));
+	LtkPopupMenu_AddItem(popup_menu, L"新建", "");
+	LtkPopupMenu_AddItem(popup_menu, L"打开", "");
+	LtkPopupMenu_AddItem(popup_menu, L"最近", "");
+	LtkPopupMenu_AddItem(popup_menu, L"关闭", "");
+	LtkPopupMenu_AddItem(popup_menu, L"退出", "");
+	LtkMenuBar_SetPopupMenu(menu_bar, 0, popup_menu);
 
 	HLTK popup2 = LtkPopupMenu_New();
-	LtkPopupMenu_SetWidth(LTK_POPUPMENU(popup2), 200);
-	LtkPopupMenu_AddItem(LTK_POPUPMENU(popup2), L"C:\\路径\\文件", "");
-	LtkPopupMenu_AddItem(LTK_POPUPMENU(popup2), L"C:\\路径\\文件", "");
-	LtkPopupMenu_AddItem(LTK_POPUPMENU(popup2), L"C:\\路径\\文件", "");
-	LtkPopupMenu_SetSubMenu(LTK_POPUPMENU(popup_menu), 2, LTK_POPUPMENU(popup2));
+	LtkPopupMenu_SetWidth(popup2, 200);
+	LtkPopupMenu_AddItem(popup2, L"C:\\路径\\文件", "");
+	LtkPopupMenu_AddItem(popup2, L"C:\\路径\\文件", "");
+	LtkPopupMenu_AddItem(popup2, L"C:\\路径\\文件", "");
+	LtkPopupMenu_SetSubMenu(popup_menu, 2, popup2);
 
 	LtkWindow_CreateCenter(wnd, NULL, 800, 600);
 	LtkWindow_SetCaption(wnd, L"Ltk测试窗口");
