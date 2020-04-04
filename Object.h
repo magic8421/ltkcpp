@@ -6,6 +6,10 @@
 
 namespace ltk {
 
+struct CallbackInfo {
+	LtkCallback callback = nullptr;
+	void* userdata = nullptr;
+};
 
 class LTK_CPP_API Object : public RTTI
 {
@@ -39,16 +43,11 @@ public:
 	static void DumpObjectLeaks();
 	void RegisterCallback(UINT event_id, LtkCallback cb, void* userdata);
 	void InvokeCallback(UINT event_id, ...);
+	std::vector<CallbackInfo>* GetCallbackList(UINT event_id);
 
 protected:
 	virtual void DoInvokeCallback(
 		UINT event_id, LtkCallback cb, void* userdata, va_list args, BOOL *bHandled) {}
-
-private:
-	struct CallbackInfo {
-		LtkCallback callback = nullptr;
-		void* userdata = nullptr;
-	};
 
 protected:
 	bool m_bWidget = false;
@@ -59,7 +58,7 @@ private:
 	Object *m_parent = nullptr;
 	ArrayList<Object *> m_children;
 
-	std::map<UINT, std::vector<CallbackInfo>> m_mapCallbacks;
+	std::unordered_map<UINT, std::vector<CallbackInfo>> m_mapCallbacks;
 
 	const char* m_source = nullptr; // 好像没必要 外部使用者应该用umdh来查内存泄漏
 	int m_line = -1;

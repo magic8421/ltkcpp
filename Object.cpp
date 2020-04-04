@@ -157,5 +157,16 @@ void Object::InvokeCallback(UINT event_id, ...)
 	}
 }
 
+std::vector<CallbackInfo>* Object::GetCallbackList(UINT event_id)
+{
+	auto iter = m_mapCallbacks.find(event_id);
+	if (iter == m_mapCallbacks.end()) {
+		return nullptr;
+	}
+	else {
+		return &iter->second;
+	}
+}
+
 
 } // namespace ltk
