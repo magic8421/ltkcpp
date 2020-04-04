@@ -301,16 +301,10 @@ LTK_API HLTK WINAPI LtkSplitter_New_(UINT orientation, LPCSTR source, int line)
 	return (HLTK)obj;
 }
 
-LTK_API void WINAPI LtkSplitter_Resize(HLTK self, UINT n)
+LTK_API UINT WINAPI LtkSplitter_AddClient(HLTK self, HLTK widget)
 {
 	Splitter* thiz = ltk_cast<Splitter>(self);
-	thiz->Resize(n);
-}
-
-LTK_API HLTK WINAPI LtkSplitter_SetClientAt(HLTK self, UINT idx, HLTK widget)
-{
-	Splitter* thiz = ltk_cast<Splitter>(self);
-	return (HLTK)thiz->SetClientAt(idx, ltk_cast<Widget>(widget));
+	return thiz->AddClient(ltk_cast<Widget>(widget));
 }
 
 LTK_API void WINAPI LtkSplitter_SetClientSize(HLTK self, UINT idx, float size)

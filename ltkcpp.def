@@ -35,8 +35,7 @@ EXPORTS
 	LtkListView_GetHeaderCtrl
 	LtkListView_UpdateColumnWidth
 	LtkSplitter_New_
-	LtkSplitter_Resize
-	LtkSplitter_SetClientAt
+	LtkSplitter_AddClient
 	LtkSplitter_SetClientSize
 	LtkTreeView_New_
 	LtkTreeView_GetRootNode

@@ -59,19 +59,16 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	HLTK splitter_h = LtkSplitter_New(LTK_HORIZONTAL);
 	LtkWindow_SetCentralWidget(wnd, splitter_h);
 
-	LtkSplitter_Resize(splitter_h, 2);
-
 	HLTK tree_view = LtkTreeView_New();
 	RecBuildNodes(LtkTreeView_GetRootNode(tree_view), 0);
 
 	HLTK btn = NULL;
 	//HLTK btn = LtkButton_New();
-	LtkSplitter_SetClientAt(splitter_h, 0, tree_view);
-	LtkSplitter_SetClientSize(splitter_h, 0, 200);
+	UINT idx = LtkSplitter_AddClient(splitter_h, tree_view);
+	LtkSplitter_SetClientSize(splitter_h, idx, 200);
 
 	HLTK splitter_v = LtkSplitter_New(LTK_VERTICAL);
-	LtkSplitter_Resize(splitter_v, 2);
-	LtkSplitter_SetClientAt(splitter_h, 1, splitter_v);
+	LtkSplitter_AddClient(splitter_h, splitter_v);
 
 	HLTK list_view = LtkListView_New();
 	HLTK header = LtkListView_GetHeaderCtrl(list_view);
@@ -95,11 +92,11 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 		LtkListView_SetCellText(list_view, i, 3, buf);
 	}
 
-	LtkSplitter_SetClientAt(splitter_v, 0, list_view);
-	LtkSplitter_SetClientSize(splitter_v, 0, 350);
+	idx = LtkSplitter_AddClient(splitter_v, list_view);
+	LtkSplitter_SetClientSize(splitter_v, idx, 350);
 	
 	HLTK text_edit = LtkTextEdit_New();
-	LtkSplitter_SetClientAt(splitter_v, 1, text_edit);
+	LtkSplitter_AddClient(splitter_v, text_edit);
 
 	HLTK menu_bar = LtkMenuBar_New();
 	LtkMenuBar_AddItem(menu_bar, L"文件");
@@ -122,6 +119,26 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	LtkPopupMenu_AddItem(popup2, L"C:\\路径\\文件", "");
 	LtkPopupMenu_AddItem(popup2, L"C:\\路径\\文件", "");
 	LtkPopupMenu_SetSubMenu(popup_menu, 2, popup2);
+
+	popup_menu = LtkPopupMenu_New();
+	LtkPopupMenu_AddItem(popup_menu, L"撤销", "");
+	LtkPopupMenu_AddItem(popup_menu, L"重做", "");
+	LtkPopupMenu_AddSeparator(popup_menu);
+	LtkPopupMenu_AddItem(popup_menu, L"复制", "");
+	LtkPopupMenu_AddItem(popup_menu, L"剪切", "");
+	LtkPopupMenu_AddItem(popup_menu, L"粘贴", "");
+	LtkMenuBar_SetPopupMenu(menu_bar, 1, popup_menu);
+
+	popup_menu = LtkPopupMenu_New();
+	LtkPopupMenu_AddItem(popup_menu, L"位图素材", "");
+	LtkPopupMenu_AddItem(popup_menu, L"暗色", "");
+	LtkPopupMenu_AddItem(popup_menu, L"亮色", "");
+	LtkMenuBar_SetPopupMenu(menu_bar, 2, popup_menu);
+
+	popup_menu = LtkPopupMenu_New();
+	LtkPopupMenu_AddItem(popup_menu, L"在线手册", "");
+	LtkPopupMenu_AddItem(popup_menu, L"关于", "");
+	LtkMenuBar_SetPopupMenu(menu_bar, 3, popup_menu);
 
 	LtkWindow_CreateCenter(wnd, NULL, 800, 600);
 	LtkWindow_SetCaption(wnd, L"Ltk测试窗口");

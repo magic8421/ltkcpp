@@ -14,7 +14,7 @@ public:
 
 	void Resize(UINT n);
 	Widget* SetClientAt(UINT idx, Widget* sp);
-	void AddClient(Widget *sp);
+	size_t AddClient(Widget *sp);
 	void SetClientSize(UINT idx, float size);
 	
 	float GetTotolSize();

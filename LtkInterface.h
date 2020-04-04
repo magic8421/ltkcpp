@@ -214,13 +214,8 @@ LTK_API void WINAPI LtkListView_UpdateColumnWidth(HLTK self);
 
 #define LtkSplitter_New(o) LtkSplitter_New_(o,  __FILE__, __LINE__)
 LTK_API HLTK WINAPI LtkSplitter_New_(UINT orientation, LPCSTR source, int line);
-
-LTK_API void WINAPI LtkSplitter_Resize(HLTK self, UINT n);
-LTK_API HLTK WINAPI LtkSplitter_SetClientAt(HLTK self, UINT idx, HLTK widget);
-//LTK_API LtkSplitter* WINAPI LtkSplitter_GetClientAt(LtkSplitter* self, UINT idx);
-//LTK_API	UINT WINAPI LtkSplitter_GetClientCount(LtkSplitter* self);
+LTK_API UINT WINAPI LtkSplitter_AddClient(HLTK self, HLTK widget);
 LTK_API void WINAPI LtkSplitter_SetClientSize(HLTK self, UINT idx, float size);
-//LTK_API float WINAPI LtkSplitter_GetClientSize(LtkSplitter* self, UINT idx);
 
 // LtkTreeView »ùÀà£ºLtkWidget
 

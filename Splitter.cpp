@@ -36,12 +36,13 @@ Widget* Splitter::SetClientAt(UINT idx, Widget* sp)
 	return old_sp;
 }
 
-void Splitter::AddClient(Widget *sp)
+size_t Splitter::AddClient(Widget *sp)
 {
 	SplitterItem item;
 	item.client = sp;
 	this->AddChild(sp);
 	m_vecItems.push_back(item);
+	return m_vecItems.size() - 1;
 }
 
 void Splitter::SetClientSize(UINT idx, float size)
