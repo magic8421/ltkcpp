@@ -173,26 +173,6 @@ LTK_API HWND WINAPI LtkWindow_GetHWND(HLTK self)
 	return thiz->GetHWND();
 }
 
-typedef void(CALLBACK *WindowCloseCallback)(void *userdata, BOOL *pProceed, BOOL *bHandled);
-typedef void(CALLBACK *WindowDestroyCallback)(void *userdata, BOOL *bHandled);
-
-void Window::DoInvokeCallback(UINT event_id, LtkCallback cb, void* userdata, 
-	va_list args, BOOL *bHandled)
-{
-	switch (event_id)
-	{
-	case LTK_WINDOW_CLOSE:
-	{
-		BOOL *pProceed = va_arg(args, BOOL *);
-		return ((WindowCloseCallback)cb)(userdata, pProceed, bHandled);
-	}
-	case LTK_WINDOW_DESTROY:
-	{
-		return ((WindowDestroyCallback)cb)(userdata, bHandled);
-	}
-	}
-}
-
 //////////////////////////////////////////////////////////////////////////
 // BoxLayout
 //////////////////////////////////////////////////////////////////////////

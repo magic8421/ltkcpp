@@ -405,8 +405,12 @@ bool PopupMenu::OnLBtnDown(MouseEvent* ev)
 		return true;
 	}
 	if (!item->sub_menu) {
-		SetDelegateInvoker(this);
-		item->ClickedDelegate();
+		// TODO 这里不能传item因为要和button共用一个回调
+		// 实际上应该弄个 IAction接口 C API拿到 Object之后 dynamic_cast到 IAction
+		SetDelegateInvoker(wnd); 
+		BOOL bhandled = FALSE;
+		wnd->InvokeCallbacks<ActionCallback>(LTK_ACTION, item->GetName(), &bhandled);
+		//item->ClickedDelegate();
 	}
 	int tracking = m_trackingIdx;
 	PopupMenu* menu = this;

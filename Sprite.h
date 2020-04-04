@@ -20,6 +20,8 @@ struct LayoutParam
     PointF grow_factor;
 };
 
+typedef void (CALLBACK *ActionCallback)(void* userdata, LPCSTR name, BOOL* pbHandled);
+
 class LTK_CPP_API Widget : public Object
 {
 public:

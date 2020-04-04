@@ -20,6 +20,10 @@ void LtkLogImpl(const char *source, int line, const char *format, ...)
 	::OutputDebugStringA(buffer2);
 }
 
+void CALLBACK OnAction(void* userdata, LPCSTR name, BOOL* pbHandled)
+{
+	LTK_LOG("OnAction: %s", name);
+}
 
 void CALLBACK OnWindowClose(void* userdata, BOOL* proceed, BOOL* bHandled)
 {
@@ -70,6 +74,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 		wnd, LTK_WINDOW_DESTROY, (LtkCallback)OnWindowDestroy, NULL);
 	LtkRegisterCallback(
 		wnd, LTK_WINDOW_CLOSE, (LtkCallback)OnWindowClose, NULL);
+	LtkRegisterCallback(
+		wnd, LTK_ACTION, (LtkCallback)OnAction, NULL);
 
 	HLTK splitter_h = LtkSplitter_New(LTK_HORIZONTAL);
 	LtkWindow_SetCentralWidget(wnd, splitter_h);
@@ -125,38 +131,38 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	LtkWindow_SetMenu(wnd, menu_bar);
 
 	HLTK popup_menu = LtkPopupMenu_New();
-	LtkPopupMenu_AddItem(popup_menu, L"新建", "");
-	LtkPopupMenu_AddItem(popup_menu, L"打开", "");
+	LtkPopupMenu_AddItem(popup_menu, L"新建", "new_file");
+	LtkPopupMenu_AddItem(popup_menu, L"打开", "open_file");
 	LtkPopupMenu_AddItem(popup_menu, L"最近", "");
-	LtkPopupMenu_AddItem(popup_menu, L"关闭", "");
-	LtkPopupMenu_AddItem(popup_menu, L"退出", "");
+	LtkPopupMenu_AddItem(popup_menu, L"关闭", "close_file");
+	LtkPopupMenu_AddItem(popup_menu, L"退出", "exit_app");
 	LtkMenuBar_SetPopupMenu(menu_bar, 0, popup_menu);
 
 	HLTK popup2 = LtkPopupMenu_New();
 	LtkPopupMenu_SetWidth(popup2, 200);
-	LtkPopupMenu_AddItem(popup2, L"C:\\路径\\文件", "");
-	LtkPopupMenu_AddItem(popup2, L"C:\\路径\\文件", "");
-	LtkPopupMenu_AddItem(popup2, L"C:\\路径\\文件", "");
+	LtkPopupMenu_AddItem(popup2, L"C:\\路径\\文件", "recent_file_01");
+	LtkPopupMenu_AddItem(popup2, L"C:\\路径\\文件", "recent_file_02");
+	LtkPopupMenu_AddItem(popup2, L"C:\\路径\\文件", "recent_file_03");
 	LtkPopupMenu_SetSubMenu(popup_menu, 2, popup2);
 
 	popup_menu = LtkPopupMenu_New();
-	LtkPopupMenu_AddItem(popup_menu, L"撤销", "");
-	LtkPopupMenu_AddItem(popup_menu, L"重做", "");
+	LtkPopupMenu_AddItem(popup_menu, L"撤销", "undo_action");
+	LtkPopupMenu_AddItem(popup_menu, L"重做", "redo_action");
 	LtkPopupMenu_AddSeparator(popup_menu);
-	LtkPopupMenu_AddItem(popup_menu, L"复制", "");
-	LtkPopupMenu_AddItem(popup_menu, L"剪切", "");
-	LtkPopupMenu_AddItem(popup_menu, L"粘贴", "");
+	LtkPopupMenu_AddItem(popup_menu, L"复制", "copy_action");
+	LtkPopupMenu_AddItem(popup_menu, L"剪切", "cut_action");
+	LtkPopupMenu_AddItem(popup_menu, L"粘贴", "paste_action");
 	LtkMenuBar_SetPopupMenu(menu_bar, 1, popup_menu);
 
 	popup_menu = LtkPopupMenu_New();
-	LtkPopupMenu_AddItem(popup_menu, L"位图素材", "");
-	LtkPopupMenu_AddItem(popup_menu, L"暗色", "");
-	LtkPopupMenu_AddItem(popup_menu, L"亮色", "");
+	LtkPopupMenu_AddItem(popup_menu, L"位图素材", "pixel_theme");
+	LtkPopupMenu_AddItem(popup_menu, L"暗色", "dark_theme");
+	LtkPopupMenu_AddItem(popup_menu, L"亮色", "light_theme");
 	LtkMenuBar_SetPopupMenu(menu_bar, 2, popup_menu);
 
 	popup_menu = LtkPopupMenu_New();
-	LtkPopupMenu_AddItem(popup_menu, L"在线手册", "");
-	LtkPopupMenu_AddItem(popup_menu, L"关于", "");
+	LtkPopupMenu_AddItem(popup_menu, L"在线手册", "online_manual");
+	LtkPopupMenu_AddItem(popup_menu, L"关于", "about_action");
 	LtkMenuBar_SetPopupMenu(menu_bar, 3, popup_menu);
 
 	LtkWindow_CreateCenter(wnd, NULL, 800, 600);

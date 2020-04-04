@@ -137,36 +137,4 @@ void Object::RegisterCallback(UINT event_id, LtkCallback cb, void* userdata)
 	vecCallbacks.push_back(info);
 }
 
-void Object::InvokeCallback(UINT event_id, ...)
-{
-	//m_staticSender = this; // TODO
-
-	auto iter = m_mapCallbacks.find(event_id);
-	if (iter == m_mapCallbacks.end()) {
-		return;
-	}
-	auto& vecCallbacks = iter->second; // TODO copy?
-	BOOL bHandled = FALSE;
-
-	for (UINT i = vecCallbacks.size(); i > 0; i--) {
-		const CallbackInfo &info = vecCallbacks[i - 1];
-		va_list args;
-		va_start(args, event_id);
-		DoInvokeCallback(event_id, info.callback, info.userdata, args, &bHandled);
-		va_end(args);
-	}
-}
-
-std::vector<CallbackInfo>* Object::GetCallbackList(UINT event_id)
-{
-	auto iter = m_mapCallbacks.find(event_id);
-	if (iter == m_mapCallbacks.end()) {
-		return nullptr;
-	}
-	else {
-		return &iter->second;
-	}
-}
-
-
 } // namespace ltk

@@ -630,16 +630,7 @@ void Window::Maximize()
     }
 }
 
-template<typename CB, typename... Params>
-void MyInvokeCallback(Object* obj, UINT event_id, Params... params)
-{
-    auto list = obj->GetCallbackList(event_id);
-    if (list) {
-        for (size_t i = list->size(); i > 0; i--) {
-            ((CB)(*list)[i - 1].callback)((*list)[i - 1].userdata, std::forward<Params>(params)...);
-        }
-    }
-}
+
 
 typedef void(CALLBACK *WindowCloseCallback)(void *userdata, BOOL *pProceed, BOOL *bHandled);
 typedef void(CALLBACK *WindowDestroyCallback)(void *userdata, BOOL *bHandled);
@@ -649,7 +640,7 @@ void Window::OnClose(BOOL* proceed)
 	SetDelegateInvoker(this);
 	this->CloseDelegate(proceed);
     BOOL bHandle = FALSE;
-    MyInvokeCallback<WindowCloseCallback>(this, LTK_WINDOW_CLOSE, proceed, &bHandle);
+    InvokeCallbacks<WindowCloseCallback>(LTK_WINDOW_CLOSE, proceed, &bHandle);
 }
 
 void Window::OnDestroy()
@@ -657,7 +648,7 @@ void Window::OnDestroy()
 	SetDelegateInvoker(this);
 	this->DestroyDelegate();
     BOOL bHandle = FALSE;
-    MyInvokeCallback<WindowDestroyCallback>(this, LTK_WINDOW_DESTROY, &bHandle);
+    InvokeCallbacks<WindowDestroyCallback>(LTK_WINDOW_DESTROY, &bHandle);
 }
 
 HWND Window::GetHWND()

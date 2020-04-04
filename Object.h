@@ -42,12 +42,9 @@ public:
 	static bool CheckValid(Object* o);
 	static void DumpObjectLeaks();
 	void RegisterCallback(UINT event_id, LtkCallback cb, void* userdata);
-	void InvokeCallback(UINT event_id, ...);
-	std::vector<CallbackInfo>* GetCallbackList(UINT event_id);
 
-protected:
-	virtual void DoInvokeCallback(
-		UINT event_id, LtkCallback cb, void* userdata, va_list args, BOOL *bHandled) {}
+	template<typename CB, typename... Params>
+	void InvokeCallbacks(UINT event_id, Params... params);
 
 protected:
 	bool m_bWidget = false;
@@ -65,6 +62,21 @@ private:
 
 	DISALLOW_COPY_AND_ASSIGN(Object);
 };
+
+
+template<typename CB, typename... Params>
+void Object::InvokeCallbacks(UINT event_id, Params... params)
+{
+	auto iter = m_mapCallbacks.find(event_id);
+	if (iter == m_mapCallbacks.end()) {
+		return;
+	}
+	const auto& list = iter->second;
+	for (size_t i = list.size(); i > 0; i--) {
+		((CB)list[i - 1].callback)(
+			list[i - 1].userdata, std::forward<Params>(params)...);
+	}
+}
 
 } // namespace ltk
 
