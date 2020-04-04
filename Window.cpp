@@ -353,24 +353,16 @@ LRESULT Window::WndProc(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam)
         }
         return 0;
     case WM_SIZE:
-        do
-        {
+        do {
             UINT cx = LOWORD(lparam);
             UINT cy = HIWORD(lparam);
 
-            if (m_target)
-            {
-                m_target->Resize(D2D1::SizeU(cx, cy));
-            }
-            OnSize((float)cx, (float)cy, (DWORD)wparam);
-            UpdateShadowFrame(true);
-
-            //LTK_LOG("WM_SIZE %d", wparam);
-            if (wparam == SIZE_MAXIMIZED) {
-                m_root->DoLayout();
-            }
-            else if (wparam == SIZE_RESTORED){
-                m_root->DoLayout();
+            if (wparam == SIZE_MAXIMIZED || wparam == SIZE_RESTORED) {
+                if (m_target) {
+                    m_target->Resize(D2D1::SizeU(cx, cy));
+                }
+                OnSize((float)cx, (float)cy, (DWORD)wparam);
+                UpdateShadowFrame(true);
             }
             else if (wparam == SIZE_MINIMIZED) {
                 m_setAnimation.clear();
