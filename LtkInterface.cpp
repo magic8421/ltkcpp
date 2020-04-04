@@ -16,13 +16,25 @@ using namespace ltk;
 
 static BOOL sApiCheck = TRUE;
 
+LTK_API void WINAPI LtkEnalbeApiCheck(BOOL b)
+{
+	sApiCheck = b;
+}
+
 template<typename T>
 T* ltk_cast(HLTK o)
 {
 	if (sApiCheck) {
 		Object* obj = (Object*)o;
-		if (!Object::CheckValid(obj)) __debugbreak();
-		if (!obj->Is(T::TypeIdClass())) __debugbreak();
+		if (!Object::CheckValid(obj)) {
+			LTK_LOG("ltk C interface handle invalid: 0x%08x", o);
+			__debugbreak();
+		}
+		if (!obj->Is(T::TypeIdClass())) {
+			LTK_LOG("ltk C interface type mismatch, %s required, got %s",
+				T::TypeNameClass(), obj->TypeNameInstance());
+			__debugbreak();
+		}
 	}
 	return (T *) o;
 }

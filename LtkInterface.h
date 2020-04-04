@@ -54,6 +54,7 @@ LTK_API HLTK WINAPI LtkGetEventSender();
 LTK_API void* WINAPI LtkGetProp(LPCSTR name);
 LTK_API void WINAPI LtkSetProp(LPCSTR name, void *data);
 
+//LTK_API void WINAPI LtkEnalbeApiCheck(BOOL);
 
 #define LTK_CREATE			1
 #define LTK_DESTROY			2
@@ -174,8 +175,8 @@ LTK_API void WINAPI LtkBoxLayout_SetSpacing(HLTK self, float spacing);
 
 // LtkButton »ùÀà£ºLtkWidget
 
-// void CALLBACK OnButtonClicked(void* userdata)
-#define LTK_BUTTON_CLICKED		201
+// void CALLBACK OnAction(void* userdata, LPCSTR name, BOOL *bHandled)
+#define LTK_ACTION		201
 
 #define LtkButton_New() LtkButton_New_(__FILE__, __LINE__)
 LTK_API HLTK WINAPI LtkButton_New_(LPCSTR source, int line);
@@ -226,8 +227,7 @@ LTK_API HLTK WINAPI LtkTreeView_New_(LPCSTR source, int line);
 
 LTK_API HLTK WINAPI LtkTreeView_GetRootNode(HLTK self);
 
-#define LTK_TREEVIEW_FIRST 500
-#define LTK_TREEVIEW_SELECT_CHANGE (LTK_TREEVIEW_FIRST + 1)
+#define LTK_TREEVIEW_SELECT_CHANGE 501
 
 #define LtkTreeNode_New() LtkTreeNode_New_(  __FILE__, __LINE__)
 LTK_API HLTK WINAPI LtkTreeNode_New_(LPCSTR source, int line);

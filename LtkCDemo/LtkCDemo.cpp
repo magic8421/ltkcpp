@@ -6,6 +6,21 @@
 #include "LtkCDemo.h"
 #include "LtkInterface.h"
 
+void LtkLogImpl(const char *source, int line, const char *format, ...)
+{
+	const size_t SIZE = 1024 * 2;
+	char buffer[SIZE];
+	va_list varg;
+	va_start(varg, format);
+	::StringCbVPrintfA(buffer, SIZE, format, varg);
+	va_end(varg);
+	char buffer2[SIZE];
+	::StringCbPrintfA(buffer2, SIZE, "%s\t%s(%d)\r\n", buffer, source, line);
+
+	::OutputDebugStringA(buffer2);
+}
+
+
 void CALLBACK OnWindowClose(void* userdata, BOOL* proceed, BOOL* bHandled)
 {
 	HLTK wnd = LtkGetEventSender();
@@ -23,7 +38,7 @@ static int node_count = 0;
 
 static void RecBuildNodes(HLTK parent, int depth)
 {
-	if (depth > 4) {
+	if (depth > 5) {
 		return;
 	}
 	int num = rand() % 13 + 3;
@@ -34,7 +49,7 @@ static void RecBuildNodes(HLTK parent, int depth)
 		LtkTreeNode_SetText(node, buf); // 内层循环建议不做类型检查
 		LtkTreeNode_AddChild(parent, node);
 		node_count++;
-		if (rand() % 100 < 35) {
+		if (rand() % 100 < 40) {
 			RecBuildNodes(node, depth + 1);
 		}
 	}
@@ -60,7 +75,11 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	LtkWindow_SetCentralWidget(wnd, splitter_h);
 
 	HLTK tree_view = LtkTreeView_New();
+	auto start = ::GetTickCount();
+	//LtkEnalbeApiCheck(FALSE);
 	RecBuildNodes(LtkTreeView_GetRootNode(tree_view), 0);
+	//LtkEnalbeApiCheck(TRUE);
+	LTK_LOG("prepare tree node: %d, time: %dms", node_count, ::GetTickCount() - start);
 
 	HLTK btn = NULL;
 	//HLTK btn = LtkButton_New();
