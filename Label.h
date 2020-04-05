@@ -16,6 +16,9 @@ class LTK_CPP_API Label : public Widget
 public:
     Label();
     virtual ~Label();
+
+    static HLTK CALLBACK CreateInstance();
+
     virtual bool OnPaint(PaintEvent *ev) override;
     virtual void OnThemeChanged() override;
 

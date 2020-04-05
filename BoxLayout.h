@@ -24,6 +24,9 @@ public:
 	explicit BoxLayout(Orientation);
     virtual ~BoxLayout();
 
+    static HLTK CALLBACK CreateHBox();
+    static HLTK CALLBACK CreateVBox();
+
 	virtual bool OnSize(SizeEvent *ev) override;
 
     void SetSpacing(float spacing);

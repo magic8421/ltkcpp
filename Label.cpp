@@ -27,6 +27,11 @@ Label::~Label()
 {
 }
 
+HLTK Label::CreateInstance()
+{
+    return (HLTK)new Label;
+}
+
 bool Label::OnPaint(PaintEvent *ev)
 {
     if (m_text.length() == 0) {

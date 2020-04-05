@@ -29,6 +29,11 @@ Button::~Button()
 {
 }
 
+HLTK Button::CreateInstance()
+{
+	return (HLTK)new Button;
+}
+
 void Button::OnThemeChanged()
 {
 	SAFE_RELEASE(m_layout);

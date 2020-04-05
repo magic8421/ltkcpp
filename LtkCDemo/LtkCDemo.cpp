@@ -6,6 +6,11 @@
 #include "LtkCDemo.h"
 #include "LtkInterface.h"
 
+struct DemoData
+{
+	HLTK builder_wnd;
+} g_data;
+
 void LtkLogImpl(const char *source, int line, const char *format, ...)
 {
 	const size_t SIZE = 1024 * 2;
@@ -23,6 +28,18 @@ void LtkLogImpl(const char *source, int line, const char *format, ...)
 void CALLBACK OnAction(void* userdata, LPCSTR name, BOOL* pbHandled)
 {
 	LTK_LOG("OnAction: %s", name);
+	DemoData* self = (DemoData*)userdata;
+	
+	if (!strcmp(name, "exit_app")) {
+		::PostQuitMessage(0);
+	}
+	else if (!strcmp(name, "new_file")) {
+		if (!self->builder_wnd) {
+			self->builder_wnd = LtkWindow_New();
+			HLTK tree = LtkBuildFromXml("res\\test_tree.xml");
+			LtkWindow_SetCentralWidget(self->builder_wnd, tree);
+		}
+	}
 }
 
 void CALLBACK OnWindowClose(void* userdata, BOOL* proceed, BOOL* bHandled)
@@ -35,6 +52,8 @@ void CALLBACK OnWindowClose(void* userdata, BOOL* proceed, BOOL* bHandled)
 
 void CALLBACK OnWindowDestroy(void* userdata, BOOL *bHandled)
 {
+	DemoData* self = (DemoData*)userdata;
+	LtkFree(self->builder_wnd);
 	::PostQuitMessage(0);
 }
 
@@ -71,11 +90,11 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	HLTK wnd = LtkWindow_New();
 	//LtkWindow_SetBackground(wnd, "window_bg");
 	LtkRegisterCallback(
-		wnd, LTK_WINDOW_DESTROY, (LtkCallback)OnWindowDestroy, NULL);
+		wnd, LTK_WINDOW_DESTROY, (LtkCallback)OnWindowDestroy, &g_data);
 	LtkRegisterCallback(
-		wnd, LTK_WINDOW_CLOSE, (LtkCallback)OnWindowClose, NULL);
+		wnd, LTK_WINDOW_CLOSE, (LtkCallback)OnWindowClose, &g_data);
 	LtkRegisterCallback(
-		wnd, LTK_ACTION, (LtkCallback)OnAction, NULL);
+		wnd, LTK_ACTION, (LtkCallback)OnAction, &g_data);
 
 	HLTK splitter_h = LtkSplitter_New(LTK_HORIZONTAL);
 	LtkWindow_SetCentralWidget(wnd, splitter_h);

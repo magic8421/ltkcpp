@@ -3,6 +3,10 @@
 #include "ltk.h"
 #include "Object.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW 
+#endif
+
 namespace ltk {
 
 Builder* Builder::m_sInst = nullptr;
@@ -13,6 +17,11 @@ Builder* Builder::Instance()
 		m_sInst = new Builder;
 	}
 	return m_sInst;
+}
+
+void Builder::Free()
+{
+	delete m_sInst;
 }
 
 void Builder::RegisterType(LPCSTR xml_tag, FactoryMethod func)
@@ -39,7 +48,9 @@ Object* Builder::WidgetFromXmlRec(tinyxml2::XMLElement* elm)
 	auto iter = m_mapFactory.find(name);
 	if (iter != m_mapFactory.end()) {
 		m_buildingPath.push_back(name);
-		parent = iter->second();
+		auto hltk = iter->second();
+		LTK_ASSERT(Object::CheckValid((Object*)hltk));
+		parent = (Object*)hltk;
 		auto attr = elm->FirstAttribute();
 		while (attr) {
 			parent->SetAttribute(attr->Name(), attr->Value());

@@ -20,6 +20,8 @@ public:
     Button();
     virtual ~Button();
 
+	static HLTK CALLBACK CreateInstance();
+
     void SetText(LPCWSTR text);
 	void RecreateLayout();
 	SizeF GetPreferredSize();

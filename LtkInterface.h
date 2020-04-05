@@ -54,6 +54,8 @@ LTK_API HLTK WINAPI LtkGetEventSender();
 LTK_API void* WINAPI LtkGetProp(LPCSTR name);
 LTK_API void WINAPI LtkSetProp(LPCSTR name, void *data);
 
+LTK_API HLTK LtkBuildFromXml(LPCSTR path);
+
 //LTK_API void WINAPI LtkEnalbeApiCheck(BOOL);
 
 #define LTK_CREATE			1

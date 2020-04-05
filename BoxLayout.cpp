@@ -29,6 +29,16 @@ BoxLayout::~BoxLayout()
     //}
 }
 
+HLTK BoxLayout::CreateHBox()
+{
+	return (HLTK)new BoxLayout(ltk::Horizontal);
+}
+
+HLTK BoxLayout::CreateVBox()
+{
+    return (HLTK)new BoxLayout(ltk::Vertical);
+}
+
 bool BoxLayout::AlreadyHas(Widget* sp)
 {
 	bool bHas = false;

@@ -16,6 +16,10 @@
 #include "Sprite.h"
 #include "TimerManager.h"
 #include "SetupStyles.h"
+#include "Builder.h"
+#include "BoxLayout.h"
+#include "Button.h"
+#include "Label.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW 
@@ -352,12 +356,19 @@ namespace ltk {
 		StyleManager::Instance()->LoadThemeXml("res\\theme_pixel.xml");
 		SetupPixelStyle1();
 
+        Builder::Instance()->RegisterType("VBox", BoxLayout::CreateVBox);
+        Builder::Instance()->RegisterType("HBox", BoxLayout::CreateHBox);
+        Builder::Instance()->RegisterType("Button", Button::CreateInstance);
+        Builder::Instance()->RegisterType("Label", Label::CreateInstance);
+
+
 		LTK_LOG("sizeof map: %d", sizeof(std::map<int, void*>));
     }
 
     void LtkUninitialize()
     {
 		ShadowFrame::Free();
+        Builder::Free();
         StyleManager::Free();
         TimerManager::Free();
         Object::Free();

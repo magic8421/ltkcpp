@@ -11,6 +11,7 @@
 #include "TextEdit.h"
 #include "MenuBar.h"
 #include "StyleManager.h"
+#include "Builder.h"
 
 using namespace ltk;
 
@@ -100,6 +101,11 @@ LTK_API void WINAPI LtkUnregisterCallback(HLTK obj, UINT event_id, LtkCallback c
 LTK_API HLTK WINAPI LtkGetEventSender()
 {
 	return (HLTK)Object::GetDelegateInvoker();
+}
+
+LTK_API HLTK LtkBuildFromXml(LPCSTR path)
+{
+	return (HLTK)Builder::Instance()->WidgetFromXml(path);
 }
 
 

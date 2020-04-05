@@ -1,11 +1,13 @@
 #pragma once
 
+#include "LtkInterface.h"
+
 namespace ltk {
 
 class Object;
 class Widget;
 
-typedef Object* (*FactoryMethod)();
+typedef HLTK (CALLBACK *FactoryMethod)();
 
 class Builder
 {
@@ -14,7 +16,9 @@ protected:
 	~Builder() {}
 
 public:
-	Builder* Instance();
+	static Builder* Instance();
+	static void Free();
+
 	void RegisterType(LPCSTR xml_tag, FactoryMethod func);
 	Object* WidgetFromXml(LPCSTR path);
 
