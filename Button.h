@@ -30,8 +30,6 @@ public:
 	void SetTextFormat(LPCSTR style);
 	void SetTextColor(LPCSTR style);
 
-	virtual void SetAttribute(LPCSTR name, LPCSTR value) override;
-
 protected:
 	virtual bool OnSize(SizeEvent *ev) override;
 	virtual bool OnPaint(PaintEvent *ev) override;

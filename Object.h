@@ -35,7 +35,7 @@ public:
 	Object *GetParent() { return m_parent; }
 	void SetParent(Object *);
 
-	virtual void SetAttribute(LPCSTR name, LPCSTR value) {}
+	void SetAttribute(LPCSTR name, LPCSTR value);
 
 	/////////////////////////////////////////////////////////////////
 	void SetSourceLine(LPCSTR source, int line);
@@ -45,6 +45,10 @@ public:
 
 	template<typename CB, typename... Params>
 	void InvokeCallbacks(UINT event_id, Params... params);
+
+	void RegisterAttribute(LPCSTR name, const std::function<void(LPCSTR)>& cb);
+
+	static LPCSTR InternString(LPCSTR str);
 
 protected:
 	bool m_bWidget = false;
@@ -59,6 +63,11 @@ private:
 
 	const char* m_source = nullptr; // 好像没必要 外部使用者应该用umdh来查内存泄漏
 	int m_line = -1;
+
+	std::unordered_map<LPCSTR, std::function<void(LPCSTR)>> m_mapAttributes;
+
+	static std::unordered_set<std::string> m_internedStrings;
+
 
 	DISALLOW_COPY_AND_ASSIGN(Object);
 };

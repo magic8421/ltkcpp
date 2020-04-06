@@ -51,6 +51,20 @@ std::string Utf16ToGbk(LPCTSTR strW, int len)
     return std::move(strA);
 }
 
+static UINT ltk_acp = CP_ACP;
+
+std::wstring LtkA2W(LPCSTR strA, int len)
+{
+    if (len < 0) {
+        len = (int)strlen(strA);
+    }
+    int lenW = ::MultiByteToWideChar(ltk_acp, 0, strA, len, NULL, 0);
+    std::wstring strW;
+    strW.resize(lenW);
+    ::MultiByteToWideChar(ltk_acp, 0, strA, len, &strW[0], lenW);
+    return std::move(strW);
+}
+
 std::wstring WStringFormat(LPCWSTR format, ...)
 {
 	std::wstring str;

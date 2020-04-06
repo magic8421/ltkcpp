@@ -82,8 +82,6 @@ public:
     void HandleRecreateResouce( ID2D1RenderTarget *target );
     void HandleThemeChange();
 
-    virtual void SetAttribute(LPCSTR name, LPCSTR value) override;
-
     virtual bool OnEvent(Event *ev) override;
 
 protected:

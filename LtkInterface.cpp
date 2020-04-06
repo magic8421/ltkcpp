@@ -74,7 +74,7 @@ LTK_API void WINAPI LtkFree(HLTK obj)
 
 LTK_API LPCSTR WINAPI LtkInternString(LPCSTR str)
 {
-	return StyleManager::Instance()->InternString(str);
+	return Object::InternString(str);
 }
 
 LTK_API void WINAPI LtkSetName(HLTK o, LPCSTR name)

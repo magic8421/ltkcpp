@@ -27,6 +27,19 @@ Widget::Widget(void)
 	m_bVisible = true;
 	m_bClipChildren = false;
     m_bWidget = true;
+
+    Object::RegisterAttribute("rect", [this](LPCSTR value) {
+        RectF rc;
+        char *end = 0;
+        rc.X = strtol(value, &end, 10); // TODO strtof
+        if (!end) return;
+        rc.Y = strtol(end + 1, &end, 10);
+        if (!end) return;
+        rc.Width = strtol(end + 1, &end, 10);
+        if (!end) return;
+        rc.Height = strtol(end + 1, &end, 10);
+        this->SetRect(rc);
+    });
 }
 
 Widget::~Widget(void)
@@ -440,22 +453,6 @@ void Widget::HandleThemeChange()
             auto sp = static_cast<Widget*>(obj);
             sp->HandleThemeChange();
         }
-    }
-}
-
-void Widget::SetAttribute(LPCSTR name, LPCSTR value)
-{
-    if (!strcmp(name, "rect")) {
-        RectF rc;
-        char *end = 0;
-        rc.X = strtol(value, &end, 10); 
-        if (!end) return;
-        rc.Y = strtol(end + 1, &end, 10);
-        if (!end) return;
-        rc.Width = strtol(end + 1, &end, 10);
-        if (!end) return;
-        rc.Height = strtol(end + 1, &end, 10);
-        this->SetRect(rc);
     }
 }
 

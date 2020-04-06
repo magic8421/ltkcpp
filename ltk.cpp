@@ -37,7 +37,7 @@ namespace ltk {
 
     LPCSTR InternString(LPCSTR psz)
     {
-        return StyleManager::Instance()->InternString(psz);
+        return Object::InternString(psz);
     }
 
     // convert DIP to screen
@@ -362,7 +362,11 @@ namespace ltk {
         Builder::Instance()->RegisterType("Label", Label::CreateInstance);
 
 
-		LTK_LOG("sizeof map: %d", sizeof(std::map<int, void*>));
+        LTK_LOG("sizeof vector: %d", sizeof(std::vector<int>));
+        LTK_LOG("sizeof map: %d", sizeof(std::map<int, void*>));
+        LTK_LOG("sizeof unordered_map: %d", sizeof(std::unordered_map<int, void*>));
+        LTK_LOG("sizeof function: %d", sizeof(std::function<void()>));
+        LTK_LOG("sizeof Object: %d", sizeof(Object));
     }
 
     void LtkUninitialize()

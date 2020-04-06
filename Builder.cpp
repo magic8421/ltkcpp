@@ -53,7 +53,7 @@ Object* Builder::WidgetFromXmlRec(tinyxml2::XMLElement* elm)
 		parent = (Object*)hltk;
 		auto attr = elm->FirstAttribute();
 		while (attr) {
-			parent->SetAttribute(attr->Name(), attr->Value());
+			parent->SetAttribute(ltk::InternString(attr->Name()), attr->Value());
 			attr = attr->Next();
 		}
 		auto child_elm = elm->FirstChildElement();

@@ -91,6 +91,36 @@ void Object::SetParent(Object* p)
 	p->AddChild(this);
 }
 
+std::unordered_set<std::string> Object::m_internedStrings;
+
+
+void Object::RegisterAttribute(LPCSTR name, const std::function<void(LPCSTR)>& cb)
+{
+	m_mapAttributes[InternString(name)] = cb;
+}
+
+LPCSTR Object::InternString(LPCSTR psz)
+{
+	// TODO 多线程加锁 键改成LPCSTR
+	std::string str(psz);
+	auto iter = m_internedStrings.find(str);
+	if (iter == m_internedStrings.end()) {
+		auto ret = m_internedStrings.insert(str);
+		LTK_ASSERT(ret.second); // the insertion took place.
+		return (ret.first)->c_str();
+	} else {
+		return iter->c_str();
+	}
+}
+
+void Object::SetAttribute(LPCSTR name, LPCSTR value) 
+{
+	auto iter = m_mapAttributes.find(name);
+	if (iter != m_mapAttributes.end()) {
+		iter->second(value);
+	}
+}
+
 /////////////////////////////////////////////////////////////////
 
 void Object::SetSourceLine(LPCSTR source, int line)
