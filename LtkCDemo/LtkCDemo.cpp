@@ -38,6 +38,8 @@ void CALLBACK OnAction(void* userdata, LPCSTR name, BOOL* pbHandled)
 			self->builder_wnd = LtkWindow_New();
 			HLTK tree = LtkBuildFromXml("res\\test_tree.xml");
 			LtkWindow_SetCentralWidget(self->builder_wnd, tree);
+			LtkWindow_CreateCenter(self->builder_wnd, NULL, 100, 100);
+			LtkWindow_UpdateTheme(self->builder_wnd);
 		}
 	}
 }

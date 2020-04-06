@@ -134,6 +134,15 @@ void Button::SetTextColor(LPCSTR style)
 	this->m_szTextColor = ltk::InternString(style);
 }
 
+void Button::SetAttribute(LPCSTR name, LPCSTR value)
+{
+	if (!strcmp(name, "text")) {
+		m_text = Utf8ToUtf16(value);
+		return;
+	}
+	Widget::SetAttribute(name, value);
+}
+
 bool Button::OnSize(SizeEvent *ev)
 {
 	//SAFE_RELEASE(m_layout);

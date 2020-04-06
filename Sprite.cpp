@@ -443,6 +443,22 @@ void Widget::HandleThemeChange()
     }
 }
 
+void Widget::SetAttribute(LPCSTR name, LPCSTR value)
+{
+    if (!strcmp(name, "rect")) {
+        RectF rc;
+        char *end = 0;
+        rc.X = strtol(value, &end, 10); 
+        if (!end) return;
+        rc.Y = strtol(end + 1, &end, 10);
+        if (!end) return;
+        rc.Width = strtol(end + 1, &end, 10);
+        if (!end) return;
+        rc.Height = strtol(end + 1, &end, 10);
+        this->SetRect(rc);
+    }
+}
+
 void Widget::BeginAnimation()
 {
     //LTK_LOG("BeginAnimation");

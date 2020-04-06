@@ -67,6 +67,7 @@ LTK_API void WINAPI LtkRunMessageLoop()
 
 LTK_API void WINAPI LtkFree(HLTK obj)
 {
+	if (!obj) return;
 	Object *pobj = ltk_cast<Object>(obj);
 	delete pobj;
 }
