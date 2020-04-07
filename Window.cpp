@@ -632,23 +632,17 @@ void Window::Maximize()
 
 
 
-typedef void(CALLBACK *WindowCloseCallback)(void *userdata, BOOL *pProceed, BOOL *bHandled);
-typedef void(CALLBACK *WindowDestroyCallback)(void *userdata, BOOL *bHandled);
+typedef int (CALLBACK *WindowCloseCallback)(void *userdata, BOOL *pProceed);
 
 void Window::OnClose(BOOL* proceed)
 {
 	SetDelegateInvoker(this);
 	this->CloseDelegate(proceed);
-    BOOL bHandle = FALSE;
-    InvokeCallbacks<WindowCloseCallback>(LTK_WINDOW_CLOSE, proceed, &bHandle);
+    InvokeCallbacks<WindowCloseCallback>(LTK_WINDOW_CLOSE, proceed);
 }
 
 void Window::OnDestroy()
 {
-	//SetDelegateInvoker(this);
-	//this->DestroyDelegate();
-    //BOOL bHandle = FALSE;
-    //InvokeCallbacks<WindowDestroyCallback>(LTK_WINDOW_DESTROY, &bHandle);
 }
 
 HWND Window::GetHWND()

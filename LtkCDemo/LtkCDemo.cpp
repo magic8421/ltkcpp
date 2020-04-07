@@ -26,14 +26,15 @@ void LtkLogImpl(const char *source, int line, const char *format, ...)
 	::OutputDebugStringA(buffer2);
 }
 
-void CALLBACK OnXmlWindowDestroy(void* userdata)
+int CALLBACK OnXmlWindowDestroy(void* userdata)
 {
 	DemoData* self = (DemoData*)userdata;
 	//LtkFree(self->builder_wnd); // TODO 这里会嵌套然后完蛋
 	self->builder_wnd = NULL;
+	return 0;
 }
 
-void CALLBACK OnAction(void* userdata, LPCSTR name, BOOL* pbHandled)
+int CALLBACK OnAction(void* userdata, LPCSTR name)
 {
 	LTK_LOG("OnAction: %s", name);
 	DemoData* self = (DemoData*)userdata;
@@ -55,21 +56,24 @@ void CALLBACK OnAction(void* userdata, LPCSTR name, BOOL* pbHandled)
 			LtkWindow_UpdateTheme(self->builder_wnd);
 		}
 	}
+	return 0;
 }
 
-void CALLBACK OnWindowClose(void* userdata, BOOL* proceed, BOOL* bHandled)
+int CALLBACK OnWindowClose(void* userdata, BOOL* proceed)
 {
 	HLTK wnd = LtkGetEventSender();
 	if (::MessageBox(LtkWindow_GetHWND(wnd), L"close ?", 0, MB_OKCANCEL) == IDCANCEL) {
 		*proceed = FALSE;
 	}
+	return 0;
 }
 
-void CALLBACK OnWindowDestroy(void* userdata)
+int CALLBACK OnWindowDestroy(void* userdata)
 {
 	DemoData* self = (DemoData*)userdata;
 	//LtkFree(self->builder_wnd);
 	::PostQuitMessage(0);
+	return 0;
 }
 
 static int node_count = 0;

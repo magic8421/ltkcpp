@@ -21,6 +21,8 @@ public:
 	Object();
 	virtual ~Object();
 
+	void DeleteLater();
+
 	static Object *GetDelegateInvoker();
 	static void SetDelegateInvoker(Object *);
 
@@ -44,7 +46,7 @@ public:
 	void RegisterCallback(UINT event_id, LtkCallback cb, void* userdata);
 
 	template<typename CB, typename... Params>
-	void InvokeCallbacks(UINT event_id, Params... params);
+	int InvokeCallbacks(UINT event_id, Params... params);
 
 	static LPCSTR InternString(LPCSTR str);
 
@@ -69,17 +71,20 @@ private:
 
 
 template<typename CB, typename... Params>
-void Object::InvokeCallbacks(UINT event_id, Params... params)
+int Object::InvokeCallbacks(UINT event_id, Params... params)
 {
 	auto iter = m_mapCallbacks.find(event_id);
 	if (iter == m_mapCallbacks.end()) {
-		return;
+		return 0;
 	}
 	const auto& list = iter->second;
 	for (size_t i = list.size(); i > 0; i--) {
-		((CB)list[i - 1].callback)(
+		int ret = (int)((CB)list[i - 1].callback)(
 			list[i - 1].userdata, std::forward<Params>(params)...);
+		if (!ret)
+			return ret;
 	}
+	return 0;
 }
 
 } // namespace ltk

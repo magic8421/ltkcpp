@@ -12,7 +12,7 @@ namespace ltk {
 static __declspec(thread) Object *sDelegateInvoker = nullptr;
 static std::unordered_set<Object*>* sObjectSet;
 
-typedef void (CALLBACK* ObjectDeleteCallback)(void *userdata);
+typedef int (CALLBACK* ObjectDeleteCallback)(void *userdata);
 
 Object::Object()
 {
