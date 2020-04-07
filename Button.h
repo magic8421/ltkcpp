@@ -20,6 +20,8 @@ public:
     Button();
     virtual ~Button();
 
+	static void Init();
+
 	static HLTK CALLBACK CreateInstance();
 
     void SetText(LPCWSTR text);
@@ -29,6 +31,8 @@ public:
 	void SetBackground(LPCSTR style);
 	void SetTextFormat(LPCSTR style);
 	void SetTextColor(LPCSTR style);
+
+	virtual void SetAttribute(LPCSTR name, LPCSTR value) override;
 
 protected:
 	virtual bool OnSize(SizeEvent *ev) override;

@@ -30,6 +30,8 @@ public:
     Widget(void);
     virtual ~Widget(void);
 
+    static void Init();
+
     RectF GetRect();
 	RectF GetClientRect();
 	RectF GetAbsRect();
@@ -81,6 +83,8 @@ public:
     void HandleImeInput( LPCTSTR text );
     void HandleRecreateResouce( ID2D1RenderTarget *target );
     void HandleThemeChange();
+
+    virtual void SetAttribute(LPCSTR name, LPCSTR value) override;
 
     virtual bool OnEvent(Event *ev) override;
 

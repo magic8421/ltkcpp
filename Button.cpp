@@ -23,9 +23,6 @@ Button::Button() :
 	m_szTextColor("default_btn_clr"),
 	m_textColor({ 1.0f, 0.0f, 1.0f, 0.5f })
 {
-	Object::RegisterAttribute("text", [this](LPCSTR value) {
-		m_text = LtkA2W(value);
-	});
 }
 
 Button::~Button()
@@ -135,6 +132,22 @@ void Button::SetTextFormat(LPCSTR style)
 void Button::SetTextColor(LPCSTR style)
 {
 	this->m_szTextColor = ltk::InternString(style);
+}
+
+static LPCSTR id_text = nullptr;
+
+void Button::Init()
+{
+	id_text = Object::InternString("text");
+}
+
+void Button::SetAttribute(LPCSTR name, LPCSTR value)
+{
+	if (name == id_text) {
+		m_text = Utf8ToUtf16(value);
+		return;
+	}
+	Widget::SetAttribute(name, value);
 }
 
 bool Button::OnSize(SizeEvent *ev)

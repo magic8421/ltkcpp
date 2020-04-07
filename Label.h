@@ -17,17 +17,19 @@ public:
     Label();
     virtual ~Label();
 
+    static void Init();
     static HLTK CALLBACK CreateInstance();
-
-    virtual bool OnPaint(PaintEvent *ev) override;
-    virtual void OnThemeChanged() override;
-
 
     LPCWSTR GetText();
     void SetText(LPCWSTR text);
 
     void SetTextFormat(LPCSTR style);
     void SetTextColor(LPCSTR style);
+
+    virtual void SetAttribute(LPCSTR name, LPCSTR value) override;
+
+    virtual bool OnPaint(PaintEvent *ev) override;
+    virtual void OnThemeChanged() override;
 
 private:
 	std::wstring m_text;

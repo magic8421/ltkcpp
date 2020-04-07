@@ -348,6 +348,9 @@ namespace ltk {
         TimerManager::Instance();
         ShadowFrame::Init();
         Window::RegisterWndClass();
+        Widget::Init();
+        Button::Init();
+        Label::Init();
 
 		StyleManager::NewTheme("rect");
 		SetupVectorStyleDark();

@@ -67,6 +67,22 @@ void Label::SetTextColor(LPCSTR style)
     this->m_szTextColor = ltk::InternString(style);
 }
 
+LPCSTR id_text = nullptr;
+
+void Label::Init()
+{
+    id_text = Object::InternString("text");
+}
+
+void Label::SetAttribute(LPCSTR name, LPCSTR value)
+{
+    if (name == id_text) {
+        this->SetText(LtkA2W(value).c_str());
+        return;
+    }
+    Widget::SetAttribute(name, value);
+}
+
 void Label::OnThemeChanged()
 {
 	auto sm = StyleManager::Instance();

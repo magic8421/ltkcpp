@@ -25,6 +25,13 @@ void LtkLogImpl(const char *source, int line, const char *format, ...)
 	::OutputDebugStringA(buffer2);
 }
 
+void CALLBACK OnXmlWindowDestroy(void* userdata, BOOL* bHandled)
+{
+	DemoData* self = (DemoData*)userdata;
+	//LtkFree(self->builder_wnd); // TODO 这里会嵌套然后完蛋
+	self->builder_wnd = NULL;
+}
+
 void CALLBACK OnAction(void* userdata, LPCSTR name, BOOL* pbHandled)
 {
 	LTK_LOG("OnAction: %s", name);
@@ -36,9 +43,11 @@ void CALLBACK OnAction(void* userdata, LPCSTR name, BOOL* pbHandled)
 	else if (!strcmp(name, "new_file")) {
 		if (!self->builder_wnd) {
 			self->builder_wnd = LtkWindow_New();
+			LtkRegisterCallback( self->builder_wnd,
+				LTK_WINDOW_DESTROY, (LtkCallback)OnXmlWindowDestroy, self);
 			HLTK tree = LtkBuildFromXml("res\\test_tree.xml");
 			LtkWindow_SetCentralWidget(self->builder_wnd, tree);
-			LtkWindow_CreateCenter(self->builder_wnd, NULL, 100, 100);
+			LtkWindow_CreateCenter(self->builder_wnd, NULL, 600, 450);
 			LtkWindow_UpdateTheme(self->builder_wnd);
 		}
 	}

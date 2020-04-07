@@ -93,12 +93,6 @@ void Object::SetParent(Object* p)
 
 std::unordered_set<std::string> Object::m_internedStrings;
 
-
-void Object::RegisterAttribute(LPCSTR name, const std::function<void(LPCSTR)>& cb)
-{
-	m_mapAttributes[InternString(name)] = cb;
-}
-
 LPCSTR Object::InternString(LPCSTR psz)
 {
 	// TODO 多线程加锁 键改成LPCSTR
@@ -110,14 +104,6 @@ LPCSTR Object::InternString(LPCSTR psz)
 		return (ret.first)->c_str();
 	} else {
 		return iter->c_str();
-	}
-}
-
-void Object::SetAttribute(LPCSTR name, LPCSTR value) 
-{
-	auto iter = m_mapAttributes.find(name);
-	if (iter != m_mapAttributes.end()) {
-		iter->second(value);
 	}
 }
 
