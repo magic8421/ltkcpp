@@ -136,10 +136,10 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 	HLTK list_view = LtkListView_New();
 	HLTK header = LtkListView_GetHeaderCtrl(list_view);
-	LtkHeaderCtrl_AddColumn(header, L"项目名", 100);
-	LtkHeaderCtrl_AddColumn(header, L"工程名", 200);
-	LtkHeaderCtrl_AddColumn(header, L"负责人", 200);
-	LtkHeaderCtrl_AddColumn(header, L"资金", 100);
+	LtkHeaderCtrl_AddColumn(header, "项目名", 100);
+	LtkHeaderCtrl_AddColumn(header, "工程名", 200);
+	LtkHeaderCtrl_AddColumn(header, "负责人", 200);
+	LtkHeaderCtrl_AddColumn(header, "资金", 100);
 	LtkListView_UpdateColumnWidth(list_view);
 
 	UINT num = rand() % 200;
@@ -170,38 +170,38 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	LtkWindow_SetMenu(wnd, menu_bar);
 
 	HLTK popup_menu = LtkPopupMenu_New();
-	LtkPopupMenu_AddItem(popup_menu, L"新建", "new_file");
-	LtkPopupMenu_AddItem(popup_menu, L"打开", "open_file");
-	LtkPopupMenu_AddItem(popup_menu, L"最近", "");
-	LtkPopupMenu_AddItem(popup_menu, L"关闭", "close_file");
-	LtkPopupMenu_AddItem(popup_menu, L"退出", "exit_app");
+	LtkPopupMenu_AddItem(popup_menu, "新建", "new_file");
+	LtkPopupMenu_AddItem(popup_menu, "打开", "open_file");
+	LtkPopupMenu_AddItem(popup_menu, "最近", "");
+	LtkPopupMenu_AddItem(popup_menu, "关闭", "close_file");
+	LtkPopupMenu_AddItem(popup_menu, "退出", "exit_app");
 	LtkMenuBar_SetPopupMenu(menu_bar, 0, popup_menu);
 
 	HLTK popup2 = LtkPopupMenu_New();
 	LtkPopupMenu_SetWidth(popup2, 200);
-	LtkPopupMenu_AddItem(popup2, L"C:\\路径\\文件", "recent_file_01");
-	LtkPopupMenu_AddItem(popup2, L"C:\\路径\\文件", "recent_file_02");
-	LtkPopupMenu_AddItem(popup2, L"C:\\路径\\文件", "recent_file_03");
+	LtkPopupMenu_AddItem(popup2, "C:\\路径\\文件", "recent_file_01");
+	LtkPopupMenu_AddItem(popup2, "C:\\路径\\文件", "recent_file_02");
+	LtkPopupMenu_AddItem(popup2, "C:\\路径\\文件", "recent_file_03");
 	LtkPopupMenu_SetSubMenu(popup_menu, 2, popup2);
 
 	popup_menu = LtkPopupMenu_New();
-	LtkPopupMenu_AddItem(popup_menu, L"撤销", "undo_action");
-	LtkPopupMenu_AddItem(popup_menu, L"重做", "redo_action");
+	LtkPopupMenu_AddItem(popup_menu, "撤销", "undo_action");
+	LtkPopupMenu_AddItem(popup_menu, "重做", "redo_action");
 	LtkPopupMenu_AddSeparator(popup_menu);
-	LtkPopupMenu_AddItem(popup_menu, L"复制", "copy_action");
-	LtkPopupMenu_AddItem(popup_menu, L"剪切", "cut_action");
-	LtkPopupMenu_AddItem(popup_menu, L"粘贴", "paste_action");
+	LtkPopupMenu_AddItem(popup_menu, "复制", "copy_action");
+	LtkPopupMenu_AddItem(popup_menu, "剪切", "cut_action");
+	LtkPopupMenu_AddItem(popup_menu, "粘贴", "paste_action");
 	LtkMenuBar_SetPopupMenu(menu_bar, 1, popup_menu);
 
 	popup_menu = LtkPopupMenu_New();
-	LtkPopupMenu_AddItem(popup_menu, L"位图素材", "pixel_theme");
-	LtkPopupMenu_AddItem(popup_menu, L"暗色", "dark_theme");
-	LtkPopupMenu_AddItem(popup_menu, L"亮色", "light_theme");
+	LtkPopupMenu_AddItem(popup_menu, "位图素材", "pixel_theme");
+	LtkPopupMenu_AddItem(popup_menu, "暗色", "dark_theme");
+	LtkPopupMenu_AddItem(popup_menu, "亮色", "light_theme");
 	LtkMenuBar_SetPopupMenu(menu_bar, 2, popup_menu);
 
 	popup_menu = LtkPopupMenu_New();
-	LtkPopupMenu_AddItem(popup_menu, L"在线手册", "online_manual");
-	LtkPopupMenu_AddItem(popup_menu, L"关于", "about_action");
+	LtkPopupMenu_AddItem(popup_menu, "在线手册", "online_manual");
+	LtkPopupMenu_AddItem(popup_menu, "关于", "about_action");
 	LtkMenuBar_SetPopupMenu(menu_bar, 3, popup_menu);
 
 	LtkWindow_CreateCenter(wnd, NULL, 800, 600);

@@ -238,10 +238,10 @@ LTK_API HLTK WINAPI LtkHeaderCtrl_New_(LPCSTR source, int line)
 	return (HLTK)obj;
 }
 
-LTK_API void WINAPI LtkHeaderCtrl_AddColumn(HLTK self, LPCWSTR text, float width)
+LTK_API void WINAPI LtkHeaderCtrl_AddColumn(HLTK self, LPCSTR text, float width)
 {
 	HeaderCtrl* thiz = ltk_cast<HeaderCtrl>(self);
-	thiz->AddColumn(text, width);
+	thiz->AddColumn(LtkA2W(text).c_str(), width);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -406,10 +406,10 @@ LTK_API HLTK WINAPI LtkPopupMenu_New_(LPCSTR source, int line)
 	return (HLTK)obj;
 }
 
-LTK_API void WINAPI LtkPopupMenu_AddItem(HLTK self, LPCWSTR text, LPCSTR name)
+LTK_API void WINAPI LtkPopupMenu_AddItem(HLTK self, LPCSTR text, LPCSTR name)
 {
 	PopupMenu* thiz = ltk_cast<PopupMenu>(self);
-	thiz->AddItem(text, name);
+	thiz->AddItem(LtkA2W(text).c_str(), name);
 }
 
 LTK_API void WINAPI LtkPopupMenu_AddSeparator(HLTK self)

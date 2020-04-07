@@ -191,7 +191,7 @@ LTK_API void WINAPI LtkButton_SetText(HLTK self, LPCWSTR);
 #define LtkHeaderCtrl_New() LtkHeaderCtrl_New_(  __FILE__, __LINE__)
 LTK_API HLTK WINAPI LtkHeaderCtrl_New_(LPCSTR source, int line);
 
-LTK_API void WINAPI LtkHeaderCtrl_AddColumn(HLTK self, LPCWSTR text, float width);
+LTK_API void WINAPI LtkHeaderCtrl_AddColumn(HLTK self, LPCSTR text, float width);
 
 
 
@@ -259,7 +259,7 @@ LTK_API void WINAPI LtkMenuBar_SetPopupMenu(HLTK self, UINT idx, HLTK popup);
 #define LtkPopupMenu_New() LtkPopupMenu_New_(  __FILE__, __LINE__)
 LTK_API HLTK WINAPI LtkPopupMenu_New_(LPCSTR source, int line);
 
-LTK_API void WINAPI LtkPopupMenu_AddItem(HLTK self, LPCWSTR text, LPCSTR name);
+LTK_API void WINAPI LtkPopupMenu_AddItem(HLTK self, LPCSTR text, LPCSTR name);
 LTK_API void WINAPI LtkPopupMenu_AddSeparator(HLTK self);
 LTK_API void WINAPI LtkPopupMenu_SetWidth(HLTK self, float width);
 LTK_API void WINAPI LtkPopupMenu_SetSubMenu(HLTK self, UINT idx, HLTK popup);
