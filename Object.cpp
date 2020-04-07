@@ -12,6 +12,8 @@ namespace ltk {
 static __declspec(thread) Object *sDelegateInvoker = nullptr;
 static std::unordered_set<Object*>* sObjectSet;
 
+typedef void (CALLBACK* ObjectDeleteCallback)(void *userdata);
+
 Object::Object()
 {
 	// TODO lock for multithread.
@@ -37,6 +39,8 @@ Object::~Object()
 		LTK_ASSERT(false);
 	}
 	sObjectSet->erase(iter);
+
+	InvokeCallbacks<ObjectDeleteCallback>(LTK_OBJECT_DELETE);
 }
 
 void Object::Free()

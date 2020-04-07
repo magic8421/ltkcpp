@@ -156,7 +156,7 @@ void WindowLayout::OnMaxBtnClicked()
 
 void WindowLayout::OnCloseBtnClicked()
 {
-	this->GetWindow()->CloseWindow();
+	::PostMessage(this->GetWindow()->GetHWND(), WM_CLOSE, 0, 0);
 }
 
 } // namespace ltk

@@ -8,6 +8,7 @@
 
 struct DemoData
 {
+	HLTK main_wnd;
 	HLTK builder_wnd;
 } g_data;
 
@@ -25,7 +26,7 @@ void LtkLogImpl(const char *source, int line, const char *format, ...)
 	::OutputDebugStringA(buffer2);
 }
 
-void CALLBACK OnXmlWindowDestroy(void* userdata, BOOL* bHandled)
+void CALLBACK OnXmlWindowDestroy(void* userdata)
 {
 	DemoData* self = (DemoData*)userdata;
 	//LtkFree(self->builder_wnd); // TODO 这里会嵌套然后完蛋
@@ -38,13 +39,16 @@ void CALLBACK OnAction(void* userdata, LPCSTR name, BOOL* pbHandled)
 	DemoData* self = (DemoData*)userdata;
 	
 	if (!strcmp(name, "exit_app")) {
+		::PostMessage(LtkWindow_GetHWND(self->main_wnd), WM_CLOSE, 0, 0); 
+		// 这里并不能弹出确认对话框 怀疑是因为下面一句 跟踪调试发现确实调用到了MessageBox
+		// 但没有显示出来 可能是PostQuitMessage会导致消息循环直接退出
 		::PostQuitMessage(0);
 	}
 	else if (!strcmp(name, "new_file")) {
 		if (!self->builder_wnd) {
 			self->builder_wnd = LtkWindow_New();
 			LtkRegisterCallback( self->builder_wnd,
-				LTK_WINDOW_DESTROY, (LtkCallback)OnXmlWindowDestroy, self);
+				LTK_OBJECT_DELETE, (LtkCallback)OnXmlWindowDestroy, self);
 			HLTK tree = LtkBuildFromXml("res\\test_tree.xml");
 			LtkWindow_SetCentralWidget(self->builder_wnd, tree);
 			LtkWindow_CreateCenter(self->builder_wnd, NULL, 600, 450);
@@ -61,10 +65,10 @@ void CALLBACK OnWindowClose(void* userdata, BOOL* proceed, BOOL* bHandled)
 	}
 }
 
-void CALLBACK OnWindowDestroy(void* userdata, BOOL *bHandled)
+void CALLBACK OnWindowDestroy(void* userdata)
 {
 	DemoData* self = (DemoData*)userdata;
-	LtkFree(self->builder_wnd);
+	//LtkFree(self->builder_wnd);
 	::PostQuitMessage(0);
 }
 
@@ -99,9 +103,10 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	LtkInitialize();
 
 	HLTK wnd = LtkWindow_New();
+	g_data.main_wnd = wnd;
 	//LtkWindow_SetBackground(wnd, "window_bg");
 	LtkRegisterCallback(
-		wnd, LTK_WINDOW_DESTROY, (LtkCallback)OnWindowDestroy, &g_data);
+		wnd, LTK_OBJECT_DELETE, (LtkCallback)OnWindowDestroy, &g_data);
 	LtkRegisterCallback(
 		wnd, LTK_WINDOW_CLOSE, (LtkCallback)OnWindowClose, &g_data);
 	LtkRegisterCallback(
@@ -201,7 +206,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 	LtkRunMessageLoop();
 
-	LtkFree(wnd);
 	LtkUninitialize();
 	return 0;
 }

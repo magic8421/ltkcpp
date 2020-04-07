@@ -144,6 +144,7 @@ typedef struct _LtkRecreateResource {
 // LtkMenuBar 基类：LtkWidget
 // LtkPopupMenu 基类：LtkWidget
 
+#define LTK_OBJECT_DELETE       99
 
 // (void *userdata, BOOL *bHandled)
 #define LTK_WINDOW_DESTROY		101

@@ -47,7 +47,7 @@ m_shadowBottom(ShadowFrame::eBottom)
 
 Window::~Window(void)
 {
-	::DestroyWindow(m_hwnd);
+	//::DestroyWindow(m_hwnd);
 
     if (m_root) {
         delete m_root;
@@ -502,7 +502,7 @@ LRESULT CALLBACK Window::WndProcStatic(HWND hwnd, UINT message, WPARAM wparam, L
         return ::DefWindowProc(hwnd, message, wparam, lparam);
 	}
 	if (WM_NCDESTROY == message) {
-		thiz->m_hwnd = 0;
+        delete thiz;
 		return 0;
 	}
     return thiz->WndProc(hwnd, message, wparam, lparam);
@@ -645,10 +645,10 @@ void Window::OnClose(BOOL* proceed)
 
 void Window::OnDestroy()
 {
-	SetDelegateInvoker(this);
-	this->DestroyDelegate();
-    BOOL bHandle = FALSE;
-    InvokeCallbacks<WindowDestroyCallback>(LTK_WINDOW_DESTROY, &bHandle);
+	//SetDelegateInvoker(this);
+	//this->DestroyDelegate();
+    //BOOL bHandle = FALSE;
+    //InvokeCallbacks<WindowDestroyCallback>(LTK_WINDOW_DESTROY, &bHandle);
 }
 
 HWND Window::GetHWND()
