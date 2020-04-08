@@ -38,35 +38,35 @@ Object* Builder::WidgetFromXml(LPCSTR path)
 	if (doc.LoadFile(path) != XML_SUCCESS) return nullptr;
 	m_buildingPath.clear();
 	auto elm = doc.FirstChildElement();
-	return WidgetFromXmlRec(elm);
+	return WidgetFromXmlRec(elm, nullptr);
 }
 
-Object* Builder::WidgetFromXmlRec(tinyxml2::XMLElement* elm)
+Object* Builder::WidgetFromXmlRec(tinyxml2::XMLElement* elm, Object *parent)
 {
-	Object* parent = nullptr;
+	Object* obj = nullptr;
 	auto name = elm->Name();
 	auto iter = m_mapFactory.find(name);
 	if (iter != m_mapFactory.end()) {
 		m_buildingPath.push_back(name);
 		auto hltk = iter->second();
 		LTK_ASSERT(Object::CheckValid((Object*)hltk));
-		parent = (Object*)hltk;
+		obj = (Object*)hltk;
+		if (parent) {
+			parent->AddChild(obj); // 要先有父级才能设置属性 因为有的属性要传递给父级
+		}
 		auto attr = elm->FirstAttribute();
 		while (attr) {
-			parent->SetAttribute(ltk::InternString(attr->Name()), attr->Value());
+			obj->SetAttribute(ltk::InternString(attr->Name()), attr->Value());
 			attr = attr->Next();
 		}
 		auto child_elm = elm->FirstChildElement();
 		while (child_elm) {
-			auto child = WidgetFromXmlRec(child_elm);
-			if (child) {
-				parent->AddChild(child);
-			}
+			WidgetFromXmlRec(child_elm, obj);
 			child_elm = child_elm->NextSiblingElement();
 		}
 		m_buildingPath.pop_back();
 	}
-	return parent;
+	return obj;
 }
 
 } // namespace ltk

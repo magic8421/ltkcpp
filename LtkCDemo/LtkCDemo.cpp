@@ -205,7 +205,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	LtkMenuBar_SetPopupMenu(menu_bar, 3, popup_menu);
 
 	LtkWindow_CreateCenter(wnd, NULL, 800, 600);
-	LtkWindow_SetCaption(wnd, L"Ltk测试窗口");
+	LtkWindow_SetCaption(wnd, "Ltk测试窗口");
 	LtkWindow_UpdateTheme(wnd);
 
 	LtkRunMessageLoop();

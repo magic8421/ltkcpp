@@ -15,10 +15,11 @@ ffi.cdef[[
   HLTK __stdcall LtkWindow_New_(LPCSTR source, int line);
   void __stdcall LtkWindow_CreateCenter(HLTK self, HWND parent, float width, float height);
   void __stdcall LtkWindow_UpdateTheme(HLTK self);
+  void __stdcall LtkWindow_SetCaption(HLTK self, LPCSTR text);
   
   void __stdcall PostQuitMessage(int nExitCode);
 ]]
-local ltk = ffi.load([[C:\code\ltkcpp_open\luajit\ltkcpp.dll]])
+local ltk = ffi.load([[..\Release\ltkcpp.dll]])
 local user32 = ffi.load("User32.dll");
 local LTK_OBJECT_DELETE = 99;
 
@@ -33,4 +34,5 @@ local wnd = ltk.LtkWindow_New_(nil, 0);
 ltk.LtkRegisterCallback(wnd, LTK_OBJECT_DELETE, OnDelete, nil);
 ltk.LtkWindow_CreateCenter(wnd, nil, 400, 300);
 ltk.LtkWindow_UpdateTheme(wnd);
+ltk.LtkWindow_SetCaption(wnd, "luajit≈£±∆");
 ltk.LtkRunMessageLoop()

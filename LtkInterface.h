@@ -157,7 +157,7 @@ LTK_API HLTK WINAPI LtkWindow_New_(LPCSTR source, int line);
 
 LTK_API void WINAPI LtkWindow_Create(HLTK self, HWND parent, LtkRect* rc);
 LTK_API void WINAPI LtkWindow_CreateCenter(HLTK self, HWND parent, float width, float height);
-LTK_API void WINAPI LtkWindow_SetCaption(HLTK self, LPCWSTR text);
+LTK_API void WINAPI LtkWindow_SetCaption(HLTK self, LPCSTR text);
 LTK_API void WINAPI LtkWindow_SetBackground(HLTK self, LPCSTR name);
 LTK_API void WINAPI LtkWindow_UpdateTheme(HLTK self);
 LTK_API void WINAPI LtkWindow_SetCentralWidget(HLTK self, HLTK widget);

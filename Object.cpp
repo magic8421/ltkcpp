@@ -95,6 +95,14 @@ void Object::SetParent(Object* p)
 	p->AddChild(this);
 }
 
+void Object::SetAttribute(LPCSTR name, LPCSTR value) 
+{
+	auto parent = this->GetParent();
+	if (parent) {
+		parent->OnChildAttribute(this, name, value);
+	}
+}
+
 std::unordered_set<std::string> Object::m_internedStrings;
 
 LPCSTR Object::InternString(LPCSTR psz)

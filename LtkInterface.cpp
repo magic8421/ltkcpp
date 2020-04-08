@@ -142,10 +142,10 @@ LTK_API void WINAPI LtkWindow_CreateCenter(HLTK self, HWND parent, float width, 
 	thiz->Create(0, size);
 }
 
-LTK_API void WINAPI LtkWindow_SetCaption(HLTK self, LPCWSTR text)
+LTK_API void WINAPI LtkWindow_SetCaption(HLTK self, LPCSTR text)
 {
 	Window* thiz = ltk_cast<Window>(self);
-	thiz->SetCaption(text);
+	thiz->SetCaption(LtkA2W(text).c_str());
 }
 
 LTK_API void WINAPI LtkWindow_SetBackground(HLTK self, LPCSTR name)

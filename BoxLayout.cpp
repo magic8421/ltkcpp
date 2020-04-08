@@ -197,5 +197,30 @@ void BoxLayout::DoLayout()
     this->OnEvent(&ev);
 }
 
+void BoxLayout::OnChildAttribute(Object* child, LPCSTR name, LPCSTR value) 
+{
+    size_t idx = (size_t)-1;
+    for (size_t i = m_params.size(); i > 0; i--) {
+        const auto& item = m_params[i - 1];
+        if (item.item == child) {
+            idx = i - 1;
+            break;
+        }
+    }
+    if (idx == (size_t)-1) {
+        BoxLayoutParam param;
+        param.item = child->As<Widget>();
+        m_params.push_back(param);
+        idx = m_params.size() - 1;
+    }
+    auto& item = m_params[idx];
+    if (!strcmp(name, "size")) {
+        item.size = ::strtof(value, nullptr);
+    }
+    else if (!strcmp(name, "grow")) {
+        item.growFactor = ::strtof(value, nullptr);
+    }
+}
+
 } // namespace ltk
 

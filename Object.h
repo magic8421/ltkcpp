@@ -37,7 +37,9 @@ public:
 	Object *GetParent() { return m_parent; }
 	void SetParent(Object *);
 
-	virtual void SetAttribute(LPCSTR name, LPCSTR value) {}
+	virtual void SetAttribute(LPCSTR name, LPCSTR value);
+	virtual void OnChildAttribute(Object* child, LPCSTR name, LPCSTR value) {}
+
 
 	/////////////////////////////////////////////////////////////////
 	void SetSourceLine(LPCSTR source, int line);

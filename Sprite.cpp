@@ -463,7 +463,9 @@ void Widget::SetAttribute(LPCSTR name, LPCSTR value)
         if (!end) return;
         rc.Height = strtol(end + 1, &end, 10);
         this->SetRect(rc);
+        return;
     }
+    Object::SetAttribute(name, value);
 }
 
 void Widget::BeginAnimation()

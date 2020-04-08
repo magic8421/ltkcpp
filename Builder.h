@@ -23,8 +23,7 @@ public:
 	Object* WidgetFromXml(LPCSTR path);
 
 private:
-	Object* WidgetFromXmlRec(tinyxml2::XMLElement *elm);
-
+	Object* WidgetFromXmlRec(tinyxml2::XMLElement* elm, Object* parent);
 
 	static Builder* m_sInst;
 

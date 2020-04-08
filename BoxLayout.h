@@ -39,6 +39,9 @@ public:
 
     void DoLayout();
 
+    virtual void OnChildAttribute(Object* child, LPCSTR name, LPCSTR value) override;
+
+
 private:
 	bool AlreadyHas(Widget *item);
 
