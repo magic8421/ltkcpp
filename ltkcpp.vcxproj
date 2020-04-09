@@ -172,6 +172,7 @@
     <ClCompile Include="Delegate\ThreadWin.cpp" />
     <ClCompile Include="Delegate\WorkerThreadWin.cpp" />
     <ClCompile Include="HeaderCtrl.cpp" />
+    <ClCompile Include="HiddenWindow.cpp" />
     <ClCompile Include="ImeInput.cpp" />
     <ClCompile Include="Label.cpp" />
     <ClCompile Include="ListView.cpp" />
@@ -234,6 +235,7 @@
     <ClInclude Include="Delegate\xallocator.h" />
     <ClInclude Include="Event.h" />
     <ClInclude Include="HeaderCtrl.h" />
+    <ClInclude Include="HiddenWindow.h" />
     <ClInclude Include="ImeInput.h" />
     <ClInclude Include="Label.h" />
     <ClInclude Include="ListView.h" />

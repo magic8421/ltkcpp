@@ -143,6 +143,7 @@ private:
 
 	WindowLayout *m_root = nullptr; // owner
 
+	bool m_bDeleting = false;
 	bool m_bEnableFocusChange = true;
 	Widget *m_spFocus = nullptr;
 	Widget *m_spCapture = nullptr;

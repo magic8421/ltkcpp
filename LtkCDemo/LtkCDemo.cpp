@@ -29,7 +29,7 @@ void LtkLogImpl(const char *source, int line, const char *format, ...)
 int CALLBACK OnXmlWindowDestroy(void* userdata)
 {
 	DemoData* self = (DemoData*)userdata;
-	//LtkFree(self->builder_wnd); // TODO 这里会嵌套然后完蛋
+	//LtkDelete(self->builder_wnd); // TODO 这里会嵌套然后完蛋
 	self->builder_wnd = NULL;
 	return 0;
 }
@@ -40,7 +40,8 @@ int CALLBACK OnAction(void* userdata, LPCSTR name)
 	DemoData* self = (DemoData*)userdata;
 	
 	if (!strcmp(name, "exit_app")) {
-		::PostMessage(LtkWindow_GetHWND(self->main_wnd), WM_CLOSE, 0, 0); 
+		//::PostMessage(LtkWindow_GetHWND(self->main_wnd), WM_CLOSE, 0, 0); 
+		//LtkDeleteLater(self->main_wnd);
 		// 这里并不能弹出确认对话框 怀疑是因为下面一句 跟踪调试发现确实调用到了MessageBox
 		// 但没有显示出来 可能是PostQuitMessage会导致消息循环直接退出
 		::PostQuitMessage(0);
@@ -53,7 +54,7 @@ int CALLBACK OnAction(void* userdata, LPCSTR name)
 			HLTK tree = LtkBuildFromXml("res\\test_tree.xml");
 			LtkWindow_SetCentralWidget(self->builder_wnd, tree);
 			LtkWindow_CreateCenter(self->builder_wnd, NULL, 600, 450);
-			LtkWindow_UpdateTheme(self->builder_wnd);
+			//LtkWindow_UpdateTheme(self->builder_wnd);
 		}
 	}
 	return 0;
@@ -71,7 +72,7 @@ int CALLBACK OnWindowClose(void* userdata, BOOL* proceed)
 int CALLBACK OnWindowDestroy(void* userdata)
 {
 	DemoData* self = (DemoData*)userdata;
-	//LtkFree(self->builder_wnd);
+	self->main_wnd = NULL;
 	::PostQuitMessage(0);
 	return 0;
 }
@@ -206,9 +207,11 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 	LtkWindow_CreateCenter(wnd, NULL, 800, 600);
 	LtkWindow_SetCaption(wnd, "Ltk测试窗口");
-	LtkWindow_UpdateTheme(wnd);
+	//LtkWindow_UpdateTheme(wnd);
 
 	LtkRunMessageLoop();
+	LtkDelete(g_data.builder_wnd);
+	LtkDelete(g_data.main_wnd);
 
 	LtkUninitialize();
 	return 0;

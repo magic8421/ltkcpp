@@ -2,6 +2,7 @@
 #include "Object.h"
 #include "Common.h"
 #include "StyleManager.h"
+#include "HiddenWindow.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW 
@@ -41,6 +42,11 @@ Object::~Object()
 	sObjectSet->erase(iter);
 
 	InvokeCallbacks<ObjectDeleteCallback>(LTK_OBJECT_DELETE);
+}
+
+void Object::DeleteLater()
+{
+	HiddenWindow::PostDeleteLater(this);
 }
 
 void Object::Free()

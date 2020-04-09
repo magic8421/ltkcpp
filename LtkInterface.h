@@ -31,7 +31,8 @@ struct _HLTK {
 };
 typedef _HLTK* HLTK;
 
-LTK_API void WINAPI LtkFree(HLTK obj);
+LTK_API void WINAPI LtkDelete(HLTK obj);
+LTK_API void WINAPI LtkDeleteLater(HLTK obj);
 
 typedef struct _LtkEvent {
 	UINT id;
@@ -54,7 +55,7 @@ LTK_API HLTK WINAPI LtkGetEventSender();
 LTK_API void* WINAPI LtkGetProp(LPCSTR name);
 LTK_API void WINAPI LtkSetProp(LPCSTR name, void *data);
 
-LTK_API HLTK LtkBuildFromXml(LPCSTR path);
+LTK_API HLTK WINAPI LtkBuildFromXml(LPCSTR path);
 
 //LTK_API void WINAPI LtkEnalbeApiCheck(BOOL);
 
@@ -144,11 +145,10 @@ typedef struct _LtkRecreateResource {
 // LtkMenuBar 基类：LtkWidget
 // LtkPopupMenu 基类：LtkWidget
 
+// BOOL(void *userdata)
 #define LTK_OBJECT_DELETE       99
 
-// (void *userdata, BOOL *bHandled)
-#define LTK_WINDOW_DESTROY		101
-// (void *userdata, BOOL *pProceed, BOOL *bHandled)
+// BOOL(void *userdata, BOOL *pProceed)
 #define LTK_WINDOW_CLOSE		102
 
 

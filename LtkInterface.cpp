@@ -65,11 +65,18 @@ LTK_API void WINAPI LtkRunMessageLoop()
 	}
 }
 
-LTK_API void WINAPI LtkFree(HLTK obj)
+LTK_API void WINAPI LtkDelete(HLTK obj)
 {
 	if (!obj) return;
 	Object *pobj = ltk_cast<Object>(obj);
 	delete pobj;
+}
+
+LTK_API void WINAPI LtkDeleteLater(HLTK obj)
+{
+	if (!obj) return;
+	Object *pobj = ltk_cast<Object>(obj);
+	pobj->DeleteLater();
 }
 
 LTK_API LPCSTR WINAPI LtkInternString(LPCSTR str)
@@ -104,7 +111,7 @@ LTK_API HLTK WINAPI LtkGetEventSender()
 	return (HLTK)Object::GetDelegateInvoker();
 }
 
-LTK_API HLTK LtkBuildFromXml(LPCSTR path)
+LTK_API HLTK WINAPI LtkBuildFromXml(LPCSTR path)
 {
 	return (HLTK)Builder::Instance()->WidgetFromXml(path);
 }

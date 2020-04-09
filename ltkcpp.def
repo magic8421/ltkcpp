@@ -4,7 +4,8 @@ EXPORTS
 	LtkInitialize
 	LtkUninitialize
 	LtkRunMessageLoop
-	LtkFree
+	LtkDelete
+	LtkDeleteLater
 	LtkInternString
 	LtkBuildFromXml
 	LtkGetName

@@ -47,8 +47,10 @@ m_shadowBottom(ShadowFrame::eBottom)
 
 Window::~Window(void)
 {
-	//::DestroyWindow(m_hwnd);
-
+    m_bDeleting = true;
+    if (m_hwnd) {
+        ::DestroyWindow(m_hwnd);
+    }
     if (m_root) {
         delete m_root;
     }
@@ -439,6 +441,7 @@ LRESULT Window::WndProc(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam)
         // Force WM_NCCALCSIZE
         SetWindowPos(hwnd, nullptr, 0, 0, 0, 0, SWP_NOZORDER | SWP_NOOWNERZORDER | SWP_NOMOVE | SWP_NOSIZE | SWP_FRAMECHANGED);
         LTK_LOG("window created: 0x%08X", hwnd);
+        this->UpdateTheme();
         //do 
         //{
         //	RECT rc;
@@ -501,7 +504,8 @@ LRESULT CALLBACK Window::WndProcStatic(HWND hwnd, UINT message, WPARAM wparam, L
         LTK_LOG("WndProc thiz is NULL, message: %d", message);
         return ::DefWindowProc(hwnd, message, wparam, lparam);
 	}
-	if (WM_NCDESTROY == message) {
+	if (WM_NCDESTROY == message && !thiz->m_bDeleting) {
+        thiz->m_hwnd = 0;
         delete thiz;
 		return 0;
 	}
