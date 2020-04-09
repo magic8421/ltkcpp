@@ -24,6 +24,7 @@ public:
 	explicit BoxLayout(Orientation);
     virtual ~BoxLayout();
 
+    static void BoxLayout::Init();
     static HLTK CALLBACK CreateHBox();
     static HLTK CALLBACK CreateVBox();
 

@@ -197,6 +197,15 @@ void BoxLayout::DoLayout()
     this->OnEvent(&ev);
 }
 
+static LPCSTR id_size = nullptr;
+static LPCSTR id_grow = nullptr;
+
+void BoxLayout::Init()
+{
+    id_size = Object::InternString("size");
+    id_grow = Object::InternString("grow");
+}
+
 void BoxLayout::OnChildAttribute(Object* child, LPCSTR name, LPCSTR value) 
 {
     size_t idx = (size_t)-1;
@@ -214,10 +223,10 @@ void BoxLayout::OnChildAttribute(Object* child, LPCSTR name, LPCSTR value)
         idx = m_params.size() - 1;
     }
     auto& item = m_params[idx];
-    if (!strcmp(name, "size")) {
+    if (name == id_size) {
         item.size = ::strtof(value, nullptr);
     }
-    else if (!strcmp(name, "grow")) {
+    else if (name == id_grow) {
         item.growFactor = ::strtof(value, nullptr);
     }
 }

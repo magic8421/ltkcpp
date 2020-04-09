@@ -20,6 +20,7 @@
 #include "BoxLayout.h"
 #include "Button.h"
 #include "Label.h"
+#include "BoxLayout.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW 
@@ -351,6 +352,7 @@ namespace ltk {
         Widget::Init();
         Button::Init();
         Label::Init();
+        BoxLayout::Init();
 
 		StyleManager::NewTheme("rect");
 		SetupVectorStyleDark();
