@@ -41,14 +41,14 @@ public:
 	 * @param parent 父窗口 如果为nullptr则父窗口为桌面
 	 * @param rc 窗口的大小
 	 */
-    void Create(Window *parent, RectF rc);
+    void Create(HWND hParent, RectF rc);
 
 	/**
 	 * 创建窗口 并居中
 	 * @param parent 父窗口 如果为nullptr则父窗口为桌面
 	 * @param size 窗口的大小
 	 */
-	void Create(Window *parent, SizeF size);
+	void Create(HWND hParent, SizeF size);
 
 	/**
 	 * 设置窗口矩形 移动窗口

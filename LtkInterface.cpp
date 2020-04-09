@@ -139,14 +139,14 @@ LTK_API void WINAPI LtkWindow_Create(HLTK self, HWND parent, LtkRect* rc)
 {
 	Gdiplus::RectF rcf(rc->x, rc->y, rc->width, rc->height);
 	Window *thiz = ltk_cast<Window>(self);
-	thiz->Create(0, rcf);
+	thiz->Create(parent, rcf);
 }
 
 LTK_API void WINAPI LtkWindow_CreateCenter(HLTK self, HWND parent, float width, float height)
 {
 	Gdiplus::SizeF size(width, height);
 	Window *thiz = ltk_cast<Window>(self);
-	thiz->Create(0, size);
+	thiz->Create(parent, size);
 }
 
 LTK_API void WINAPI LtkWindow_SetCaption(HLTK self, LPCSTR text)

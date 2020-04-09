@@ -31,6 +31,8 @@ int CALLBACK OnXmlWindowDestroy(void* userdata)
 	DemoData* self = (DemoData*)userdata;
 	//LtkDelete(self->builder_wnd); // TODO 这里会嵌套然后完蛋
 	self->builder_wnd = NULL;
+	::EnableWindow(LtkWindow_GetHWND(self->main_wnd), TRUE);
+	::SetFocus(LtkWindow_GetHWND(self->main_wnd));
 	return 0;
 }
 
@@ -53,7 +55,9 @@ int CALLBACK OnAction(void* userdata, LPCSTR name)
 				LTK_OBJECT_DELETE, (LtkCallback)OnXmlWindowDestroy, self);
 			HLTK tree = LtkBuildFromXml("res\\test_tree.xml");
 			LtkWindow_SetCentralWidget(self->builder_wnd, tree);
-			LtkWindow_CreateCenter(self->builder_wnd, NULL, 600, 450);
+			LtkWindow_CreateCenter(self->builder_wnd, LtkWindow_GetHWND(self->main_wnd),
+				600, 450);
+			::EnableWindow(LtkWindow_GetHWND(self->main_wnd), FALSE);
 			//LtkWindow_UpdateTheme(self->builder_wnd);
 		}
 	}

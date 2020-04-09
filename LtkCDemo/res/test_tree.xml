@@ -1,12 +1,17 @@
 <VBox>
-	<HBox size="35">
-		<Label text="" grow="1.0" />
-		<Button text="Hello World!" size="100"/>
-		<Label text="ÄãºÃ°¡" size="50"/>
+	<HBox size="100">
+		<Button grow="1" text="header" />
 	</HBox>
-	<HBox grow="1.0" />
-	<HBox size="35">
-		<Button text="Hello World!" size="100"/>
-		<Label text="ÄãºÃ°¡" size="50"/>
+	<HBox grow="1.0">
+		<!-- <Button text="nav" size="150" /> -->
+		<VBox size="150">
+			<Button text="nav01" size="35" /> 
+			<Button text="nav01" size="35" /> 
+			<Button text="nav01" size="35" /> 
+			<Button text="nav01" size="35" /> 
+			<Button text="nav01" size="35" /> 
+		</VBox>
+		<Button text="content" grow="1" />
 	</HBox>
+	<Button text="footer" size="40" />
 </VBox>

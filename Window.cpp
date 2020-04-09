@@ -75,16 +75,11 @@ Window::~Window(void)
     m_atlas = INVALID_POINTER(ID2D1Bitmap);
 }
 
-void Window::Create(Window *parent, RectF rc)
+void Window::Create(HWND hParent, RectF rc)
 {
-    HWND hParent = NULL;
-    if (!parent)
+    if (!hParent)
     {
         hParent = ::GetDesktopWindow();
-    }
-    else
-    {
-        hParent = parent->m_hwnd;
     }
     DWORD style = WS_VISIBLE;
     
@@ -104,7 +99,7 @@ void Window::Create(Window *parent, RectF rc)
         hParent, NULL, HINST_THISCOMPONENT, this);
 }
 
-void Window::Create(Window *parent, SizeF size)
+void Window::Create(HWND hParent, SizeF size)
 {
 	POINT pt = { 0 };
 	auto ret = ::GetCursorPos(&pt);
@@ -121,7 +116,7 @@ void Window::Create(Window *parent, SizeF size)
 	rcWnd.Y = (rc.bottom - rc.top - size.Height) / 2.f + rc.top;
 	rcWnd.Width = size.Width;
 	rcWnd.Height = size.Height;
-	this->Create(parent, rcWnd);
+	this->Create(hParent, rcWnd);
 }
 
 RectF Window::GetRect()
