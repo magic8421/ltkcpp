@@ -61,11 +61,12 @@ private:
 	Object *m_parent = nullptr;
 	ArrayList<Object *> m_children;
 
+#ifdef LTK_C_API
 	std::unordered_map<UINT, std::vector<CallbackInfo>> m_mapCallbacks;
 
 	const char* m_source = nullptr; // 好像没必要 外部使用者应该用umdh来查内存泄漏
 	int m_line = -1;
-
+#endif
 	static std::unordered_set<std::string> m_internedStrings;
 
 	DISALLOW_COPY_AND_ASSIGN(Object);
@@ -75,6 +76,7 @@ private:
 template<typename CB, typename... Params>
 int Object::InvokeCallbacks(UINT event_id, Params... params)
 {
+#ifdef LTK_C_API
 	auto iter = m_mapCallbacks.find(event_id);
 	if (iter == m_mapCallbacks.end()) {
 		return 0;
@@ -86,6 +88,7 @@ int Object::InvokeCallbacks(UINT event_id, Params... params)
 		if (!ret)
 			return ret;
 	}
+#endif
 	return 0;
 }
 

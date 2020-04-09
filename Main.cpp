@@ -367,7 +367,7 @@ int CALLBACK WinMain(
         }
     }
 	//ltk::Ptr<Window> ob = wnd->GetPtr<Window>();
-	delete wnd;
+	//delete wnd;
 	//LTK_ASSERT(ob.Get() == nullptr);
 
     LTK_LOG("MessageLoop END");

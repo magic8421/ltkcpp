@@ -17,11 +17,13 @@ typedef int (CALLBACK* ObjectDeleteCallback)(void *userdata);
 
 Object::Object()
 {
+#ifdef LTK_C_API
 	// TODO lock for multithread.
 	if (!sObjectSet) {
 		sObjectSet = new std::unordered_set<Object*>;
 	}
 	sObjectSet->insert(this);
+#endif
 }
 
 Object::~Object()
@@ -34,6 +36,8 @@ Object::~Object()
 	if (m_parent && !m_parent->m_bDeleting) {
 		m_parent->RemoveChild(this);
 	}
+
+#ifdef LTK_C_API
 	// TODO lock for multithread.
 	auto iter = sObjectSet->find(this);
 	if (iter == sObjectSet->end()) {
@@ -42,6 +46,7 @@ Object::~Object()
 	sObjectSet->erase(iter);
 
 	InvokeCallbacks<ObjectDeleteCallback>(LTK_OBJECT_DELETE);
+#endif
 }
 
 void Object::DeleteLater()
@@ -51,7 +56,9 @@ void Object::DeleteLater()
 
 void Object::Free()
 {
+#ifdef LTK_C_API
 	delete sObjectSet;
+#endif
 }
 
 Object * Object::GetDelegateInvoker()
@@ -127,6 +134,7 @@ LPCSTR Object::InternString(LPCSTR psz)
 
 /////////////////////////////////////////////////////////////////
 
+#ifdef LTK_C_API
 void Object::SetSourceLine(LPCSTR source, int line)
 {
 	m_source = source;
@@ -170,5 +178,11 @@ void Object::RegisterCallback(UINT event_id, LtkCallback cb, void* userdata)
 	info.userdata = userdata;
 	vecCallbacks.push_back(info);
 }
+#else
+void Object::SetSourceLine(LPCSTR source, int line) {}
+bool Object::CheckValid(Object* o) { return true; }
+void Object::DumpObjectLeaks() {}
+void Object::RegisterCallback(UINT event_id, LtkCallback cb, void* userdata) {}
+#endif
 
 } // namespace ltk
