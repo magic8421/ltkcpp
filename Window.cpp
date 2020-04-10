@@ -13,10 +13,13 @@
 #include "StyleManager.h"
 #include "WindowLayout.h"
 #include "MenuBar.h"
+#include "dukglue.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW 
 #endif
+
+duk_context* g_duktape = nullptr;
 
 namespace ltk {
 
@@ -73,6 +76,9 @@ Window::~Window(void)
         m_atlas->Release();
     }
     m_atlas = INVALID_POINTER(ID2D1Bitmap);
+
+    dukglue_pcall_method<void>(g_duktape, this, "OnDelete");
+    //dukglue_invalidate_object(g_duktape, this);
 }
 
 void Window::Create(HWND hParent, RectF rc)

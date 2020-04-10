@@ -91,7 +91,7 @@
       <PreprocessorDefinitions>WIN32;LTK_EXPORTS;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <DisableSpecificWarnings>4100;4189;4251</DisableSpecificWarnings>
-      <AdditionalIncludeDirectories>.\Delegate</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\Delegate;.\duktape</AdditionalIncludeDirectories>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
     <Link>
@@ -173,6 +173,9 @@
     <ClCompile Include="Delegate\Semaphore.cpp" />
     <ClCompile Include="Delegate\ThreadWin.cpp" />
     <ClCompile Include="Delegate\WorkerThreadWin.cpp" />
+    <ClCompile Include="duktape\duktape.c">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="HeaderCtrl.cpp" />
     <ClCompile Include="HiddenWindow.cpp" />
     <ClCompile Include="ImeInput.cpp" />

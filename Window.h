@@ -50,6 +50,8 @@ public:
 	 */
 	void Create(HWND hParent, SizeF size);
 
+	void CreateCenter(float width, float height) { this->Create(0, SizeF(width, height)); }
+
 	/**
 	 * 设置窗口矩形 移动窗口
 	 * @param rc 窗口矩形以屏幕坐标系 单位是真实像素

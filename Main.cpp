@@ -19,7 +19,8 @@
 #include "MenuBar.h"
 #include "Splitter.h"
 #include "Main.h"
-#include "TimerWindow.h"
+//#include "TimerWindow.h"
+#include  "duktape/dukglue.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW 
@@ -327,6 +328,26 @@ static void SetupAppStyle()
 		DWRITE_FONT_STYLE_NORMAL, 34, DWRITE_TEXT_ALIGNMENT_CENTER,
 		DWRITE_PARAGRAPH_ALIGNMENT_CENTER);
 }
+
+static duk_ret_t native_print(duk_context *ctx) {
+	//duk_current_source_line(ctx);
+	//duk_push_string(ctx, " ");
+	//duk_insert(ctx, 0);
+	duk_join(ctx, duk_get_top(ctx));
+	// printf("%s\n", duk_safe_to_string(ctx, -1));
+	auto text = Utf8ToUtf16(duk_safe_to_string(ctx, -1));
+	text.append(L"\r\n");
+	::OutputDebugStringW(text.c_str());
+	return 0;
+}
+
+static void MyExitApp()
+{
+	::PostQuitMessage(0);
+}
+
+extern duk_context* g_duktape;
+
 int CALLBACK WinMain(
 	_In_ HINSTANCE hInstance,
 	_In_opt_ HINSTANCE hPrevInstance,
@@ -337,7 +358,7 @@ int CALLBACK WinMain(
 
     ltk::LtkInitialize();
 
-	
+	/*
 	auto wnd = new DemoWindow;
     wnd->SetCaption(L"LTK²âÊÔ´°¿Ú");
     //wnd->SetBackground("window_bg");
@@ -345,7 +366,7 @@ int CALLBACK WinMain(
 	//wnd->BuildSplitterTest2();
     wnd->Create(nullptr, SizeF(700, 500));
 	wnd->UpdateTheme();
-	
+	*/
 
 	/*
 	SetupAppStyle();
@@ -355,6 +376,25 @@ int CALLBACK WinMain(
 	wnd->UpdateTheme();
 	*/
 
+	duk_context* ctx = duk_create_heap_default();
+	g_duktape = ctx;
+
+	duk_push_c_function(ctx, native_print, DUK_VARARGS);
+	duk_put_global_string(ctx, "print");
+
+	dukglue_register_function(ctx, MyExitApp, "MyExitApp");
+	dukglue_register_constructor<Window>(ctx, "Window");
+	dukglue_register_method(ctx, &Window::CreateCenter, "CreateCenter");
+	duk_push_string(ctx, 
+		"var wnd = new Window(); \n"
+		"wnd.CreateCenter(400, 300); \n"
+		"wnd.OnDelete = function () { MyExitApp(); }; ");
+
+	if (duk_peval(ctx) != 0) {
+		LTK_LOG("eval failed: %s", duk_safe_to_string(ctx, -1));
+	} else {
+		LTK_LOG("result: %s", duk_safe_to_string(ctx, -1));
+	}
 
     MSG msg;
     BOOL bRet;
@@ -369,6 +409,8 @@ int CALLBACK WinMain(
 	//ltk::Ptr<Window> ob = wnd->GetPtr<Window>();
 	//delete wnd;
 	//LTK_ASSERT(ob.Get() == nullptr);
+	
+	duk_destroy_heap(ctx);
 
     LTK_LOG("MessageLoop END");
     ::Sleep(2000);
