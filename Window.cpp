@@ -77,8 +77,10 @@ Window::~Window(void)
     }
     m_atlas = INVALID_POINTER(ID2D1Bitmap);
 
-    dukglue_pcall_method<void>(g_duktape, this, "OnDelete");
-    //dukglue_invalidate_object(g_duktape, this);
+    if (g_duktape) {
+        dukglue_pcall_method<void>(g_duktape, this, "OnDelete");
+        dukglue_invalidate_object(g_duktape, this);
+    }
 }
 
 void Window::Create(HWND hParent, RectF rc)

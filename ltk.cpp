@@ -382,6 +382,8 @@ namespace ltk {
         TimerManager::Free();
         Object::Free();
 
+        Trackable::DumpLeaks();
+
         g_dw_factory->Release();
         g_wic_factory->Release();
         g_d2d_factory->Release();

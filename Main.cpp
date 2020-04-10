@@ -375,7 +375,8 @@ int CALLBACK WinMain(
 	wnd->Create(nullptr, SizeF(300, 500));
 	wnd->UpdateTheme();
 	*/
-
+	
+	
 	duk_context* ctx = duk_create_heap_default();
 	g_duktape = ctx;
 
@@ -388,13 +389,15 @@ int CALLBACK WinMain(
 	duk_push_string(ctx, 
 		"var wnd = new Window(); \n"
 		"wnd.CreateCenter(400, 300); \n"
-		"wnd.OnDelete = function () { MyExitApp(); }; ");
+		"wnd.OnDelete = function () { MyExitApp(); }; "
+		"var wnd2 = new Window(); \n");
 
 	if (duk_peval(ctx) != 0) {
 		LTK_LOG("eval failed: %s", duk_safe_to_string(ctx, -1));
 	} else {
 		LTK_LOG("result: %s", duk_safe_to_string(ctx, -1));
 	}
+	
 
     MSG msg;
     BOOL bRet;

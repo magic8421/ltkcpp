@@ -141,6 +141,9 @@
     <ClCompile Include="duktape\duktape.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Trackable.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -318,6 +321,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="HiddenWindow.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Trackable.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

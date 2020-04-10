@@ -199,6 +199,7 @@
     <ClCompile Include="TextEdit.cpp" />
     <ClCompile Include="ThreadHelper.cpp" />
     <ClCompile Include="TimerManager.cpp" />
+    <ClCompile Include="Trackable.cpp" />
     <ClCompile Include="TreeView.cpp" />
     <ClCompile Include="UniConversion.cpp" />
     <ClCompile Include="Window.cpp" />
@@ -260,6 +261,7 @@
     <ClInclude Include="TextEdit.h" />
     <ClInclude Include="ThreadHelper.h" />
     <ClInclude Include="TimerManager.h" />
+    <ClInclude Include="Trackable.h" />
     <ClInclude Include="TreeView.h" />
     <ClInclude Include="UniConversion.h" />
     <ClInclude Include="Window.h" />

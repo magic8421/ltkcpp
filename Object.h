@@ -1,5 +1,5 @@
 #pragma once
-#include "RTTI.h"
+#include "Trackable.h"
 #include "Common.h"
 #include "Container.h"
 #include "LtkInterface.h"
@@ -11,10 +11,10 @@ struct CallbackInfo {
 	void* userdata = nullptr;
 };
 
-class LTK_CPP_API Object : public RTTI
+class LTK_CPP_API Object : public Trackable
 {
 public:
-	RTTI_DECLARATIONS(Object, RTTI);
+	RTTI_DECLARATIONS(Object, Trackable);
 
 	static void Free();
 
