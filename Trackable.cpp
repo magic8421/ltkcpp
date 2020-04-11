@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "Trackable.h"
+#include "ltk.h"
 
 namespace ltk {
 
@@ -36,6 +37,11 @@ Trackable::~Trackable()
 	else {
 		g_track_tail = m_prev;
 	}
+}
+
+void Trackable::SetAllocInfo(LPCSTR info)
+{
+	m_alloc_info = ltk::InternString(info);
 }
 
 void Trackable::DumpLeaks()

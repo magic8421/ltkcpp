@@ -12,6 +12,8 @@ public:
 	Trackable();
 	~Trackable();
 
+	void SetAllocInfo(LPCSTR info);
+
 	static void DumpLeaks();
 
 private:

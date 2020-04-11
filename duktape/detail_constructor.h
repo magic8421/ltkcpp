@@ -18,6 +18,14 @@ namespace dukglue {
       auto constructor_args = dukglue::detail::get_stack_values<Ts...>(ctx);
       Cls* obj = dukglue::detail::apply_constructor<Cls>(std::move(constructor_args));
 
+	  auto old_top = duk_get_top(ctx);
+	  LPCSTR alloc_info = nullptr;
+	  duk_trace_back(ctx, 4);
+	  alloc_info = duk_to_string(ctx, -1);
+	  obj->SetAllocInfo(alloc_info);
+	  duk_pop(ctx);
+	  if (duk_get_top(ctx) != old_top) __debugbreak();
+
       duk_push_this(ctx);
 
       // make the new script object keep the pointer to the new object instance

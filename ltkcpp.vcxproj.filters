@@ -22,6 +22,9 @@
     <Filter Include="DelegateLib\Source">
       <UniqueIdentifier>{484575d0-d1fb-4a2d-8ef6-5e790b92f64f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="dukglue">
+      <UniqueIdentifier>{891b5501-8c9b-41fe-83d0-97818ff21f5c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -322,6 +325,57 @@
     </ClInclude>
     <ClInclude Include="Trackable.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="duktape\detail_primitive_types.h">
+      <Filter>dukglue</Filter>
+    </ClInclude>
+    <ClInclude Include="duktape\detail_refs.h">
+      <Filter>dukglue</Filter>
+    </ClInclude>
+    <ClInclude Include="duktape\detail_stack.h">
+      <Filter>dukglue</Filter>
+    </ClInclude>
+    <ClInclude Include="duktape\detail_traits.h">
+      <Filter>dukglue</Filter>
+    </ClInclude>
+    <ClInclude Include="duktape\detail_typeinfo.h">
+      <Filter>dukglue</Filter>
+    </ClInclude>
+    <ClInclude Include="duktape\detail_types.h">
+      <Filter>dukglue</Filter>
+    </ClInclude>
+    <ClInclude Include="duktape\dukexception.h">
+      <Filter>dukglue</Filter>
+    </ClInclude>
+    <ClInclude Include="duktape\dukglue.h">
+      <Filter>dukglue</Filter>
+    </ClInclude>
+    <ClInclude Include="duktape\dukvalue.h">
+      <Filter>dukglue</Filter>
+    </ClInclude>
+    <ClInclude Include="duktape\public_util.h">
+      <Filter>dukglue</Filter>
+    </ClInclude>
+    <ClInclude Include="duktape\register_class.h">
+      <Filter>dukglue</Filter>
+    </ClInclude>
+    <ClInclude Include="duktape\register_function.h">
+      <Filter>dukglue</Filter>
+    </ClInclude>
+    <ClInclude Include="duktape\register_property.h">
+      <Filter>dukglue</Filter>
+    </ClInclude>
+    <ClInclude Include="duktape\detail_class_proto.h">
+      <Filter>dukglue</Filter>
+    </ClInclude>
+    <ClInclude Include="duktape\detail_constructor.h">
+      <Filter>dukglue</Filter>
+    </ClInclude>
+    <ClInclude Include="duktape\detail_function.h">
+      <Filter>dukglue</Filter>
+    </ClInclude>
+    <ClInclude Include="duktape\detail_method.h">
+      <Filter>dukglue</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
