@@ -346,7 +346,7 @@ static void MyExitApp()
 	::PostQuitMessage(0);
 }
 
-extern duk_context* g_duktape;
+duk_context* g_duktape = nullptr;
 
 int CALLBACK WinMain(
 	_In_ HINSTANCE hInstance,
@@ -384,7 +384,11 @@ int CALLBACK WinMain(
 	duk_put_global_string(ctx, "print");
 
 	dukglue_register_function(ctx, MyExitApp, "MyExitApp");
+
+	dukglue_register_method(ctx, &Object::AddChild, "AddChild");
+
 	dukglue_register_constructor<Window>(ctx, "Window");
+	dukglue_set_base_class<Object, Window>(ctx);
 	dukglue_register_method(ctx, &Window::CreateCenter, "CreateCenter");
 	duk_push_string(ctx, 
 		"var wnd = new Window(); \n"

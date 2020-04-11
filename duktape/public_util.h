@@ -127,8 +127,8 @@ typename std::enable_if<std::is_void<RetT>::value, RetT>::type dukglue_pcall_met
 	};
 	
 	duk_idx_t rc = duk_safe_call(ctx, &dukglue::detail::call_method_safe<RetT, ObjT, ArgTs...>, (void*) &data, 0, 1);
-	if (rc != 0)
-		throw DukErrorException(ctx, rc);
+	//if (rc != 0)
+	//	throw DukErrorException(ctx, rc);
 
 	duk_pop(ctx);  // remove result from stack
 }

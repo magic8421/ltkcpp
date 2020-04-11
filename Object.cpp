@@ -3,10 +3,13 @@
 #include "Common.h"
 #include "StyleManager.h"
 #include "HiddenWindow.h"
+#include "dukglue.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW 
 #endif
+
+extern duk_context* g_duktape;
 
 namespace ltk {
 
@@ -47,6 +50,11 @@ Object::~Object()
 
 	InvokeCallbacks<ObjectDeleteCallback>(LTK_OBJECT_DELETE);
 #endif
+
+	if (g_duktape) {
+		dukglue_pcall_method<void>(g_duktape, this, "OnDelete");
+		dukglue_invalidate_object(g_duktape, this);
+	}
 }
 
 void Object::DeleteLater()
