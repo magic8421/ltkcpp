@@ -138,9 +138,6 @@
     <ClCompile Include="HiddenWindow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="duktape\duktape.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Trackable.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

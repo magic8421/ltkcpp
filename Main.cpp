@@ -390,7 +390,7 @@ int CALLBACK WinMain(
 		"var wnd = new Window(); \n"
 		"wnd.CreateCenter(400, 300); \n"
 		"wnd.OnDelete = function () { MyExitApp(); }; "
-		"var wnd2 = new Window(); \n");
+		/* "var wnd2 = new Window(); \n" */);
 
 	if (duk_peval(ctx) != 0) {
 		LTK_LOG("eval failed: %s", duk_safe_to_string(ctx, -1));
