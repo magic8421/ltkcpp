@@ -190,22 +190,35 @@ void Object::DumpObjectLeaks()
 
 void Object::RegisterCallback(UINT event_id, LtkCallback cb, void* userdata)
 {
-	auto& vecCallbacks = m_mapCallbacks[event_id];
-	bool bFound = false;
-	for (auto info : vecCallbacks) {
-		if (info.userdata == userdata) {
-			bFound = true;
+	size_t idx = (size_t)-1;
+	for (size_t i = 0; i < m_vecCallbacks.size(); ++i) { // 正序查找 event_id
+		if (m_vecCallbacks[i].code == event_id) {
+			idx = i;
 			break;
 		}
 	}
-	if (bFound) {
+	if (idx == (size_t)-1) {
+		CallbackNode node;
+		node.code = event_id;
+		m_vecCallbacks.push_back(node);
+		idx = m_vecCallbacks.size() - 1;
+	}
+	auto& node = m_vecCallbacks[idx];
+	size_t idx2 = (size_t)-1;
+	for (size_t i = node.list.size(); i > 0; --i) { // 反序查找 userdata
+		if (node.list[i].userdata == userdata) {
+			idx2 = i;
+			break;
+		}
+	}
+	if (idx2 != (size_t)-1) {
 		LTK_LOG("RegisterCallback duplicated userdata, event_id: %d", event_id);
 		return;
 	}
 	CallbackInfo info;
 	info.callback = cb;
 	info.userdata = userdata;
-	vecCallbacks.push_back(info);
+	node.list.push_back(info);
 }
 #else
 void Object::SetSourceLine(LPCSTR source, int line) {}

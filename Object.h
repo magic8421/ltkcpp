@@ -11,10 +11,10 @@ struct CallbackInfo {
 	void* userdata = nullptr;
 };
 
-class LTK_CPP_API Object : public Trackable
+class LTK_CPP_API Object : public RTTI
 {
 public:
-	RTTI_DECLARATIONS(Object, Trackable);
+	RTTI_DECLARATIONS(Object, RTTI);
 
 	static void Free();
 
@@ -62,7 +62,13 @@ private:
 	ArrayList<Object *> m_children;
 
 #ifdef LTK_C_API
-	std::unordered_map<UINT, std::vector<CallbackInfo>> m_mapCallbacks;
+
+	struct CallbackNode
+	{
+		UINT code;
+		std::vector<CallbackInfo> list;
+	};
+	std::vector<CallbackNode> m_vecCallbacks;
 
 	const char* m_source = nullptr; // 好像没必要 外部使用者应该用umdh来查内存泄漏
 	int m_line = -1;
@@ -76,16 +82,21 @@ template<typename CB, typename... Params>
 int Object::InvokeCallbacks(UINT event_id, Params... params)
 {
 #ifdef LTK_C_API
-	auto iter = m_mapCallbacks.find(event_id);
-	if (iter == m_mapCallbacks.end()) {
-		return 0;
+	size_t idx = (size_t)-1;
+	for (size_t i = 0; i < m_vecCallbacks.size(); ++i) {
+		if (m_vecCallbacks[i].code == event_id) {
+			idx = i;
+			break;
+		}
 	}
-	const auto& list = iter->second;
-	for (size_t i = list.size(); i > 0; i--) {
-		int ret = (int)((CB)list[i - 1].callback)(
-			list[i - 1].userdata, std::forward<Params>(params)...);
-		if (!ret)
-			return ret;
+	if (idx != (size_t)-1) {
+		const auto& node = m_vecCallbacks[idx];
+		for (size_t i = 0; i < node.list.size(); ++i) {
+			int ret = (int)((CB)node.list[i].callback)(
+				node.list[i].userdata, std::forward<Params>(params)...);
+			if (ret)
+				return ret;
+		}
 	}
 #endif
 	return 0;
