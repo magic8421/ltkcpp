@@ -22,6 +22,7 @@ class LTK_CPP_API BoxLayout : public Widget
 {
 public:
 	explicit BoxLayout(Orientation);
+    explicit BoxLayout(UINT o) : BoxLayout((Orientation)o) {} // for dukglue
     virtual ~BoxLayout();
 
     static void BoxLayout::Init();

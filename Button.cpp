@@ -90,6 +90,11 @@ void Button::SetText(LPCWSTR text)
     this->Invalidate();
 }
 
+void Button::SetText(LPCSTR text)
+{
+	this->SetText(Utf8ToUtf16 (text).c_str());
+}
+
 void Button::RecreateLayout()
 {
 	static int cnt = 0;

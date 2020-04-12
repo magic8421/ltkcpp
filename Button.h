@@ -25,6 +25,7 @@ public:
 	static HLTK CALLBACK CreateInstance();
 
     void SetText(LPCWSTR text);
+	void SetText(LPCSTR text);
 	void RecreateLayout();
 	SizeF GetPreferredSize();
 

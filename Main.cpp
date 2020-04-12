@@ -348,6 +348,68 @@ static void MyExitApp()
 
 duk_context* g_duktape = nullptr;
 
+void RegisterLtkModule(duk_context* ctx)
+{
+	duk_push_c_function(ctx, native_print, DUK_VARARGS);
+	duk_put_global_string(ctx, "print");
+
+	dukglue_register_function(ctx, MyExitApp, "MyExitApp");
+
+	dukglue_register_method(ctx, &Object::AddChild, "AddChild");
+
+	dukglue_set_base_class<Object, Widget>(ctx);
+	dukglue_register_method(ctx, 
+		static_cast<void (Widget::*)(float, float, float, float)>(&Widget::SetRect),
+		"SetRect");
+
+	dukglue_register_constructor<Window>(ctx, "LtkWindow");
+	dukglue_set_base_class<Object, Window>(ctx);
+	dukglue_register_method(ctx, &Window::CreateCenter, "CreateCenter");
+	dukglue_register_method(ctx, &Window::SetCentralWidget, "SetCentralWidget");
+
+	dukglue_register_constructor<BoxLayout, UINT>(ctx, "LtkBoxLayout");
+	dukglue_set_base_class<Widget, BoxLayout>(ctx);
+	dukglue_register_method(ctx, &BoxLayout::AddLayoutItem, "AddLayoutItem");
+	dukglue_register_method(ctx, &BoxLayout::AddSpaceItem, "AddSpaceItem");
+
+	dukglue_register_constructor<Button>(ctx, "LtkButton");
+	dukglue_set_base_class<Widget, Button>(ctx);
+	dukglue_register_method(ctx, 
+		static_cast<void (Button::*)(LPCSTR)>(&Button::SetText), "SetText");
+}
+
+void RunJsMain()
+{
+	FILE* fp = 0;
+	fp = fopen("main.js", "rb");
+	if (!fp)
+	{
+		return;
+	}
+	fseek(fp, 0, SEEK_END);
+	long file_size = ftell(fp);
+	char* buffer = new char[file_size];
+	fseek(fp, 0, SEEK_SET);
+	fread(buffer, 1, file_size, fp);
+	fclose(fp);
+
+	g_duktape = duk_create_heap_default();
+	auto ctx = g_duktape;
+	RegisterLtkModule(ctx);
+
+	duk_push_lstring(ctx, buffer, file_size);
+	delete[] buffer;
+
+	if (duk_peval(ctx) != 0) {
+		LTK_LOG("eval failed: %s", duk_safe_to_stacktrace(ctx, -1));
+	} else {
+		LTK_LOG("result: %s", duk_safe_to_string(ctx, -1));
+	}
+	duk_pop(ctx);
+
+	return;
+}
+
 int CALLBACK WinMain(
 	_In_ HINSTANCE hInstance,
 	_In_opt_ HINSTANCE hPrevInstance,
@@ -376,32 +438,8 @@ int CALLBACK WinMain(
 	wnd->UpdateTheme();
 	*/
 	
-	
-	duk_context* ctx = duk_create_heap_default();
-	g_duktape = ctx;
+	RunJsMain();
 
-	duk_push_c_function(ctx, native_print, DUK_VARARGS);
-	duk_put_global_string(ctx, "print");
-
-	dukglue_register_function(ctx, MyExitApp, "MyExitApp");
-
-	dukglue_register_method(ctx, &Object::AddChild, "AddChild");
-
-	dukglue_register_constructor<Window>(ctx, "Window");
-	dukglue_set_base_class<Object, Window>(ctx);
-	dukglue_register_method(ctx, &Window::CreateCenter, "CreateCenter");
-	duk_push_string(ctx, 
-		"var wnd = new Window(); \n"
-		"wnd.CreateCenter(400, 300); \n"
-		"wnd.OnDelete = function () { MyExitApp(); }; "
-		/* "var wnd2 = new Window(); \n" */);
-
-	if (duk_peval(ctx) != 0) {
-		LTK_LOG("eval failed: %s", duk_safe_to_string(ctx, -1));
-	} else {
-		LTK_LOG("result: %s", duk_safe_to_string(ctx, -1));
-	}
-	
 
     MSG msg;
     BOOL bRet;
@@ -413,14 +451,11 @@ int CALLBACK WinMain(
             DispatchMessage(&msg);
         }
     }
-	//ltk::Ptr<Window> ob = wnd->GetPtr<Window>();
-	//delete wnd;
-	//LTK_ASSERT(ob.Get() == nullptr);
-	
-	duk_destroy_heap(ctx);
 
     LTK_LOG("MessageLoop END");
     ::Sleep(2000);
+
+	duk_destroy_heap(g_duktape);
 
     ltk::LtkUninitialize();
     return 0;
