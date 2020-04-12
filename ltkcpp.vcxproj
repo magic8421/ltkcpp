@@ -27,13 +27,13 @@
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
@@ -88,8 +88,8 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;LTK_EXPORTS;_DEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <PreprocessorDefinitions>WIN32;LTK_EXPORTS;LTK_C_API;_DEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <LanguageStandard>stdcpp14</LanguageStandard>
       <DisableSpecificWarnings>4100;4189;4251</DisableSpecificWarnings>
       <AdditionalIncludeDirectories>.\Delegate;.\duktape</AdditionalIncludeDirectories>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
@@ -97,9 +97,8 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>D2d1.lib;Windowscodecs.lib;Dwrite.lib;gdiplus.lib;Winmm.lib;duktape_250_hack.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <ModuleDefinitionFile>
-      </ModuleDefinitionFile>
+      <AdditionalDependencies>D2d1.lib;Windowscodecs.lib;Dwrite.lib;gdiplus.lib;Winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <ModuleDefinitionFile>ltkcpp.def</ModuleDefinitionFile>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -180,7 +179,6 @@
     <ClCompile Include="ListView.cpp" />
     <ClCompile Include="ltk.cpp" />
     <ClCompile Include="LtkInterface.cpp" />
-    <ClCompile Include="Main.cpp" />
     <ClCompile Include="MenuBar.cpp" />
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="ScrollBar.cpp" />
@@ -236,23 +234,6 @@
     <ClInclude Include="Delegate\WorkerThreadStd.h" />
     <ClInclude Include="Delegate\WorkerThreadWin.h" />
     <ClInclude Include="Delegate\xallocator.h" />
-    <ClInclude Include="duktape\detail_class_proto.h" />
-    <ClInclude Include="duktape\detail_constructor.h" />
-    <ClInclude Include="duktape\detail_function.h" />
-    <ClInclude Include="duktape\detail_method.h" />
-    <ClInclude Include="duktape\detail_primitive_types.h" />
-    <ClInclude Include="duktape\detail_refs.h" />
-    <ClInclude Include="duktape\detail_stack.h" />
-    <ClInclude Include="duktape\detail_traits.h" />
-    <ClInclude Include="duktape\detail_typeinfo.h" />
-    <ClInclude Include="duktape\detail_types.h" />
-    <ClInclude Include="duktape\dukexception.h" />
-    <ClInclude Include="duktape\dukglue.h" />
-    <ClInclude Include="duktape\dukvalue.h" />
-    <ClInclude Include="duktape\public_util.h" />
-    <ClInclude Include="duktape\register_class.h" />
-    <ClInclude Include="duktape\register_function.h" />
-    <ClInclude Include="duktape\register_property.h" />
     <ClInclude Include="Event.h" />
     <ClInclude Include="HeaderCtrl.h" />
     <ClInclude Include="HiddenWindow.h" />

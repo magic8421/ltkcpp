@@ -13,13 +13,10 @@
 #include "StyleManager.h"
 #include "WindowLayout.h"
 #include "MenuBar.h"
-#include "dukglue.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW 
 #endif
-
-extern duk_context* g_duktape;
 
 namespace ltk {
 
