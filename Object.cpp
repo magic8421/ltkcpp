@@ -15,6 +15,31 @@ static std::unordered_set<Object*>* sObjectSet;
 
 typedef int (CALLBACK* ObjectDeleteCallback)(void *userdata);
 
+struct SZHash{
+	//BKDR hash algorithm
+	int operator()(LPCSTR str)const
+	{
+		int seed = 131;//31  131 1313 13131131313 etc//
+		int hash = 0;
+		while(*str)
+		{
+			hash = (hash * seed) + (*str);
+			str ++;
+		}
+
+		return hash & (0x7FFFFFFF);
+	}
+};
+
+struct SZEqual
+{  
+	bool operator()(LPCSTR lhs, LPCSTR rhs) const  { 
+		return strcmp( lhs, rhs ) == 0;
+	}  
+};
+
+std::unordered_set<LPCSTR, SZHash, SZEqual> g_internedStrings;
+
 Object::Object()
 {
 #ifdef LTK_C_API
@@ -60,6 +85,9 @@ void Object::Free()
 #ifdef LTK_C_API
 	delete sObjectSet;
 #endif
+	for (auto iter = g_internedStrings.begin(); iter != g_internedStrings.end(); iter++) {
+		free((void*)*iter);
+	}
 }
 
 Object * Object::GetDelegateInvoker()
@@ -117,19 +145,19 @@ void Object::SetAttribute(LPCSTR name, LPCSTR value)
 	}
 }
 
-std::unordered_set<std::string> Object::m_internedStrings;
-
 LPCSTR Object::InternString(LPCSTR psz)
 {
-	// TODO 多线程加锁 键改成LPCSTR
-	std::string str(psz);
-	auto iter = m_internedStrings.find(str);
-	if (iter == m_internedStrings.end()) {
-		auto ret = m_internedStrings.insert(str);
+	if (!psz) {
+		return nullptr;
+	}
+	// TODO 多线程加锁
+	auto iter = g_internedStrings.find(psz);
+	if (iter == g_internedStrings.end()) {
+		auto ret = g_internedStrings.insert(_strdup(psz));
 		LTK_ASSERT(ret.second); // the insertion took place.
-		return (ret.first)->c_str();
+		return (*ret.first);
 	} else {
-		return iter->c_str();
+		return *iter;
 	}
 }
 

@@ -67,7 +67,6 @@ private:
 	const char* m_source = nullptr; // 好像没必要 外部使用者应该用umdh来查内存泄漏
 	int m_line = -1;
 #endif
-	static std::unordered_set<std::string> m_internedStrings;
 
 	DISALLOW_COPY_AND_ASSIGN(Object);
 };
