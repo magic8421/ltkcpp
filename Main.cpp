@@ -420,7 +420,7 @@ int CALLBACK WinMain(
 
     ltk::LtkInitialize();
 
-	/*
+	
 	auto wnd = new DemoWindow;
     wnd->SetCaption(L"LTK²âÊÔ´°¿Ú");
     //wnd->SetBackground("window_bg");
@@ -428,7 +428,7 @@ int CALLBACK WinMain(
 	//wnd->BuildSplitterTest2();
     wnd->Create(nullptr, SizeF(700, 500));
 	wnd->UpdateTheme();
-	*/
+	
 
 	/*
 	SetupAppStyle();
@@ -438,7 +438,7 @@ int CALLBACK WinMain(
 	wnd->UpdateTheme();
 	*/
 	
-	RunJsMain();
+	//RunJsMain();
 
 
     MSG msg;
@@ -455,7 +455,7 @@ int CALLBACK WinMain(
     LTK_LOG("MessageLoop END");
     ::Sleep(2000);
 
-	duk_destroy_heap(g_duktape);
+	//duk_destroy_heap(g_duktape);
 
     ltk::LtkUninitialize();
     return 0;
