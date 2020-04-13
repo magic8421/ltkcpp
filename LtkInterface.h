@@ -1,5 +1,18 @@
 #pragma once
 
+/*! \mainpage LTK轻量界面库
+ *
+ * \section intro_sec 简介
+ *
+ * 点击查看文档: LtkInterface.h
+ *
+ * \section install_sec Installation
+ *
+ * \subsection step1 Step 1: Opening the box
+ *
+ * etc...
+ */
+
 #ifdef LTK_EXPORTS
 #define LTK_API
 #else
@@ -22,47 +35,122 @@ typedef struct _LtkRect {
 	float height;
 } LtkRect;
 
+/**
+ * @brief 初始化LTK
+ *
+ * 在调用任何LTK的API之前调用
+ */
 LTK_API UINT WINAPI LtkInitialize();
+
+/**
+ * @brief 退出LTK
+ *
+ * 在程序退出前调用
+ */
 LTK_API void WINAPI LtkUninitialize();
+
+/**
+ * @brief 进入消息循环
+ *
+ * 阻塞直到用户代码调用PostQuitMessage
+ */
 LTK_API void WINAPI LtkRunMessageLoop();
 
 struct _HLTK {
 	int dummy;
 };
+
+/**
+ * @brief LTK通用句柄类型
+ */
 typedef _HLTK* HLTK;
 
+/**
+ * @brief 销毁HLTK句柄
+ *
+ * 可传入任何HLTK类型 此函数会调用相应的析构函数释放内存 并发送 LTK_DELETE_EVENT 消息
+ */
 LTK_API void WINAPI LtkDelete(HLTK obj);
+
+/**
+ * @brief 延时销毁HLTK句柄
+ *
+ * 此函数会立即返回 并且在下一次消息处理时销毁HLTK句柄 方便处理某些特殊情况
+ * 比如在消息响应函数中无法销毁控件自身 可以使用此函数
+ */
 LTK_API void WINAPI LtkDeleteLater(HLTK obj);
 
-typedef struct _LtkEvent {
-	UINT id;
-	HLTK sender;
-} LtkEvent;
+/**
+ * @brief LTK回调函数
+ *
+ * 通用回调函数类型 注意：每个消息码所对应的回调函数参数均不相同 请参考具体消息码的文档
+ */
+typedef int (CALLBACK *LtkCallback)(void *userdata);
 
-typedef void (CALLBACK *LtkCallback)();
-
+/**
+ * @brief 内部化字符串
+ *
+ * 返回一个经过内部化的字符串指针 内部化的字符串指针可以直接和其他内部化的字符串指针进行比较
+ * 地址相等即字符串内容相等 而不必调用strcmp() 调用者不必释放返回的指针 系统会在退出时释放
+ * 内容相同的字符串会共用一片内存区域
+ * 建议此函数只用于字符串字面量 而不可用于程序外部输入数据 以免浪费过多内存
+ * 建议在程序启动时做一次内部化 保存在静态变量即可 而不是每次使用时 因为每次调用会查询哈希表
+ */
 LTK_API LPCSTR WINAPI LtkInternString(LPCSTR str);
 
+/**
+ * @brief 设置对象的名称
+ *
+ * 设置对象的名称 主要用于回调函数中区分消息来源 在xml中由name属性设置
+ */
 LTK_API void WINAPI LtkSetName(HLTK o, LPCSTR name);
+
+/**
+ * @brief 取对象的名称
+ *
+ * 取对象的名称 在xml中由name属性设置 在代码中由LtkSetName()设置 返回的指针是内部化的字符串指针
+ * 可以与任何经过 LtkInternString() 的指针直接比较地址相等即可
+ */
 LTK_API LPCSTR WINAPI LtkGetName(HLTK o);
 
+/**
+ * @brief 注册消息回调
+ *
+ * @param obj 发出消息的对象句柄
+ * @param event_id 消息码
+ * @param cb 回调函数 对于每一个消息码都有不同的回调参数 LtkCallback 只是占位符 并不是实际参数 请参考消息码文档
+ * @param userdata 用户指针 一般传this
+ */
 LTK_API void WINAPI LtkRegisterCallback(HLTK obj, UINT event_id, LtkCallback cb, void* userdata);
+
+
 LTK_API void WINAPI LtkUnregisterCallback(HLTK obj, UINT event_id, LtkCallback cb, void* userdata);
 LTK_API void WINAPI LtkUnregisterCallbackByUserdata(HLTK obj, UINT event_id, void* userdata);
 
+/**
+ * @brief 获取发送消息的对象句柄
+ *
+ * 详细
+ */
 LTK_API HLTK WINAPI LtkGetEventSender();
 
 LTK_API void* WINAPI LtkGetProp(LPCSTR name);
 LTK_API void WINAPI LtkSetProp(LPCSTR name, void *data);
 
+/**
+ * @brief 通过xml构建对象树
+ *
+ * @param path xml文件的路径 建议使用相对路径
+ */
 LTK_API HLTK WINAPI LtkBuildFromXml(LPCSTR path);
 
 //LTK_API void WINAPI LtkEnalbeApiCheck(BOOL);
 
-#define LTK_CREATE			1
-#define LTK_DESTROY			2
-#define LTK_PAINT			3
-#define LTK_SIZE			4
+#define LTK_CREATE_EVENT	1
+// BOOL(void *userdata)
+#define LTK_DELETE_EVENT    2
+#define LTK_PAINT_EVENT		3
+#define LTK_SIZE_EVENT		4
 
 #define LTK_MOUSE_FIRST			5
 #define LTK_MOUSE_MOVE			6
@@ -77,7 +165,7 @@ LTK_API HLTK WINAPI LtkBuildFromXml(LPCSTR path);
 
 #define LTK_KEY_DOWN			15
 #define LTK_KEY_UP				16
-#define LTK_CHAR				17
+#define LTK_CHAR_INPUT			17
 #define LTK_IME_INPUT			18
 
 #define LTK_SET_FOCUS			19
@@ -85,6 +173,12 @@ LTK_API HLTK WINAPI LtkBuildFromXml(LPCSTR path);
 
 #define LTK_RECREATE_RESOURCE	21
 #define LTK_THEME_CHANGED		22
+
+typedef struct _LtkEvent
+{
+	UINT id;
+	HLTK sender;
+} LtkEvent;
 
 typedef struct _LtkMouseEvent
 {
@@ -145,8 +239,6 @@ typedef struct _LtkRecreateResource {
 // LtkMenuBar 基类：LtkWidget
 // LtkPopupMenu 基类：LtkWidget
 
-// BOOL(void *userdata)
-#define LTK_OBJECT_DELETE       99
 
 // BOOL(void *userdata, BOOL *pProceed)
 #define LTK_WINDOW_CLOSE		102

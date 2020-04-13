@@ -70,7 +70,7 @@ Object::~Object()
 	}
 	sObjectSet->erase(iter);
 
-	InvokeCallbacks<ObjectDeleteCallback>(LTK_OBJECT_DELETE);
+	InvokeCallbacks<ObjectDeleteCallback>(LTK_DELETE_EVENT);
 #endif
 
 }

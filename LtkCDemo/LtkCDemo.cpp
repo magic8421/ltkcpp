@@ -52,7 +52,7 @@ int CALLBACK OnAction(void* userdata, LPCSTR name)
 		if (!self->builder_wnd) {
 			self->builder_wnd = LtkWindow_New();
 			LtkRegisterCallback( self->builder_wnd,
-				LTK_OBJECT_DELETE, (LtkCallback)OnXmlWindowDestroy, self);
+				LTK_DELETE_EVENT, (LtkCallback)OnXmlWindowDestroy, self);
 			HLTK tree = LtkBuildFromXml("res\\test_tree.xml");
 			LtkWindow_SetCentralWidget(self->builder_wnd, tree);
 			LtkWindow_CreateCenter(self->builder_wnd, LtkWindow_GetHWND(self->main_wnd),
@@ -115,7 +115,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	g_data.main_wnd = wnd;
 	//LtkWindow_SetBackground(wnd, "window_bg");
 	LtkRegisterCallback(
-		wnd, LTK_OBJECT_DELETE, (LtkCallback)OnWindowDestroy, &g_data);
+		wnd, LTK_DELETE_EVENT, (LtkCallback)OnWindowDestroy, &g_data);
 	LtkRegisterCallback(
 		wnd, LTK_WINDOW_CLOSE, (LtkCallback)OnWindowClose, &g_data);
 	LtkRegisterCallback(
