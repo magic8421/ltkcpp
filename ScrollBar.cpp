@@ -157,7 +157,7 @@ void ScrollBar::RecreateResouce(ID2D1RenderTarget *target)
     SAFE_RELEASE(m_brush);
     // TODO get color from StyleManager
     hr = target->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::DarkGray), &m_brush);
-    assert(SUCCEEDED(hr));
+    LTK_ASSERT(SUCCEEDED(hr));
 }
 
 void ScrollBar::OnSilderEvent(MouseEvent *ev, bool &bHandled)

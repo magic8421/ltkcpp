@@ -243,17 +243,78 @@ typedef struct _LtkRecreateResource {
 // BOOL(void *userdata, BOOL *pProceed)
 #define LTK_WINDOW_CLOSE		102
 
-
+/**
+ * @brief 创建窗体对象
+ *
+ * 创建一个顶层窗口 此函数仅创建LTK对象 并不创建HWND 
+ * 参见 LtkWindow_Create() LtkWindow_CreateCenter()
+ */
 #define LtkWindow_New() LtkWindow_New_(__FILE__, __LINE__)
+
+ /**
+  * @brief 创建窗体对象
+  *
+  * 参见 LtkWindow_New() 易语言调用参数请填0
+  */
 LTK_API HLTK WINAPI LtkWindow_New_(LPCSTR source, int line);
 
+/**
+ * @brief 创建窗口HWND 并显示
+ *
+ * @param parent 父窗口句柄
+ * @param rc 窗口矩形
+ */
 LTK_API void WINAPI LtkWindow_Create(HLTK self, HWND parent, LtkRect* rc);
+
+/**
+ * @brief 创建窗口HWND 并居中显示
+ *
+ * @param parent 父窗口句柄
+ * @param width 窗口宽度
+ * @param height 窗口高度
+ */
 LTK_API void WINAPI LtkWindow_CreateCenter(HLTK self, HWND parent, float width, float height);
+
+/**
+ * @brief 设置窗口标题
+ *
+ * 请在创建HWND之后再调用此函数 否则任务栏上不能显示标题文字
+ */
 LTK_API void WINAPI LtkWindow_SetCaption(HLTK self, LPCSTR text);
+
+/**
+ * @brief 设置窗口背景
+ *
+ * @param name 背景的资源名称 需要在背景xml中定义
+ */
 LTK_API void WINAPI LtkWindow_SetBackground(HLTK self, LPCSTR name);
+
+/**
+ * @brief 刷新所有主题及布局
+ *
+ * 刷新所有主题及布局 控件会去背景管理器中取得当前主题对应的资源
+ */
 LTK_API void WINAPI LtkWindow_UpdateTheme(HLTK self);
+
+/**
+ * @brief 设置客户区控件
+ *
+ * 设置客户区控件 同时窗口负责管理这个控件及其所有自控件的生命周期
+ */
 LTK_API void WINAPI LtkWindow_SetCentralWidget(HLTK self, HLTK widget);
+
+/**
+ * @brief 设置菜单条
+ *
+ * @param menu_bar 菜单条 类型 LtkMenuBar
+ */
 LTK_API void WINAPI LtkWindow_SetMenu(HLTK self, HLTK menu_bar);
+
+/**
+ * @brief 取HWND
+ *
+ * 获取这个窗口管理的HWND句柄
+ */
 LTK_API HWND WINAPI LtkWindow_GetHWND(HLTK self);
 
 // LtkBoxLayout 基类：LtkWidget

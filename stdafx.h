@@ -7,8 +7,6 @@
 
 #pragma once
 
-#include <new> // for `placement new`
-#include <cassert>
 #include <vector>
 #include <forward_list>
 #include <string>

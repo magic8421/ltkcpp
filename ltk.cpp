@@ -283,20 +283,20 @@ namespace ltk {
 		IWICBitmapDecoder *decorder = NULL;
 		IWICBitmapFrameDecode *frame = NULL;
 		IWICFormatConverter *converter = NULL;
-		assert(*bitmap == nullptr);
+        LTK_ASSERT(*bitmap == nullptr);
 
 		HRESULT hr = g_wic_factory->CreateDecoderFromFilename(path, NULL, GENERIC_READ, WICDecodeMetadataCacheOnDemand, &decorder);
 		if (SUCCEEDED(hr))
 		{
 			hr = decorder->GetFrame(0, &frame);
-			assert(SUCCEEDED(hr));
+            LTK_ASSERT(SUCCEEDED(hr));
 			hr = g_wic_factory->CreateFormatConverter(&converter);
-			assert(SUCCEEDED(hr));
+            LTK_ASSERT(SUCCEEDED(hr));
 			hr = converter->Initialize(frame, GUID_WICPixelFormat32bppPBGRA, WICBitmapDitherTypeNone,
 				NULL, 0.0, WICBitmapPaletteTypeMedianCut);
-			assert(SUCCEEDED(hr));
+            LTK_ASSERT(SUCCEEDED(hr));
 			hr = target->CreateBitmapFromWicBitmap(converter, NULL, bitmap);
-			assert(SUCCEEDED(hr));
+            LTK_ASSERT(SUCCEEDED(hr));
 			SAFE_RELEASE(converter);
 			SAFE_RELEASE(frame);
 			SAFE_RELEASE(decorder);
@@ -323,7 +323,7 @@ namespace ltk {
         }
 
         HRESULT hr = D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, &g_d2d_factory);
-        assert(SUCCEEDED(hr));
+        LTK_ASSERT(SUCCEEDED(hr));
 
         hr = CoCreateInstance(
             CLSID_WICImagingFactory,
@@ -332,14 +332,14 @@ namespace ltk {
             IID_IWICImagingFactory,
             (LPVOID*)&g_wic_factory
             );
-        assert(SUCCEEDED(hr));
+        LTK_ASSERT(SUCCEEDED(hr));
 
         hr = DWriteCreateFactory(
             DWRITE_FACTORY_TYPE_SHARED,
             __uuidof(IDWriteFactory),
             reinterpret_cast<IUnknown**>(&g_dw_factory)
             );
-        assert(SUCCEEDED(hr));
+        LTK_ASSERT(SUCCEEDED(hr));
 
         // InitInstance
         Gdiplus::GdiplusStartupInput gdiplusStartupInput;

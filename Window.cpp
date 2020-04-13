@@ -166,7 +166,7 @@ void Window::RegisterWndClass()
 	wc.lpszClassName = ClsName;
 
 	ATOM a = RegisterClass(&wc);
-    assert(a);
+    LTK_ASSERT(a);
 }
 
 void Window::HandleMouseMessage(UINT message, WPARAM wparam, LPARAM lparam)
@@ -560,7 +560,7 @@ void Window::OnPaint(HWND hwnd )
         hr = GetD2DFactory()->CreateHwndRenderTarget(D2D1::RenderTargetProperties(),
             D2D1::HwndRenderTargetProperties(
             hwnd, D2D1::SizeU(rc.right, rc.bottom)), &m_target);
-        assert(SUCCEEDED(hr));
+        LTK_ASSERT(SUCCEEDED(hr));
 
         if (m_root)
         {
