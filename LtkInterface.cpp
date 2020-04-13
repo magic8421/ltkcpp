@@ -15,17 +15,35 @@
 
 using namespace ltk;
 
-static BOOL sApiCheck = TRUE;
+static BOOL g_bApiCheck = TRUE;
+static BOOL g_bBreakOnError = FALSE;
+static __declspec(thread) UINT g_uLastError = 0;
 
 LTK_API void WINAPI LtkEnalbeApiCheck(BOOL b)
 {
-	sApiCheck = b;
+	g_bApiCheck = b;
 }
+
+LTK_API void WINAPI LtkEnalbeBreakOnError(BOOL b)
+{
+	g_bBreakOnError = b;
+}
+
+LTK_API UINT WINAPI LtkGetLastError()
+{
+	return g_uLastError;
+}
+
+LTK_API void WINAPI LtkSetLastError(UINT e)
+{
+	g_uLastError = e;
+}
+
 
 template<typename T>
 T* ltk_cast(HLTK o)
 {
-	if (sApiCheck) {
+	if (g_bApiCheck) {
 		Object* obj = (Object*)o;
 		if (!Object::CheckValid(obj)) {
 			LTK_LOG("ltk C interface handle invalid: 0x%08x", o);
@@ -39,6 +57,56 @@ T* ltk_cast(HLTK o)
 	}
 	return (T *) o;
 }
+
+#define LTK_CHECK_TYPE_OR_RETURN(hltk, klass, name) \
+if (g_bApiCheck) { \
+    Object* _obj = (Object*)hltk; \
+	if (!Object::CheckValid(_obj)) { \
+		LTK_LOG("ltk C interface handle invalid: 0x%08x", hltk); \
+        g_uLastError = LtkInvalidHandle;\
+		if (g_bBreakOnError) \
+		    __debugbreak(); \
+        else \
+            return; \
+	}\
+	if (!_obj->Is(klass::TypeIdClass())) {\
+		LTK_LOG("ltk C interface type mismatch, %s required, got %s",\
+			klass::TypeNameClass(), _obj->TypeNameInstance());\
+        g_uLastError = LtkTypeError;\
+		if (g_bBreakOnError) \
+		    __debugbreak(); \
+        else \
+            return; \
+	}\
+}\
+klass *name = (klass *)hltk; \
+
+
+
+#define LTK_CHECK_TYPE_OR_RETURN_VAL(hltk, klass, name, val) \
+if (g_bApiCheck) { \
+    Object* _obj = (Object*)hltk; \
+	if (!Object::CheckValid(_obj)) { \
+		LTK_LOG("ltk C interface handle invalid: 0x%08x", hltk); \
+        g_uLastError = LtkInvalidHandle;\
+		if (g_bBreakOnError) \
+		    __debugbreak(); \
+        else \
+            return val; \
+	}\
+	if (!_obj->Is(klass::TypeIdClass())) {\
+		LTK_LOG("ltk C interface type mismatch, %s required, got %s",\
+			klass::TypeNameClass(), _obj->TypeNameInstance());\
+        g_uLastError = LtkTypeError;\
+		if (g_bBreakOnError) \
+		    __debugbreak(); \
+        else \
+            return val; \
+	}\
+}\
+klass *name = (klass *)hltk; \
+
+
 
 LTK_API UINT WINAPI LtkInitialize()
 {
@@ -68,14 +136,14 @@ LTK_API void WINAPI LtkRunMessageLoop()
 LTK_API void WINAPI LtkDelete(HLTK obj)
 {
 	if (!obj) return;
-	Object *pobj = ltk_cast<Object>(obj);
+	LTK_CHECK_TYPE_OR_RETURN(obj, Object, pobj);
 	delete pobj;
 }
 
 LTK_API void WINAPI LtkDeleteLater(HLTK obj)
 {
 	if (!obj) return;
-	Object *pobj = ltk_cast<Object>(obj);
+	LTK_CHECK_TYPE_OR_RETURN(obj, Object, pobj);
 	pobj->DeleteLater();
 }
 
@@ -91,12 +159,13 @@ LTK_API void WINAPI LtkSetName(HLTK o, LPCSTR name)
 
 LTK_API LPCSTR WINAPI LtkGetName(HLTK o)
 {
-	return ltk_cast<Object>(o)->GetName();
+	LTK_CHECK_TYPE_OR_RETURN_VAL(o, Object, pobj, NULL);
+	return pobj->GetName();
 }
 
 LTK_API void WINAPI LtkRegisterCallback(HLTK obj, UINT event_id, LtkCallback cb, void* userdata)
 {
-	Object* pobj = ltk_cast<Object>(obj);
+	LTK_CHECK_TYPE_OR_RETURN(obj, Object, pobj);
 	pobj->RegisterCallback(event_id, cb, userdata);
 }
 
