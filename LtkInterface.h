@@ -253,6 +253,9 @@ typedef struct _LtkRecreateResource {
 // BOOL(void *userdata, BOOL *pProceed)
 #define LTK_WINDOW_CLOSE		102
 
+// BOOL(void *userdata)
+#define LTK_WINDOW_DESTROY      103
+
 /**
  * @brief 创建窗体对象
  *

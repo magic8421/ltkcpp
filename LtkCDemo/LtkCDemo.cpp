@@ -29,7 +29,8 @@ void LtkLogImpl(const char *source, int line, const char *format, ...)
 int CALLBACK OnXmlWindowDestroy(void* userdata)
 {
 	DemoData* self = (DemoData*)userdata;
-	//LtkDelete(self->builder_wnd); // TODO 这里会嵌套然后完蛋
+	//LtkDelete(self->builder_wnd); // 这里会嵌套然后完蛋
+	LtkDeleteLater(self->builder_wnd); // 正确做法应该在下一个消息中释放
 	self->builder_wnd = NULL;
 	::EnableWindow(LtkWindow_GetHWND(self->main_wnd), TRUE);
 	::SetFocus(LtkWindow_GetHWND(self->main_wnd));
@@ -52,7 +53,7 @@ int CALLBACK OnAction(void* userdata, LPCSTR name)
 		if (!self->builder_wnd) {
 			self->builder_wnd = LtkWindow_New();
 			LtkRegisterCallback( self->builder_wnd,
-				LTK_DELETE_EVENT, (LtkCallback)OnXmlWindowDestroy, self);
+				LTK_WINDOW_DESTROY, (LtkCallback)OnXmlWindowDestroy, self);
 			HLTK tree = LtkBuildFromXml("res\\test_tree.xml");
 			LtkWindow_SetCentralWidget(self->builder_wnd, tree);
 			LtkWindow_CreateCenter(self->builder_wnd, LtkWindow_GetHWND(self->main_wnd),
@@ -76,7 +77,6 @@ int CALLBACK OnWindowClose(void* userdata, BOOL* proceed)
 int CALLBACK OnWindowDestroy(void* userdata)
 {
 	DemoData* self = (DemoData*)userdata;
-	self->main_wnd = NULL;
 	::PostQuitMessage(0);
 	return 0;
 }
@@ -115,7 +115,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	g_data.main_wnd = wnd;
 	//LtkWindow_SetBackground(wnd, "window_bg");
 	LtkRegisterCallback(
-		wnd, LTK_DELETE_EVENT, (LtkCallback)OnWindowDestroy, &g_data);
+		wnd, LTK_WINDOW_DESTROY, (LtkCallback)OnWindowDestroy, &g_data);
 	LtkRegisterCallback(
 		wnd, LTK_WINDOW_CLOSE, (LtkCallback)OnWindowClose, &g_data);
 	LtkRegisterCallback(

@@ -504,7 +504,7 @@ LRESULT CALLBACK Window::WndProcStatic(HWND hwnd, UINT message, WPARAM wparam, L
 	}
 	if (WM_NCDESTROY == message && !thiz->m_bDeleting) {
         thiz->m_hwnd = 0;
-        delete thiz;
+        //delete thiz;
 		return 0;
 	}
     return thiz->WndProc(hwnd, message, wparam, lparam);
@@ -635,6 +635,7 @@ void Window::Maximize()
 
 
 typedef int (CALLBACK *WindowCloseCallback)(void *userdata, BOOL *pProceed);
+typedef int (CALLBACK* WindowDestroyCallback)(void* userdata);
 
 void Window::OnClose(BOOL* proceed)
 {
@@ -645,6 +646,8 @@ void Window::OnClose(BOOL* proceed)
 
 void Window::OnDestroy()
 {
+    SetDelegateInvoker(this);
+    InvokeCallbacks<WindowDestroyCallback>(LTK_WINDOW_DESTROY);
 }
 
 HWND Window::GetHWND()

@@ -12,13 +12,17 @@ void HiddenWindow::Init()
 {
     WNDCLASS wc;
     ::ZeroMemory(&wc, sizeof(wc));
-    wc.hInstance = ::GetModuleHandle(NULL);
+    wc.hInstance = ::GetModuleHandle(L"ltkcpp.dll"); // TODO what if we change the dll name?
     wc.lpszClassName = L"MyMsgWnd";
     wc.lpfnWndProc = MyWndProc;
-    ::RegisterClass(&wc);
+    auto ret = ::RegisterClass(&wc);
+    LTK_ASSERT(ret);
 
-    g_hwndUITask = ::CreateWindow(L"MyMsgWnd", L"", WS_POPUP, 0, 0, 10, 10, HWND_MESSAGE, NULL, ::GetModuleHandle(NULL), NULL);
-    LTK_ASSERT(::IsWindow(g_hwndUITask));
+    g_hwndUITask = ::CreateWindow(L"MyMsgWnd", L"", WS_POPUP, 0, 0, 10, 10, HWND_MESSAGE, NULL, 
+        ::GetModuleHandle(L"ltkcpp.dll"), NULL);
+    LTK_ASSERT(g_hwndUITask && ::IsWindow(g_hwndUITask));
+    int i = 1;
+    i = 2;
 }
 
 LRESULT CALLBACK HiddenWindow::MyWndProc(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam)
