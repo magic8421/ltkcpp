@@ -225,10 +225,14 @@ void PopupMenu::SetBackground(LPCSTR style)
 HRESULT PopupMenu::GetTextExtent(LPCWSTR str, IDWriteTextFormat *format, SizeF &size)
 {
 	IDWriteTextLayout *layout = nullptr;
-	if (format->GetTextAlignment() != DWRITE_TEXT_ALIGNMENT_LEADING) 
-		return E_INVALIDARG;
-	if (format->GetParagraphAlignment() != DWRITE_PARAGRAPH_ALIGNMENT_NEAR)
-		return E_INVALIDARG;
+
+	// TODO 这里一旦强制设置左对齐 和上对齐 所有共享的 TextFormat 都要遭殃
+	//if (format->GetTextAlignment() != DWRITE_TEXT_ALIGNMENT_LEADING) 
+	//	return E_INVALIDARG;
+	//if (format->GetParagraphAlignment() != DWRITE_PARAGRAPH_ALIGNMENT_NEAR)
+	//	return E_INVALIDARG;
+	format->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_LEADING);
+	format->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_NEAR);
 
 	HRESULT hr = GetDWriteFactory()->CreateTextLayout(
 		str, wcslen(str), format, 9999, 9999, &layout);

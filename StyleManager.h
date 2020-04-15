@@ -19,10 +19,16 @@ class StyleManager;
 struct ButtonStyle;
 struct TreeViewStyle;
 
+struct ThemeNode
+{
+    LPCSTR name;
+    StyleManager* theme;
+};
+
 struct ThemeData
 {
-    std::unordered_map<std::string, StyleManager *> MapTheme;
-    std::string CurrentTheme;
+    std::vector<ThemeNode> MapTheme;
+    LPCSTR CurrentTheme;
 };
 
 struct ColorDesc
@@ -35,7 +41,7 @@ class LTK_CPP_API StyleManager
 {
 public:
     static void NewTheme(LPCSTR name);
-    static void SetCurrentTheme(LPCSTR name);
+    static void SwitchTheme(LPCSTR name);
     static StyleManager *Instance();
     static void Free();
 

@@ -21,6 +21,7 @@ EXPORTS
 	LtkWindow_SetCentralWidget
 	LtkWindow_SetMenu
 	LtkWindow_GetHWND
+	LtkStyleManager_SwitchTheme
 	LtkBoxLayout_New_
 	LtkBoxLayout_AddLayoutItem
 	LtkBoxLayout_AddSpaceItem

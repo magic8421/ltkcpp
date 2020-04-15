@@ -253,3 +253,23 @@ private:
 
     Data *m_d;
 };
+
+template<typename K, typename V>
+class LinearMap
+{
+public:
+    LinearMap() {}
+    ~LinearMap() {}
+
+    
+
+
+private:
+    struct Node
+    {
+        K key;
+        V value;
+    };
+    std::vector<Node> m_vecMap;
+};
+

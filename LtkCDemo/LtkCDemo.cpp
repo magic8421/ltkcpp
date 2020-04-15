@@ -62,6 +62,14 @@ int CALLBACK OnAction(void* userdata, LPCSTR name)
 			//LtkWindow_UpdateTheme(self->builder_wnd);
 		}
 	}
+	else if (!strcmp(name, "pixel_theme")) {
+		LtkStyleManager_SwitchTheme("pixel");
+		LtkWindow_UpdateTheme(self->main_wnd);
+	}
+	else if (!strcmp(name, "dark_theme")) {
+		LtkStyleManager_SwitchTheme("rect");
+		LtkWindow_UpdateTheme(self->main_wnd);
+	}
 	return 0;
 }
 

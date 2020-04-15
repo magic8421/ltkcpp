@@ -330,6 +330,10 @@ LTK_API void WINAPI LtkWindow_SetMenu(HLTK self, HLTK menu_bar);
  */
 LTK_API HWND WINAPI LtkWindow_GetHWND(HLTK self);
 
+
+LTK_API void WINAPI LtkStyleManager_SwitchTheme(LPCSTR name);
+
+
 // LtkBoxLayout »ùÀà£ºLtkWidget
 
 #define LTK_HORIZONTAL  1

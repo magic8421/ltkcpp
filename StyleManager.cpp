@@ -38,34 +38,51 @@ StyleManager::~StyleManager()
 void StyleManager::NewTheme(LPCSTR name)
 {
 	LTK_ASSERT(name);
+	name = Object::InternString(name);
+
 	if (!m_sThemeData) {
         m_sThemeData = new ThemeData;
     }
-	if (m_sThemeData->MapTheme[name]) {
-		//LTK_ASSERT(false);
+	size_t idx = (size_t)-1;
+	for (size_t i = 0; i < m_sThemeData->MapTheme.size(); ++i) {
+		if (m_sThemeData->MapTheme[i].name == name) {
+			idx = i;
+		}
+	}
+	if (idx != (size_t)-1) {
+		LTK_ASSERT(false);
 		LTK_LOG("StyleManager::NewTheme theme already exists: %s", name);
 		return;
 	}
-    m_sThemeData->MapTheme[name] = new StyleManager;
+	ThemeNode node;
+	node.name = name;
+	node.theme = new StyleManager;
+	m_sThemeData->MapTheme.push_back(node);
     m_sThemeData->CurrentTheme = name;
 }
 
-void StyleManager::SetCurrentTheme(LPCSTR name)
+void StyleManager::SwitchTheme(LPCSTR name)
 {
 	LTK_ASSERT(name);
-	m_sThemeData->CurrentTheme = name;
+	m_sThemeData->CurrentTheme = Object::InternString(name);
 }
 
 StyleManager * StyleManager::Instance()
 {
-    return m_sThemeData->MapTheme[m_sThemeData->CurrentTheme];
+	for (size_t i = 0; i < m_sThemeData->MapTheme.size(); ++i) {
+		if (m_sThemeData->MapTheme[i].name == m_sThemeData->CurrentTheme) {
+			return m_sThemeData->MapTheme[i].theme;
+		}
+	}
+	LTK_ASSERT(false);
+	return nullptr;
 }
 
 void StyleManager::Free()
 {
     const auto &map = m_sThemeData->MapTheme;
     for (auto &pair : map) {
-        delete pair.second;
+		delete pair.theme;
     }
     delete m_sThemeData;
 }
