@@ -137,7 +137,7 @@ LTK_API void WINAPI LtkUnregisterCallbackByUserdata(HLTK obj, UINT event_id, voi
 /**
  * @brief 获取发送消息的对象句柄
  *
- * 详细
+ * 仅在消息回调函数中有效 请在第一时间取得这个句柄并保存在局部变量中 如果接下来调用任何LTK api都有可能覆盖这个值
  */
 LTK_API HLTK WINAPI LtkGetEventSender();
 
