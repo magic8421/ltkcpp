@@ -124,7 +124,6 @@ public:
 	MulticastDelegate0 DestroyDelegate;
 
 private:
-	bool HandleResize(UINT message, WPARAM wparam, LPARAM lparam);
 	void HandleMouseMessage(UINT message, WPARAM wparam, LPARAM lparam);
     void HandleMouseLeave();
     void DrawNonClient();
@@ -166,10 +165,6 @@ private:
     AbstractBackground *m_background = nullptr;
     std::string m_styleName;
 	UINT m_timerResolution = 1;
-
-	UINT m_resizeMode = 0;
-	POINT m_resizePoint = {0};
-	RECT m_resizeRect = {0};
 };
 
 } // namespace ltk

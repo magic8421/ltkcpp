@@ -83,7 +83,7 @@ void Window::Create(HWND hParent, RectF rc)
     }
     DWORD style = WS_VISIBLE;
     
-    style |= WS_POPUP;
+    style |= WS_OVERLAPPEDWINDOW;
 
     m_shadowLeft.Create();
     m_shadowTop.Create();
@@ -167,177 +167,6 @@ void Window::RegisterWndClass()
 
 	ATOM a = RegisterClass(&wc);
     LTK_ASSERT(a);
-}
-
-enum ResizeMode
-{
-    eResizeNone,
-    eResizeCaption,
-    eResizeLeftTop,
-    eResizeLeft,
-    eResizeLeftBottom,
-    eResizeRightTop,
-    eResizeRight,
-    eResizeRightBottom,
-    eResizeTop,
-    eResizeBottom
-};
-
-bool Window::HandleResize(UINT message, WPARAM wparam, LPARAM lparam)
-{
-    long x = (short)LOWORD(lparam); //先切2字节 然后转有符号 这里可能有负数
-    long y = (short)HIWORD(lparam);
-    const long grip = 7;
-    RECT rc;
-    ::GetWindowRect(m_hwnd, &rc);
-    long width = rc.right - rc.left;
-    long height = rc.bottom - rc.top;
-
-    if (m_resizeMode == eResizeNone) {
-        if (x < grip) {
-            if (y < grip) {
-                if (message == WM_MOUSEMOVE) {
-                    ::SetCursor(::LoadCursorW(NULL, IDC_SIZENWSE));
-                }
-                else if (message == WM_LBUTTONDOWN) {
-                    m_resizeMode = eResizeLeftTop;
-                    m_resizeRect = rc;
-                    ::GetCursorPos(&m_resizePoint);
-                    ::SetCapture(m_hwnd);
-                }
-            }
-            else if (y > height - grip) {
-                if (message == WM_MOUSEMOVE) {
-                    ::SetCursor(::LoadCursorW(NULL, IDC_SIZENESW));
-                }
-                else if (message == WM_LBUTTONDOWN) {
-                    m_resizeMode = eResizeLeftBottom;
-                    m_resizeRect = rc;
-                    ::GetCursorPos(&m_resizePoint);
-                    ::SetCapture(m_hwnd);
-                }
-            }
-            else {
-                if (message == WM_MOUSEMOVE) {
-                    ::SetCursor(::LoadCursorW(NULL, IDC_SIZEWE));
-                }
-                else if (message == WM_LBUTTONDOWN) {
-                    m_resizeMode = eResizeLeft;
-                    m_resizeRect = rc;
-                    ::GetCursorPos(&m_resizePoint);
-                    ::SetCapture(m_hwnd);
-                }
-            }
-            return true;
-        }
-        else if (x > width - grip) {
-            if (y < grip) {
-                if (message == WM_MOUSEMOVE) {
-                    ::SetCursor(::LoadCursorW(NULL, IDC_SIZENESW));
-                }
-                else if (message == WM_LBUTTONDOWN) {
-                    m_resizeMode = eResizeRightTop;
-                    m_resizeRect = rc;
-                    ::GetCursorPos(&m_resizePoint);
-                    ::SetCapture(m_hwnd);
-                }
-            }
-            else if (y > height - grip) {
-                if (message == WM_MOUSEMOVE) {
-                    ::SetCursor(::LoadCursorW(NULL, IDC_SIZENWSE));
-                }
-                else if (message == WM_LBUTTONDOWN) {
-                    m_resizeMode = eResizeRightBottom;
-                    m_resizeRect = rc;
-                    ::GetCursorPos(&m_resizePoint);
-                    ::SetCapture(m_hwnd);
-                }
-            }
-            else {
-                if (message == WM_MOUSEMOVE) {
-                    ::SetCursor(::LoadCursorW(NULL, IDC_SIZEWE));
-                }
-                else if (message == WM_LBUTTONDOWN) {
-                    m_resizeMode = eResizeRight;
-                    m_resizeRect = rc;
-                    ::GetCursorPos(&m_resizePoint);
-                    ::SetCapture(m_hwnd);
-                }
-            }
-            return true;
-        }
-        else if (y < grip) {
-            if (message == WM_MOUSEMOVE) {
-                ::SetCursor(::LoadCursorW(NULL, IDC_SIZENS));
-            }
-            else if (message == WM_LBUTTONDOWN) {
-                m_resizeMode = eResizeTop;
-                m_resizeRect = rc;
-                ::GetCursorPos(&m_resizePoint);
-                ::SetCapture(m_hwnd);
-            }
-            return true;
-        }
-        else if (y > height - grip) {
-            if (message == WM_MOUSEMOVE) {
-                ::SetCursor(::LoadCursorW(NULL, IDC_SIZENS));
-            }
-            else if (message == WM_LBUTTONDOWN) {
-                m_resizeMode = eResizeBottom;
-                m_resizeRect = rc;
-                ::GetCursorPos(&m_resizePoint);
-                ::SetCapture(m_hwnd);
-            }
-            return true;
-        }
-        else if (x < width - 100 && y < 40) {
-            if (message == WM_LBUTTONDOWN) {
-                m_resizeMode = eResizeCaption;
-                m_resizeRect = rc;
-                ::GetCursorPos(&m_resizePoint);
-                ::SetCapture(m_hwnd);
-            }
-        }
-    }
-    else {
-        if (message == WM_MOUSEMOVE) {
-            POINT pt;
-            ::GetCursorPos(&pt);
-            switch (m_resizeMode) {
-            case eResizeCaption:
-                //::SetWindowPos(m_hwnd, NULL,
-                //    m_resizeRect.left + (x - m_resizePoint.x),
-                //    m_resizeRect.top + (y - m_resizePoint.y),
-                //    0, 0, SWP_NOSIZE);
-                do {
-                    auto old_cx = m_resizeRect.right - m_resizeRect.left;
-                    auto old_cy = m_resizeRect.bottom - m_resizeRect.top;
-                    ::MoveWindow(m_hwnd,
-                        m_resizeRect.left + (pt.x - m_resizePoint.x),
-                        m_resizeRect.top + (pt.y - m_resizePoint.y),
-                        old_cx,
-                        old_cy,
-                        FALSE);
-                    
-                } while (0);
-                break;
-            case eResizeRightBottom:
-                ::SetWindowPos(m_hwnd, NULL, 
-                    0, 0,
-                    (m_resizeRect.right - m_resizeRect.left) + (pt.x - m_resizePoint.x),
-                    (m_resizeRect.bottom - m_resizeRect.top) + (pt.y - m_resizePoint.y), SWP_NOMOVE);
-                break;
-            default:
-                break;
-            }
-        }
-        else if (message == WM_LBUTTONUP) {
-            ::ReleaseCapture();
-            m_resizeMode = eResizeNone;
-        }
-        return true;
-    }
-    return false;
 }
 
 void Window::HandleMouseMessage(UINT message, WPARAM wparam, LPARAM lparam)
@@ -482,22 +311,22 @@ LRESULT Window::HandleNcHitTest(const POINT &pt)
 
 LRESULT Window::WndProc(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam)
 {
-    //POINT pt;
+    POINT pt;
     switch (message)
     {
     case WM_PAINT:
         OnPaint(hwnd);
         break;
-    //case WM_NCHITTEST:
-    //    pt.x = (short)LOWORD(lparam);
-    //    pt.y = (short)HIWORD(lparam);
-    //    ::ScreenToClient(hwnd, &pt);
-    //    return HandleNcHitTest(pt);
-    //case WM_NCCALCSIZE:
-    //    if (wparam) {
-    //        return 0;
-    //    }
-    //    break;
+    case WM_NCHITTEST:
+        pt.x = (short)LOWORD(lparam);
+        pt.y = (short)HIWORD(lparam);
+        ::ScreenToClient(hwnd, &pt);
+        return HandleNcHitTest(pt);
+    case WM_NCCALCSIZE:
+        if (wparam) {
+            return 0;
+        }
+        break;
     case WM_MOUSEMOVE:
     case WM_LBUTTONDOWN:
     case WM_LBUTTONUP:
@@ -505,9 +334,7 @@ LRESULT Window::WndProc(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam)
     case WM_RBUTTONUP:
     case WM_LBUTTONDBLCLK:
     case WM_MOUSEWHEEL:
-        if (!HandleResize(message, wparam, lparam)) {
-            HandleMouseMessage(message, wparam, lparam);
-        }
+        HandleMouseMessage(message, wparam, lparam);
         break;
     case WM_ERASEBKGND:
         return TRUE;
