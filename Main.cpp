@@ -19,8 +19,6 @@
 #include "MenuBar.h"
 #include "Splitter.h"
 #include "Main.h"
-//#include "TimerWindow.h"
-#include  "duktape/dukglue.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW 
@@ -75,7 +73,7 @@ void DemoWindow::BuildDemoWindow()
 
 	TreeView *tree = new TreeView;
 	spitter1->AddClient(tree);
-	spitter1->SetClientSize(0, 300);
+	spitter1->SetClientSize(0, 200);
 
 	::srand(ltk::TickCount());
 
@@ -286,13 +284,13 @@ void DemoWindow::OnOnceTimer()
 
 void DemoWindow::OnPixelThemeClicked()
 {
-	StyleManager::SetCurrentTheme("pixel");
+	StyleManager::SwitchTheme("pixel");
 	Window::UpdateTheme();
 }
 
 void DemoWindow::OnDarkThemeClicked()
 {
-	StyleManager::SetCurrentTheme("rect");
+	StyleManager::SwitchTheme("rect");
 	Window::UpdateTheme();
 }
 
@@ -329,6 +327,7 @@ static void SetupAppStyle()
 		DWRITE_PARAGRAPH_ALIGNMENT_CENTER);
 }
 
+/*
 static duk_ret_t native_print(duk_context *ctx) {
 	//duk_current_source_line(ctx);
 	//duk_push_string(ctx, " ");
@@ -409,6 +408,7 @@ void RunJsMain()
 
 	return;
 }
+*/
 
 int CALLBACK WinMain(
 	_In_ HINSTANCE hInstance,
@@ -422,12 +422,11 @@ int CALLBACK WinMain(
 
 	
 	auto wnd = new DemoWindow;
-    wnd->SetCaption(L"LTK²âÊÔ´°¿Ú");
     //wnd->SetBackground("window_bg");
 	wnd->BuildDemoWindow();
 	//wnd->BuildSplitterTest2();
     wnd->Create(nullptr, SizeF(700, 500));
-	wnd->UpdateTheme();
+	wnd->SetCaption(L"LTK²âÊÔ´°¿Ú");
 	
 
 	/*
@@ -452,8 +451,9 @@ int CALLBACK WinMain(
         }
     }
 
+	delete wnd;
+
     LTK_LOG("MessageLoop END");
-    ::Sleep(2000);
 
 	//duk_destroy_heap(g_duktape);
 

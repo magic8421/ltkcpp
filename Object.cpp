@@ -15,6 +15,8 @@ static std::unordered_set<Object*>* sObjectSet;
 
 typedef int (CALLBACK* ObjectDeleteCallback)(void *userdata);
 
+CRITICAL_SECTION Object::m_lockInternStr;
+
 struct SZHash{
 	//BKDR hash algorithm
 	int operator()(LPCSTR str)const
@@ -53,14 +55,16 @@ Object::Object()
 
 Object::~Object()
 {
-	m_bDeleting = true;
-	for (size_t i = 0; i < m_children.size(); i++) {
-		delete m_children.IndexNoCheck(i);
-	}
 	// if we delete an object which is not the root object
-	if (m_parent && !m_parent->m_bDeleting) {
+	if (m_parent) {
 		m_parent->RemoveChild(this);
 	}
+	for (size_t i = m_children.size(); i > 0; --i) {
+		delete m_children[i - 1];
+	}
+
+	this->DeleteEvent();
+
 
 #ifdef LTK_C_API
 	// TODO lock for multithread.
@@ -80,14 +84,24 @@ void Object::DeleteLater()
 	HiddenWindow::PostDeleteLater(this);
 }
 
+void Object::Init()
+{
+	::InitializeCriticalSection(&m_lockInternStr);
+}
+
 void Object::Free()
 {
 #ifdef LTK_C_API
 	delete sObjectSet;
 #endif
+
+	::EnterCriticalSection(&m_lockInternStr);
 	for (auto iter = g_internedStrings.begin(); iter != g_internedStrings.end(); iter++) {
 		free((void*)*iter);
 	}
+	::LeaveCriticalSection(&m_lockInternStr);
+
+	::DeleteCriticalSection(&m_lockInternStr);
 }
 
 Object * Object::GetDelegateInvoker()
@@ -150,15 +164,21 @@ LPCSTR Object::InternString(LPCSTR psz)
 	if (!psz) {
 		return nullptr;
 	}
-	// TODO 多线程加锁
+	
+	LPCSTR result = nullptr;
+	::EnterCriticalSection(&m_lockInternStr);
+
 	auto iter = g_internedStrings.find(psz);
 	if (iter == g_internedStrings.end()) {
 		auto ret = g_internedStrings.insert(_strdup(psz));
 		LTK_ASSERT(ret.second); // the insertion took place.
-		return (*ret.first);
+		result = (*ret.first);
 	} else {
-		return *iter;
+		result = *iter;
 	}
+	::LeaveCriticalSection(&m_lockInternStr);
+
+	return result;
 }
 
 /////////////////////////////////////////////////////////////////

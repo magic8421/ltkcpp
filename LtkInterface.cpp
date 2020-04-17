@@ -16,7 +16,7 @@
 using namespace ltk;
 
 static BOOL g_bApiCheck = TRUE;
-static BOOL g_bBreakOnError = FALSE;
+static BOOL g_bBreakOnError = TRUE;
 static __declspec(thread) UINT g_uLastError = 0;
 
 LTK_API void WINAPI LtkEnalbeApiCheck(BOOL b)
@@ -423,7 +423,7 @@ LTK_API HLTK WINAPI LtkTreeView_GetRootNode(HLTK self)
 LTK_API HLTK WINAPI LtkTreeNode_New_(LPCSTR source, int line)
 {
 	auto obj = new TreeNode();
-	obj->SetSourceLine(source, line);
+	//obj->SetSourceLine(source, line);
 	return (HLTK)obj;
 }
 

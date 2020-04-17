@@ -347,6 +347,7 @@ namespace ltk {
         Gdiplus::GdiplusStartup(&m_gdiplusToken, &gdiplusStartupInput, NULL);
 
         LtkLogInit();
+        Object::Init();
         TimerManager::Instance();
         ShadowFrame::Init();
         Window::RegisterWndClass();

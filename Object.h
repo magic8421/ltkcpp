@@ -3,6 +3,7 @@
 #include "Common.h"
 #include "Container.h"
 #include "LtkInterface.h"
+#include "MulticastDelegate.h"
 
 namespace ltk {
 
@@ -16,6 +17,7 @@ class LTK_CPP_API Object : public RTTI
 public:
 	RTTI_DECLARATIONS(Object, RTTI);
 
+	static void Init();
 	static void Free();
 
 	Object();
@@ -40,6 +42,8 @@ public:
 	virtual void SetAttribute(LPCSTR name, LPCSTR value);
 	virtual void OnChildAttribute(Object* child, LPCSTR name, LPCSTR value) {}
 
+	MulticastDelegate0 DeleteEvent;
+
 
 	/////////////////////////////////////////////////////////////////
 	void SetSourceLine(LPCSTR source, int line);
@@ -50,6 +54,7 @@ public:
 	template<typename CB, typename... Params>
 	int InvokeCallbacks(UINT event_id, Params... params);
 
+	static CRITICAL_SECTION m_lockInternStr;
 	static LPCSTR InternString(LPCSTR str);
 
 protected:

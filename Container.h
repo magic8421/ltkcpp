@@ -216,14 +216,19 @@ public:
 
     T &operator[](size_t i)
     {
+#ifdef _DEBUG
         if (i >= m_d->size) {
             __debugbreak();
         }
+#endif
         return m_d->data[i];
     }
 
-    T& IndexNoCheck(size_t i)
+    T& at(size_t i)
     {
+        if (i >= m_d->size) {
+            __debugbreak();
+        }
         return m_d->data[i];
     }
 
