@@ -42,7 +42,7 @@ public:
 	virtual void SetAttribute(LPCSTR name, LPCSTR value);
 	virtual void OnChildAttribute(Object* child, LPCSTR name, LPCSTR value) {}
 
-	MulticastDelegate0 DeleteEvent;
+	MulticastDelegate0 DeleteDelegate;
 
 
 	/////////////////////////////////////////////////////////////////

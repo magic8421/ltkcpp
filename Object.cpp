@@ -63,7 +63,7 @@ Object::~Object()
 		delete m_children[i - 1];
 	}
 
-	this->DeleteEvent();
+	this->DeleteDelegate();
 
 
 #ifdef LTK_C_API

@@ -157,6 +157,7 @@ TreeView::TreeView() :
     m_root = new TreeNode;
     m_root->SetTreeView(this);
     m_vsb = new ScrollBar(ltk::Vertical);
+    m_vsb->ValueChangedDelegate += MakeDelegate(this, &TreeView::SetVScroll);
     this->AddChild(m_vsb);
 }
 
@@ -273,6 +274,12 @@ void TreeView::SetSelectedTextColor(LPCSTR style)
 void TreeView::SetTextFormat(LPCSTR style)
 {
     this->m_szTextFormat = ltk::InternString(style);
+}
+
+void TreeView::SetVScroll(float v)
+{
+    m_scrollAni.SetScroll(v);
+    this->Invalidate();
 }
 
 bool TreeView::OnPaint(PaintEvent *ev)

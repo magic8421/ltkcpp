@@ -99,6 +99,8 @@ public:
     void SetSelectedTextColor(LPCSTR style);
     void SetTextFormat(LPCSTR style);
 
+    void SetVScroll(float);
+
 protected:
     virtual bool OnPaint(PaintEvent *ev) override;
     virtual bool OnSize(SizeEvent *ev) override;
