@@ -26,11 +26,13 @@ Widget::Widget(void)
 
 	m_bVisible = true;
 	m_bClipChildren = false;
-    m_bWidget = true;
 }
 
 Widget::~Widget(void)
 {
+    for (size_t i = 0; i < m_children.size(); i++) {
+        delete m_children[i];
+	}
 }
 
 RectF Widget::GetRect()
@@ -48,14 +50,14 @@ RectF Widget::GetClientRect()
 
 RectF Widget::GetAbsRect()
 {
-	Widget *sp = GetParentWidget();;
+	Widget *sp = m_parent;
 	RectF rcSelf = GetRect();
 	RectF rcParent;
 	while(sp)
 	{
 		rcParent = sp->GetRect();
 		rcSelf.Offset(rcParent.X, rcParent.Y);
-		sp = sp->GetParentWidget();
+		sp = sp->m_parent;
 	}
 	return rcSelf;
 }
@@ -159,22 +161,37 @@ void Widget::HandlePaint( ID2D1RenderTarget *target )
     ev.target = target;
     OnPaint(&ev);
 
-    for (size_t i = 0; i < this->GetChildCount(); i++) {
-        auto obj = this->GetNthChild(i);
-        if (obj->IsWidget()) {
-            auto sp = static_cast<Widget*>(obj);
-            RectF rc2 = sp->GetRect();
+    for (size_t i = 0; i < m_children.size(); i++) {
+        auto sp = m_children[i];
+		RectF rc2 = sp->GetRect();
 
-            TranslateTransform(target, rc2.X, rc2.Y);
-            sp->HandlePaint(target);
-            TranslateTransform(target, -rc2.X, -rc2.Y);
-        }
+		TranslateTransform(target, rc2.X, rc2.Y);
+		sp->HandlePaint(target);
+		TranslateTransform(target, -rc2.X, -rc2.Y);
 	}
 
 	if (m_bClipChildren)
 	{
         target->PopAxisAlignedClip();
 	}
+}
+
+void Widget::AddChild(Widget *sp)
+{
+    for (UINT i =  m_children.size(); i > 0; i--) {
+        if (m_children[i - 1] == sp) {
+			//LTK_ASSERT(false);
+			return;
+        }
+    }
+	//sp->SetWindow(m_window);
+    if (sp->m_parent) {
+        // if sp already has a parent, remove it first.
+        sp->m_parent->RemoveChild(sp);
+    }
+	m_children.push_back(sp);
+	sp->OnParentChanged(sp->m_parent, this);
+	sp->m_parent = this;
 }
 
 void Widget::HandleKeyEvent( UINT message, DWORD keyCode, DWORD flag )
@@ -212,9 +229,9 @@ void Widget::HandleImeInput(LPCTSTR text)
 Window * Widget::GetWindow()
 {
 	Widget *sp = this;
-	while (sp->GetParentWidget())
+	while (sp->m_parent)
 	{
-		sp = sp->GetParentWidget();
+		sp = sp->m_parent;
 	}
 	return sp->m_window;
 }
@@ -251,11 +268,9 @@ bool Widget::IsCapturing()
 
 void Widget::BringToFront()
 {
-    auto parent = GetParentWidget();
-    if (parent) {
-        parent->RemoveChild(this);
-        parent->AddChild(this);
-    }
+    auto parent = m_parent;
+	m_parent->RemoveChild(this);
+    parent->AddChild(this);
 }
 
 void Widget::SetVisible( bool v )
@@ -291,40 +306,34 @@ bool Widget::DispatchMouseEvent(MouseEvent *ev)
 	if (!m_bVisible) {
 		return false;
 	}
-
-    for (size_t i = this->GetChildCount(); i > 0; i--) {
-        auto obj = this->GetNthChild(i - 1);
-        if (obj->IsWidget()) {
-            auto sp = static_cast<Widget*>(obj);
-            auto rc = sp->GetRect();
-            if (rc.Contains(ev->x, ev->y)) {
-                MouseEvent ev2 = *ev;
-                ev2.x -= rc.X;
-                ev2.y -= rc.Y;
-                if (sp->DispatchMouseEvent(&ev2)) {
-                    return true;
-                }
+    for (auto i = m_children.size(); i > 0; i--) {
+        auto sp = m_children[i - 1];
+        auto rc = sp->GetRect();
+        if (rc.Contains(ev->x, ev->y)) {
+            MouseEvent ev2 = *ev;
+            ev2.x -= rc.X;
+            ev2.y -= rc.Y;
+            if (sp->DispatchMouseEvent(&ev2)) {
+                return true;
             }
         }
     }
     return this->OnEvent(ev);
 }
 
-inline Widget* Widget::GetParentWidget()
-{
-    auto o = this->GetParent();
-    if (!o) return nullptr;
-    return o->IsWidget() ? static_cast<Widget*>(o) : nullptr;
-}
-
 Widget * Widget::GetAncestor()
 {
 	Widget *sp = this;
-	while (sp->GetParentWidget())
+	while (sp->m_parent)
 	{
-		sp = sp->GetParentWidget();
+		sp = sp->m_parent;
 	}
 	return sp;
+}
+
+Widget * Widget::GetParent()
+{
+	return m_parent;
 }
 
 void Widget::TrackMouseLeave()
@@ -334,6 +343,23 @@ void Widget::TrackMouseLeave()
 	{
 		wnd->TrackMouseLeave(this);
 	}
+}
+
+void Widget::RemoveChild( Widget *sp )
+{
+    // maybe searh from the end is better, because we always push to the end.
+    for (int i = m_children.size() - 1; i >= 0; i--) {
+        auto sp2 = m_children[i];
+        if (sp2 == sp) {
+            //sp2->Release();
+			sp2->m_parent = nullptr;
+            for (int j = i + 1; j < (int)m_children.size(); j++) {
+                m_children[j - 1] = m_children[j];
+            }
+            m_children.pop_back();
+            i--;
+        }
+    }
 }
 
 void Widget::ShowCaret()
@@ -421,12 +447,9 @@ bool Widget::OnEvent(Event *ev)
 
 void Widget::HandleRecreateResouce(ID2D1RenderTarget *target)
 {
-    for (size_t i = 0; i < this->GetChildCount(); i++) {
-        auto obj = this->GetNthChild(i);
-        if (obj->IsWidget()) {
-            auto sp = static_cast<Widget*>(obj);
-            sp->HandleRecreateResouce(target);
-        }
+    for (size_t i = 0; i < m_children.size(); i++) {
+        auto sp = m_children[i];
+        sp->HandleRecreateResouce(target);
     }
     this->RecreateResouce(target);
 }
@@ -434,12 +457,8 @@ void Widget::HandleRecreateResouce(ID2D1RenderTarget *target)
 void Widget::HandleThemeChange()
 {
     this->OnThemeChanged();
-    for (size_t i = 0; i < this->GetChildCount(); i++) {
-        auto obj = this->GetNthChild(i);
-        if (obj->IsWidget()) {
-            auto sp = static_cast<Widget*>(obj);
-            sp->HandleThemeChange();
-        }
+    for (auto sp : m_children) {
+        sp->HandleThemeChange();
     }
 }
 
@@ -465,7 +484,10 @@ void Widget::SetAttribute(LPCSTR name, LPCSTR value)
         this->SetRect(rc);
         return;
     }
-    Object::SetAttribute(name, value);
+
+    if (m_parent) {
+        m_parent->OnChildAttribute(this, name, value);
+    }
 }
 
 void Widget::BeginAnimation()

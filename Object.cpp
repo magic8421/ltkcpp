@@ -55,16 +55,7 @@ Object::Object()
 
 Object::~Object()
 {
-	// if we delete an object which is not the root object
-	if (m_parent) {
-		m_parent->RemoveChild(this);
-	}
-	for (size_t i = m_children.size(); i > 0; --i) {
-		delete m_children[i - 1];
-	}
-
 	this->DeleteDelegate();
-
 
 #ifdef LTK_C_API
 	// TODO lock for multithread.
@@ -117,46 +108,6 @@ void Object::SetDelegateInvoker(Object *sender)
 void Object::SetName(LPCSTR name)
 {
 	m_name = ltk::InternString(name);
-}
-
-void Object::AddChild(Object* o)
-{
-	if (o->m_parent == this)
-		return;
-	if (o->m_parent) {
-		o->m_parent->RemoveChild(o);
-	}
-	m_children.push_back(o);
-	o->m_parent = this;
-}
-
-void Object::RemoveChild(Object* o)
-{
-	// maybe searh from the end is better, because we always push to the end.
-	for (int i = m_children.size() - 1; i >= 0; i--) {
-		auto o2 = m_children[i];
-		if (o2 == o) {
-			o2->m_parent = nullptr;
-			for (int j = i + 1; j < (int)m_children.size(); j++) {
-				m_children[j - 1] = m_children[j];
-			}
-			m_children.pop_back();
-			return;
-		}
-	}
-}
-
-void Object::SetParent(Object* p)
-{
-	p->AddChild(this);
-}
-
-void Object::SetAttribute(LPCSTR name, LPCSTR value) 
-{
-	auto parent = this->GetParent();
-	if (parent) {
-		parent->OnChildAttribute(this, name, value);
-	}
 }
 
 LPCSTR Object::InternString(LPCSTR psz)

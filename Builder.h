@@ -4,7 +4,6 @@
 
 namespace ltk {
 
-class Object;
 class Widget;
 
 typedef HLTK (CALLBACK *FactoryMethod)();
@@ -20,10 +19,10 @@ public:
 	static void Free();
 
 	void RegisterType(LPCSTR xml_tag, FactoryMethod func);
-	Object* WidgetFromXml(LPCSTR path);
+	Widget* WidgetFromXml(LPCSTR path);
 
 private:
-	Object* WidgetFromXmlRec(tinyxml2::XMLElement* elm, Object* parent);
+	Widget* WidgetFromXmlRec(tinyxml2::XMLElement* elm, Widget* parent);
 
 	static Builder* m_sInst;
 

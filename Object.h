@@ -31,17 +31,6 @@ public:
 	void SetName(LPCSTR name);
 	LPCSTR GetName() { return m_name; }
 
-	bool IsWidget() { return m_bWidget; }
-	void AddChild(Object *);
-	void RemoveChild(Object *o);
-	Object *GetNthChild(size_t i) { return m_children[i]; }
-	size_t GetChildCount() { return m_children.size(); }
-	Object *GetParent() { return m_parent; }
-	void SetParent(Object *);
-
-	virtual void SetAttribute(LPCSTR name, LPCSTR value);
-	virtual void OnChildAttribute(Object* child, LPCSTR name, LPCSTR value) {}
-
 	MulticastDelegate0 DeleteDelegate;
 
 
@@ -57,14 +46,9 @@ public:
 	static CRITICAL_SECTION m_lockInternStr;
 	static LPCSTR InternString(LPCSTR str);
 
-protected:
-	bool m_bWidget = false;
-	bool m_bDeleting = false;
 
 private:
 	LPCSTR m_name = nullptr;
-	Object *m_parent = nullptr;
-	ArrayList<Object *> m_children;
 
 #ifdef LTK_C_API
 

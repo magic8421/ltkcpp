@@ -53,6 +53,9 @@ public:
 	void SetVisible( bool );
 	bool GetVisible();
 
+	void AddChild( Widget *sp );
+	void RemoveChild(Widget* sp);
+
 	void SetCapture();
 	void ReleaseCapture();
     bool IsCapturing();
@@ -64,8 +67,8 @@ public:
 
 	void TrackMouseLeave();
 
-    Widget *GetParentWidget();
 	Widget *GetAncestor();
+	Widget *GetParent();
 
     void ShowCaret();
     void SetCaretPos(RectF rc);
@@ -84,7 +87,9 @@ public:
     void HandleRecreateResouce( ID2D1RenderTarget *target );
     void HandleThemeChange();
 
-    virtual void SetAttribute(LPCSTR name, LPCSTR value) override;
+
+    virtual void SetAttribute(LPCSTR name, LPCSTR value);
+    virtual void OnChildAttribute(Object* child, LPCSTR name, LPCSTR value) {}
 
     virtual bool OnEvent(Event *ev) override;
 
@@ -116,6 +121,9 @@ private:
 
     RectF m_rect;
     Window *m_window = nullptr;
+
+    std::vector<Widget *> m_children;
+    Widget *m_parent = nullptr;
 
 	DISALLOW_COPY_AND_ASSIGN(Widget);
 };

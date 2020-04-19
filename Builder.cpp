@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Builder.h"
 #include "ltk.h"
-#include "Object.h"
+#include "Sprite.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW 
@@ -31,7 +31,7 @@ void Builder::RegisterType(LPCSTR xml_tag, FactoryMethod func)
 	m_mapFactory[xml_tag] = func;
 }
 
-Object* Builder::WidgetFromXml(LPCSTR path)
+Widget* Builder::WidgetFromXml(LPCSTR path)
 {
 	using namespace tinyxml2;
 	tinyxml2::XMLDocument doc;
@@ -41,16 +41,16 @@ Object* Builder::WidgetFromXml(LPCSTR path)
 	return WidgetFromXmlRec(elm, nullptr);
 }
 
-Object* Builder::WidgetFromXmlRec(tinyxml2::XMLElement* elm, Object *parent)
+Widget* Builder::WidgetFromXmlRec(tinyxml2::XMLElement* elm, Widget* parent)
 {
-	Object* obj = nullptr;
+	Widget* obj = nullptr;
 	auto name = elm->Name();
 	auto iter = m_mapFactory.find(name);
 	if (iter != m_mapFactory.end()) {
 		m_buildingPath.push_back(name);
 		auto hltk = iter->second();
-		LTK_ASSERT(Object::CheckValid((Object*)hltk));
-		obj = (Object*)hltk;
+		//LTK_ASSERT(Object::CheckValid((Object*)hltk));
+		obj = ((Object*)hltk)->As<Widget>();
 		if (parent) {
 			parent->AddChild(obj); // 要先有父级才能设置属性 因为有的属性要传递给父级
 		}

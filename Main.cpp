@@ -50,12 +50,12 @@ static void RecBuildNodes(TreeNode *parent, int depth)
 DemoWindow::DemoWindow()
 {
 	m_timer = new Timer;
-	m_timer->SetParent(this);
+	//m_timer->SetParent(this);
 	m_timer->SetInterval(1000);
 	m_timer->TimeoutDelegate += MakeDelegate(this, &DemoWindow::OnTimer);
 
 	m_onceTimer = new Timer;
-	m_onceTimer->SetParent(this);
+	//m_onceTimer->SetParent(this);
 	m_onceTimer->SetInterval(1000);
 	m_onceTimer->TimeoutDelegate += MakeDelegate(this, &DemoWindow::OnOnceTimer);
 }
