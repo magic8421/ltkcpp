@@ -21,6 +21,7 @@ struct BoxLayoutParam {
 class LTK_CPP_API BoxLayout : public Widget
 {
 public:
+    RTTI_DECLARATIONS(BoxLayout, Widget);
 	explicit BoxLayout(Orientation);
     explicit BoxLayout(UINT o) : BoxLayout((Orientation)o) {} // for dukglue
     virtual ~BoxLayout();

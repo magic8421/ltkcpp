@@ -20,6 +20,7 @@ class PopupMenu;
 struct LTK_CPP_API MenuItem : public Object
 {
 public:
+	RTTI_DECLARATIONS(MenuItem, Object);
 	MenuItem() {}
 
 	enum class Type {Normal, Icon, Check, Radio};

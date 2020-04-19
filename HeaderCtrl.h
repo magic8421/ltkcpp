@@ -23,6 +23,7 @@ struct ColumnData {
 class LTK_CPP_API HeaderCtrl : public Widget
 {
 public:
+    RTTI_DECLARATIONS(HeaderCtrl, Widget);
     HeaderCtrl();
     virtual ~HeaderCtrl();
 

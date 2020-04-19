@@ -31,6 +31,7 @@ EXPORTS
 	LtkHeaderCtrl_New_
 	LtkHeaderCtrl_AddColumn
 	LtkListView_New_
+	LtkListView_AddColumn
 	LtkListView_AddRow
 	LtkListView_SetCellText
 	LtkListView_GetCellText

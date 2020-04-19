@@ -149,10 +149,10 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 	HLTK list_view = LtkListView_New();
 	HLTK header = LtkListView_GetHeaderCtrl(list_view);
-	LtkHeaderCtrl_AddColumn(header, "项目名", 100);
-	LtkHeaderCtrl_AddColumn(header, "工程名", 200);
-	LtkHeaderCtrl_AddColumn(header, "负责人", 200);
-	LtkHeaderCtrl_AddColumn(header, "资金", 100);
+	LtkListView_AddColumn(list_view, "项目名", 100);
+	LtkListView_AddColumn(list_view, "工程名", 200);
+	LtkListView_AddColumn(list_view, "负责人", 200);
+	LtkListView_AddColumn(list_view, "资金", 100);
 	LtkListView_UpdateColumnWidth(list_view);
 
 	UINT num = rand() % 200;

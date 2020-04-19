@@ -16,7 +16,7 @@ class Window;
 
 struct LayoutParam
 {
-    SizeF preferred_ize;
+    SizeF fixed_size;
     PointF grow_factor;
 };
 

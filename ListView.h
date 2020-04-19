@@ -19,6 +19,7 @@ class ScrollBar;
 class LTK_CPP_API ListView : public Widget
 {
 public:
+	RTTI_DECLARATIONS(ListView, Widget);
     ListView();
     virtual ~ListView();
 

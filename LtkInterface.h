@@ -354,7 +354,7 @@ LTK_API void WINAPI LtkBoxLayout_SetSpacing(HLTK self, float spacing);
 #define LtkButton_New() LtkButton_New_(__FILE__, __LINE__)
 LTK_API HLTK WINAPI LtkButton_New_(LPCSTR source, int line);
 
-LTK_API void WINAPI LtkButton_SetText(HLTK self, LPCWSTR);
+LTK_API void WINAPI LtkButton_SetText(HLTK self, LPCSTR);
 
 // LtkHeaderCtrl »ùÀà£ºLtkWidget
 
@@ -377,6 +377,7 @@ LTK_API void WINAPI LtkHeaderCtrl_AddColumn(HLTK self, LPCSTR text, float width)
 #define LtkListView_New() LtkListView_New_( __FILE__, __LINE__)
 LTK_API HLTK WINAPI LtkListView_New_(LPCSTR source, int line);
 
+LTK_API void WINAPI LtkListView_AddColumn(HLTK self, LPCSTR text, float width);
 LTK_API UINT WINAPI LtkListView_AddRow(HLTK self);
 LTK_API void WINAPI LtkListView_SetCellText(HLTK self, UINT row, UINT col, LPCWSTR text);
 LTK_API LPCWSTR WINAPI LtkListView_GetCellText(HLTK self, UINT row, UINT col);

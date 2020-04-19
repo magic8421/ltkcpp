@@ -14,6 +14,7 @@ namespace ltk {
 class LTK_CPP_API Label : public Widget
 {
 public:
+    RTTI_DECLARATIONS(Label, Widget);
     Label();
     virtual ~Label();
 

@@ -17,6 +17,7 @@ class Button;
 class LTK_CPP_API ScrollBar : public Widget
 {
 public:
+    RTTI_DECLARATIONS(ScrollBar, Widget);
     explicit ScrollBar(Orientation mode);
     ~ScrollBar();
 

@@ -455,13 +455,13 @@ void Widget::SetAttribute(LPCSTR name, LPCSTR value)
     if (name == id_rect) {
         RectF rc;
         char *end = 0;
-        rc.X = strtol(value, &end, 10); 
+        rc.X = strtof(value, &end); 
         if (!end) return;
-        rc.Y = strtol(end + 1, &end, 10);
+        rc.Y = strtof(end + 1, &end);
         if (!end) return;
-        rc.Width = strtol(end + 1, &end, 10);
+        rc.Width = strtof(end + 1, &end);
         if (!end) return;
-        rc.Height = strtol(end + 1, &end, 10);
+        rc.Height = strtof(end + 1, &end);
         this->SetRect(rc);
         return;
     }
