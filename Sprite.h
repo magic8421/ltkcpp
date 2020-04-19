@@ -14,10 +14,21 @@ namespace ltk {
 
 class Window;
 
+enum LtkAlign
+{
+    LtkAlignLeft = 1,
+    LtkAlignCenter = 2,
+    LtkAlignRight = 3,
+    LtkAlignTop = 1,
+    LtkAlignBotton = 3
+};
+
 struct LayoutParam
 {
     SizeF fixed_size;
     PointF grow_factor;
+    LtkAlign halign;
+    LtkAlign valign;
 };
 
 typedef int (CALLBACK *ActionCallback)(void* userdata, LPCSTR name);

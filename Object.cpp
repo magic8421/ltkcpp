@@ -8,6 +8,8 @@
 #define new DEBUG_NEW 
 #endif
 
+extern BOOL g_bApiCheck;
+
 namespace ltk {
 
 static __declspec(thread) Object *sDelegateInvoker = nullptr;
@@ -45,11 +47,14 @@ std::unordered_set<LPCSTR, SZHash, SZEqual> g_internedStrings;
 Object::Object()
 {
 #ifdef LTK_C_API
-	// TODO lock for multithread.
-	if (!sObjectSet) {
-		sObjectSet = new std::unordered_set<Object*>;
+	if (g_bApiCheck) {
+		::EnterCriticalSection(&m_lockInternStr);
+		if (!sObjectSet) {
+			sObjectSet = new std::unordered_set<Object*>;
+		}
+		sObjectSet->insert(this);
+		::LeaveCriticalSection(&m_lockInternStr);
 	}
-	sObjectSet->insert(this);
 #endif
 }
 
@@ -58,13 +63,18 @@ Object::~Object()
 	this->DeleteDelegate();
 
 #ifdef LTK_C_API
-	// TODO lock for multithread.
-	auto iter = sObjectSet->find(this);
-	if (iter == sObjectSet->end()) {
-		LTK_ASSERT(false);
+	if (g_bApiCheck) {
+		::EnterCriticalSection(&m_lockInternStr);
+		// TODO lock for multithread.
+		auto iter = sObjectSet->find(this);
+		if (iter == sObjectSet->end()) {
+			LTK_ASSERT(false);
+		}
+		else {
+			sObjectSet->erase(iter);
+		}
+		::LeaveCriticalSection(&m_lockInternStr);
 	}
-	sObjectSet->erase(iter);
-
 	InvokeCallbacks<ObjectDeleteCallback>(LTK_DELETE_EVENT);
 #endif
 

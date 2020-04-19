@@ -87,6 +87,9 @@ LTK_API void WINAPI LtkDelete(HLTK obj);
  */
 LTK_API void WINAPI LtkDeleteLater(HLTK obj);
 
+
+LTK_API BOOL WINAPI LtkIsValid(HLTK obj);
+
 /**
  * @brief LTK回调函数
  *
@@ -407,7 +410,7 @@ LTK_API HLTK WINAPI LtkTreeView_GetRootNode(HLTK self);
 LTK_API HLTK WINAPI LtkTreeNode_New_(LPCSTR source, int line);
 
 LTK_API void WINAPI LtkTreeNode_AddChild(HLTK self, HLTK node);
-LTK_API void WINAPI LtkTreeNode_SetText(HLTK self, LPCWSTR text);
+LTK_API void WINAPI LtkTreeNode_SetText(HLTK self, LPCSTR text);
 
 LTK_DECLARE_TYPE(LtkTextEdit); // 基类：LtkWidget
 

@@ -15,7 +15,7 @@
 
 using namespace ltk;
 
-static BOOL g_bApiCheck = TRUE;
+BOOL g_bApiCheck = TRUE;
 static BOOL g_bBreakOnError = TRUE;
 static __declspec(thread) UINT g_uLastError = 0;
 
@@ -78,32 +78,6 @@ if (g_bApiCheck) { \
 klass *name = (klass *)hltk; \
 
 
-
-#define LTK_CHECK_TYPE_OR_RETURN_VAL(hltk, klass, name, val) \
-if (g_bApiCheck) { \
-    Object* _obj = (Object*)hltk; \
-	if (!Object::CheckValid(_obj)) { \
-		LTK_LOG("ltk C interface handle invalid: 0x%08x", hltk); \
-        g_uLastError = LtkInvalidHandle;\
-		if (g_bBreakOnError) \
-		    __debugbreak(); \
-        else \
-            return val; \
-	}\
-	if (!_obj->Is(klass::TypeIdClass())) {\
-		LTK_LOG("ltk C interface type mismatch, %s required, got %s",\
-			klass::TypeNameClass(), _obj->TypeNameInstance());\
-        g_uLastError = LtkTypeError;\
-		if (g_bBreakOnError) \
-		    __debugbreak(); \
-        else \
-            return val; \
-	}\
-}\
-klass *name = (klass *)hltk; \
-
-
-
 LTK_API UINT WINAPI LtkInitialize()
 {
 	ltk::LtkInitialize();
@@ -143,6 +117,17 @@ LTK_API void WINAPI LtkDeleteLater(HLTK obj)
 	pobj->DeleteLater();
 }
 
+LTK_API BOOL WINAPI LtkIsValid(HLTK obj)
+{
+	if (!obj) return FALSE;
+	if (g_bApiCheck) {
+		return (BOOL)Object::CheckValid((Object*)obj);
+	}
+	else {
+		return TRUE;
+	}
+}
+
 LTK_API LPCSTR WINAPI LtkInternString(LPCSTR str)
 {
 	return Object::InternString(str);
@@ -156,7 +141,7 @@ LTK_API void WINAPI LtkSetName(HLTK o, LPCSTR name)
 
 LTK_API LPCSTR WINAPI LtkGetName(HLTK o)
 {
-	LTK_CHECK_TYPE_OR_RETURN_VAL(o, Object, pobj, NULL);
+	LTK_CHECK_TYPE_OR_RETURN(o, Object, pobj);
 	return pobj->GetName();
 }
 
@@ -248,7 +233,7 @@ LTK_API void WINAPI LtkWindow_SetMenu(HLTK self, HLTK menu_bar)
 
 LTK_API HWND WINAPI LtkWindow_GetHWND(HLTK self)
 {
-	LTK_CHECK_TYPE_OR_RETURN_VAL(self, Window, thiz, NULL);
+	LTK_CHECK_TYPE_OR_RETURN(self, Window, thiz);
 	return thiz->GetHWND();
 }
 
@@ -437,10 +422,10 @@ LTK_API void WINAPI LtkTreeNode_AddChild(HLTK self, HLTK node)
 	thiz->AddChild((TreeNode*)node);
 }
 
-LTK_API void WINAPI LtkTreeNode_SetText(HLTK self, LPCWSTR text)
+LTK_API void WINAPI LtkTreeNode_SetText(HLTK self, LPCSTR text)
 {
 	TreeNode* thiz = (TreeNode*)self;
-	thiz->SetText(text);
+	thiz->SetText(LtkA2W(text).c_str());
 }
 
 //////////////////////////////////////////////////////////////////////////
