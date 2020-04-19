@@ -30,12 +30,42 @@
     <ClInclude Include="pch.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="DesignerWnd.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="LtkTreeView.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="LtkWidget.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="LtkObject.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="WidgetTreeView.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="LtkSplitter.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="LtkWindow.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="LtkButton.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="LtkCDemo.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="pch.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="DesignerWnd.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="WidgetTreeView.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
@@ -51,5 +81,8 @@
     <Image Include="LtkCDemo.ico">
       <Filter>资源文件</Filter>
     </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
 </Project>

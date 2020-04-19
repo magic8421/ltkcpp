@@ -162,13 +162,22 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="DesignerWnd.h" />
     <ClInclude Include="framework.h" />
+    <ClInclude Include="LtkButton.h" />
     <ClInclude Include="LtkCDemo.h" />
+    <ClInclude Include="LtkObject.h" />
+    <ClInclude Include="LtkSplitter.h" />
+    <ClInclude Include="LtkTreeView.h" />
+    <ClInclude Include="LtkWidget.h" />
+    <ClInclude Include="LtkWindow.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="targetver.h" />
+    <ClInclude Include="WidgetTreeView.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="DesignerWnd.cpp" />
     <ClCompile Include="LtkCDemo.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -176,6 +185,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="WidgetTreeView.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="LtkCDemo.rc" />

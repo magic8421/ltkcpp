@@ -5,6 +5,7 @@
 #include "framework.h"
 #include "LtkCDemo.h"
 #include "LtkInterface.h"
+#include "DesignerWnd.h"
 
 struct DemoData
 {
@@ -97,10 +98,10 @@ static void RecBuildNodes(HLTK parent, int depth)
 		return;
 	}
 	int num = rand() % 13 + 3;
-	wchar_t buf[128];
+	char buf[128];
 	for (int i = 0; i < num; i++) {
 		HLTK node = LtkTreeNode_New();
-		StringCbPrintf(buf, sizeof(buf), L"TreeNode: %d", node_count);
+		StringCbPrintfA(buf, sizeof(buf), "TreeNode: %d", node_count);
 		LtkTreeNode_SetText(node, buf); // 内层循环建议不做类型检查
 		LtkTreeNode_AddChild(parent, node);
 		node_count++;
@@ -119,6 +120,10 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 	LtkInitialize();
 
+	DesignerWnd wnd;
+	wnd.Create();
+
+	/*
 	HLTK wnd = LtkWindow_New();
 	g_data.main_wnd = wnd;
 	//LtkWindow_SetBackground(wnd, "window_bg");
@@ -220,12 +225,16 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	LtkWindow_CreateCenter(wnd, NULL, 800, 600);
 	LtkWindow_SetCaption(wnd, "Ltk测试窗口");
 	//LtkWindow_UpdateTheme(wnd);
+	*/
 
 	LtkRunMessageLoop();
-	LtkDelete(g_data.builder_wnd);
-	LtkDelete(g_data.main_wnd);
+
+	//LtkDelete(g_data.builder_wnd);
+	//LtkDelete(g_data.main_wnd);
+	wnd.Destroy();
 
 	LtkUninitialize();
+
 	return 0;
 }
 

@@ -10,6 +10,8 @@
 #include <memory.h>
 #include <tchar.h>
 #include <strsafe.h>
+#include <vector>
+#include <string>
 
 #define _CRTDBG_MAP_ALLOC
 #include <crtdbg.h>
