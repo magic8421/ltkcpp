@@ -135,7 +135,7 @@ public:
 	MenuBar();
 	virtual ~MenuBar();
 
-	void AddItem(LPCWSTR text);
+	UINT AddItem(LPCWSTR text);
 	void SetPopupMenu(UINT idx, PopupMenu *menu);
 	UINT GetItemCount();
 	void DoLayout();

@@ -122,6 +122,10 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 	DesignerWnd wnd;
 	wnd.Create();
+	LtkRunMessageLoop();
+	wnd.Destroy();
+	LtkUninitialize();
+	return 0;
 
 	/*
 	HLTK wnd = LtkWindow_New();
@@ -181,14 +185,14 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	LtkSplitter_AddClient(splitter_v, text_edit);
 
 	HLTK menu_bar = LtkMenuBar_New();
-	LtkMenuBar_AddItem(menu_bar, L"文件");
-	LtkMenuBar_AddItem(menu_bar, L"编辑");
-	LtkMenuBar_AddItem(menu_bar, L"皮肤");
-	LtkMenuBar_AddItem(menu_bar, L"帮助");
+	LtkMenuBar_AddItem(menu_bar, "文件");
+	LtkMenuBar_AddItem(menu_bar, "编辑");
+	LtkMenuBar_AddItem(menu_bar, "皮肤");
+	LtkMenuBar_AddItem(menu_bar, "帮助");
 	LtkWindow_SetMenu(wnd, menu_bar);
 
 	HLTK popup_menu = LtkPopupMenu_New();
-	LtkPopupMenu_AddItem(popup_menu, "新建", "new_file");
+	LtkPopupMenu_AddItem(popup_menu, "xml布局测试", "new_file");
 	LtkPopupMenu_AddItem(popup_menu, "打开", "open_file");
 	LtkPopupMenu_AddItem(popup_menu, "最近", "");
 	LtkPopupMenu_AddItem(popup_menu, "关闭", "close_file");
@@ -225,17 +229,17 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	LtkWindow_CreateCenter(wnd, NULL, 800, 600);
 	LtkWindow_SetCaption(wnd, "Ltk测试窗口");
 	//LtkWindow_UpdateTheme(wnd);
-	*/
+	
 
 	LtkRunMessageLoop();
 
-	//LtkDelete(g_data.builder_wnd);
-	//LtkDelete(g_data.main_wnd);
-	wnd.Destroy();
+	LtkDelete(g_data.builder_wnd);
+	LtkDelete(g_data.main_wnd);
 
 	LtkUninitialize();
 
 	return 0;
+	*/
 }
 
 

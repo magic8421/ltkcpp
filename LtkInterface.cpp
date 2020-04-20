@@ -458,10 +458,10 @@ LTK_API HLTK WINAPI LtkMenuBar_New_(LPCSTR source, int line)
 	return (HLTK)obj;
 }
 
-LTK_API void WINAPI LtkMenuBar_AddItem(HLTK self, LPCWSTR text)
+LTK_API UINT WINAPI LtkMenuBar_AddItem(HLTK self, LPCSTR text)
 {
 	MenuBar* thiz = ltk_cast<MenuBar>(self);
-	thiz->AddItem(text);
+	return thiz->AddItem(LtkA2W(text).c_str());
 }
 
 LTK_API void WINAPI LtkMenuBar_SetPopupMenu(HLTK self, UINT idx, HLTK popup)

@@ -489,7 +489,7 @@ MenuBar::~MenuBar()
 }
 
 
-void MenuBar::AddItem(LPCWSTR text)
+UINT MenuBar::AddItem(LPCWSTR text)
 {
 	Button *btn = new Button;
 	btn->SetText(text);
@@ -501,6 +501,7 @@ void MenuBar::AddItem(LPCWSTR text)
 	m_vecMenuItems.push_back(param);
 	btn->ClickedDelegate += MakeDelegate(this, &MenuBar::OnMenuBtnClicked);
 	btn->MouseEventDelegate += MakeDelegate(this, &MenuBar::OnButtonMouseEvent);
+	return m_vecMenuItems.size() - 1;
 }
 
 void MenuBar::SetPopupMenu(UINT idx, PopupMenu *menu)

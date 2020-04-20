@@ -427,7 +427,7 @@ LTK_DECLARE_TYPE(LtkMenuItem);
 #define LtkMenuBar_New() LtkMenuBar_New_(  __FILE__, __LINE__)
 LTK_API HLTK WINAPI LtkMenuBar_New_(LPCSTR source, int line);
 
-LTK_API void WINAPI LtkMenuBar_AddItem(HLTK self, LPCWSTR text);
+LTK_API UINT WINAPI LtkMenuBar_AddItem(HLTK self, LPCSTR text);
 LTK_API void WINAPI LtkMenuBar_SetPopupMenu(HLTK self, UINT idx, HLTK popup);
 
 #define LtkPopupMenu_New() LtkPopupMenu_New_(  __FILE__, __LINE__)

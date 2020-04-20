@@ -4,6 +4,7 @@
 #include "LtkSplitter.h"
 #include "WidgetTreeView.h"
 #include "LtkButton.h"
+#include "LtkMenu.h"
 
 void DesignerWnd::Create()
 {

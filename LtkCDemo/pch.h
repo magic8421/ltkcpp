@@ -10,4 +10,10 @@
 // 添加要在此处预编译的标头
 #include "framework.h"
 
+#ifdef _DEBUG
+#define LTK_ASSERT(expr) if (!(expr)) {__debugbreak();} // super KISS
+#else
+#define LTK_ASSERT(expr) (void)(expr)
+#endif
+
 #endif //PCH_H

@@ -54,6 +54,9 @@
     <ClInclude Include="LtkButton.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="LtkMenu.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="LtkCDemo.cpp">
@@ -81,8 +84,5 @@
     <Image Include="LtkCDemo.ico">
       <Filter>资源文件</Filter>
     </Image>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
   </ItemGroup>
 </Project>

@@ -10,3 +10,5 @@
 /docs/html
 /.vs/ltkcpp_no_pimpl/v16/ipch/*.ipch
 /LtkCDemo/Release/LtkCDemo.tlog/*.tlog
+/.vs/ltkcpp_c_iface_2/v16/ipch/*.ipch
+/doc/html
