@@ -6,23 +6,25 @@
 #include "LtkButton.h"
 #include "LtkMenu.h"
 
+#ifdef DEBUG
+#define new DEBUG_NEW
+#endif // DEBUG
+
+
 void DesignerWnd::Create()
 {
-	LtkWindow::Create();
-	LtkSplitter splt1;
-	splt1.Create(LTK_HORIZONTAL);
-	LtkWindow::SetCentralWidget(&splt1);
+	LtkSplitter* splt1 = new LtkSplitter(LTK_HORIZONTAL);
+	LtkWindow::SetCentralWidget(splt1);
 
-	LtkButton btn1;
-	btn1.Create();
-	btn1.SetText("fuck");
-	splt1.AddClient(&btn1);
-	splt1.SetClientSize(0, 300);
+	LtkButton* btn1 = new LtkButton;
+	btn1->SetText("fuck");
+	splt1->AddClient(btn1);
+	splt1->SetClientSize(0, 300);
 
-	btn1.Create();
-	btn1.SetText("shit");
-	splt1.AddClient(&btn1);
-	splt1.SetClientSize(1, 300);
+	btn1 = new LtkButton;
+	btn1->SetText("shit");
+	splt1->AddClient(btn1);
+	splt1->SetClientSize(1, 300);
 
 	/*m_wdgtTree.Create();
 	splt1.AddClient(&m_wdgtTree);
@@ -42,6 +44,11 @@ void DesignerWnd::Create()
 
 	LtkWindow::CreateHwndCenter(NULL, 800, 600);
 	LtkWindow::SetCaption("LTK轻量界面库设计器");
+}
+
+void DesignerWnd::BuildMenu()
+{
+
 }
 
 void DesignerWnd::OnDestroy()

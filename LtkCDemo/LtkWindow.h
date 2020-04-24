@@ -4,10 +4,8 @@
 class LtkWindow : public LtkObject
 {
 public:
-	void Create()
+	LtkWindow() : LtkObject(LtkWindow_New())
 	{
-		if (!m_bWeak) LtkDelete(m_hltk);
-		m_hltk = LtkWindow_New();
 		LtkRegisterCallback(m_hltk, LTK_WINDOW_CLOSE, (LtkCallback)LtkWindow::OnWindowClose, this);
 		LtkRegisterCallback(m_hltk, LTK_WINDOW_DESTROY, (LtkCallback)LtkWindow::OnWindowDestroy, this);
 	}
@@ -26,12 +24,20 @@ public:
 	void SetCentralWidget(LtkWidget* wdgt)
 	{
 		LtkWindow_SetCentralWidget(m_hltk, wdgt->GetHandle());
-		wdgt->SetWeak(true);
 	}
 
+	MuticastDelegate<BOOL*> CloseDelegate;
+	MuticastDelegate<> DestroyDelegate;
+
 protected:
-	virtual void OnClose(BOOL* proceed) {}
-	virtual void OnDestroy() {}
+	virtual void OnClose(BOOL* proceed) 
+	{
+		this->CloseDelegate(proceed);
+	}
+	virtual void OnDestroy() 
+	{
+		this->DestroyDelegate();
+	}
 
 private:
 	static int CALLBACK OnWindowClose(void* ud, BOOL* proceed)
@@ -44,5 +50,4 @@ private:
 		static_cast<LtkWindow*>(ud)->OnDestroy();
 		return 0;
 	}
-
 };

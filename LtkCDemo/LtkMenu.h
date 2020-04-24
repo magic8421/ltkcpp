@@ -4,11 +4,8 @@
 class LtkPopupMenu : public LtkWidget
 {
 public:
-	void Create()
-	{
-		if (!m_bWeak) LtkDelete(m_hltk);
-		m_hltk = LtkPopupMenu_New();
-	}
+	LtkPopupMenu() : LtkWidget(LtkPopupMenu_New())
+	{}
 	void AddItem(LPCSTR text, LPCSTR name)
 	{
 		LtkPopupMenu_AddItem(m_hltk, text, name);
@@ -22,11 +19,8 @@ public:
 class LtkMenuBar : public LtkWidget
 {
 public:
-	void Create()
-	{
-		if (!m_bWeak) LtkDelete(m_hltk);
-		m_hltk = LtkMenuBar_New();
-	}
+	LtkMenuBar() : LtkWidget(LtkMenuBar_New())
+	{}
 	UINT AddItem(LPCSTR text)
 	{
 		return LtkMenuBar_AddItem(m_hltk, text);

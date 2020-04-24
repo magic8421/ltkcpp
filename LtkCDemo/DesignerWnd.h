@@ -7,11 +7,12 @@ class DesignerWnd : public LtkWindow
 {
 public:
 	void Create();
+	void BuildMenu();
 
 	virtual void OnDestroy() override;
 	virtual void OnClose(BOOL* proceed) override;
 
 private:
-	WidgetTreeView m_wdgtTree;
+	WidgetTreeView *m_wdgtTree = nullptr;
 };
 

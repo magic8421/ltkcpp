@@ -117,13 +117,13 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
                      _In_ LPWSTR    lpCmdLine,
                      _In_ int       nCmdShow)
 {
-	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF | _CRTDBG_DELAY_FREE_MEM_DF);
 	LtkInitialize();
 
-	DesignerWnd wnd;
-	wnd.Create();
+	DesignerWnd* wnd = new DesignerWnd;
+	wnd->Create();
 	LtkRunMessageLoop();
-	wnd.Destroy();
+	delete wnd;
 	LtkUninitialize();
 	return 0;
 

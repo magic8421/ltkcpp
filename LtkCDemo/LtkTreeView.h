@@ -5,25 +5,19 @@
 class LtkTreeNode : public LtkObject
 {
 public:
-	void Create()
-	{
-		if (!m_bWeak) LtkDelete(m_hltk);
-		m_hltk = LtkTreeNode_New();
-	}
+	LtkTreeNode() : LtkObject(LtkTreeNode_New())
+	{}
+	explicit LtkTreeNode(HLTK hltk) : LtkObject(hltk) {}
 };
 
 class LtkTreeView : public LtkWidget
 {
 public:
-	void Create()
-	{
-		if (!m_bWeak) LtkDelete(m_hltk);
-		m_hltk = LtkTreeView_New();
-	}
+	LtkTreeView() : LtkWidget(LtkTreeView_New())
+	{}
 	LtkTreeNode* GetRootNode() 
 	{
-		auto node = new LtkTreeNode;
-		node->Attach(LtkTreeView_GetRootNode(m_hltk));
+		auto node = new LtkTreeNode(LtkTreeView_GetRootNode(m_hltk));
 		return node;
 	}
 	void AddChild(LtkTreeNode* node)

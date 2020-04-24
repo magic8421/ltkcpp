@@ -185,6 +185,11 @@ LTK_API HLTK WINAPI LtkWindow_New_(LPCSTR source, int line)
 	return (HLTK)obj;
 }
 
+LTK_API BOOL WINAPI LtkWindow_CheckType(HLTK hltk)
+{
+	return reinterpret_cast<Object*>(hltk)->Is(Window::TypeIdClass());
+}
+
 LTK_API void WINAPI LtkWindow_Create(HLTK self, HWND parent, LtkRect* rc)
 {
 	Gdiplus::RectF rcf(rc->x, rc->y, rc->width, rc->height);

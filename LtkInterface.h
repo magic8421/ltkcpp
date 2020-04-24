@@ -35,12 +35,60 @@ typedef struct _LtkRect {
 	float height;
 } LtkRect;
 
+typedef struct _LtkPoint
+{
+    float x;
+    float y;
+} LtkPoint;
+
+typedef struct _LtkSize
+{
+    float width;
+    float height;
+} LtkSize;
+
+typedef struct _LtkMargin
+{
+    float left;
+    float top;
+    float right;
+    float bottom;
+} LtkMargin;
+
+enum
+{
+    LTK_VAR_STRING,
+    LTK_VAR_REAL,
+    LTK_VAR_INTEGER,
+    LTK_VAR_RECT,
+    LTK_VAR_SIZE,
+    LTK_VAR_MARGIN,
+};
+
+typedef struct _LtkVariant
+{
+    UINT type;
+    union
+    {
+        LPCSTR psz;
+        float real;
+        int	integer;
+        LtkRect rect;
+        LtkPoint point;
+        LtkSize size;
+        LtkMargin margin;
+    } u;
+    char reserved[16];
+} LtkVariant;
+
+
 enum LtkStatus
 {
     LtkOk = 0,
     LtkInvalidHandle,
     LtkTypeError
 };
+
 
 /**
  * @brief 初始化LTK
@@ -273,6 +321,8 @@ typedef struct _LtkRecreateResource {
   * 参见 LtkWindow_New() 易语言调用参数请填0
   */
 LTK_API HLTK WINAPI LtkWindow_New_(LPCSTR source, int line);
+
+LTK_API BOOL WINAPI LtkWindow_CheckType(HLTK);
 
 /**
  * @brief 创建窗口HWND 并显示

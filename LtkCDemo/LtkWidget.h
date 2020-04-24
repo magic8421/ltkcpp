@@ -4,6 +4,7 @@
 class LtkWidget : public LtkObject
 {
 public:
-
+	explicit LtkWidget(HLTK hltk) : LtkObject(hltk)
+	{}
 };
 

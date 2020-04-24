@@ -1,34 +1,26 @@
 #pragma once
 #include "LtkInterface.h"
+#include "..\Delegate.hpp"
+using namespace delegate2;
 
 class LtkObject
 {
 public:
-	LtkObject() 
-	{}
-
-	explicit LtkObject(HLTK hltk) : m_hltk(hltk) {}
-
-	~LtkObject() 
+	explicit LtkObject(HLTK hltk) : m_hltk(hltk) 
 	{
-		if (!m_bWeak) {
-			LtkDelete(m_hltk);
-		}
+		LtkRegisterCallback(m_hltk, LTK_DELETE_EVENT, (LtkCallback)LtkObject::OnDelete, this);
 	}
-	LtkObject(LtkObject&& rhs)
+
+	virtual ~LtkObject() 
 	{
-		m_hltk = rhs.m_hltk;
-		rhs.m_hltk = NULL;
-		m_bWeak = rhs.m_bWeak;
-	}
-	void SetWeak(bool b)
-	{
-		m_bWeak = b;
+		this->DeleteDelegate();
+		LtkDelete(m_hltk);
 	}
 	HLTK GetHandle()
 	{
 		return m_hltk;
 	}
+	/*
 	void Attach(HLTK hltk) 
 	{
 		LtkDelete(m_hltk);
@@ -40,12 +32,8 @@ public:
 		m_hltk = NULL;
 		return tmp;
 	}
-	void Destroy()
-	{
-		LtkDelete(m_hltk);
-		m_hltk = NULL;
-	}
-	void DestroyLater()
+	*/
+	void DeleteLater()
 	{
 		LtkDeleteLater(m_hltk);
 	}
@@ -62,8 +50,22 @@ public:
 		LtkRegisterCallback(m_hltk, event_id, cb, userdata);
 	}
 
+	MuticastDelegate<> DeleteDelegate;
+
+protected:
+	void PostInit()
+	{
+	}
+
+private:
+	static int CALLBACK OnDelete(void* userdata)
+	{
+		LtkObject* self = (LtkObject*)userdata;
+		self->m_hltk = NULL;
+		delete self;
+		return 0;
+	}
 protected:
 	HLTK m_hltk = NULL;
-	bool m_bWeak = false;
 };
 
