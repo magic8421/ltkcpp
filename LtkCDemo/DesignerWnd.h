@@ -1,18 +1,21 @@
 #pragma once
 #include "LtkInterface.h"
-#include "LtkWindow.h"
-#include "WidgetTreeView.h"
+#include "..\RTTI.h"
 
-class DesignerWnd : public LtkWindow
+class DesignerWnd : public ltk::RTTI
 {
 public:
+	RTTI_DECLARATIONS(DesignerWnd, ltk::RTTI);
+
+	~DesignerWnd();
+
 	void Create();
 	void BuildMenu();
 
-	virtual void OnDestroy() override;
-	virtual void OnClose(BOOL* proceed) override;
-
 private:
-	WidgetTreeView *m_wdgtTree = nullptr;
+	static int CALLBACK OnDestroy(void * userdata);
+	static int CALLBACK OnClose(void * userdata, BOOL* proceed);
+
+	HLTK hWindow = NULL;
 };
 

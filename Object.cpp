@@ -162,9 +162,16 @@ void Object::DumpObjectLeaks()
 	// TODO lock for multithread.
 	char buf[512];
 	for (Object* obj : *sObjectSet) {
-		::StringCbPrintfA(
-			buf, sizeof(buf), "LtkObject leak: [%s] %s(%d)\r\n",
-			obj->TypeNameInstance(), obj->m_source, obj->m_line);
+		if (obj->m_source) {
+			::StringCbPrintfA(
+				buf, sizeof(buf), "%s(%d) : LtkObject leak [%s]\r\n",
+				obj->m_source, obj->m_line, obj->TypeNameInstance());
+		}
+		else {
+			::StringCbPrintfA(
+				buf, sizeof(buf), "LtkObject leak [%s]\r\n",
+				obj->TypeNameInstance());
+		}
 		::OutputDebugStringA(buf);
 	}
 }

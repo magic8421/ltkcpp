@@ -11,20 +11,28 @@
 #endif // DEBUG
 
 
+DesignerWnd::~DesignerWnd()
+{
+	LtkDelete(this->hWindow);
+}
+
 void DesignerWnd::Create()
 {
-	LtkSplitter* splt1 = new LtkSplitter(LTK_HORIZONTAL);
-	LtkWindow::SetCentralWidget(splt1);
+	this->hWindow = LtkWindow_New();
+	HLTK splt1 = LtkSplitter_New(LTK_HORIZONTAL);
+	LtkRegisterCallback(this->hWindow, LTK_WINDOW_CLOSE, (LtkCallback)DesignerWnd::OnClose, this);
+	LtkRegisterCallback(this->hWindow, LTK_WINDOW_DESTROY, (LtkCallback)DesignerWnd::OnDestroy, this);
+	LtkWindow_SetCentralWidget(this->hWindow, splt1);
 
-	LtkButton* btn1 = new LtkButton;
-	btn1->SetText("fuck");
-	splt1->AddClient(btn1);
-	splt1->SetClientSize(0, 300);
+	HLTK btn1 = LtkButton_New();
+	LtkButton_SetText(btn1, "fuck");
+	UINT idx= LtkSplitter_AddClient(splt1, btn1);
+	LtkSplitter_SetClientSize(splt1, idx, 300);
 
-	btn1 = new LtkButton;
-	btn1->SetText("shit");
-	splt1->AddClient(btn1);
-	splt1->SetClientSize(1, 300);
+	btn1 = LtkButton_New();
+	LtkButton_SetText(btn1, "shit");
+	idx = LtkSplitter_AddClient(splt1, btn1);
+	LtkSplitter_SetClientSize(splt1, idx, 300);
 
 	/*m_wdgtTree.Create();
 	splt1.AddClient(&m_wdgtTree);
@@ -42,8 +50,8 @@ void DesignerWnd::Create()
 	vecSplitter.push_back(std::move(splt2));
 	*/
 
-	LtkWindow::CreateHwndCenter(NULL, 800, 600);
-	LtkWindow::SetCaption("LTK轻量界面库设计器");
+	LtkWindow_CreateCenter(this->hWindow, NULL, 800, 600);
+	LtkWindow_SetCaption(this->hWindow, "LTK轻量界面库设计器");
 }
 
 void DesignerWnd::BuildMenu()
@@ -51,14 +59,18 @@ void DesignerWnd::BuildMenu()
 
 }
 
-void DesignerWnd::OnDestroy()
+int DesignerWnd::OnDestroy(void* userdata)
 {
 	::PostQuitMessage(0);
+	return 0;
 }
 
-void DesignerWnd::OnClose(BOOL* proceed)
+int DesignerWnd::OnClose(void* userdata, BOOL* proceed)
 {
-	if (::MessageBox(LtkWindow_GetHWND(m_hltk), L"确定要退出吗?", 0, MB_OKCANCEL) == IDCANCEL) {
+	DesignerWnd* self = ((ltk::RTTI*)userdata)->As<DesignerWnd>();
+
+	if (::MessageBox(LtkWindow_GetHWND(self->hWindow), L"确定要退出吗?", 0, MB_OKCANCEL) == IDCANCEL) {
 		*proceed = FALSE;
 	}
+	return 0;
 }

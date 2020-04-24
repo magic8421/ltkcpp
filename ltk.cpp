@@ -379,13 +379,13 @@ namespace ltk {
 
     void LtkUninitialize()
     {
-		ShadowFrame::Free();
+        Object::DumpObjectLeaks();
+
+        ShadowFrame::Free();
         Builder::Free();
         StyleManager::Free();
         TimerManager::Free();
         Object::Free();
-
-        Trackable::DumpLeaks();
 
         g_dw_factory->Release();
         g_wic_factory->Release();

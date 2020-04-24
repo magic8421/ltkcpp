@@ -203,9 +203,6 @@ LTK_API void WINAPI LtkSetProp(LPCSTR name, void *data);
 LTK_API HLTK WINAPI LtkBuildFromXml(LPCSTR path);
 
 LTK_API void WINAPI LtkEnalbeApiCheck(BOOL);
-LTK_API void WINAPI LtkEnalbeBreakOnError(BOOL);
-LTK_API UINT WINAPI LtkGetLastError();
-LTK_API void WINAPI LtkSetLastError(UINT);
 
 #define LTK_CREATE_EVENT	1
 // BOOL(void *userdata)

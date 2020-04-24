@@ -16,29 +16,11 @@
 using namespace ltk;
 
 BOOL g_bApiCheck = TRUE;
-static BOOL g_bBreakOnError = TRUE;
-static __declspec(thread) UINT g_uLastError = 0;
 
 LTK_API void WINAPI LtkEnalbeApiCheck(BOOL b)
 {
 	g_bApiCheck = b;
 }
-
-LTK_API void WINAPI LtkEnalbeBreakOnError(BOOL b)
-{
-	g_bBreakOnError = b;
-}
-
-LTK_API UINT WINAPI LtkGetLastError()
-{
-	return g_uLastError;
-}
-
-LTK_API void WINAPI LtkSetLastError(UINT e)
-{
-	g_uLastError = e;
-}
-
 
 template<typename T>
 T* ltk_cast(HLTK o)
