@@ -105,8 +105,9 @@ private:
 	enum class State {sHide, sSlideIn, sShow};
 	State m_state = State::sHide;
 	float m_aniProgress = 0.f;
-	const float AniDelta = 1.f / 300.f;
+	const float AniDuration = 500.f;
 	DWORD m_lastTick = 0;
+	float m_aniSlide = 0.f;
 
 	float m_width = 100.0f;
 	float m_text_h = 10.f;

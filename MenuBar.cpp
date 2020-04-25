@@ -141,8 +141,8 @@ void PopupMenu::Show(Window* wnd, const RectF& rc)
 	m_trackingIdx = -1;
 	
 	m_state = State::sSlideIn;
-	m_aniProgress = 0.f;
 	m_lastTick = TickCount();
+	m_aniSlide = 0.f;
 	BeginAnimation();
 }
 
@@ -273,14 +273,13 @@ bool PopupMenu::OnPaint(PaintEvent *ev)
 	auto rcbg = this->GetClientRect();
 	rcbg.Inflate(SHADOW_SIZE, SHADOW_SIZE);
 
-	float slide_h = 0.f;
 	if (m_state == State::sSlideIn) {
-		m_aniProgress += (TickCount() - m_lastTick) * AniDelta;
-		m_aniProgress = min(1.0f, m_aniProgress);
-		slide_h = -this->GetHeight() + this->GetHeight() * m_aniProgress;
+		float c = (TickCount() - m_lastTick) / AniDuration;
+		float height = this->GetHeight();
+		m_aniSlide += (height - m_aniSlide) * c;
 		ev->target->PushAxisAlignedClip(ltk::D2D1RectF(rcbg),
 			D2D1_ANTIALIAS_MODE_ALIASED);
-		ltk::TranslateTransform(ev->target, 0.f, slide_h);
+		ltk::TranslateTransform(ev->target, 0.f, - height + m_aniSlide);
 	}
 
 	m_background->Draw(GetWindow(), ev->target,
@@ -319,11 +318,10 @@ bool PopupMenu::OnPaint(PaintEvent *ev)
 	}
 
 	if (m_state == State::sSlideIn) {
-		ltk::TranslateTransform(ev->target, 0.f, -slide_h);
+		ltk::TranslateTransform(ev->target, 0.f, this->GetHeight() - m_aniSlide);
 		ev->target->PopAxisAlignedClip();
-		m_lastTick = TickCount();
 		//LTK_LOG("m_aniProgress: %.2f", m_aniProgress);
-		if (m_aniProgress >= 1.f) {
+		if (ltk::TickCount() - m_lastTick > AniDuration) {
 			EndAnimation();
 			m_state = State::sShow;
 		}
