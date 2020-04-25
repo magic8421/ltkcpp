@@ -40,7 +40,7 @@ T* ltk_cast(HLTK o)
 	return (T *) o;
 }
 
-#define LTK_CHECK_TYPE_OR_RETURN(hltk, klass, name) \
+#define LTK_CHECK_TYPE(hltk, klass, name) \
 if (g_bApiCheck) { \
     Object* _obj = (Object*)hltk; \
 	if (!Object::CheckValid(_obj)) { \
@@ -88,14 +88,14 @@ LTK_API void WINAPI LtkRunMessageLoop()
 LTK_API void WINAPI LtkDelete(HLTK obj)
 {
 	if (!obj) return;
-	LTK_CHECK_TYPE_OR_RETURN(obj, Object, pobj);
+	LTK_CHECK_TYPE(obj, Object, pobj);
 	delete pobj;
 }
 
 LTK_API void WINAPI LtkDeleteLater(HLTK obj)
 {
 	if (!obj) return;
-	LTK_CHECK_TYPE_OR_RETURN(obj, Object, pobj);
+	LTK_CHECK_TYPE(obj, Object, pobj);
 	pobj->DeleteLater();
 }
 
@@ -117,19 +117,19 @@ LTK_API LPCSTR WINAPI LtkInternString(LPCSTR str)
 
 LTK_API void WINAPI LtkSetName(HLTK o, LPCSTR name)
 {
-	LTK_CHECK_TYPE_OR_RETURN(o, Object, pobj);
+	LTK_CHECK_TYPE(o, Object, pobj);
 	pobj->SetName(name);
 }
 
 LTK_API LPCSTR WINAPI LtkGetName(HLTK o)
 {
-	LTK_CHECK_TYPE_OR_RETURN(o, Object, pobj);
+	LTK_CHECK_TYPE(o, Object, pobj);
 	return pobj->GetName();
 }
 
 LTK_API void WINAPI LtkRegisterCallback(HLTK obj, UINT event_id, LtkCallback cb, void* userdata)
 {
-	LTK_CHECK_TYPE_OR_RETURN(obj, Object, pobj);
+	LTK_CHECK_TYPE(obj, Object, pobj);
 	pobj->RegisterCallback(event_id, cb, userdata);
 }
 
@@ -175,52 +175,52 @@ LTK_API BOOL WINAPI LtkWindow_CheckType(HLTK hltk)
 LTK_API void WINAPI LtkWindow_Create(HLTK self, HWND parent, LtkRect* rc)
 {
 	Gdiplus::RectF rcf(rc->x, rc->y, rc->width, rc->height);
-	LTK_CHECK_TYPE_OR_RETURN(self, Window, thiz);
+	LTK_CHECK_TYPE(self, Window, thiz);
 	thiz->Create(parent, rcf);
 }
 
 LTK_API void WINAPI LtkWindow_CreateCenter(HLTK self, HWND parent, float width, float height)
 {
 	Gdiplus::SizeF size(width, height);
-	LTK_CHECK_TYPE_OR_RETURN(self, Window, thiz);
+	LTK_CHECK_TYPE(self, Window, thiz);
 	thiz->Create(parent, size);
 }
 
 LTK_API void WINAPI LtkWindow_SetCaption(HLTK self, LPCSTR text)
 {
-	LTK_CHECK_TYPE_OR_RETURN(self, Window, thiz);
+	LTK_CHECK_TYPE(self, Window, thiz);
 	thiz->SetCaption(LtkA2W(text).c_str());
 }
 
 LTK_API void WINAPI LtkWindow_SetBackground(HLTK self, LPCSTR name)
 {
-	LTK_CHECK_TYPE_OR_RETURN(self, Window, thiz);
+	LTK_CHECK_TYPE(self, Window, thiz);
 	thiz->SetBackground(name);
 }
 
 LTK_API void WINAPI LtkWindow_UpdateTheme(HLTK self)
 {
-	LTK_CHECK_TYPE_OR_RETURN(self, Window, thiz);
+	LTK_CHECK_TYPE(self, Window, thiz);
 	thiz->UpdateTheme();
 }
 
 LTK_API void WINAPI LtkWindow_SetCentralWidget(HLTK self, HLTK widget)
 {
-	LTK_CHECK_TYPE_OR_RETURN(self, Window, thiz);
-	LTK_CHECK_TYPE_OR_RETURN(widget, Widget, w);
+	LTK_CHECK_TYPE(self, Window, thiz);
+	LTK_CHECK_TYPE(widget, Widget, w);
 	thiz->SetCentralWidget(w);
 }
 
 LTK_API void WINAPI LtkWindow_SetMenu(HLTK self, HLTK menu_bar)
 {
-	LTK_CHECK_TYPE_OR_RETURN(self, Window, thiz);
-	LTK_CHECK_TYPE_OR_RETURN(menu_bar, MenuBar, mb);
+	LTK_CHECK_TYPE(self, Window, thiz);
+	LTK_CHECK_TYPE(menu_bar, MenuBar, mb);
 	thiz->SetMenu(mb);
 }
 
 LTK_API HWND WINAPI LtkWindow_GetHWND(HLTK self)
 {
-	LTK_CHECK_TYPE_OR_RETURN(self, Window, thiz);
+	LTK_CHECK_TYPE(self, Window, thiz);
 	return thiz->GetHWND();
 }
 
@@ -248,20 +248,20 @@ LTK_API HLTK WINAPI LtkBoxLayout_New_(UINT orientation, LPCSTR source, int line)
 LTK_API void WINAPI LtkBoxLayout_AddLayoutItem(
 	HLTK self, HLTK widget, float preferedSize, float growFactor)
 {
-	LTK_CHECK_TYPE_OR_RETURN(self, BoxLayout, thiz);
-	LTK_CHECK_TYPE_OR_RETURN(widget, Widget, w);
+	LTK_CHECK_TYPE(self, BoxLayout, thiz);
+	LTK_CHECK_TYPE(widget, Widget, w);
 	thiz->AddLayoutItem(w, preferedSize, growFactor);
 }
 
 LTK_API void WINAPI LtkBoxLayout_AddSpaceItem(HLTK self, float preferedSize, float growFactor)
 {
-	LTK_CHECK_TYPE_OR_RETURN(self, BoxLayout, thiz);
+	LTK_CHECK_TYPE(self, BoxLayout, thiz);
 	thiz->AddSpaceItem(preferedSize, growFactor);
 }
 
 LTK_API void WINAPI LtkBoxLayout_SetSpacing(HLTK self, float spacing)
 {
-	LTK_CHECK_TYPE_OR_RETURN(self, BoxLayout, thiz);
+	LTK_CHECK_TYPE(self, BoxLayout, thiz);
 	thiz->SetSpacing(spacing);
 }
 
@@ -278,7 +278,7 @@ LTK_API HLTK WINAPI LtkButton_New_(LPCSTR source, int line)
 
 LTK_API void WINAPI LtkButton_SetText(HLTK self, LPCSTR text)
 {
-	LTK_CHECK_TYPE_OR_RETURN(self, Button, thiz);
+	LTK_CHECK_TYPE(self, Button, thiz);
 	thiz->SetText(LtkA2W(text).c_str());
 }
 
@@ -310,7 +310,7 @@ LTK_API HLTK WINAPI LtkListView_New_(LPCSTR source, int line)
 
 LTK_API void WINAPI LtkListView_AddColumn(HLTK self, LPCSTR text, float width)
 {
-	LTK_CHECK_TYPE_OR_RETURN(self, ListView, thiz);
+	LTK_CHECK_TYPE(self, ListView, thiz);
 	auto header = thiz->GetHeaderCtrl();
 	header->AddColumn(LtkA2W(text).c_str(), width);
 }
@@ -387,8 +387,14 @@ LTK_API HLTK WINAPI LtkTreeView_New_(LPCSTR source, int line)
 
 LTK_API HLTK WINAPI LtkTreeView_GetRootNode(HLTK self)
 {
-	TreeView* thiz = ltk_cast<TreeView>(self);
+	LTK_CHECK_TYPE(self, TreeView, thiz);
 	return (HLTK)thiz->GetRootNode();
+}
+
+LTK_API HLTK WINAPI LtkTreeView_GetSelectedNode(HLTK self)
+{
+	LTK_CHECK_TYPE(self, TreeView, thiz);
+	return (HLTK)thiz->GetSelectedNode();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -399,19 +405,20 @@ LTK_API HLTK WINAPI LtkTreeView_GetRootNode(HLTK self)
 LTK_API HLTK WINAPI LtkTreeNode_New_(LPCSTR source, int line)
 {
 	auto obj = new TreeNode();
-	//obj->SetSourceLine(source, line);
+	obj->SetSourceLine(source, line);
 	return (HLTK)obj;
 }
 
 LTK_API void WINAPI LtkTreeNode_AddChild(HLTK self, HLTK node)
 {
-	TreeNode* thiz = (TreeNode*)self;
-	thiz->AddChild((TreeNode*)node);
+	LTK_CHECK_TYPE(self, TreeNode, thiz);
+	LTK_CHECK_TYPE(node, TreeNode, _node);
+	thiz->AddChild(_node);
 }
 
 LTK_API void WINAPI LtkTreeNode_SetText(HLTK self, LPCSTR text)
 {
-	TreeNode* thiz = (TreeNode*)self;
+	LTK_CHECK_TYPE(self, TreeNode, thiz);
 	thiz->SetText(LtkA2W(text).c_str());
 }
 

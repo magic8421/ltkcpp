@@ -451,6 +451,9 @@ LTK_API HLTK WINAPI LtkTreeView_New_(LPCSTR source, int line);
 
 LTK_API HLTK WINAPI LtkTreeView_GetRootNode(HLTK self);
 
+LTK_API HLTK WINAPI LtkTreeView_GetSelectedNode(HLTK self);
+
+
 #define LTK_TREEVIEW_SELECT_CHANGE 501
 
 #define LtkTreeNode_New() LtkTreeNode_New_(  __FILE__, __LINE__)

@@ -43,6 +43,7 @@ EXPORTS
 	LtkSplitter_SetClientSize
 	LtkTreeView_New_
 	LtkTreeView_GetRootNode
+	LtkTreeView_GetSelectedNode
 	LtkTreeNode_New_
 	LtkTreeNode_AddChild
 	LtkTreeNode_SetText

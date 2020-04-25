@@ -31,6 +31,7 @@ void TreeNode::AddChild(TreeNode *node)
     node->m_parent = this;
     node->m_treeView = m_treeView;
     m_children.push_back(node);
+    m_treeView->SetDirty();
 }
 
 UINT TreeNode::GetChildCount()
