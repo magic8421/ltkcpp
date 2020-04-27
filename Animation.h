@@ -21,30 +21,26 @@ public:
         stStop, stScrollUp, stScrollDown
     };
 
-    void BeginScroll(float delta);
+    void BeginScroll(float delta); // OnMouseWheel
     void Stop();
     // return true if you have to call EndAnimation();
-    bool UpdateScroll(float height);
+    bool UpdateScroll(float height); // OnPaint
     //
     float GetScroll() { return m_scroll; }
     void SetScroll(float pos);
     State GetState() { return m_state; }
 
-    virtual bool IsRunning();
-
-	void OnNoInputTimer();
+    bool IsRunning();
 
 private:
     float m_scroll = 0.0f;
-    float m_velocity = 0.0f;
+    float m_target = 0.0f;
     DWORD m_lastTick = 0;
     State m_state = stStop;
 
-    const float ItemHeight = 35.0f;
-    const float ScrollVelocity = ItemHeight * 3 / 500.0f;
+    const float ItemHeight = 80.0f;
+    const float AniDuration = 700.0f;
 
-	Timer m_timer;
-	bool m_bInput = false;
 };
 
 } // namespace ltk

@@ -119,15 +119,15 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 {
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF | _CRTDBG_DELAY_FREE_MEM_DF);
 	LtkInitialize();
-
+	/*
 	DesignerWnd* wnd = new DesignerWnd;
 	wnd->Create();
 	LtkRunMessageLoop();
 	delete wnd;
 	LtkUninitialize();
 	return 0;
-
-	/*
+	*/
+	
 	HLTK wnd = LtkWindow_New();
 	g_data.main_wnd = wnd;
 	//LtkWindow_SetBackground(wnd, "window_bg");
@@ -239,7 +239,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	LtkUninitialize();
 
 	return 0;
-	*/
 }
 
 

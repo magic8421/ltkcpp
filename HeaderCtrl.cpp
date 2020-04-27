@@ -23,6 +23,7 @@ HeaderCtrl::HeaderCtrl()
 
     auto btn = new HeaderButton(this);
     btn->SetBackground("header_btn_bg");
+    btn->EnableCapture(false);
     ColumnData data;
     data.button = btn;
     m_vecColumns.push_back(data);
@@ -54,6 +55,8 @@ void HeaderCtrl::AddColumn(LPCWSTR name, float size)
     auto btn = new HeaderButton(this);
     btn->SetBackground("header_btn_bg");
     btn->SetText(name);
+    btn->EnableCapture(false);
+
     ColumnData data;
     data.name = name;
     data.width = size;
