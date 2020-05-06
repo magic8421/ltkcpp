@@ -76,6 +76,16 @@ void TreeNode::SetText(LPCWSTR t)
     m_text = t;
 }
 
+void* TreeNode::GetUserData()
+{
+	return m_userdata;
+}
+
+void TreeNode::SetUserData(void* ud)
+{
+    m_userdata = ud;
+}
+
 bool TreeNode::IsExpand()
 {
     return m_bExpand;

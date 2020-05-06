@@ -33,28 +33,10 @@
     <ClInclude Include="DesignerWnd.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="LtkTreeView.h">
+    <ClInclude Include="AttributeManager.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="LtkWidget.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="LtkObject.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="WidgetTreeView.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="LtkSplitter.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="LtkWindow.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="LtkButton.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="LtkMenu.h">
+    <ClInclude Include="..\3rd\tinyxml2.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
@@ -69,6 +51,12 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="WidgetTreeView.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="AttributeManager.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\3rd\tinyxml2.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

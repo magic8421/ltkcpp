@@ -165,22 +165,21 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\3rd\tinyxml2.h" />
+    <ClInclude Include="AttributeManager.h" />
     <ClInclude Include="DesignerWnd.h" />
     <ClInclude Include="framework.h" />
-    <ClInclude Include="LtkButton.h" />
     <ClInclude Include="LtkCDemo.h" />
-    <ClInclude Include="LtkMenu.h" />
-    <ClInclude Include="LtkObject.h" />
-    <ClInclude Include="LtkSplitter.h" />
-    <ClInclude Include="LtkTreeView.h" />
-    <ClInclude Include="LtkWidget.h" />
-    <ClInclude Include="LtkWindow.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="targetver.h" />
-    <ClInclude Include="WidgetTreeView.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\3rd\tinyxml2.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="AttributeManager.cpp" />
     <ClCompile Include="DesignerWnd.cpp" />
     <ClCompile Include="LtkCDemo.cpp" />
     <ClCompile Include="pch.cpp">

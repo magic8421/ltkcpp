@@ -44,6 +44,9 @@ public:
     LPCWSTR GetText();
     void SetText(LPCWSTR);
 
+    void* GetUserData();
+    void SetUserData(void*);
+
     bool IsExpand();
     virtual void OnPaint(ID2D1RenderTarget *target, float scroll, UINT idx);
     virtual void OnLBtnDown(PointF pt, float scroll, UINT idx);
@@ -62,6 +65,7 @@ private:
 
     int m_depth = 0;
     std::wstring m_text;
+    void* m_userdata = nullptr;
 
     static const float m_padding;
     static const float m_btn_size;

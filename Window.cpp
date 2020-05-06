@@ -344,7 +344,7 @@ LRESULT Window::WndProc(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam)
             static int cnt = 0;
             cnt++;
             if (cnt % 100 == 0){
-                LTK_LOG("TIMER_ANIMATION %d", cnt);
+                //LTK_LOG("TIMER_ANIMATION %d", cnt);
                 for (auto iter = m_setAnimation.begin(); iter != m_setAnimation.end(); iter++) {
                     LTK_LOG("ani: %s %s", (*iter)->TypeNameInstance(), (*iter)->GetName());
                 }

@@ -12,6 +12,7 @@
 #include <strsafe.h>
 #include <vector>
 #include <string>
+#include <unordered_map>
 
 #define _CRTDBG_MAP_ALLOC
 #include <crtdbg.h>

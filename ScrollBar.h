@@ -50,6 +50,7 @@ private:
     float m_contentSize = 100.0f;
     float m_position = 0.0f;
     bool m_bDrag = false;
+    bool m_bMouseIn = false;
     float m_deltaX = 0.0f;
     float m_deltaY = 0.0f;
     ID2D1SolidColorBrush *m_brush = nullptr;
