@@ -2,15 +2,15 @@
 
 struct AttributeInfo
 {
-	LPCSTR name;
-	LPCSTR type;
+	LPCSTR name = nullptr;
+	LPCSTR type = nullptr;
 	std::string default_;
 	std::string translate;
 };
 
 struct WidgetAttribute
 {
-	LPCSTR base;
+	LPCSTR base = nullptr;
 	std::vector<AttributeInfo> attr_list;
 };
 

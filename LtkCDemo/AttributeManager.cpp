@@ -37,7 +37,7 @@ void AttributeManager::LoadXml(LPCWSTR path)
 	FILE* fp = nullptr;
 	_wfopen_s(&fp, path, L"rb");
 	auto deffer1 = ltk::LtkScopeGuard([&](){
-		fclose(fp);
+		if (fp) fclose(fp);
 	});
 	if (!fp) return;
 
@@ -46,10 +46,10 @@ void AttributeManager::LoadXml(LPCWSTR path)
 	elm_widgets = doc.FirstChildElement("Widgets");
 	if (!elm_widgets) return;
 
-	WidgetAttribute widget_attr;
 
 	elm_widget = elm_widgets->FirstChildElement();
 	while (elm_widget) {
+		WidgetAttribute widget_attr;
 		LPCSTR widget_type = ::LtkInternString(elm_widget->Name());
 		LPCSTR base = elm_widget->Attribute("base");
 		widget_attr.base = ::LtkInternString(base);
@@ -63,11 +63,11 @@ void AttributeManager::LoadXml(LPCWSTR path)
 			attr_info.translate = elm_attr->Attribute("translate");
 			widget_attr.attr_list.push_back(std::move(attr_info));
 
-			elm_attr->NextSiblingElement("Attribute");
+			elm_attr = elm_attr->NextSiblingElement("Attribute");
 		}
 		this->mapWidgetAttr[widget_type] = std::move(widget_attr);
 
-		elm_widget->NextSiblingElement();
+		elm_widget = elm_widget->NextSiblingElement();
 	}
 }
 
