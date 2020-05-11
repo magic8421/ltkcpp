@@ -447,20 +447,26 @@ LTK_API void WINAPI LtkSplitter_SetClientSize(HLTK self, UINT idx, float size);
 #define LtkTreeView_New() LtkTreeView_New_(  __FILE__, __LINE__)
 LTK_API HLTK WINAPI LtkTreeView_New_(LPCSTR source, int line);
 
-// LtkTreeNode 基类：LtkObject
+struct _HTREENODE
+{
+    int dummy;
+};
 
-LTK_API HLTK WINAPI LtkTreeView_GetRootNode(HLTK self);
+/**
+ * @brief 树节点句柄类型
+ */
+typedef _HTREENODE* HTREENODE;
 
-LTK_API HLTK WINAPI LtkTreeView_GetSelectedNode(HLTK self);
+LTK_API HTREENODE WINAPI LtkTreeView_GetRootNode(HLTK self);
 
+LTK_API HTREENODE WINAPI LtkTreeView_GetSelectedNode(HLTK self);
 
 #define LTK_TREEVIEW_SELECT_CHANGE 501
 
-#define LtkTreeNode_New() LtkTreeNode_New_(  __FILE__, __LINE__)
-LTK_API HLTK WINAPI LtkTreeNode_New_(LPCSTR source, int line);
+LTK_API HTREENODE WINAPI LtkTreeView_NewNode(HLTK self);
 
-LTK_API void WINAPI LtkTreeNode_AddChild(HLTK self, HLTK node);
-LTK_API void WINAPI LtkTreeNode_SetText(HLTK self, LPCSTR text);
+LTK_API void WINAPI LtkTreeView_AddChildNode(HLTK self, HTREENODE node);
+LTK_API void WINAPI LtkTreeView_SetText(HLTK self, LPCSTR text);
 
 LTK_DECLARE_TYPE(LtkTextEdit); // 基类：LtkWidget
 

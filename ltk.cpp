@@ -22,6 +22,7 @@
 #include "Label.h"
 #include "BoxLayout.h"
 #include "HiddenWindow.h"
+#include "TreeView.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW 
@@ -375,6 +376,7 @@ namespace ltk {
         LTK_LOG("sizeof unordered_map: %d", sizeof(std::unordered_map<int, void*>));
         LTK_LOG("sizeof function: %d", sizeof(std::function<void()>));
         LTK_LOG("sizeof Object: %d", sizeof(Object));
+        LTK_LOG("sizeof TreeNode: %d", sizeof(TreeNode));
     }
 
     void LtkUninitialize()

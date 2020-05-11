@@ -293,6 +293,21 @@ void TreeView::SetVScroll(float v)
     this->Invalidate();
 }
 
+bool TreeView::CheckNode(HTREENODE node)
+{
+	return m_setNodes.find(node) != m_setNodes.end();
+}
+
+void TreeView::RegisterNode(HTREENODE node)
+{
+    m_setNodes.insert(node);
+}
+
+void TreeView::UnregisterNode(HTREENODE node)
+{
+    m_setNodes.erase(node);
+}
+
 bool TreeView::OnPaint(PaintEvent *ev)
 {
     if (m_bDirty) {
