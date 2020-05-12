@@ -463,10 +463,11 @@ LTK_API HTREENODE WINAPI LtkTreeView_GetSelectedNode(HLTK self);
 
 #define LTK_TREEVIEW_SELECT_CHANGE 501
 
-LTK_API HTREENODE WINAPI LtkTreeView_NewNode(HLTK self);
+//LTK_API HTREENODE WINAPI LtkTreeView_NewNode(HLTK self);
 
-LTK_API void WINAPI LtkTreeView_AddChildNode(HLTK self, HTREENODE node);
-LTK_API void WINAPI LtkTreeView_SetText(HLTK self, LPCSTR text);
+LTK_API HTREENODE WINAPI LtkTreeView_AddChildNode(HLTK self, HTREENODE parent);
+LTK_API void WINAPI LtkTreeView_SetNodeText(HLTK self, HTREENODE node, LPCSTR text);
+LTK_API void WINAPI LtkTreeView_SetNodeUserdata(HLTK self, HTREENODE node, void* userdata);
 
 LTK_DECLARE_TYPE(LtkTextEdit); // »ùÀà£ºLtkWidget
 

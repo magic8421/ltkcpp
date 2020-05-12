@@ -25,7 +25,7 @@ LTK_API void WINAPI LtkEnalbeApiCheck(BOOL b)
 #define LTK_CAST(type, hltk) ltk_cast<type>((hltk), __FUNCTION__)
 
 template<typename T>
-T* ltk_cast(HLTK o, const char* func_name)
+T* ltk_cast(HLTK hltk, const char* func_name)
 {
 	if (g_bApiCheck) { 
 		Object* _obj = (Object*)hltk; 
@@ -35,15 +35,15 @@ T* ltk_cast(HLTK o, const char* func_name)
 			MessageBoxA(NULL, buf, NULL, 0);
 			__debugbreak(); 
 		}
-		if (!_obj->Is(klass::TypeIdClass())) { 
+		if (!_obj->Is(T::TypeIdClass())) { 
 			char buf[256]; 
 			StringCbPrintfA(buf, sizeof(buf), "[%s]中句柄类型错误,需要[%s],传入[%s]",
-				 __FUNCTION__, klass::TypeNameClass(), _obj->TypeNameInstance());
+				 __FUNCTION__, T::TypeNameClass(), _obj->TypeNameInstance());
 			MessageBoxA(NULL, buf, NULL, 0);
 			__debugbreak(); 
 		}
 	}
-	return (T *) o;
+	return reinterpret_cast<T *>(hltk);
 }
 
 #define LTK_CHECK_TYPE(hltk, klass, name) \
@@ -407,35 +407,54 @@ LTK_API HTREENODE WINAPI LtkTreeView_GetSelectedNode(HLTK self)
 // TreeNode
 //////////////////////////////////////////////////////////////////////////
 
-#define LTK_CHECK_HTREENODE(tree, node) \
-if (g_bApiCheck) { \
-	if (!reinterpret_cast<TreeView*>(tree)->CheckNode(node)) { \
-        char buf[256]; \
-		StringCbPrintfA(buf, sizeof(buf), "[%s]中句柄无效: 0x%08x", __FUNCTION__, (node)); \
-        MessageBoxA(NULL, buf, NULL, 0);\
-		__debugbreak(); \
-	}\
-}
+#define LTK_HTREENODE(tree, node) LtkCheckTreeNode(tree, node, __FUNCTION__)
 
-LTK_API HTREENODE WINAPI LtkTreeView_NewNode(HLTK self)
+
+TreeNode* LtkCheckTreeNode(TreeView* tree, HTREENODE node, LPCSTR func_name)
 {
-	auto obj = new TreeNode();
-	LTK_CAST(TreeView, self)->RegisterNode((HTREENODE)obj);
-	return (HTREENODE)obj;
+	if (g_bApiCheck) {
+		if (!tree->CheckNode(node)) {
+			char buf[256];
+			StringCbPrintfA(buf, sizeof(buf), "[%s]中句柄无效: 0x%08x", func_name, node);
+			MessageBoxA(NULL, buf, NULL, 0);
+			__debugbreak();
+		}
+	}
+	return reinterpret_cast<TreeNode*>(node);
 }
 
-LTK_API void WINAPI LtkTreeView_AddChildNode(HLTK self, HTREENODE parent, HTREENODE node)
-{
-	auto thiz = LTK_CAST(TreeView, self);
-	LTK_CHECK_HTREENODE(self, parent);
-	LTK_CHECK_HTREENODE(self, node);
-	
-}
+//LTK_API HTREENODE WINAPI LtkTreeView_NewNode(HLTK self)
+//{
+//	auto obj = new TreeNode();
+//	LTK_CAST(TreeView, self)->RegisterNode((HTREENODE)obj);
+//	return (HTREENODE)obj;
+//}
 
-LTK_API void WINAPI LtkTreeNode_SetText(HLTK self, LPCSTR text)
+LTK_API HTREENODE WINAPI LtkTreeView_AddChildNode(HLTK self, HTREENODE parent)
 {
 	auto thiz = LTK_CAST(TreeView, self);
-	thiz->SetText(LtkA2W(text).c_str());
+	auto node = new TreeNode;
+	LTK_HTREENODE(thiz, parent)->AddChild(node);
+	return reinterpret_cast<HTREENODE>(node);
+}
+
+LTK_API void WINAPI LtkTreeView_SetNodeText(HLTK self, HTREENODE node, LPCSTR text)
+{
+	auto thiz = LTK_CAST(TreeView, self);
+	LTK_HTREENODE(thiz, node)->SetText(LtkA2W(text).c_str());
+}
+
+LTK_API void WINAPI LtkTreeView_SetNodeUserdata(HLTK self, HTREENODE node, void* userdata)
+{
+	auto thiz = LTK_CAST(TreeView, self);
+	LTK_HTREENODE(thiz, node)->SetUserData(userdata);
+}
+
+LTK_API LPCSTR WINAPI LtkTreeView_GetNodeText(HLTK self, HTREENODE node)
+{
+	auto thiz = LTK_CAST(TreeView, self);
+	static std::string strText = LtkW2A(LTK_HTREENODE(thiz, node)->GetText());
+	return strText.c_str();
 }
 
 //////////////////////////////////////////////////////////////////////////

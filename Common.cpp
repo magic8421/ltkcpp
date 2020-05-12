@@ -65,6 +65,18 @@ std::wstring LtkA2W(LPCSTR strA, int len)
     return std::move(strW);
 }
 
+std::string LtkW2A(LPCTSTR strW, int len)
+{
+    if (len < 0) {
+        len = (int)wcslen(strW);
+    }
+    int lenA = ::WideCharToMultiByte(ltk_acp, 0, strW, len, NULL, 0, NULL, NULL);
+    std::string strA;
+    strA.resize(lenA);
+    ::WideCharToMultiByte(ltk_acp, 0, strW, len, &strA[0], lenA, NULL, NULL);
+    return std::move(strA);
+}
+
 std::wstring WStringFormat(LPCWSTR format, ...)
 {
 	std::wstring str;
