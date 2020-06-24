@@ -498,7 +498,7 @@ UINT MenuBar::AddItem(LPCWSTR text)
 	param.button = btn;
 	m_vecMenuItems.push_back(param);
 	btn->ClickedDelegate += MakeDelegate(this, &MenuBar::OnMenuBtnClicked);
-	btn->MouseEventDelegate += MakeDelegate(this, &MenuBar::OnButtonMouseEvent);
+	btn->MouseEventDelegate += delegate2::MakeDelegate(this, &MenuBar::OnButtonMouseEvent);
 	return m_vecMenuItems.size() - 1;
 }
 

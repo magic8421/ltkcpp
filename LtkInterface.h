@@ -467,6 +467,7 @@ LTK_API HTREENODE WINAPI LtkTreeView_GetSelectedNode(HLTK self);
 
 LTK_API HTREENODE WINAPI LtkTreeView_AddChildNode(HLTK self, HTREENODE parent);
 LTK_API void WINAPI LtkTreeView_SetNodeText(HLTK self, HTREENODE node, LPCSTR text);
+LTK_API LPCSTR WINAPI LtkTreeView_GetNodeText(HLTK self, HTREENODE node);
 LTK_API void WINAPI LtkTreeView_SetNodeUserdata(HLTK self, HTREENODE node, void* userdata);
 
 LTK_DECLARE_TYPE(LtkTextEdit); // »ùÀà£ºLtkWidget

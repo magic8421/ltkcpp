@@ -135,6 +135,46 @@ template<typename T>
 class ArrayList
 {
 public:
+	class iterator
+	{
+	public:
+		iterator(ArrayList *list, size_t idx) :
+			m_list(list), m_idx(idx)
+		{}
+
+		T& operator*()
+		{
+			return (*m_list)[m_idx];
+		}
+
+		void operator++()
+		{
+			m_idx++;
+		}
+
+		bool operator==(const iterator& rhs)
+		{
+#ifdef _DEBUG
+			return rhs.m_list == m_list && rhs.m_idx == m_idx;
+#else
+			return rhs.m_idx == m_idx;
+#endif
+		}
+
+		bool operator!=(const iterator& rhs)
+		{
+#ifdef _DEBUG
+			return rhs.m_list != m_list || rhs.m_idx != m_idx;
+#else
+			return rhs.m_idx != m_idx;
+#endif
+		}
+
+	private:
+		ArrayList *m_list = nullptr;
+		size_t m_idx = (size_t)-1;
+	};
+
     ArrayList() : m_d(nullptr) {}
     ~ArrayList() 
     {
@@ -162,6 +202,16 @@ public:
         m_d = rhs.m_d;
         rhs.m_d = nullptr;
     }
+
+	iterator begin()
+	{
+		return iterator(this, 0);
+	}
+
+	iterator end()
+	{
+		return iterator(this, m_d->size);
+	}
 
     void push_back(const T& v)
     {

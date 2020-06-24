@@ -62,6 +62,8 @@ DemoWindow::DemoWindow()
 
 DemoWindow::~DemoWindow()
 {
+	delete m_timer;
+	delete m_onceTimer;
 }
 
 void DemoWindow::BuildDemoWindow()
@@ -416,7 +418,7 @@ int CALLBACK WinMain(
 	_In_ LPSTR lpCmdLine,
 	_In_ int nShowCmd)
 {
-	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF | _CRTDBG_DELAY_FREE_MEM_DF);
 
     ltk::LtkInitialize();
 

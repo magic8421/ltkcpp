@@ -27,10 +27,11 @@
 
 
 LTK_CPP_API std::wstring Utf8ToUtf16(LPCSTR strA, int len = -1);
-std::string Utf16ToUtf8(LPCTSTR strW, int len);
-std::string Utf16ToGbk(LPCTSTR strW, int len);
+std::string Utf16ToUtf8(LPCWSTR strW, int len);
+std::string Utf16ToGbk(LPCWSTR strW, int len);
 
 std::wstring LtkA2W(LPCSTR strA, int len = -1);
+std::string LtkW2A(LPCWSTR strW, int len = -1);
 
 LTK_CPP_API std::wstring WStringFormat(LPCWSTR format, ...);
 

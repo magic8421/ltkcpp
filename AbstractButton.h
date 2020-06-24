@@ -9,6 +9,7 @@
 #include "Sprite.h"
 #include "StyleManager.h"
 #include "MulticastDelegate.h"
+#include "Delegate2.h"
 
 namespace ltk {
 
@@ -28,7 +29,7 @@ public:
     float GetBlend();
 
 	MulticastDelegate0 ClickedDelegate;
-	MulticastDelegate2<MouseEvent*, bool&> MouseEventDelegate;
+	delegate2::MuticastDelegate<MouseEvent*, bool&> MouseEventDelegate;
 
     virtual bool OnEvent(Event *ev) override;
 

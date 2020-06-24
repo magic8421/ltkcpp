@@ -23,7 +23,7 @@ ScrollBar::ScrollBar(Orientation mode) : m_mode(mode)
 {
     m_slider = new Button;
     m_slider->EnableCapture(false);
-	m_slider->MouseEventDelegate += MakeDelegate(this, &ScrollBar::OnSilderEvent);
+	m_slider->MouseEventDelegate += delegate2::MakeDelegate(this, &ScrollBar::OnSilderEvent);
 
     if (m_mode == Horizontal) {
         m_slider->SetBackground("scrollbar_h");

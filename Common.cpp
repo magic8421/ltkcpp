@@ -25,7 +25,7 @@ std::wstring Utf8ToUtf16(LPCSTR strA, int len)
     return std::move(strW);
 }
 
-std::string Utf16ToUtf8(LPCTSTR strW, int len)
+std::string Utf16ToUtf8(LPCWSTR strW, int len)
 {
     if (len < 0) {
         len = (int)wcslen(strW);
@@ -39,7 +39,7 @@ std::string Utf16ToUtf8(LPCTSTR strW, int len)
 	return std::move(strA);
 }
 
-std::string Utf16ToGbk(LPCTSTR strW, int len)
+std::string Utf16ToGbk(LPCWSTR strW, int len)
 {
     if (len < 0) {
         len = (int)wcslen(strW);
@@ -65,7 +65,7 @@ std::wstring LtkA2W(LPCSTR strA, int len)
     return std::move(strW);
 }
 
-std::string LtkW2A(LPCTSTR strW, int len)
+std::string LtkW2A(LPCWSTR strW, int len)
 {
     if (len < 0) {
         len = (int)wcslen(strW);
