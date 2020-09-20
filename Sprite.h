@@ -102,6 +102,8 @@ public:
 	Widget *SetFocus();
 	void KillFocus();
 
+	virtual void SetAttribute(LPCSTR name, LPCSTR value);
+
     virtual bool OnEvent(Event *ev);
 
 protected:

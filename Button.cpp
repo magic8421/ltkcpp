@@ -29,6 +29,11 @@ Button::~Button()
 {
 }
 
+HLTK Button::CreateInstance()
+{
+	return (HLTK)new Button;
+}
+
 void Button::OnThemeChanged()
 {
 	SAFE_RELEASE(m_layout);
@@ -85,6 +90,11 @@ void Button::SetText(LPCWSTR text)
     this->Invalidate();
 }
 
+void Button::SetText(LPCSTR text)
+{
+	this->SetText(LtkA2W(text).c_str());
+}
+
 void Button::RecreateLayout()
 {
 	static int cnt = 0;
@@ -127,6 +137,22 @@ void Button::SetTextFormat(LPCSTR style)
 void Button::SetTextColor(LPCSTR style)
 {
 	this->m_szTextColor = ltk::InternString(style);
+}
+
+static LPCSTR id_text = nullptr;
+
+void Button::Init()
+{
+	id_text = Object::InternString("text");
+}
+
+void Button::SetAttribute(LPCSTR name, LPCSTR value)
+{
+	if (name == id_text) {
+		m_text = Utf8ToUtf16(value);
+		return;
+	}
+	Widget::SetAttribute(name, value);
 }
 
 bool Button::OnSize(SizeEvent *ev)

@@ -22,6 +22,9 @@
     <Filter Include="DelegateLib\Source">
       <UniqueIdentifier>{484575d0-d1fb-4a2d-8ef6-5e790b92f64f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="dukglue">
+      <UniqueIdentifier>{891b5501-8c9b-41fe-83d0-97818ff21f5c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -126,10 +129,16 @@
     <ClCompile Include="Delegate\ThreadWin.cpp">
       <Filter>DelegateLib\Source</Filter>
     </ClCompile>
+    <ClCompile Include="Builder.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="LtkInterface.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Builder.cpp">
+    <ClCompile Include="HiddenWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Trackable.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -300,6 +309,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Builder.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HiddenWindow.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Trackable.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

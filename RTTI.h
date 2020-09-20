@@ -62,8 +62,10 @@ namespace ltk {
 
 #define RTTI_DECLARATIONS(Type, ParentType)                            \
     public:                                                            \
-        virtual LPCSTR TypeNameInstance() const override          \
-        { return (#Type); }                                 \
+        virtual LPCSTR TypeNameInstance() const override               \
+        { return (#Type); }                                            \
+        static LPCSTR TypeNameClass()                                  \
+        { return (#Type); }                                            \
         virtual const size_t TypeIdInstance() const override           \
         { return Type::TypeIdClass(); }                                \
         static const size_t TypeIdClass()                              \

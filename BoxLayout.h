@@ -22,7 +22,12 @@ class BoxLayout : public Widget
 {
 public:
 	explicit BoxLayout(Orientation);
+    explicit BoxLayout(UINT o) : BoxLayout((Orientation)o) {} // for dukglue
     virtual ~BoxLayout();
+
+    static void BoxLayout::Init();
+    static void* CALLBACK CreateHBox();
+    static void* CALLBACK CreateVBox();
 
 	virtual bool OnSize(SizeEvent *ev) override;
 
@@ -35,6 +40,9 @@ public:
     void AddSpaceItem(float preferedSize, float growFactor);
 
     void DoLayout();
+
+    virtual void OnChildAttribute(Object* child, LPCSTR name, LPCSTR value) override;
+
 
 private:
 	bool AlreadyHas(Widget *item);

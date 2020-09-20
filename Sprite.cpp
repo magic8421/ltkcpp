@@ -479,6 +479,31 @@ void Widget::HandleThemeChange()
     }
 }
 
+static LPCSTR id_rect = nullptr;
+
+void Widget::Init()
+{
+    id_rect = Object::InternString("rect");
+}
+
+void Widget::SetAttribute(LPCSTR name, LPCSTR value)
+{
+    if (name == id_rect) {
+        RectF rc;
+        char *end = 0;
+        rc.X = strtol(value, &end, 10); 
+        if (!end) return;
+        rc.Y = strtol(end + 1, &end, 10);
+        if (!end) return;
+        rc.Width = strtol(end + 1, &end, 10);
+        if (!end) return;
+        rc.Height = strtol(end + 1, &end, 10);
+        this->SetRect(rc);
+        return;
+    }
+    Object::SetAttribute(name, value);
+}
+
 void Widget::BeginAnimation()
 {
     //LTK_LOG("BeginAnimation");

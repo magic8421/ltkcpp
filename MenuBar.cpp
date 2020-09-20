@@ -160,6 +160,7 @@ void PopupMenu::Hide()
 {
 	m_state = State::sHide;
 	m_bHiding = true;
+	this->EndAnimation();
 	if (GetParent()) {
 		GetParent()->RemoveChild(this);
 		// Invalidate(); // because GetWindow() will return null, this does not work.
@@ -177,6 +178,7 @@ void PopupMenu::HideAll()
 {
 	m_state = State::sHide;
 	m_bHiding = true;
+	this->EndAnimation();
 	if (GetParent()) {
 		GetParent()->RemoveChild(this);
 		// Invalidate(); // because GetWindow() will return null, this does not work.

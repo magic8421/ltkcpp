@@ -70,7 +70,6 @@ public:
     bool IsDebuggingLayout();
     void SetDebuggingLayout(bool);
 
-	LPCSTR InternString(LPCSTR str);
 
 private:
     StyleManager();
@@ -82,7 +81,6 @@ private:
     std::unordered_map<std::string, AbstractBackground*> m_mapBackgroundStyle;
 	std::unordered_map<std::string, D2D1_COLOR_F> m_mapColor;
 	std::unordered_map<std::string, IDWriteTextFormat*> m_mapTextFormat;
-	std::unordered_set<std::string> m_internedStrings;
 };
 
 class AbstractBackground

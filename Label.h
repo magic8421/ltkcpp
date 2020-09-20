@@ -16,15 +16,20 @@ class Label : public Widget
 public:
     Label();
     virtual ~Label();
-    virtual bool OnPaint(PaintEvent *ev) override;
-    virtual void OnThemeChanged() override;
 
+    static void Init();
+    static HLTK CALLBACK CreateInstance();
 
     LPCWSTR GetText();
     void SetText(LPCWSTR text);
 
     void SetTextFormat(LPCSTR style);
     void SetTextColor(LPCSTR style);
+
+    virtual void SetAttribute(LPCSTR name, LPCSTR value) override;
+
+    virtual bool OnPaint(PaintEvent *ev) override;
+    virtual void OnThemeChanged() override;
 
 private:
 	std::wstring m_text;

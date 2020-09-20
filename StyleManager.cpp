@@ -221,7 +221,7 @@ void StyleManager::LoadTextFormatFromXml(tinyxml2::XMLElement *root)
 			LTK_LOG("TextFormat [%s] doesn't have a font_family attr.", name);
 			goto next;
 		}
-		familyW = Utf8ToUtf16(family);
+		familyW = LtkA2W(family);
 
 		LPCSTR font_size = format_elm->Attribute("font_size");
 		if (!font_size) {
@@ -501,19 +501,6 @@ bool StyleManager::IsDebuggingLayout()
 void StyleManager::SetDebuggingLayout(bool b)
 {
     m_bDebugLayout = b;
-}
-
-LPCSTR StyleManager::InternString(LPCSTR psz)
-{
-	std::string str(psz);
-	auto iter = m_internedStrings.find(str);
-	if (iter == m_internedStrings.end()) {
-		auto ret = m_internedStrings.insert(str);
-		LTK_ASSERT(ret.second); // the insertion took place.
-		return (ret.first)->c_str();
-	} else {
-		return iter->c_str();
-	}
 }
 
 void StyleManager::RegisterColorBulk(const ColorDesc *colors)

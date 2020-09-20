@@ -47,8 +47,10 @@ m_shadowBottom(ShadowFrame::eBottom)
 
 Window::~Window(void)
 {
-	::DestroyWindow(m_hwnd);
-
+    m_bDeleting = true;
+    if (m_hwnd) {
+        ::DestroyWindow(m_hwnd);
+    }
     SAFE_RELEASE(m_root);
 
     m_spFocus = INVALID_POINTER(Widget);
@@ -206,7 +208,7 @@ void Window::RegisterWndClass()
 	wc.lpszClassName = ClsName;
 
 	ATOM a = RegisterClass(&wc);
-    assert(a);
+    LTK_ASSERT(a);
 }
 
 void Window::HandleMouseMessage(UINT message, WPARAM wparam, LPARAM lparam)
@@ -385,29 +387,24 @@ LRESULT Window::WndProc(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam)
             cnt++;
             if (cnt % 100 == 0){
                 LTK_LOG("TIMER_ANIMATION %d", cnt);
+                for (auto iter = m_setAnimation.begin(); iter != m_setAnimation.end(); iter++) {
+                    LTK_LOG("ani: %s %s", (*iter)->TypeNameInstance(), (*iter)->GetName());
+                }
             }
             ::InvalidateRect(hwnd, NULL, FALSE);
         }
         return 0;
     case WM_SIZE:
-        do
-        {
+        do {
             UINT cx = LOWORD(lparam);
             UINT cy = HIWORD(lparam);
 
-            if (m_target)
-            {
-                m_target->Resize(D2D1::SizeU(cx, cy));
-            }
-            OnSize((float)cx, (float)cy, (DWORD)wparam);
-            UpdateShadowFrame(true);
-
-            //LTK_LOG("WM_SIZE %d", wparam);
-            if (wparam == SIZE_MAXIMIZED) {
-                m_root->DoLayout();
-            }
-            else if (wparam == SIZE_RESTORED){
-                m_root->DoLayout();
+            if (wparam == SIZE_MAXIMIZED || wparam == SIZE_RESTORED) {
+                if (m_target) {
+                    m_target->Resize(D2D1::SizeU(cx, cy));
+                }
+                OnSize((float)cx, (float)cy, (DWORD)wparam);
+                UpdateShadowFrame(true);
             }
             else if (wparam == SIZE_MINIMIZED) {
                 m_setAnimation.clear();
@@ -484,6 +481,7 @@ LRESULT Window::WndProc(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam)
         // Force WM_NCCALCSIZE
         SetWindowPos(hwnd, nullptr, 0, 0, 0, 0, SWP_NOZORDER | SWP_NOOWNERZORDER | SWP_NOMOVE | SWP_NOSIZE | SWP_FRAMECHANGED);
         LTK_LOG("window created: 0x%08X", hwnd);
+        this->UpdateTheme();
         //do 
         //{
         //	RECT rc;
@@ -603,7 +601,7 @@ void Window::OnPaint(HWND hwnd )
         hr = GetD2DFactory()->CreateHwndRenderTarget(D2D1::RenderTargetProperties(),
             D2D1::HwndRenderTargetProperties(
             hwnd, D2D1::SizeU(rc.right, rc.bottom)), &m_target);
-        assert(SUCCEEDED(hr));
+        LTK_ASSERT(SUCCEEDED(hr));
 
         if (m_root)
         {

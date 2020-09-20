@@ -1,0 +1,73 @@
+#include "stdafx.h"
+#include "Builder.h"
+#include "ltk.h"
+#include "Object.h"
+
+#ifdef _DEBUG
+#define new DEBUG_NEW 
+#endif
+
+namespace ltk {
+
+Builder* Builder::m_sInst = nullptr;
+
+Builder* Builder::Instance()
+{
+	if (!m_sInst) {
+		m_sInst = new Builder;
+	}
+	return m_sInst;
+}
+
+void Builder::Free()
+{
+	delete m_sInst;
+}
+
+void Builder::RegisterType(LPCSTR xml_tag, FactoryMethod func)
+{
+	//auto tag_intern = ltk::InternString(xml_tag);
+	// https://stackoverflow.com/questions/50608392/using-const-char-as-key-for-map-unordered-map
+	m_mapFactory[xml_tag] = func;
+}
+
+Object* Builder::WidgetFromXml(LPCSTR path)
+{
+	using namespace tinyxml2;
+	tinyxml2::XMLDocument doc;
+	if (doc.LoadFile(path) != XML_SUCCESS) return nullptr;
+	m_buildingPath.clear();
+	auto elm = doc.FirstChildElement();
+	return WidgetFromXmlRec(elm, nullptr);
+}
+
+Object* Builder::WidgetFromXmlRec(tinyxml2::XMLElement* elm, Object *parent)
+{
+	Object* obj = nullptr;
+	auto name = elm->Name();
+	auto iter = m_mapFactory.find(name);
+	if (iter != m_mapFactory.end()) {
+		m_buildingPath.push_back(name);
+		ILtkWidget* widget = NULL;
+		auto hr = iter->second(&widget);
+		LTK_ASSERT(SUCCEEDED(hr));
+		
+		if (parent) {
+			parent->AddChild(widget); // 要先有父级才能设置属性 因为有的属性要传递给父级
+		}
+		auto attr = elm->FirstAttribute();
+		while (attr) {
+			obj->SetAttribute(ltk::InternString(attr->Name()), attr->Value());
+			attr = attr->Next();
+		}
+		auto child_elm = elm->FirstChildElement();
+		while (child_elm) {
+			WidgetFromXmlRec(child_elm, obj);
+			child_elm = child_elm->NextSiblingElement();
+		}
+		m_buildingPath.pop_back();
+	}
+	return obj;
+}
+
+} // namespace ltk

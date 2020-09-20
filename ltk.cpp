@@ -16,6 +16,11 @@
 #include "Sprite.h"
 #include "TimerManager.h"
 #include "SetupStyles.h"
+#include "Builder.h"
+#include "BoxLayout.h"
+#include "Button.h"
+#include "Label.h"
+#include "BoxLayout.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW 
@@ -33,7 +38,7 @@ namespace ltk {
 
     LPCSTR InternString(LPCSTR psz)
     {
-        return StyleManager::Instance()->InternString(psz);
+        return Object::InternString(psz);
     }
 
     // convert DIP to screen
@@ -278,20 +283,20 @@ namespace ltk {
 		IWICBitmapDecoder *decorder = NULL;
 		IWICBitmapFrameDecode *frame = NULL;
 		IWICFormatConverter *converter = NULL;
-		assert(*bitmap == nullptr);
+        LTK_ASSERT(*bitmap == nullptr);
 
 		HRESULT hr = g_wic_factory->CreateDecoderFromFilename(path, NULL, GENERIC_READ, WICDecodeMetadataCacheOnDemand, &decorder);
 		if (SUCCEEDED(hr))
 		{
 			hr = decorder->GetFrame(0, &frame);
-			assert(SUCCEEDED(hr));
+            LTK_ASSERT(SUCCEEDED(hr));
 			hr = g_wic_factory->CreateFormatConverter(&converter);
-			assert(SUCCEEDED(hr));
+            LTK_ASSERT(SUCCEEDED(hr));
 			hr = converter->Initialize(frame, GUID_WICPixelFormat32bppPBGRA, WICBitmapDitherTypeNone,
 				NULL, 0.0, WICBitmapPaletteTypeMedianCut);
-			assert(SUCCEEDED(hr));
+            LTK_ASSERT(SUCCEEDED(hr));
 			hr = target->CreateBitmapFromWicBitmap(converter, NULL, bitmap);
-			assert(SUCCEEDED(hr));
+            LTK_ASSERT(SUCCEEDED(hr));
 			SAFE_RELEASE(converter);
 			SAFE_RELEASE(frame);
 			SAFE_RELEASE(decorder);
@@ -318,7 +323,7 @@ namespace ltk {
         }
 
         HRESULT hr = D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, &g_d2d_factory);
-        assert(SUCCEEDED(hr));
+        LTK_ASSERT(SUCCEEDED(hr));
 
         hr = CoCreateInstance(
             CLSID_WICImagingFactory,
@@ -327,14 +332,14 @@ namespace ltk {
             IID_IWICImagingFactory,
             (LPVOID*)&g_wic_factory
             );
-        assert(SUCCEEDED(hr));
+        LTK_ASSERT(SUCCEEDED(hr));
 
         hr = DWriteCreateFactory(
             DWRITE_FACTORY_TYPE_SHARED,
             __uuidof(IDWriteFactory),
             reinterpret_cast<IUnknown**>(&g_dw_factory)
             );
-        assert(SUCCEEDED(hr));
+        LTK_ASSERT(SUCCEEDED(hr));
 
         // InitInstance
         Gdiplus::GdiplusStartupInput gdiplusStartupInput;
@@ -344,6 +349,10 @@ namespace ltk {
         TimerManager::Instance();
         ShadowFrame::Init();
         Window::RegisterWndClass();
+        Widget::Init();
+        Button::Init();
+        Label::Init();
+        BoxLayout::Init();
 
 		StyleManager::NewTheme("rect");
 		SetupVectorStyleDark();
@@ -352,15 +361,28 @@ namespace ltk {
 		StyleManager::Instance()->LoadThemeXml("res\\theme_pixel.xml");
 		SetupPixelStyle1();
 
-		LTK_LOG("sizeof map: %d", sizeof(std::map<int, void*>));
+        Builder::Instance()->RegisterType("VBox", BoxLayout::CreateVBox);
+        Builder::Instance()->RegisterType("HBox", BoxLayout::CreateHBox);
+        Builder::Instance()->RegisterType("Button", Button::CreateInstance);
+        Builder::Instance()->RegisterType("Label", Label::CreateInstance);
+
+
+        LTK_LOG("sizeof vector: %d", sizeof(std::vector<int>));
+        LTK_LOG("sizeof map: %d", sizeof(std::map<int, void*>));
+        LTK_LOG("sizeof unordered_map: %d", sizeof(std::unordered_map<int, void*>));
+        LTK_LOG("sizeof function: %d", sizeof(std::function<void()>));
+        LTK_LOG("sizeof Object: %d", sizeof(Object));
     }
 
     void LtkUninitialize()
     {
 		ShadowFrame::Free();
+        Builder::Free();
         StyleManager::Free();
         TimerManager::Free();
         Object::Free();
+
+        Trackable::DumpLeaks();
 
         g_dw_factory->Release();
         g_wic_factory->Release();

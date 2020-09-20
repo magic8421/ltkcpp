@@ -38,6 +38,7 @@
     <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
+    <EnableASAN>false</EnableASAN>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -90,7 +91,8 @@
       <PreprocessorDefinitions>WIN32;LTK_EXPORTS;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <DisableSpecificWarnings>4100;4189;4251</DisableSpecificWarnings>
-      <AdditionalIncludeDirectories>.\Delegate</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\Delegate;.\duktape</AdditionalIncludeDirectories>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -171,6 +173,7 @@
     <ClCompile Include="Delegate\ThreadWin.cpp" />
     <ClCompile Include="Delegate\WorkerThreadWin.cpp" />
     <ClCompile Include="HeaderCtrl.cpp" />
+    <ClCompile Include="HiddenWindow.cpp" />
     <ClCompile Include="ImeInput.cpp" />
     <ClCompile Include="Label.cpp" />
     <ClCompile Include="ListView.cpp" />
@@ -191,6 +194,7 @@
     <ClCompile Include="TextEdit.cpp" />
     <ClCompile Include="ThreadHelper.cpp" />
     <ClCompile Include="TimerManager.cpp" />
+    <ClCompile Include="Trackable.cpp" />
     <ClCompile Include="TreeView.cpp" />
     <ClCompile Include="UniConversion.cpp" />
     <ClCompile Include="Window.cpp" />
@@ -232,6 +236,7 @@
     <ClInclude Include="Delegate\xallocator.h" />
     <ClInclude Include="Event.h" />
     <ClInclude Include="HeaderCtrl.h" />
+    <ClInclude Include="HiddenWindow.h" />
     <ClInclude Include="ImeInput.h" />
     <ClInclude Include="Label.h" />
     <ClInclude Include="ListView.h" />
@@ -249,6 +254,7 @@
     <ClInclude Include="TextEdit.h" />
     <ClInclude Include="ThreadHelper.h" />
     <ClInclude Include="TimerManager.h" />
+    <ClInclude Include="Trackable.h" />
     <ClInclude Include="TreeView.h" />
     <ClInclude Include="UniConversion.h" />
     <ClInclude Include="Window.h" />
