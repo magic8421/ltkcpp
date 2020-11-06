@@ -210,7 +210,12 @@ public:
 
 	iterator end()
 	{
-		return iterator(this, m_d->size);
+		if (m_d) {
+			return iterator(this, m_d->size);
+		}
+		else {
+			return iterator(this, 0);
+		}
 	}
 
     void push_back(const T& v)
