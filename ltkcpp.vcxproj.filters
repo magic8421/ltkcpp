@@ -141,9 +141,6 @@
     <ClCompile Include="Main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="LtkInterface.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -321,9 +318,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Trackable.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="LtkInterface.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Delegate.hpp">

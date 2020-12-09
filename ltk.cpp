@@ -381,8 +381,6 @@ namespace ltk {
 
     void LtkUninitialize()
     {
-        Object::DumpObjectLeaks();
-
         ShadowFrame::Free();
         Builder::Free();
         StyleManager::Free();

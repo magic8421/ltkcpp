@@ -33,22 +33,19 @@ public:
 
 	MulticastDelegate0 DeleteDelegate;
 
-
-	/////////////////////////////////////////////////////////////////
-	void SetSourceLine(LPCSTR source, int line);
-	static bool CheckValid(Object* o);
-	static void DumpObjectLeaks();
 	void RegisterCallback(UINT event_id, LtkCallback cb, void* userdata);
 
 	template<typename CB, typename... Params>
 	int InvokeCallbacks(UINT event_id, Params... params);
 
-	static CRITICAL_SECTION m_lockInternStr;
 	static LPCSTR InternString(LPCSTR str);
 
+	static void Track(Object* obj);
+	static bool CheckValid(Object* o);
 
 private:
-	LPCSTR m_name = nullptr;
+	LPCSTR m_name = nullptr; // Move to Widget
+	bool m_bTracking = false;
 
 #ifdef LTK_C_API
 
