@@ -17,7 +17,7 @@ struct ColumnData {
     std::wstring name;
     float width = 100.0f;
     int order = -1;
-    HeaderButton *button = nullptr;
+    RefPtr<HeaderButton> button;
 };
 
 class LTK_CPP_API HeaderCtrl : public Widget
@@ -49,7 +49,7 @@ public:
 private:
     std::vector<ColumnData> m_vecColumns;
     PointF m_dragPoint;
-    HeaderButton *m_draggingButton = nullptr;
+    HeaderButton *m_draggingButton = nullptr; // TODO ¸Ä³ÉRefPtr
     int m_resizingCol = -1;
     int m_reorderCol = -1;
     float m_hscroll = 0.0f;

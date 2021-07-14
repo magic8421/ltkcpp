@@ -59,6 +59,41 @@ EXTERN_C IMAGE_DOS_HEADER __ImageBase;
 //    CStringW msg; msg.Format(L"Assertion Failed: %s\r\n%s(%d)", L#expr, __FILEW__, __LINE__);\
 //    ::OutputDebugStringW(msg);__debugbreak();}
 
+class CriticalSection
+{
+public:
+	friend class AutoLock;
+
+	CriticalSection()
+	{
+		::InitializeCriticalSection(&m_sec);
+	}
+	~CriticalSection()
+	{
+		::DeleteCriticalSection(&m_sec);
+	}
+
+private:
+	CRITICAL_SECTION m_sec;
+};
+
+class AutoLock
+{
+public:
+	AutoLock(CriticalSection &cs)
+		: m_cs(cs)
+	{
+		::EnterCriticalSection(&m_cs.m_sec);
+	}
+	~AutoLock()
+	{
+		::LeaveCriticalSection(&m_cs.m_sec);
+	}
+
+private:
+	CriticalSection &m_cs;
+};
+
 
 enum LtkLogLevel {
 	logInfo, logWarn, logError, logFatal

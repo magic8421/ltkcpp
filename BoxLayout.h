@@ -13,7 +13,7 @@
 namespace ltk {
 
 struct BoxLayoutParam {
-    Widget *item = nullptr;
+    RefPtr<Widget> item;
     float size = 20.0f;
     float growFactor = 0.0f;
 };
@@ -27,16 +27,17 @@ public:
     virtual ~BoxLayout();
 
     static void BoxLayout::Init();
-    static HLTK CALLBACK CreateHBox();
-    static HLTK CALLBACK CreateVBox();
+
+    static RefPtr<Widget> CreateHBox();
+    static RefPtr<Widget> CreateVBox();
 
 	virtual bool OnSize(SizeEvent *ev) override;
 
     void SetSpacing(float spacing);
 
-    void AddLayoutItem(Widget *sp, float preferedSize, float growFactor = 0.0f);
+    void AddLayoutItem(RefPtr<Widget> item, float preferedSize, float growFactor = 0.0f);
 
-    void InsertLayoutItem(UINT before, Widget *item, float preferedSize, float growFactor);
+    void InsertLayoutItem(UINT before, RefPtr<Widget> item, float preferedSize, float growFactor);
 
     void AddSpaceItem(float preferedSize, float growFactor);
 
@@ -46,7 +47,7 @@ public:
 
 
 private:
-	bool AlreadyHas(Widget *item);
+	bool AlreadyHas(const RefPtr<Widget> &item);
 
 	std::vector<BoxLayoutParam> m_params; // item: owner
 	Orientation m_mode;

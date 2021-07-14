@@ -21,7 +21,7 @@ HeaderCtrl::HeaderCtrl()
 {
     this->EnableClipChildren(true);
 
-    auto btn = new HeaderButton(this);
+    RefPtr<HeaderButton> btn(new HeaderButton(this));
     btn->SetBackground("header_btn_bg");
     btn->EnableCapture(false);
     ColumnData data;
@@ -52,7 +52,7 @@ void HeaderCtrl::GetColumnOrder(std::vector<int>& vecOrder)
 
 void HeaderCtrl::AddColumn(LPCWSTR name, float size)
 {
-    auto btn = new HeaderButton(this);
+    RefPtr<HeaderButton> btn(new HeaderButton(this));
     btn->SetBackground("header_btn_bg");
     btn->SetText(name);
     btn->EnableCapture(false);
@@ -90,7 +90,7 @@ void HeaderCtrl::OnColumnResizeBegin(HeaderButton *btn, const PointF& pt)
     m_draggingButton = btn;
     int i = 0;
     for (; i < (int)m_vecColumns.size(); i ++) {
-        if (m_vecColumns[i].button == btn) {
+        if (m_vecColumns[i].button.Get() == btn) {
             break;
         }
     }
@@ -107,7 +107,7 @@ void HeaderCtrl::OnColumnReorderBegin(HeaderButton *btn, const PointF& pt)
     m_draggingButton = btn;
     int i = 0;
     for (; i < (int)m_vecColumns.size(); i ++) {
-        if (m_vecColumns[i].button == btn) {
+        if (m_vecColumns[i].button.Get() == btn) {
             break;
         }
     }

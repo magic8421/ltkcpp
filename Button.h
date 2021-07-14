@@ -22,7 +22,7 @@ public:
 
 	static void Init();
 
-	static HLTK CALLBACK CreateInstance();
+	static RefPtr<Widget> CreateInstance();
 
     void SetText(LPCWSTR text);
 	void SetText(LPCSTR text);

@@ -22,14 +22,14 @@
     <ProjectGuid>{DD00600A-C7C5-4DE8-8E5F-85650A6B966A}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>ltkcpp</RootNamespace>
-    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
     <ProjectName>ltkcpp</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
@@ -190,7 +190,6 @@
     <ClCompile Include="Label.cpp" />
     <ClCompile Include="ListView.cpp" />
     <ClCompile Include="ltk.cpp" />
-    <ClCompile Include="LtkInterface.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="MenuBar.cpp" />
     <ClCompile Include="Object.cpp" />
@@ -255,7 +254,6 @@
     <ClInclude Include="Label.h" />
     <ClInclude Include="ListView.h" />
     <ClInclude Include="ltk.h" />
-    <ClInclude Include="LtkInterface.h" />
     <ClInclude Include="Main.h" />
     <ClInclude Include="MenuBar.h" />
     <ClInclude Include="Object.h" />

@@ -86,8 +86,8 @@ void DemoWindow::BuildDemoWindow()
 	//vbox->SetSpacing(10);
 	spitter1->AddClient(vboxRightPanel);
 
-	ListView *listview1 = new ListView();
-	HeaderCtrl *header = listview1->GetHeaderCtrl();
+	RefPtr<ListView> listview1 (new ListView());
+	auto header = listview1->GetHeaderCtrl();
 	header->AddColumn(L"Column0", 100);
 	header->AddColumn(L"Column1", 200);
 	header->AddColumn(L"Column2", 200);
@@ -116,48 +116,48 @@ void DemoWindow::BuildDemoWindow()
 		listview1->SetCellText(i, 5, text.c_str());
 	}
 
-	TextEdit *edit1 = new TextEdit;
+	RefPtr<TextEdit> edit1 (new TextEdit);
 	vboxRightPanel->AddLayoutItem(edit1, 100, 0.0f);
 
-	auto hboxTimerTest = new BoxLayout(ltk::Horizontal);
+	RefPtr<BoxLayout> hboxTimerTest (new BoxLayout(ltk::Horizontal));
 	vboxRightPanel->AddLayoutItem(hboxTimerTest, 30, 0.0f);
 
-	Button *btnRepeatTimer = new Button;
+	RefPtr<Button> btnRepeatTimer (new Button);
 	btnRepeatTimer->SetText(L"循环定时器");
 	btnRepeatTimer->ClickedDelegate += MakeDelegate(m_timer, &Timer::Start);
 	hboxTimerTest->AddLayoutItem(btnRepeatTimer, 0, 1);
 
-	Button *btnStopRepeatTimer = new Button;
+	RefPtr<Button> btnStopRepeatTimer (new Button);
 	btnStopRepeatTimer->SetText(L"停止");
 	btnStopRepeatTimer->ClickedDelegate += MakeDelegate(m_timer, &Timer::Stop);
 	hboxTimerTest->AddLayoutItem(btnStopRepeatTimer, 0, 1);
 
-	Button *btnOnceTimer = new Button;
+	RefPtr<Button> btnOnceTimer (new Button);
 	btnOnceTimer->SetText(L"单次定时器");
 	btnOnceTimer->ClickedDelegate += MakeDelegate(m_onceTimer, &Timer::StartOnce);
 	hboxTimerTest->AddLayoutItem(btnOnceTimer, 0, 1);
 
-	Button *btnStopOnceTimer = new Button;
+	RefPtr<Button> btnStopOnceTimer (new Button);
 	btnStopOnceTimer->SetText(L"停止");
 	btnStopOnceTimer->ClickedDelegate += MakeDelegate(m_onceTimer, &Timer::Stop);
 	hboxTimerTest->AddLayoutItem(btnStopOnceTimer, 0, 1);
 
-	auto hboxTheme = new BoxLayout(ltk::Horizontal);
+	RefPtr<BoxLayout> hboxTheme (new BoxLayout(ltk::Horizontal));
 	vboxRightPanel->AddLayoutItem(hboxTheme, 30, 0.0f);
 
-	Button *btnPixelTheme = new Button;
+	RefPtr<Button> btnPixelTheme (new Button);
 	hboxTheme->AddLayoutItem(btnPixelTheme, 100);
 	btnPixelTheme->SetText(L"位图资源");
 	btnPixelTheme->ClickedDelegate += MakeDelegate(
 		this, &DemoWindow::OnPixelThemeClicked);
 
-	Button *btnRectTheme = new Button;
+	RefPtr<Button> btnRectTheme (new Button);
 	hboxTheme->AddLayoutItem(btnRectTheme, 100);
 	btnRectTheme->SetText(L"暗色");
 	btnRectTheme->ClickedDelegate += MakeDelegate(
 		this, &DemoWindow::OnDarkThemeClicked);
 
-	Button *btnRectThemeLight = new Button;
+	RefPtr<Button> btnRectThemeLight (new Button);
 	hboxTheme->AddLayoutItem(btnRectThemeLight, 100);
 	btnRectThemeLight->SetText(L"亮色");
 	btnRectThemeLight->ClickedDelegate += MakeDelegate(

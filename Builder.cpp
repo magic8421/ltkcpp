@@ -31,26 +31,26 @@ void Builder::RegisterType(LPCSTR xml_tag, FactoryMethod func)
 	m_mapFactory[xml_tag] = func;
 }
 
-Widget* Builder::WidgetFromXml(LPCSTR path)
+RefPtr<Widget> Builder::WidgetFromXml(LPCSTR path)
 {
 	using namespace tinyxml2;
 	tinyxml2::XMLDocument doc;
-	if (doc.LoadFile(path) != XML_SUCCESS) return nullptr;
+	if (doc.LoadFile(path) != XML_SUCCESS) return RefPtr<Widget>();
 	m_buildingPath.clear();
 	auto elm = doc.FirstChildElement();
 	return WidgetFromXmlRec(elm, nullptr);
 }
 
-Widget* Builder::WidgetFromXmlRec(tinyxml2::XMLElement* elm, Widget* parent)
+RefPtr<Widget> Builder::WidgetFromXmlRec(tinyxml2::XMLElement* elm, Widget* parent)
 {
-	Widget* obj = nullptr;
+	RefPtr<Widget> obj;
 	auto name = elm->Name();
 	auto iter = m_mapFactory.find(name);
 	if (iter != m_mapFactory.end()) {
 		m_buildingPath.push_back(name);
-		auto hltk = iter->second();
+		obj = iter->second();
 		//LTK_ASSERT(Object::CheckValid((Object*)hltk));
-		obj = ((Object*)hltk)->As<Widget>();
+		//obj = ((Object*)hltk)->As<Widget>();
 		if (parent) {
 			parent->AddChild(obj); // 要先有父级才能设置属性 因为有的属性要传递给父级
 		}
@@ -61,7 +61,7 @@ Widget* Builder::WidgetFromXmlRec(tinyxml2::XMLElement* elm, Widget* parent)
 		}
 		auto child_elm = elm->FirstChildElement();
 		while (child_elm) {
-			WidgetFromXmlRec(child_elm, obj);
+			WidgetFromXmlRec(child_elm, obj.Get());
 			child_elm = child_elm->NextSiblingElement();
 		}
 		m_buildingPath.pop_back();

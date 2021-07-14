@@ -1,12 +1,10 @@
 #pragma once
-
-#include "LtkInterface.h"
-
+#include "RefCounted.h"
 namespace ltk {
 
 class Widget;
 
-typedef HLTK (CALLBACK *FactoryMethod)();
+typedef RefPtr<Widget> (*FactoryMethod)();
 
 class Builder
 {
@@ -19,10 +17,10 @@ public:
 	static void Free();
 
 	void RegisterType(LPCSTR xml_tag, FactoryMethod func);
-	Widget* WidgetFromXml(LPCSTR path);
+	RefPtr<Widget> WidgetFromXml(LPCSTR path);
 
 private:
-	Widget* WidgetFromXmlRec(tinyxml2::XMLElement* elm, Widget* parent);
+	RefPtr<Widget> WidgetFromXmlRec(tinyxml2::XMLElement* elm, Widget* parent);
 
 	static Builder* m_sInst;
 

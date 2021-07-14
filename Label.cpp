@@ -27,9 +27,9 @@ Label::~Label()
 {
 }
 
-HLTK Label::CreateInstance()
+RefPtr<Widget> Label::CreateInstance()
 {
-    return (HLTK)new Label;
+    return RefPtr<Widget>(new Label);
 }
 
 bool Label::OnPaint(PaintEvent *ev)

@@ -13,31 +13,28 @@ public:
     {
         m_refCount = 1;
     }
-
-    void AddRef()
+	ULONG AddRef()
     {
-        m_refCount++;
+		InterlockedIncrement(&m_refCount);
+		LTK_ASSERT(m_refCount < 9999999);
+		return m_refCount;
     }
-    void Release()
+	ULONG Release()
     {
-        m_refCount--;
-        if (m_refCount < 0)
-        {
-			LTK_ASSERT(false);
-        }
-        if (m_refCount == 0)
-        {
-            delete this;
-        }
-    }
-    int RefCount()
-    {
-        return m_refCount;
+		// https://docs.microsoft.com/en-us/office/client-developer/outlook/mapi/implementing-iunknown-in-c-plus-plus
+		ULONG ulRefCount = InterlockedDecrement(&m_refCount);
+		if (0 == m_refCount)
+		{
+			delete this;
+		}
+		return ulRefCount;
     }
     bool HasOneRef()
     {
         return m_refCount == 1;
     }
+
+	virtual void Dispose() {}
 
     RTTI_DECLARATIONS(RefCounted, RTTI);
 
@@ -46,7 +43,7 @@ protected:
 
 private:
     DISALLOW_COPY_AND_ASSIGN(RefCounted);
-    int m_refCount;
+	ULONG volatile m_refCount;
 };
 
 template<typename T>
@@ -54,13 +51,8 @@ class RefPtr
 {
 public:
     RefPtr() : m_ptr(nullptr) {
-        //static_assert(std::is_convertible<T*, RefCounted*>::value,
-        //    "RefCounted * required!");
     }
     explicit RefPtr(T *ptr) : m_ptr(ptr) {
-        if (m_ptr) {
-            m_ptr->AddRef();
-        }
     }
 
     RefPtr(const RefPtr &rhs) {
@@ -79,9 +71,10 @@ public:
         if (m_ptr) {
             m_ptr->Release();
         }
-        m_ptr = reinterpret_cast<T*>(0xbaadf00d);
     }
+
     //Attach to an existing RefCounted (does not AddRef)
+	/*
     void Attach(T *p) {
         if (m_ptr) {
             m_ptr->Release();
@@ -94,6 +87,7 @@ public:
         m_ptr = nullptr;
         return tmp;
     }
+	*/
 
     T *operator->() {
         return m_ptr;
@@ -132,6 +126,11 @@ public:
         }
     }
 
+    bool operator==(const RefPtr<T>& rhs) const
+    {
+        return this->m_ptr == rhs.m_ptr;
+    }
+
     template <typename Q>
     T* operator=(const RefPtr<Q>& ptr) throw()
     {
@@ -150,7 +149,7 @@ public:
         return RefPtr<Q>(q);
     }
 
-    T *Get() {
+    T *Get() const {
         return m_ptr;
     }
 
@@ -173,7 +172,7 @@ public:
         m_ptr = nullptr;
     }
 
-    T **GetAddress()
+    T **PtrAddress()
     {
         return &m_ptr;
     }
@@ -181,5 +180,12 @@ public:
 private:
     T *m_ptr;
 };
+
+template<typename T>
+RefPtr<T> RefPtrFromThis(T *thiz)
+{
+	thiz->AddRef();
+	return RefPtr<T>(this);
+}
 
 } // namespace ltk

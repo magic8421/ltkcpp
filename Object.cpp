@@ -8,16 +8,11 @@
 #define new DEBUG_NEW 
 #endif
 
-extern BOOL g_bApiCheck;
-
 namespace ltk {
 
 static __declspec(thread) Object *sDelegateInvoker = nullptr;
-static std::unordered_set<Object*>* sObjectSet;
 
-typedef int (CALLBACK* ObjectDeleteCallback)(void *userdata);
-
-CRITICAL_SECTION Object::m_lockInternStr;
+CriticalSection g_lockInternStr;
 
 struct SZHash{
 	//BKDR hash algorithm
@@ -44,40 +39,50 @@ struct SZEqual
 
 std::unordered_set<LPCSTR, SZHash, SZEqual> g_internedStrings;
 
+CriticalSection g_lockTrackAlloc;
+static Object* g_track_head = nullptr;
+static Object* g_track_tail = nullptr;
+
 Object::Object()
 {
-#ifdef LTK_C_API
-	if (g_bApiCheck) {
-		::EnterCriticalSection(&m_lockInternStr);
-		if (!sObjectSet) {
-			sObjectSet = new std::unordered_set<Object*>;
+#ifndef LTK_NO_TRACE_MEMORY
+	do {
+		AutoLock lock(g_lockTrackAlloc);
+		if (!g_track_head) {
+			g_track_head = this;
+			g_track_tail = this;
+			m_next = nullptr;
+			m_prev = nullptr;
 		}
-		sObjectSet->insert(this);
-		::LeaveCriticalSection(&m_lockInternStr);
-	}
-#endif
+		else {
+			g_track_head->m_prev = this;
+			m_next = g_track_head;
+			g_track_head = this;
+			m_prev = nullptr;
+		}
+	} while (0);
+#endif // !LTK_NO_TRACE_MEMORY
 }
 
 Object::~Object()
 {
-	this->DeleteDelegate();
-
-#ifdef LTK_C_API
-	if (g_bApiCheck) {
-		::EnterCriticalSection(&m_lockInternStr);
-		// TODO lock for multithread.
-		auto iter = sObjectSet->find(this);
-		if (iter == sObjectSet->end()) {
-			LTK_ASSERT(false);
+#ifndef LTK_NO_TRACE_MEMORY
+	do {
+		AutoLock lock(g_lockTrackAlloc);
+		if (m_prev) {
+			m_prev->m_next = m_next;
 		}
 		else {
-			sObjectSet->erase(iter);
+			g_track_head = m_next;
 		}
-		::LeaveCriticalSection(&m_lockInternStr);
-	}
-	InvokeCallbacks<ObjectDeleteCallback>(LTK_DELETE_EVENT);
-#endif
-
+		if (m_next) {
+			m_next->m_prev = m_prev;
+		}
+		else {
+			g_track_tail = m_prev;
+		}
+	} while (0);
+#endif // !LTK_NO_TRACE_MEMORY
 }
 
 void Object::DeleteLater()
@@ -87,22 +92,26 @@ void Object::DeleteLater()
 
 void Object::Init()
 {
-	::InitializeCriticalSection(&m_lockInternStr);
 }
 
 void Object::Free()
 {
-#ifdef LTK_C_API
-	delete sObjectSet;
-#endif
+	do {
+		AutoLock lock(g_lockTrackAlloc);
+		auto p = g_track_head;
+		while (p) {
+			LTK_LOG("leak: [%s]", p->TypeNameInstance());
+			p = p->m_next;
+		}
 
-	::EnterCriticalSection(&m_lockInternStr);
-	for (auto iter = g_internedStrings.begin(); iter != g_internedStrings.end(); iter++) {
-		free((void*)*iter);
-	}
-	::LeaveCriticalSection(&m_lockInternStr);
+	} while (0);
 
-	::DeleteCriticalSection(&m_lockInternStr);
+	do {
+		AutoLock lock(g_lockInternStr);
+		for (auto iter = g_internedStrings.begin(); iter != g_internedStrings.end(); iter++) {
+			free((void*)*iter);
+		}
+	} while (0);
 }
 
 Object * Object::GetDelegateInvoker()
@@ -127,92 +136,34 @@ LPCSTR Object::InternString(LPCSTR psz)
 	}
 	
 	LPCSTR result = nullptr;
-	::EnterCriticalSection(&m_lockInternStr);
+	do {
+		AutoLock lock(g_lockInternStr);
 
-	auto iter = g_internedStrings.find(psz);
-	if (iter == g_internedStrings.end()) {
-		auto ret = g_internedStrings.insert(_strdup(psz));
-		LTK_ASSERT(ret.second); // the insertion took place.
-		result = (*ret.first);
-	} else {
-		result = *iter;
-	}
-	::LeaveCriticalSection(&m_lockInternStr);
+		auto iter = g_internedStrings.find(psz);
+		if (iter == g_internedStrings.end()) {
+			auto ret = g_internedStrings.insert(_strdup(psz));
+			LTK_ASSERT(ret.second); // the insertion took place.
+			result = (*ret.first);
+		}
+		else {
+			result = *iter;
+		}
+	} while (0);
 
 	return result;
 }
 
 /////////////////////////////////////////////////////////////////
 
-#ifdef LTK_C_API
 void Object::SetSourceLine(LPCSTR source, int line)
 {
 	m_source = source;
 	m_line = line;
 }
 
-bool Object::CheckValid(Object* o)
-{
-	// TODO lock for multithread.
-	return sObjectSet->find(o) != sObjectSet->end();
-}
-
 void Object::DumpObjectLeaks()
 {
-	// TODO lock for multithread.
-	char buf[512];
-	for (Object* obj : *sObjectSet) {
-		if (obj->m_source) {
-			::StringCbPrintfA(
-				buf, sizeof(buf), "%s(%d) : LtkObject leak [%s]\r\n",
-				obj->m_source, obj->m_line, obj->TypeNameInstance());
-		}
-		else {
-			::StringCbPrintfA(
-				buf, sizeof(buf), "LtkObject leak [%s]\r\n",
-				obj->TypeNameInstance());
-		}
-		::OutputDebugStringA(buf);
-	}
 }
 
-void Object::RegisterCallback(UINT event_id, LtkCallback cb, void* userdata)
-{
-	size_t idx = (size_t)-1;
-	for (size_t i = 0; i < m_vecCallbacks.size(); ++i) { // 正序查找 event_id
-		if (m_vecCallbacks[i].code == event_id) {
-			idx = i;
-			break;
-		}
-	}
-	if (idx == (size_t)-1) {
-		CallbackNode node;
-		node.code = event_id;
-		m_vecCallbacks.push_back(node);
-		idx = m_vecCallbacks.size() - 1;
-	}
-	auto& node = m_vecCallbacks[idx];
-	size_t idx2 = (size_t)-1;
-	for (size_t i = node.list.size(); i > 0; --i) { // 反序查找 userdata
-		if (node.list[i].userdata == userdata) {
-			idx2 = i;
-			break;
-		}
-	}
-	if (idx2 != (size_t)-1) {
-		LTK_LOG("RegisterCallback duplicated userdata, event_id: %d", event_id);
-		return;
-	}
-	CallbackInfo info;
-	info.callback = cb;
-	info.userdata = userdata;
-	node.list.push_back(info);
-}
-#else
-void Object::SetSourceLine(LPCSTR source, int line) {}
-bool Object::CheckValid(Object* o) { return true; }
-void Object::DumpObjectLeaks() {}
-void Object::RegisterCallback(UINT event_id, LtkCallback cb, void* userdata) {}
-#endif
 
 } // namespace ltk

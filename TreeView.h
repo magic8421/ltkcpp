@@ -105,11 +105,6 @@ public:
 
     void SetVScroll(float);
 
-    bool CheckNode(HTREENODE node);
-
-    void RegisterNode(HTREENODE node);
-    void UnregisterNode(HTREENODE node);
-
 protected:
     virtual bool OnPaint(PaintEvent *ev) override;
     virtual bool OnSize(SizeEvent *ev) override;
@@ -145,8 +140,6 @@ private:
     LPCSTR m_szSelectedColor = nullptr;
     LPCSTR m_szSelectedTextColor = nullptr;
     LPCSTR m_szTextFormat = nullptr;
-
-    std::unordered_set<HTREENODE> m_setNodes;
 
     DISALLOW_COPY_AND_ASSIGN(TreeView)
 };

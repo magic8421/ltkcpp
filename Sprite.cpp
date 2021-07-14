@@ -30,9 +30,6 @@ Widget::Widget(void)
 
 Widget::~Widget(void)
 {
-    for (size_t i = 0; i < m_children.size(); i++) {
-        delete m_children[i];
-	}
 }
 
 RectF Widget::GetRect()
@@ -176,11 +173,11 @@ void Widget::HandlePaint( ID2D1RenderTarget *target )
 	}
 }
 
-void Widget::AddChild(Widget *sp)
+void Widget::AddChild(RefPtr<Widget> sp)
 {
     for (UINT i =  m_children.size(); i > 0; i--) {
         if (m_children[i - 1] == sp) {
-			//LTK_ASSERT(false);
+			LTK_ASSERT(false);
 			return;
         }
     }
@@ -269,8 +266,8 @@ bool Widget::IsCapturing()
 void Widget::BringToFront()
 {
     auto parent = m_parent;
-	m_parent->RemoveChild(this);
-    parent->AddChild(this);
+	m_parent->RemoveChild(RefPtrFromThis(this));
+    parent->AddChild(RefPtrFromThis(this));
 }
 
 void Widget::SetVisible( bool v )
@@ -345,7 +342,7 @@ void Widget::TrackMouseLeave()
 	}
 }
 
-void Widget::RemoveChild( Widget *sp )
+void Widget::RemoveChild(RefPtr<Widget> sp)
 {
     // maybe searh from the end is better, because we always push to the end.
     for (int i = m_children.size() - 1; i >= 0; i--) {

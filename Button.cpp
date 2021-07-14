@@ -29,9 +29,9 @@ Button::~Button()
 {
 }
 
-HLTK Button::CreateInstance()
+RefPtr<Widget> Button::CreateInstance()
 {
-	return (HLTK)new Button;
+	return RefPtr<Widget>(new Button);
 }
 
 void Button::OnThemeChanged()
