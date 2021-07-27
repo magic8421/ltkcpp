@@ -171,7 +171,7 @@ void DemoWindow::BuildDemoWindow()
 	menu_bar->AddItem(L"自适应长度");
 	menu_bar->AddItem(L"帮助");
 
-	PopupMenu *popup = new PopupMenu;
+	Ptr popup (new PopupMenu);
 	popup->SetWidth(120.f);
 	popup->AddItem(L"新建", "");
 	popup->AddItem(L"打开", "");
@@ -183,14 +183,14 @@ void DemoWindow::BuildDemoWindow()
 		this, &DemoWindow::OnExitClicked);
 	menu_bar->SetPopupMenu(0, popup);
 
-	PopupMenu *popup2 = new PopupMenu;
+	Ptr popup2 (new PopupMenu);
 	popup2->SetWidth(220.f);
 	popup2->AddItem(L"C:\\My Document\\file.txt", "");
 	popup2->AddItem(L"C:\\My Document\\file2.txt", "");
 	popup2->AddItem(L"C:\\My Document\\file3.txt", "");
 	popup->SetSubMenu(2, popup2);
 
-	popup = new PopupMenu;
+	popup = Ptr(new PopupMenu);
 	popup->SetWidth(120.f);
 	popup->AddItem(L"撤销", "");
 	popup->AddItem(L"重做", "");
@@ -200,7 +200,7 @@ void DemoWindow::BuildDemoWindow()
 	popup->AddItem(L"粘贴", "");
 	menu_bar->SetPopupMenu(1, popup);
 
-	popup = new PopupMenu;
+	popup = Ptr(new PopupMenu);
 	popup->SetWidth(120.f);
 	popup->AddItem(L"选择", "");
 	popup->AddItem(L"钢笔", "");
@@ -208,7 +208,7 @@ void DemoWindow::BuildDemoWindow()
 	popup->AddItem(L"橡皮擦", "");
 	menu_bar->SetPopupMenu(2, popup);
 
-	popup = new PopupMenu;
+	popup = Ptr(new PopupMenu);
 	popup->SetWidth(120.f);
 	popup->AddItem(L"在线文档", "");
 	popup->AddItem(L"关于", "");

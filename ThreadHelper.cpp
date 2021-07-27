@@ -9,6 +9,10 @@
 #include <cassert>
 #include "ThreadHelper.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW 
+#endif
+
 namespace ltk{
 
 HWND g_hwndUITask = NULL;

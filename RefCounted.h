@@ -141,6 +141,7 @@ public:
         rhs.m_ptr = nullptr;
     }
 
+    /*
     void operator=(T *p)
     {
         if (m_ptr) {
@@ -151,6 +152,7 @@ public:
             m_ptr->AddRef();
         }
     }
+    */
 
     bool operator==(const Ptr<T>& rhs) const
     {

@@ -207,19 +207,19 @@ Ptr<Widget> BoxLayout::CreateVBox()
     return Ptr<Widget>(new BoxLayout(Vertical));
 }
 
-void BoxLayout::OnChildAttribute(Object* child, LPCSTR name, LPCSTR value) 
+void BoxLayout::OnChildAttribute(Ptr<Widget> child, LPCSTR name, LPCSTR value) 
 {
     size_t idx = (size_t)-1;
     for (size_t i = m_params.size(); i > 0; i--) {
         const auto& item = m_params[i - 1];
-        if (item.item.Get() == child) {
+        if (item.item == child) {
             idx = i - 1;
             break;
         }
     }
     if (idx == (size_t)-1) {
         BoxLayoutParam param;
-        param.item = child->As<Widget>();
+        param.item = child;
         m_params.push_back(param);
         idx = m_params.size() - 1;
     }

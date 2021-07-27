@@ -20,18 +20,18 @@
 namespace ltk
 {
 
-WindowLayout::WindowLayout()
+WindowLayout::WindowLayout() :
+	m_minBtn(new Button),
+	m_maxBtn(new Button),
+	m_closeBtn(new Button),
+	m_caption(new Label)
 {
-    m_minBtn = new Button;
     m_minBtn->SetBackground("min_btn_bg");
     this->AddChild(m_minBtn);
-    m_maxBtn = new Button;
     m_maxBtn->SetBackground("max_btn_bg");
     this->AddChild(m_maxBtn);
-    m_closeBtn = new Button;
     m_closeBtn->SetBackground("close_btn_bg");
     this->AddChild(m_closeBtn);
-    m_caption = new Label;
 	m_caption->SetTextFormat("caption_fmt");
 	m_caption->SetTextColor("caption_clr");
     this->AddChild(m_caption);

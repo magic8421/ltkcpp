@@ -145,7 +145,7 @@ void TreeNode::OnLBtnDown(PointF pt, float scroll, UINT idx)
     }
 	if (rcItem.Contains(pt)) {
 		//LTK_LOG("SetSelectedNode %08x", this);
-		m_treeView->SetSelectedNode(this);
+		m_treeView->SetSelectedNode(Ptr(this));
 	}
 }
 
@@ -159,12 +159,12 @@ TreeView::TreeView() :
 	m_szHoverColor("item_hover_clr"),
 	m_szSelectedColor("item_selected_clr"),
 	m_szSelectedTextColor("item_selected_text_clr"),
-	m_szTextFormat("tree_item_text_fmt")
+	m_szTextFormat("tree_item_text_fmt"),
+    m_root (new TreeNode),
+    m_vsb (new ScrollBar(ltk::Vertical))
 {
     this->EnableClipChildren(true);
-    m_root = new TreeNode;
     m_root->SetTreeView(this);
-    m_vsb = new ScrollBar(ltk::Vertical);
     m_vsb->ValueChangedDelegate += MakeDelegate(this, &TreeView::SetVScroll);
     this->AddChild(m_vsb);
 }
@@ -224,7 +224,7 @@ Ptr<TreeNode> TreeView::GetRootNode()
     return m_root;
 }
 
-void TreeView::SetSelectedNode(TreeNode* node)
+void TreeView::SetSelectedNode(Ptr<TreeNode> node)
 {
 	m_selected = node;
 }

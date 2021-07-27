@@ -8,6 +8,10 @@
 #include "stdafx.h"
 #include "UniConversion.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW 
+#endif
+
 enum { SURROGATE_LEAD_FIRST = 0xD800 };
 enum { SURROGATE_TRAIL_FIRST = 0xDC00 };
 enum { SURROGATE_TRAIL_LAST = 0xDFFF };

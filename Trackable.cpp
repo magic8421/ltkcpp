@@ -2,6 +2,10 @@
 #include "Trackable.h"
 #include "ltk.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW 
+#endif
+
 namespace ltk {
 
 static Trackable* g_track_head = nullptr;

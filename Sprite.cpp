@@ -483,7 +483,7 @@ void Widget::SetAttribute(LPCSTR name, LPCSTR value)
     }
 
     if (m_parent) {
-        m_parent->OnChildAttribute(this, name, value);
+        m_parent->OnChildAttribute(Ptr(this), name, value);
     }
 }
 

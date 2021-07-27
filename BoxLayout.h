@@ -43,7 +43,7 @@ public:
 
     void DoLayout();
 
-    virtual void OnChildAttribute(Object* child, LPCSTR name, LPCSTR value) override;
+    virtual void OnChildAttribute(Ptr<Widget> child, LPCSTR name, LPCSTR value) override;
 
 
 private:

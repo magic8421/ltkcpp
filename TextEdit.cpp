@@ -18,7 +18,8 @@
 namespace ltk {
 
 
-TextEdit::TextEdit()
+TextEdit::TextEdit() :
+    m_vsb (new ScrollBar(ltk::Vertical))
 {
     //m_text = L"test... test ...";
     m_cursorPos = m_text.size();
@@ -30,7 +31,6 @@ TextEdit::TextEdit()
 
     //this->SetClipChildren(true);
 
-	m_vsb = new ScrollBar(ltk::Vertical);
     this->AddChild(m_vsb);
 }
 

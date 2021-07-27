@@ -33,7 +33,7 @@ private:
 	bool bChecked = false;
 	bool bNewRadioGroup = false;
 	ltk::IconInfo icon;
-	PopupMenu* sub_menu = nullptr;
+	Ptr<PopupMenu> sub_menu;
 
 
 private:
@@ -64,7 +64,7 @@ public:
 	float GetWidth();
 	void CalcWidth();
 
-	void SetSubMenu(UINT idx, PopupMenu *popup);
+	void SetSubMenu(UINT idx, Ptr<PopupMenu> popup);
 	void SetMenuBar(MenuBar*);
 
 	void Show(Window *wnd, const RectF &rc);
@@ -137,7 +137,7 @@ public:
 	virtual ~MenuBar();
 
 	UINT AddItem(LPCWSTR text);
-	void SetPopupMenu(UINT idx, PopupMenu *menu);
+	void SetPopupMenu(UINT idx, Ptr<PopupMenu> menu);
 	UINT GetItemCount();
 	void DoLayout();
 	void OnMenuHide();

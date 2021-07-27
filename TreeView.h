@@ -91,7 +91,7 @@ public:
 	float GetItemHeight();
 
     Ptr<TreeNode> GetRootNode();
-	void SetSelectedNode(TreeNode *);
+	void SetSelectedNode(Ptr<TreeNode> node);
     Ptr<TreeNode> GetSelectedNode();
 
     void UpdateLinearView();

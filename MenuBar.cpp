@@ -111,9 +111,8 @@ float PopupMenu::GetWidth()
 	return m_width;
 }
 
-void PopupMenu::SetSubMenu(UINT idx, PopupMenu *popup)
+void PopupMenu::SetSubMenu(UINT idx, Ptr<PopupMenu> popup)
 {
-	LTK_ASSERT(m_vecItems[idx]->sub_menu == nullptr);
 	popup->m_parent = this;
 	m_vecItems[idx]->sub_menu = popup;
 }
@@ -410,7 +409,7 @@ bool PopupMenu::OnLBtnDown(MouseEvent* ev)
 		item->ClickedDelegate();
 	}
 	int tracking = m_trackingIdx;
-	PopupMenu* menu = this;
+	Ptr menu (this);
 	while (tracking >= 0) {
 		menu = menu->m_vecItems[tracking]->sub_menu;
 		tracking = menu->m_trackingIdx;
@@ -493,7 +492,7 @@ UINT MenuBar::AddItem(LPCWSTR text)
 	return m_vecMenuItems.size() - 1;
 }
 
-void MenuBar::SetPopupMenu(UINT idx, PopupMenu *menu)
+void MenuBar::SetPopupMenu(UINT idx, Ptr<PopupMenu> menu)
 {
 	LTK_ASSERT(m_vecMenuItems[idx].sub_menu == nullptr);
 	menu->OnThemeChanged();

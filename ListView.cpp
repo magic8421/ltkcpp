@@ -29,18 +29,18 @@ ListView::ListView() :
 	m_hoverColor(D2D1::ColorF(D2D1::ColorF::Cyan)),
 	m_selectedColor(D2D1::ColorF(D2D1::ColorF::Cyan)),
 	m_selectedTextColor(D2D1::ColorF(D2D1::ColorF::Cyan)),
-	m_textColor(D2D1::ColorF(D2D1::ColorF::Cyan))
+	m_textColor(D2D1::ColorF(D2D1::ColorF::Cyan)),
+    m_vsb(new ScrollBar(ltk::Vertical)),
+    m_hsb(new ScrollBar(ltk::Horizontal)),
+    m_header(new HeaderCtrl)
 {
-	m_vsb = new ScrollBar(ltk::Vertical);
 	m_vsb->ValueChangedDelegate += MakeDelegate(
 		this, &ListView::HandleVScrollBar);
     this->AddChild(m_vsb);
-	m_hsb = new ScrollBar(ltk::Horizontal);
 	m_hsb->ValueChangedDelegate += MakeDelegate(
 		this, &ListView::HandleHScrollBar);
     this->AddChild(m_hsb);
 
-	m_header = new HeaderCtrl;
 	this->AddChild(m_header);
 	m_header->ResizingDelegate += MakeDelegate(this, &ListView::UpdateColumnWidth);
 	m_header->ResizeEndDelegate += MakeDelegate(this, &ListView::HandleResizeEnd);

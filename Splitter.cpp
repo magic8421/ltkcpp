@@ -1,6 +1,10 @@
 #include "stdafx.h"
 #include "Splitter.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW 
+#endif
+
 namespace ltk {
 
 static const float GRIP_SIZE = 5.f;

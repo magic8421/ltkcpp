@@ -3,6 +3,10 @@
 #include "Object.h"
 #include "HiddenWindow.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW 
+#endif
+
 namespace ltk {
 
 static HWND g_hwndUITask = 0;

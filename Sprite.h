@@ -100,7 +100,7 @@ public:
 
 
     virtual void SetAttribute(LPCSTR name, LPCSTR value);
-    virtual void OnChildAttribute(Object* child, LPCSTR name, LPCSTR value) {}
+    virtual void OnChildAttribute(Ptr<Widget> child, LPCSTR name, LPCSTR value) {}
 
     virtual bool OnEvent(Event *ev) override;
 
