@@ -21,7 +21,7 @@ HeaderCtrl::HeaderCtrl()
 {
     this->EnableClipChildren(true);
 
-    RefPtr<HeaderButton> btn(new HeaderButton(this));
+    Ptr<HeaderButton> btn(new HeaderButton(this));
     btn->SetBackground("header_btn_bg");
     btn->EnableCapture(false);
     ColumnData data;
@@ -52,7 +52,7 @@ void HeaderCtrl::GetColumnOrder(std::vector<int>& vecOrder)
 
 void HeaderCtrl::AddColumn(LPCWSTR name, float size)
 {
-    RefPtr<HeaderButton> btn(new HeaderButton(this));
+    Ptr<HeaderButton> btn(new HeaderButton(this));
     btn->SetBackground("header_btn_bg");
     btn->SetText(name);
     btn->EnableCapture(false);

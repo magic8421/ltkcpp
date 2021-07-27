@@ -18,27 +18,28 @@ public:
 
 	ULONG AddRef()
 	{
-		InterlockedIncrement(&m_refCount);
+		m_refCount++;
 		LTK_ASSERT(m_refCount < 9999999);
 		return m_refCount;
 	}
 	ULONG Release()
 	{
-		// https://docs.microsoft.com/en-us/office/client-developer/outlook/mapi/implementing-iunknown-in-c-plus-plus
-		ULONG ulRefCount = InterlockedDecrement(&m_refCount);
-		if (0 == m_refCount)
-		{
+		LTK_ASSERT(m_refCount > 0);
+
+		if (--m_refCount == 0)         {
 			delete this;
 		}
-		return ulRefCount;
+		return m_refCount;
+	}
+
+	Object() {}
+
+	virtual ~Object()
+	{
+		LTK_ASSERT(m_refCount == 0);
 	}
 
 	virtual void Dispose() {}
-
-	Object();
-	virtual ~Object();
-
-	void DeleteLater();
 
 	static Object *GetDelegateInvoker();
 	static void SetDelegateInvoker(Object *);
@@ -53,14 +54,7 @@ public:
 	static LPCSTR InternString(LPCSTR str);
 
 private:
-	ULONG volatile m_refCount;
-
-#ifndef LTK_NO_TRACE_MEMORY
-	Object* m_prev = nullptr;
-	Object* m_next = nullptr;
-	const char* m_source = nullptr;
-	int m_line = -1;
-#endif // !LTK_NO_TRACE_MEMORY
+	ULONG m_refCount = 0;
 
 	LPCSTR m_name = nullptr; // TODO: move this to Widget class
 

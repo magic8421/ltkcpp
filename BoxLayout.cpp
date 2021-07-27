@@ -29,7 +29,7 @@ BoxLayout::~BoxLayout()
     //}
 }
 
-bool BoxLayout::AlreadyHas(const RefPtr<Widget>& sp)
+bool BoxLayout::AlreadyHas(const Ptr<Widget>& sp)
 {
 	bool bHas = false;
 	for (UINT i = m_params.size(); i > 0; i --) {
@@ -42,7 +42,7 @@ bool BoxLayout::AlreadyHas(const RefPtr<Widget>& sp)
 	return bHas;
 }
 
-void BoxLayout::AddLayoutItem(RefPtr<Widget> item, float preferedSize, float growFactor)
+void BoxLayout::AddLayoutItem(Ptr<Widget> item, float preferedSize, float growFactor)
 {
     // item 参数改成 & 是否能提高性能？ TODO
 	LTK_ASSERT(!AlreadyHas(item));
@@ -55,7 +55,7 @@ void BoxLayout::AddLayoutItem(RefPtr<Widget> item, float preferedSize, float gro
     // TODO check if duplicate.
     m_params.push_back(param);
 }
-void BoxLayout::InsertLayoutItem(UINT before, RefPtr<Widget> item, float preferedSize, float growFactor)
+void BoxLayout::InsertLayoutItem(UINT before, Ptr<Widget> item, float preferedSize, float growFactor)
 {
 	LTK_ASSERT(!AlreadyHas(item));
     Widget::AddChild(item);
@@ -197,14 +197,14 @@ void BoxLayout::Init()
     id_grow = Object::InternString("grow");
 }
 
-RefPtr<Widget> BoxLayout::CreateHBox()
+Ptr<Widget> BoxLayout::CreateHBox()
 {
-    return RefPtr<Widget>(new BoxLayout(Horizontal));
+    return Ptr<Widget>(new BoxLayout(Horizontal));
 }
 
-RefPtr<Widget> BoxLayout::CreateVBox()
+Ptr<Widget> BoxLayout::CreateVBox()
 {
-    return RefPtr<Widget>(new BoxLayout(Vertical));
+    return Ptr<Widget>(new BoxLayout(Vertical));
 }
 
 void BoxLayout::OnChildAttribute(Object* child, LPCSTR name, LPCSTR value) 

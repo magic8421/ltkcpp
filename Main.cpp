@@ -28,14 +28,14 @@ using namespace ltk;
 
 static int node_count = 0;
 
-static void RecBuildNodes(TreeNode *parent, int depth)
+static void RecBuildNodes(Ptr<TreeNode> parent, int depth)
 {
 	if (depth > 5) {
 		return;
 	}
 	int num = rand() % 13 + 3;
 	for (int i = 0; i < num; i++) {
-		TreeNode *node = new TreeNode;
+		Ptr node (new TreeNode);
 		auto text = WStringFormat(L"TreeNode: %d", node_count);
 		node->SetText(text.c_str());
 		parent->AddChild(node);
@@ -70,10 +70,11 @@ void DemoWindow::BuildDemoWindow()
 {
 	Window *wnd = this;
 	//BoxLayout *hbox = new BoxLayout(ltk::Horizontal);
-	Splitter *spitter1 = new Splitter(ltk::Horizontal);
-	wnd->SetCentralWidget(spitter1);
+	Ptr spitter1(new Splitter(ltk::Horizontal));
+	wnd->SetCentralWidget(spitter1); // TODO 分成2个类 Window是空窗口 最基础的 MainWindow有最大化最小化关闭 菜单栏 工具栏 状态栏
 
-	TreeView *tree = new TreeView;
+
+	Ptr tree(new TreeView);
 	spitter1->AddClient(tree);
 	spitter1->SetClientSize(0, 200);
 
@@ -82,11 +83,11 @@ void DemoWindow::BuildDemoWindow()
 	RecBuildNodes(tree->GetRootNode(), 0);
 	LTK_LOG("node_count: %d", node_count);
 
-	BoxLayout *vboxRightPanel = new BoxLayout(ltk::Vertical);
+	Ptr vboxRightPanel (new BoxLayout(ltk::Vertical));
 	//vbox->SetSpacing(10);
 	spitter1->AddClient(vboxRightPanel);
 
-	RefPtr<ListView> listview1 (new ListView());
+	Ptr<ListView> listview1 (new ListView());
 	auto header = listview1->GetHeaderCtrl();
 	header->AddColumn(L"Column0", 100);
 	header->AddColumn(L"Column1", 200);
@@ -116,54 +117,54 @@ void DemoWindow::BuildDemoWindow()
 		listview1->SetCellText(i, 5, text.c_str());
 	}
 
-	RefPtr<TextEdit> edit1 (new TextEdit);
+	Ptr<TextEdit> edit1 (new TextEdit);
 	vboxRightPanel->AddLayoutItem(edit1, 100, 0.0f);
 
-	RefPtr<BoxLayout> hboxTimerTest (new BoxLayout(ltk::Horizontal));
+	Ptr<BoxLayout> hboxTimerTest (new BoxLayout(ltk::Horizontal));
 	vboxRightPanel->AddLayoutItem(hboxTimerTest, 30, 0.0f);
 
-	RefPtr<Button> btnRepeatTimer (new Button);
+	Ptr<Button> btnRepeatTimer (new Button);
 	btnRepeatTimer->SetText(L"循环定时器");
 	btnRepeatTimer->ClickedDelegate += MakeDelegate(m_timer, &Timer::Start);
 	hboxTimerTest->AddLayoutItem(btnRepeatTimer, 0, 1);
 
-	RefPtr<Button> btnStopRepeatTimer (new Button);
+	Ptr<Button> btnStopRepeatTimer (new Button);
 	btnStopRepeatTimer->SetText(L"停止");
 	btnStopRepeatTimer->ClickedDelegate += MakeDelegate(m_timer, &Timer::Stop);
 	hboxTimerTest->AddLayoutItem(btnStopRepeatTimer, 0, 1);
 
-	RefPtr<Button> btnOnceTimer (new Button);
+	Ptr<Button> btnOnceTimer (new Button);
 	btnOnceTimer->SetText(L"单次定时器");
 	btnOnceTimer->ClickedDelegate += MakeDelegate(m_onceTimer, &Timer::StartOnce);
 	hboxTimerTest->AddLayoutItem(btnOnceTimer, 0, 1);
 
-	RefPtr<Button> btnStopOnceTimer (new Button);
+	Ptr<Button> btnStopOnceTimer (new Button);
 	btnStopOnceTimer->SetText(L"停止");
 	btnStopOnceTimer->ClickedDelegate += MakeDelegate(m_onceTimer, &Timer::Stop);
 	hboxTimerTest->AddLayoutItem(btnStopOnceTimer, 0, 1);
 
-	RefPtr<BoxLayout> hboxTheme (new BoxLayout(ltk::Horizontal));
+	Ptr<BoxLayout> hboxTheme (new BoxLayout(ltk::Horizontal));
 	vboxRightPanel->AddLayoutItem(hboxTheme, 30, 0.0f);
 
-	RefPtr<Button> btnPixelTheme (new Button);
+	Ptr<Button> btnPixelTheme (new Button);
 	hboxTheme->AddLayoutItem(btnPixelTheme, 100);
 	btnPixelTheme->SetText(L"位图资源");
 	btnPixelTheme->ClickedDelegate += MakeDelegate(
 		this, &DemoWindow::OnPixelThemeClicked);
 
-	RefPtr<Button> btnRectTheme (new Button);
+	Ptr<Button> btnRectTheme (new Button);
 	hboxTheme->AddLayoutItem(btnRectTheme, 100);
 	btnRectTheme->SetText(L"暗色");
 	btnRectTheme->ClickedDelegate += MakeDelegate(
 		this, &DemoWindow::OnDarkThemeClicked);
 
-	RefPtr<Button> btnRectThemeLight (new Button);
+	Ptr<Button> btnRectThemeLight (new Button);
 	hboxTheme->AddLayoutItem(btnRectThemeLight, 100);
 	btnRectThemeLight->SetText(L"亮色");
 	btnRectThemeLight->ClickedDelegate += MakeDelegate(
 		this, &DemoWindow::OnLightThemeClicked);
 
-	MenuBar *menu_bar = new MenuBar;
+	Ptr menu_bar (new MenuBar);
 	wnd->SetMenu(menu_bar);
 	menu_bar->AddItem(L"文件");
 	menu_bar->AddItem(L"编辑");
@@ -218,19 +219,18 @@ void DemoWindow::BuildDemoWindow()
 
 void DemoWindow::BuildSplitterTest2()
 {
-	Window *wnd = this;
-	Splitter *spitter1 = new Splitter(ltk::Horizontal);
-	wnd->SetCentralWidget(spitter1);
+	Ptr spitter1(new Splitter(ltk::Horizontal));
+	this->SetCentralWidget(spitter1);
 	spitter1->Resize(5);
-	spitter1->SetClientAt(0, new Button);
+	spitter1->SetClientAt(0, Ptr(new Button));
 	spitter1->SetClientSize(0, 100);
 	//spitter1->SetClientAt(1, new Button);
 	spitter1->SetClientSize(1, 100);
-	spitter1->SetClientAt(2, new Button);
+	spitter1->SetClientAt(2, Ptr(new Button));
 	spitter1->SetClientSize(2, 100);
-	spitter1->SetClientAt(3, new Button);
+	spitter1->SetClientAt(3, Ptr(new Button));
 	spitter1->SetClientSize(3, 100);
-	spitter1->SetClientAt(4, new Button);
+	spitter1->SetClientAt(4, Ptr(new Button));
 	spitter1->SetClientSize(4, 100);
 
 	spitter1->DoLayout();
@@ -240,29 +240,29 @@ void DemoWindow::BuildSplitterTest()
 {
 	Window *wnd = this;
 
-	Splitter *sp_left = new Splitter(ltk::Vertical);
-	sp_left->AddClient(new Button);
+	Ptr sp_left (new Splitter(ltk::Vertical));
+	sp_left->AddClient(Ptr(new Button));
 	sp_left->SetClientSize(0, 100);
-	sp_left->AddClient(new Button);
+	sp_left->AddClient(Ptr(new Button));
 	sp_left->SetClientSize(1, 100);
-	sp_left->AddClient(new Button);
+	sp_left->AddClient(Ptr(new Button));
 	sp_left->SetClientSize(2, 100);
 
-	Splitter *sp_mid = new Splitter(ltk::Vertical);
-	sp_mid->AddClient(new Button);
+	Ptr sp_mid (new Splitter(ltk::Vertical));
+	sp_mid->AddClient(Ptr(new Button));
 	sp_mid->SetClientSize(0, 350);
-	sp_mid->AddClient(new Button);
+	sp_mid->AddClient(Ptr(new Button));
 	sp_mid->SetClientSize(1, 100);
 
-	Splitter *sp_right = new Splitter(ltk::Vertical);
-	sp_right->AddClient(new Button);
+	Ptr sp_right (new Splitter(ltk::Vertical));
+	sp_right->AddClient(Ptr(new Button));
 	sp_right->SetClientSize(0, 100);
-	sp_right->AddClient(new Button);
+	sp_right->AddClient(Ptr(new Button));
 	sp_right->SetClientSize(1, 100);
-	sp_right->AddClient(new Button);
+	sp_right->AddClient(Ptr(new Button));
 	sp_right->SetClientSize(2, 100);
 
-	Splitter *spitter1 = new Splitter(ltk::Horizontal);
+	Ptr spitter1 (new Splitter(ltk::Horizontal));
 	wnd->SetCentralWidget(spitter1);
 	spitter1->AddClient(sp_left);
 	spitter1->SetClientSize(0, 100);

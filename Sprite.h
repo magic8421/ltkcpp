@@ -64,8 +64,8 @@ public:
 	void SetVisible( bool );
 	bool GetVisible();
 
-	void AddChild(RefPtr<Widget> sp);
-	void RemoveChild(RefPtr<Widget> sp);
+	void AddChild(Ptr<Widget> sp);
+	void RemoveChild(Ptr<Widget> sp);
 
 	void SetCapture();
 	void ReleaseCapture();
@@ -133,7 +133,7 @@ private:
     RectF m_rect;
     Window *m_window = nullptr;
 
-    std::vector<RefPtr<Widget>> m_children;
+    std::vector<Ptr<Widget>> m_children;
     Widget *m_parent = nullptr;
 
 	DISALLOW_COPY_AND_ASSIGN(Widget);

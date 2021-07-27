@@ -81,10 +81,10 @@ public:
 	void SetImePosition( float x, float y );
 
     Widget *GetRootWidget();
-    Widget *SetCentralWidget(Widget *sp);
+	void SetCentralWidget(Ptr<Widget> sp);
 
-	MenuBar *SetMenu(MenuBar *);
-	MenuBar *GetMenu();
+	void SetMenu(Ptr<MenuBar> m);
+	Ptr<MenuBar> GetMenu();
 
 	void SetFocusWidget(Widget *sp);
 	Widget *GetFocusWidget();

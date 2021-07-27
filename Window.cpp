@@ -633,21 +633,15 @@ void Window::Maximize()
 }
 
 
-
-typedef int (CALLBACK *WindowCloseCallback)(void *userdata, BOOL *pProceed);
-typedef int (CALLBACK* WindowDestroyCallback)(void* userdata);
-
 void Window::OnClose(BOOL* proceed)
 {
 	SetDelegateInvoker(this);
 	this->CloseDelegate(proceed);
-    InvokeCallbacks<WindowCloseCallback>(LTK_WINDOW_CLOSE, proceed);
 }
 
 void Window::OnDestroy()
 {
     SetDelegateInvoker(this);
-    InvokeCallbacks<WindowDestroyCallback>(LTK_WINDOW_DESTROY);
 }
 
 HWND Window::GetHWND()
@@ -726,17 +720,17 @@ Widget *Window::GetRootWidget()
     return m_root;
 }
 
-Widget *Window::SetCentralWidget(Widget *sp)
+void Window::SetCentralWidget(Ptr<Widget> sp)
 {
-    return m_root->SetCentralWidget(sp);
+    m_root->SetCentralWidget(sp);
 }
 
-MenuBar *Window::SetMenu(MenuBar *m)
+void Window::SetMenu(Ptr<MenuBar> m)
 {
-	return m_root->SetMenuBar(m);
+	m_root->SetMenuBar(m);
 }
 
-MenuBar * Window::GetMenu()
+Ptr<MenuBar> Window::GetMenu()
 {
 	return m_root->GetMenuBar();
 }

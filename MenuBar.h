@@ -53,10 +53,10 @@ public:
 	void AddSeparator();
 
 	UINT GetMenuItemCount();
-	MenuItem *GetMenuItemAt(UINT idx);
+	Ptr<MenuItem> GetMenuItemAt(UINT idx);
 
-	MenuItem *FindChildItem(LPCSTR name);
-	MenuItem *FindChildItemInterned(LPCSTR name); // name必须内部化
+	Ptr<MenuItem> FindChildItem(LPCSTR name);
+	Ptr<MenuItem> FindChildItemInterned(LPCSTR name); // name必须内部化
 
 	float GetHeight();
 	
@@ -93,7 +93,7 @@ private:
 	RectF RectFromIndex(int idx);
 
 private:
-	std::vector<MenuItem *> m_vecItems;
+	std::vector<Ptr<MenuItem>> m_vecItems;
 	PopupMenu* m_parent = nullptr;
 	MenuBar* m_menuBar = nullptr;
 
@@ -124,8 +124,8 @@ private:
 };
 
 struct MenuButtonParam {
-	Button *button = nullptr;
-	PopupMenu *sub_menu = nullptr;
+	Ptr<Button> button;
+	Ptr<PopupMenu> sub_menu;
 };
 
 class LTK_CPP_API MenuBar : public Widget

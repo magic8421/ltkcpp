@@ -17,7 +17,7 @@ struct ColumnData {
     std::wstring name;
     float width = 100.0f;
     int order = -1;
-    RefPtr<HeaderButton> button;
+    Ptr<HeaderButton> button;
 };
 
 class LTK_CPP_API HeaderCtrl : public Widget

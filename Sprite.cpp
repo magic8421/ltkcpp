@@ -173,7 +173,7 @@ void Widget::HandlePaint( ID2D1RenderTarget *target )
 	}
 }
 
-void Widget::AddChild(RefPtr<Widget> sp)
+void Widget::AddChild(Ptr<Widget> sp)
 {
     for (UINT i =  m_children.size(); i > 0; i--) {
         if (m_children[i - 1] == sp) {
@@ -266,8 +266,8 @@ bool Widget::IsCapturing()
 void Widget::BringToFront()
 {
     auto parent = m_parent;
-	m_parent->RemoveChild(RefPtrFromThis(this));
-    parent->AddChild(RefPtrFromThis(this));
+	m_parent->RemoveChild(Ptr<Widget>(this));
+    parent->AddChild(Ptr<Widget>(this));
 }
 
 void Widget::SetVisible( bool v )
@@ -342,7 +342,7 @@ void Widget::TrackMouseLeave()
 	}
 }
 
-void Widget::RemoveChild(RefPtr<Widget> sp)
+void Widget::RemoveChild(Ptr<Widget> sp)
 {
     // maybe searh from the end is better, because we always push to the end.
     for (int i = m_children.size() - 1; i >= 0; i--) {
@@ -351,7 +351,7 @@ void Widget::RemoveChild(RefPtr<Widget> sp)
             //sp2->Release();
 			sp2->m_parent = nullptr;
             for (int j = i + 1; j < (int)m_children.size(); j++) {
-                m_children[j - 1] = m_children[j];
+                m_children[j - 1] = m_children[j]; //TODO 这里频繁加减引用计数
             }
             m_children.pop_back();
             i--;

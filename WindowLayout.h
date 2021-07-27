@@ -21,11 +21,11 @@ public:
     WindowLayout();
     virtual ~WindowLayout();
 
-    Widget *SetCentralWidget(Widget *sp);
-    Widget *GetClientWidget();
+    void SetCentralWidget(Ptr<Widget> sp);
+    Ptr<Widget> GetClientWidget();
 	
-	MenuBar *SetMenuBar(MenuBar *menu);
-	MenuBar *GetMenuBar();
+    void WindowLayout::SetMenuBar(Ptr<MenuBar> menu);
+    Ptr<MenuBar> GetMenuBar();
 
     void DoLayout();
     void SetWindow(Window *wnd);
@@ -40,13 +40,13 @@ private:
 	void OnMaxBtnClicked();
 	void OnCloseBtnClicked();
 
-    Widget *m_client = nullptr;
-    Button *m_minBtn = nullptr;
-    Button *m_maxBtn = nullptr;
-    Button *m_closeBtn = nullptr;
-	MenuBar *m_menu = nullptr;
+    Ptr<Widget> m_client;
+    Ptr<Button> m_minBtn;
+    Ptr<Button> m_maxBtn;
+    Ptr<Button> m_closeBtn;
+	Ptr<MenuBar> m_menu;
     
-    Label *m_caption = nullptr;
+    Ptr<Label> m_caption;
 };
 
 } // namespace ltk

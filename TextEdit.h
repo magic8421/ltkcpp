@@ -54,7 +54,7 @@ private:
     IDWriteTextLayout *m_layout = nullptr;
     ID2D1SolidColorBrush *m_brushSelectedText = nullptr;
 
-    ScrollBar *m_vsb = nullptr;
+    Ptr<ScrollBar> m_vsb;
     ScrollAnimation m_scrollAni;
     bool m_isInside = true;
     bool m_bCapture = false;

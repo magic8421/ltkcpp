@@ -4,7 +4,7 @@ namespace ltk {
 
 class Widget;
 
-typedef RefPtr<Widget> (*FactoryMethod)();
+typedef Ptr<Widget> (*FactoryMethod)();
 
 class Builder
 {
@@ -17,10 +17,10 @@ public:
 	static void Free();
 
 	void RegisterType(LPCSTR xml_tag, FactoryMethod func);
-	RefPtr<Widget> WidgetFromXml(LPCSTR path);
+	Ptr<Widget> WidgetFromXml(LPCSTR path);
 
 private:
-	RefPtr<Widget> WidgetFromXmlRec(tinyxml2::XMLElement* elm, Widget* parent);
+	Ptr<Widget> WidgetFromXmlRec(tinyxml2::XMLElement* elm, Widget* parent);
 
 	static Builder* m_sInst;
 

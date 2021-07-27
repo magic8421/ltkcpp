@@ -43,69 +43,12 @@ CriticalSection g_lockTrackAlloc;
 static Object* g_track_head = nullptr;
 static Object* g_track_tail = nullptr;
 
-Object::Object()
-{
-#ifndef LTK_NO_TRACE_MEMORY
-	do {
-		AutoLock lock(g_lockTrackAlloc);
-		if (!g_track_head) {
-			g_track_head = this;
-			g_track_tail = this;
-			m_next = nullptr;
-			m_prev = nullptr;
-		}
-		else {
-			g_track_head->m_prev = this;
-			m_next = g_track_head;
-			g_track_head = this;
-			m_prev = nullptr;
-		}
-	} while (0);
-#endif // !LTK_NO_TRACE_MEMORY
-}
-
-Object::~Object()
-{
-#ifndef LTK_NO_TRACE_MEMORY
-	do {
-		AutoLock lock(g_lockTrackAlloc);
-		if (m_prev) {
-			m_prev->m_next = m_next;
-		}
-		else {
-			g_track_head = m_next;
-		}
-		if (m_next) {
-			m_next->m_prev = m_prev;
-		}
-		else {
-			g_track_tail = m_prev;
-		}
-	} while (0);
-#endif // !LTK_NO_TRACE_MEMORY
-}
-
-void Object::DeleteLater()
-{
-	HiddenWindow::PostDeleteLater(this);
-}
-
 void Object::Init()
 {
 }
 
 void Object::Free()
 {
-	do {
-		AutoLock lock(g_lockTrackAlloc);
-		auto p = g_track_head;
-		while (p) {
-			LTK_LOG("leak: [%s]", p->TypeNameInstance());
-			p = p->m_next;
-		}
-
-	} while (0);
-
 	do {
 		AutoLock lock(g_lockInternStr);
 		for (auto iter = g_internedStrings.begin(); iter != g_internedStrings.end(); iter++) {
@@ -157,8 +100,6 @@ LPCSTR Object::InternString(LPCSTR psz)
 
 void Object::SetSourceLine(LPCSTR source, int line)
 {
-	m_source = source;
-	m_line = line;
 }
 
 void Object::DumpObjectLeaks()

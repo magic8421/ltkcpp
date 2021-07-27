@@ -38,17 +38,11 @@ PopupMenu::PopupMenu() :
 
 PopupMenu::~PopupMenu()
 {
-	for (auto item : m_vecItems) {
-		if (item) {
-			delete item->sub_menu;
-			delete item;
-		}
-	}
 }
 
 void PopupMenu::AddItem(LPCWSTR text, LPCSTR name)
 {
-	auto item = new MenuItem;
+	Ptr item (new MenuItem);
 	item->text = text;
 	item->SetName(name);
 	m_vecItems.push_back(item);
@@ -56,7 +50,7 @@ void PopupMenu::AddItem(LPCWSTR text, LPCSTR name)
 
 void PopupMenu::AddSeparator()
 {
-	m_vecItems.push_back(nullptr);
+	m_vecItems.push_back(Ptr<MenuItem>());
 }
 
 UINT PopupMenu::GetMenuItemCount()
@@ -64,18 +58,18 @@ UINT PopupMenu::GetMenuItemCount()
 	return m_vecItems.size();
 }
 
-MenuItem * PopupMenu::GetMenuItemAt(UINT idx)
+Ptr<MenuItem> PopupMenu::GetMenuItemAt(UINT idx)
 {
 	return m_vecItems[idx];
 }
 
-MenuItem* PopupMenu::FindChildItem(LPCSTR name)
+Ptr<MenuItem> PopupMenu::FindChildItem(LPCSTR name)
 {
 	auto i_name = ltk::InternString(name);
 	return FindChildItemInterned(i_name);
 }
 
-MenuItem* PopupMenu::FindChildItemInterned(LPCSTR name)
+Ptr<MenuItem> PopupMenu::FindChildItemInterned(LPCSTR name)
 {
 	for (auto item : m_vecItems) {
 		if (item->GetName() == name) {
@@ -88,7 +82,7 @@ MenuItem* PopupMenu::FindChildItemInterned(LPCSTR name)
 			}
 		}
 	}
-	return nullptr;
+	return Ptr<MenuItem>();
 }
 
 float PopupMenu::GetHeight()
@@ -135,7 +129,7 @@ void PopupMenu::Show(Window* wnd, const RectF& rc)
 		return;
 	}
 	auto root = wnd->GetRootWidget();
-	root->AddChild(this);
+	root->AddChild(Ptr(this));
 	this->SetRect(rc);
 	wnd->SetFocusWidget(this);
 	m_trackingIdx = -1;
@@ -152,7 +146,7 @@ void PopupMenu::Hide()
 	m_bHiding = true;
 	this->EndAnimation();
 	if (GetParent()) {
-		GetParent()->RemoveChild(this);
+		GetParent()->RemoveChild(Ptr<PopupMenu>(this));
 		// Invalidate(); // because GetWindow() will return null, this does not work.
 	}
 	if (m_parent) {
@@ -170,7 +164,7 @@ void PopupMenu::HideAll()
 	m_bHiding = true;
 	this->EndAnimation();
 	if (GetParent()) {
-		GetParent()->RemoveChild(this);
+		GetParent()->RemoveChild(Ptr(this));
 		// Invalidate(); // because GetWindow() will return null, this does not work.
 	}
 	if (m_parent) {
@@ -412,8 +406,8 @@ bool PopupMenu::OnLBtnDown(MouseEvent* ev)
 		// TODO 这里不能传item因为要和button共用一个回调
 		// 实际上应该弄个 IAction接口 C API拿到 Object之后 dynamic_cast到 IAction
 		SetDelegateInvoker(wnd); 
-		wnd->InvokeCallbacks<ActionCallback>(LTK_ACTION, item->GetName());
-		//item->ClickedDelegate();
+		//wnd->InvokeCallbacks<ActionCallback>(LTK_ACTION, item->GetName());
+		item->ClickedDelegate();
 	}
 	int tracking = m_trackingIdx;
 	PopupMenu* menu = this;
@@ -481,15 +475,12 @@ MenuBar::MenuBar()
 
 MenuBar::~MenuBar()
 {
-	for (auto &item : m_vecMenuItems) {
-		delete item.sub_menu;
-	}
 }
 
 
 UINT MenuBar::AddItem(LPCWSTR text)
 {
-	Button *btn = new Button;
+	Ptr<Button> btn(new Button);
 	btn->SetText(text);
 	btn->SetBackground("menu_bar_btn_bg");
 	//btn->ObjectName = "menu_btn";
@@ -515,7 +506,7 @@ void MenuBar::OnMenuBtnClicked()
 	Button* btn = Object::GetDelegateInvoker()->As<Button>();
 	int idx = FindMenuButtonIdx(btn);
 	LTK_ASSERT(idx < (int)m_vecMenuItems.size());
-	PopupMenu *menu = m_vecMenuItems[idx].sub_menu;
+	auto menu = m_vecMenuItems[idx].sub_menu;
 	if (!menu) {
 		return;
 	}

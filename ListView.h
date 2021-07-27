@@ -33,7 +33,7 @@ public:
 	UINT GetItemCount();
     void ScrollToBottom();
     void UpdateColumnWidth();
-	RefPtr<HeaderCtrl> GetHeaderCtrl();
+	Ptr<HeaderCtrl> GetHeaderCtrl();
     void SetHeaderCtrl(HeaderCtrl *head);
 	void HandleResizeEnd();
 
@@ -72,9 +72,9 @@ private:
     ID2D1SolidColorBrush *m_brush = nullptr;
     IDWriteTextFormat *m_textFormat = nullptr;
     ScrollAnimation m_scroll;
-    RefPtr<ScrollBar> m_vsb;
-    RefPtr<ScrollBar> m_hsb;
-    RefPtr<HeaderCtrl> m_header;
+    Ptr<ScrollBar> m_vsb;
+    Ptr<ScrollBar> m_hsb;
+    Ptr<HeaderCtrl> m_header;
     int m_hoverItem = -1;
     int m_selectedRow = -1;
     std::vector<float> m_vecColumns;

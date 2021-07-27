@@ -320,7 +320,7 @@ void ListView::UpdateColumnWidth()
     this->SetColumns(cols);
 }
 
-RefPtr<HeaderCtrl> ListView::GetHeaderCtrl()
+Ptr<HeaderCtrl> ListView::GetHeaderCtrl()
 {
 	return m_header;
 }

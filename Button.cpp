@@ -29,9 +29,9 @@ Button::~Button()
 {
 }
 
-RefPtr<Widget> Button::CreateInstance()
+Ptr<Widget> Button::CreateInstance()
 {
-	return RefPtr<Widget>(new Button);
+	return Ptr<Widget>(new Button);
 }
 
 void Button::OnThemeChanged()

@@ -41,24 +41,22 @@ WindowLayout::~WindowLayout()
 {
 }
 
-Widget *WindowLayout::SetCentralWidget(Widget *sp)
+void WindowLayout::SetCentralWidget(Ptr<Widget> sp)
 {
     if (m_client) {
         this->RemoveChild(m_client);
     }
-    auto old = m_client;
     m_client = sp;
     this->AddChild(sp);
     this->DoLayout();
-    return old;
 }
 
-Widget *WindowLayout::GetClientWidget()
+Ptr<Widget> WindowLayout::GetClientWidget()
 {
     return m_client;
 }
 
-MenuBar *WindowLayout::SetMenuBar(MenuBar *menu)
+void WindowLayout::SetMenuBar(Ptr<MenuBar> menu)
 {
 	auto old = m_menu;
 	if (old) {
@@ -66,10 +64,9 @@ MenuBar *WindowLayout::SetMenuBar(MenuBar *menu)
 	}
 	m_menu = menu;
 	this->AddChild(m_menu);
-	return old;
 }
 
-MenuBar *WindowLayout::GetMenuBar()
+Ptr<MenuBar> WindowLayout::GetMenuBar()
 {
 	return m_menu;
 }

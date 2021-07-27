@@ -24,19 +24,18 @@ void Splitter::Resize(UINT n)
 	}
 }
 
-Widget* Splitter::SetClientAt(UINT idx, Widget* sp)
+void Splitter::SetClientAt(UINT idx, Ptr<Widget> sp)
 {
 	auto &item = m_vecItems.at(idx);
 	auto old_sp = item.client;
 	if (old_sp) {
-		GetParent()->RemoveChild(old_sp);
+		GetParent()->RemoveChild(Ptr(old_sp));
 	}
 	Widget::AddChild(sp);
 	item.client = sp;
-	return old_sp;
 }
 
-size_t Splitter::AddClient(Widget *sp)
+size_t Splitter::AddClient(Ptr<Widget> sp)
 {
 	SplitterItem item;
 	item.client = sp;

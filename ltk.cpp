@@ -478,16 +478,16 @@ static void array_list_test()
 {
     CComPtr<IUnknown> cp;
     const size_t SIZE = 100;
-    ArrayList<RefPtr<RefCounted>> list;
+    ArrayList<Ptr<RefCounted>> list;
     for (size_t i = 0; i < SIZE; i++) {
-        RefPtr<RefCounted> ptr; ptr.Attach(new RefCounted);
+        Ptr<RefCounted> ptr; ptr.Attach(new RefCounted);
         list.PushBack(std::move(ptr));
     }
-    ArrayList<RefPtr<RefCounted>> list2(std::move(list));
+    ArrayList<Ptr<RefCounted>> list2(std::move(list));
     LTK_ASSERT(list2.Length() == SIZE);
     LTK_ASSERT(list.Length() == 0);
-    ArrayList<RefPtr<RefCounted>> list3(list2);
-    ArrayList<RefPtr<RefCounted>> list4(list);
+    ArrayList<Ptr<RefCounted>> list3(list2);
+    ArrayList<Ptr<RefCounted>> list4(list);
 }
 
 #define LTK_EXPORT_CURRENT_FUNCTION comment(linker, "/EXPORT:" __FUNCTION__ "=" __FUNCDNAME__)

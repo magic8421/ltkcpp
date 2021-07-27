@@ -24,7 +24,7 @@ struct TreeViewColors
 	D2D1_COLOR_F SelectedTextColor;
 };
 
-class LTK_CPP_API TreeNode
+class TreeNode : public Object
 {
 public:
     TreeNode() {}
@@ -32,10 +32,10 @@ public:
 
     void SetTreeView(TreeView *tree);
 
-    void AddChild(TreeNode *);
+    void AddChild(Ptr<TreeNode> node);
     void InsertChild(TreeNode *);
     UINT GetChildCount();
-    TreeNode *GetNthChild(UINT i);
+    Ptr<TreeNode> GetNthChild(UINT i);
 
     RectF GetRect();
     
@@ -55,7 +55,7 @@ public:
     RectF GetExpandButtonRect(const RectF &rc);
 
 private:
-    std::vector<TreeNode*> m_children;
+    std::vector<Ptr<TreeNode>> m_children;
     TreeView* m_treeView = nullptr;
     TreeNode* m_parent = nullptr;
 
@@ -90,9 +90,9 @@ public:
 	AbstractBackground *GetCollapseIcon();
 	float GetItemHeight();
 
-    TreeNode *GetRootNode();
+    Ptr<TreeNode> GetRootNode();
 	void SetSelectedNode(TreeNode *);
-	TreeNode *GetSelectedNode();
+    Ptr<TreeNode> GetSelectedNode();
 
     void UpdateLinearView();
     void SetDirty();
@@ -114,12 +114,12 @@ protected:
 	virtual void OnThemeChanged() override;
 
 private:
-    void UpdateLinearViewRec(TreeNode* node, int depth);
+    void UpdateLinearViewRec(Ptr<TreeNode> node, int depth);
 
-    ScrollBar *m_vsb = nullptr;
-    TreeNode *m_root;
-	TreeNode *m_selected = nullptr;
-    std::vector<TreeNode*> m_vecLinear;
+    Ptr<ScrollBar> m_vsb;
+    Ptr<TreeNode> m_root;
+	Ptr<TreeNode> m_selected;
+    std::vector<Ptr<TreeNode>> m_vecLinear;
 
     static const float m_itemHeight;
     static const float m_indent;

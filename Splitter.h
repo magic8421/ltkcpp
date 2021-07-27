@@ -13,8 +13,8 @@ public:
 	virtual ~Splitter() {}
 
 	void Resize(UINT n);
-	Widget* SetClientAt(UINT idx, Widget* sp);
-	size_t AddClient(Widget *sp);
+	void SetClientAt(UINT idx, Ptr<Widget> sp);
+	size_t AddClient(Ptr<Widget> sp);
 	void SetClientSize(UINT idx, float size);
 	
 	float GetTotolSize();
@@ -33,7 +33,7 @@ private:
 	{
 		float size = 15.f; // TODO MIN_SIZE
 		bool bFixed = false;
-		Widget* client = nullptr;
+		Ptr<Widget> client;
 	};
 	std::vector<SplitterItem> m_vecItems;
 	Orientation m_mode;

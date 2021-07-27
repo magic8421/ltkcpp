@@ -31,19 +31,19 @@ void Builder::RegisterType(LPCSTR xml_tag, FactoryMethod func)
 	m_mapFactory[xml_tag] = func;
 }
 
-RefPtr<Widget> Builder::WidgetFromXml(LPCSTR path)
+Ptr<Widget> Builder::WidgetFromXml(LPCSTR path)
 {
 	using namespace tinyxml2;
 	tinyxml2::XMLDocument doc;
-	if (doc.LoadFile(path) != XML_SUCCESS) return RefPtr<Widget>();
+	if (doc.LoadFile(path) != XML_SUCCESS) return Ptr<Widget>();
 	m_buildingPath.clear();
 	auto elm = doc.FirstChildElement();
 	return WidgetFromXmlRec(elm, nullptr);
 }
 
-RefPtr<Widget> Builder::WidgetFromXmlRec(tinyxml2::XMLElement* elm, Widget* parent)
+Ptr<Widget> Builder::WidgetFromXmlRec(tinyxml2::XMLElement* elm, Widget* parent)
 {
-	RefPtr<Widget> obj;
+	Ptr<Widget> obj;
 	auto name = elm->Name();
 	auto iter = m_mapFactory.find(name);
 	if (iter != m_mapFactory.end()) {

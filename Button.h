@@ -22,7 +22,7 @@ public:
 
 	static void Init();
 
-	static RefPtr<Widget> CreateInstance();
+	static Ptr<Widget> CreateInstance();
 
     void SetText(LPCWSTR text);
 	void SetText(LPCSTR text);

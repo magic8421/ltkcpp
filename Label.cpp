@@ -27,9 +27,9 @@ Label::~Label()
 {
 }
 
-RefPtr<Widget> Label::CreateInstance()
+Ptr<Widget> Label::CreateInstance()
 {
-    return RefPtr<Widget>(new Label);
+    return Ptr<Widget>(new Label);
 }
 
 bool Label::OnPaint(PaintEvent *ev)

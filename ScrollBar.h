@@ -46,7 +46,7 @@ public:
 
 private:
 	Orientation m_mode;
-    Button *m_slider = nullptr;
+    Ptr<Button> m_slider;
     float m_contentSize = 100.0f;
     float m_position = 0.0f;
     bool m_bDrag = false;

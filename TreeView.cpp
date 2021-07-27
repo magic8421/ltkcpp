@@ -13,9 +13,6 @@ namespace ltk
 
 TreeNode::~TreeNode()
 {
-    for (auto node : m_children) {
-        delete node;
-    }
 }
 
 void TreeNode::SetTreeView(TreeView *tree)
@@ -23,7 +20,7 @@ void TreeNode::SetTreeView(TreeView *tree)
     m_treeView = tree;
 }
 
-void TreeNode::AddChild(TreeNode *node)
+void TreeNode::AddChild(Ptr<TreeNode> node)
 {
     LTK_ASSERT(node->m_parent == nullptr);
     LTK_ASSERT(node != this);
@@ -39,7 +36,7 @@ UINT TreeNode::GetChildCount()
     return m_children.size();
 }
 
-TreeNode * TreeNode::GetNthChild(UINT i)
+Ptr<TreeNode> TreeNode::GetNthChild(UINT i)
 {
     return m_children[i];
 }
@@ -174,7 +171,6 @@ TreeView::TreeView() :
 
 TreeView::~TreeView()
 {
-	delete m_root;
 }
 
 void TreeView::DoLayout()
@@ -223,7 +219,7 @@ float TreeView::GetItemHeight()
 	return m_itemHeight;
 }
 
-TreeNode * TreeView::GetRootNode()
+Ptr<TreeNode> TreeView::GetRootNode()
 {
     return m_root;
 }
@@ -233,12 +229,12 @@ void TreeView::SetSelectedNode(TreeNode* node)
 	m_selected = node;
 }
 
-TreeNode * TreeView::GetSelectedNode()
+Ptr<TreeNode> TreeView::GetSelectedNode()
 {
 	return m_selected;
 }
 
-void TreeView::UpdateLinearViewRec(TreeNode* node, int depth)
+void TreeView::UpdateLinearViewRec(Ptr<TreeNode> node, int depth)
 {
     node->SetDepth(depth);
     m_vecLinear.push_back(node);

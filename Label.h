@@ -19,7 +19,7 @@ public:
     virtual ~Label();
 
     static void Init();
-    static RefPtr<Widget> CreateInstance();
+    static Ptr<Widget> CreateInstance();
 
     LPCWSTR GetText();
     void SetText(LPCWSTR text);
