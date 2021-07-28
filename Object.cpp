@@ -96,15 +96,4 @@ LPCSTR Object::InternString(LPCSTR psz)
 	return result;
 }
 
-/////////////////////////////////////////////////////////////////
-
-void Object::SetSourceLine(LPCSTR source, int line)
-{
-}
-
-void Object::DumpObjectLeaks()
-{
-}
-
-
 } // namespace ltk

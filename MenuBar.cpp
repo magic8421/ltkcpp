@@ -38,6 +38,11 @@ PopupMenu::PopupMenu() :
 
 PopupMenu::~PopupMenu()
 {
+	for (auto& item : m_vecItems) {
+		if (item && item->sub_menu) { // TODO 把用0指针表示分隔符这种奇怪的设计改掉
+			item->sub_menu->m_parent = nullptr;
+		}
+	}
 }
 
 void PopupMenu::AddItem(LPCWSTR text, LPCSTR name)
@@ -474,6 +479,9 @@ MenuBar::MenuBar()
 
 MenuBar::~MenuBar()
 {
+	for (auto& item : m_vecMenuItems) {
+		item.sub_menu->SetMenuBar(nullptr);
+	}
 }
 
 

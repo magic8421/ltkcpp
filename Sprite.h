@@ -9,6 +9,7 @@
 #include "Common.h"
 #include "Event.h"
 #include "Object.h"
+#include "RefCounted.h"
 
 namespace ltk {
 

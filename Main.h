@@ -35,8 +35,8 @@ public:
 	void InternStringTest();
 
 private:
-	ltk::Timer *m_timer = nullptr;
-	ltk::Timer *m_onceTimer = nullptr;
+	ltk::Ptr<ltk::Timer> m_timer;
+	ltk::Ptr<ltk::Timer> m_onceTimer;
 	
 	DISALLOW_COPY_AND_ASSIGN(DemoWindow);
 };

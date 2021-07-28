@@ -47,14 +47,14 @@ static void RecBuildNodes(Ptr<TreeNode> parent, int depth)
 }
 
 
-DemoWindow::DemoWindow()
+DemoWindow::DemoWindow() :
+	m_timer (new Timer),
+	m_onceTimer (new Timer)
 {
-	m_timer = new Timer;
 	//m_timer->SetParent(this);
 	m_timer->SetInterval(1000);
 	m_timer->TimeoutDelegate += MakeDelegate(this, &DemoWindow::OnTimer);
 
-	m_onceTimer = new Timer;
 	//m_onceTimer->SetParent(this);
 	m_onceTimer->SetInterval(1000);
 	m_onceTimer->TimeoutDelegate += MakeDelegate(this, &DemoWindow::OnOnceTimer);
@@ -62,8 +62,6 @@ DemoWindow::DemoWindow()
 
 DemoWindow::~DemoWindow()
 {
-	delete m_timer;
-	delete m_onceTimer;
 }
 
 void DemoWindow::BuildDemoWindow()
@@ -125,22 +123,22 @@ void DemoWindow::BuildDemoWindow()
 
 	Ptr<Button> btnRepeatTimer (new Button);
 	btnRepeatTimer->SetText(L"循环定时器");
-	btnRepeatTimer->ClickedDelegate += MakeDelegate(m_timer, &Timer::Start);
+	btnRepeatTimer->ClickedDelegate += MakeDelegate(m_timer.Get(), &Timer::Start);
 	hboxTimerTest->AddLayoutItem(btnRepeatTimer, 0, 1);
 
 	Ptr<Button> btnStopRepeatTimer (new Button);
 	btnStopRepeatTimer->SetText(L"停止");
-	btnStopRepeatTimer->ClickedDelegate += MakeDelegate(m_timer, &Timer::Stop);
+	btnStopRepeatTimer->ClickedDelegate += MakeDelegate(m_timer.Get(), &Timer::Stop);
 	hboxTimerTest->AddLayoutItem(btnStopRepeatTimer, 0, 1);
 
 	Ptr<Button> btnOnceTimer (new Button);
 	btnOnceTimer->SetText(L"单次定时器");
-	btnOnceTimer->ClickedDelegate += MakeDelegate(m_onceTimer, &Timer::StartOnce);
+	btnOnceTimer->ClickedDelegate += MakeDelegate(m_onceTimer.Get(), &Timer::StartOnce);
 	hboxTimerTest->AddLayoutItem(btnOnceTimer, 0, 1);
 
 	Ptr<Button> btnStopOnceTimer (new Button);
 	btnStopOnceTimer->SetText(L"停止");
-	btnStopOnceTimer->ClickedDelegate += MakeDelegate(m_onceTimer, &Timer::Stop);
+	btnStopOnceTimer->ClickedDelegate += MakeDelegate(m_onceTimer.Get(), &Timer::Stop);
 	hboxTimerTest->AddLayoutItem(btnStopOnceTimer, 0, 1);
 
 	Ptr<BoxLayout> hboxTheme (new BoxLayout(ltk::Horizontal));

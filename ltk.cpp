@@ -381,8 +381,6 @@ namespace ltk {
 
     void LtkUninitialize()
     {
-        Object::DumpObjectLeaks();
-
         ShadowFrame::Free();
         Builder::Free();
         StyleManager::Free();
@@ -429,17 +427,6 @@ namespace ltk {
 
 using namespace ltk;
 
-/*
-void test_gdip_font()
-{
-    Gdiplus::Font *font = nullptr;
-    for (size_t i = 0; i < 1000000; i++)
-    {
-        font = new Gdiplus::Font(L"Î¢ÈíÑÅºÚ", 16);
-    }
-}
-*/
-
 static void size_test()
 {
     std::map<int, void*> map1;
@@ -449,7 +436,6 @@ static void size_test()
     std::function<void(int, float, std::string)> fn2;
     LTK_LOG("fn2: %d", sizeof(fn2));
     LTK_LOG("Widget: %d", sizeof(Widget));
-    LTK_LOG("RefCounted: %d",sizeof(RefCounted));
     std::forward_list<int> slist;
     LTK_LOG("forward_list: %d", sizeof(slist));
     std::list<int> dlist;
@@ -492,50 +478,4 @@ static void array_list_test()
 
 #define LTK_EXPORT_CURRENT_FUNCTION comment(linker, "/EXPORT:" __FUNCTION__ "=" __FUNCDNAME__)
 
-int luaopen_ltk(lua_State *L)
-{
-    #pragma LTK_EXPORT_CURRENT_FUNCTION
-    
-    //size_test();
-    //vector_test();
-    array_list_test();
-
-    lua_atpanic(L, my_panic_func);
-
-    LtkLogInit();
-    // log_thread_test();
-    LtkInitialize();
-    ApiBindingInit(L);
-    Window::RegisterWndClass();
-    LuaRegisterClass<Window>(L, "LtkWindow");
-    LuaRegisterClass<Widget>(L, "LtkWidget");
-    LuaRegisterClass<Button>(L, "LtkButton");
-    LuaRegisterClass<BoxLayout>(L, "LtkBoxLayout");
-    LuaRegisterClass<Label>(L, "LtkLabel");
-    LuaRegisterClass<Serializer>(L, "LtkSerializer");
-    LuaRegisterClass<StyleManager>(L, "LtkStyleManager");
-    LuaRegisterClass<IconWidget>(L, "LtkIconWidget");
-    LuaRegisterClass<TextureWidget>(L, "LtkTextureWidget");
-    LuaRegisterClass<ImageWidget>(L, "LtkImageWidget");
-    LuaRegisterClass<ScrollBar>(L, "LtkScrollBar");
-    LuaRegisterClass<CheckBox>(L, "LtkCheckBox");
-    LuaRegisterClass<RadioGroup>(L, "LtkRadioGroup");
-    LuaRegisterClass<ListBox>(L, "LtkListBox");
-    LuaRegisterClass<HeaderCtrl>(L, "LtkHeaderCtrl");
-
-    LuaRegisterClass<LuaVector<unsigned char>>(L, LuaVectorScriptName<unsigned char>());
-    LuaRegisterClass<LuaVector<unsigned short>>(L, LuaVectorScriptName<unsigned short>());
-    LuaRegisterClass<LuaVector<unsigned long>>(L, LuaVectorScriptName<unsigned long>());
-
-    LuaRegisterClass<LuaVector<signed char>>(L, LuaVectorScriptName<signed char>());
-    LuaRegisterClass<LuaVector<signed short>>(L, LuaVectorScriptName<signed short>());
-    LuaRegisterClass<LuaVector<signed long>>(L, LuaVectorScriptName<signed long>());
-
-    LuaRegisterClass<LuaVector<float>>(L, LuaVectorScriptName<float>());
-    LuaRegisterClass<LuaVector<double>>(L, LuaVectorScriptName<double>());
-
-    ShadowFrame::Init();
-
-    return 0;
-}
 */

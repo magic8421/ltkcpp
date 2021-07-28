@@ -12,6 +12,7 @@
 #include "ImeInput.h"
 #include "MulticastDelegate.h"
 #include "Object.h"
+#include "RefCounted.h"
 
 namespace ltk {
 
