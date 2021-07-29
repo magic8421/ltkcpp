@@ -81,7 +81,7 @@ public:
 	void OnImeInput(LPCTSTR text);
 	void SetImePosition( float x, float y );
 
-    Widget *GetRootWidget();
+    Ptr<Widget> GetRootWidget();
 	void SetCentralWidget(Ptr<Widget> sp);
 
 	void SetMenu(Ptr<MenuBar> m);
@@ -144,7 +144,7 @@ private:
 	RECT m_rectComposition;
 	int m_caretHeight;
 
-	WindowLayout *m_root = nullptr; // owner
+	Ptr<WindowLayout> m_root; // owner
 
 	bool m_bDeleting = false;
 	bool m_bEnableFocusChange = true;

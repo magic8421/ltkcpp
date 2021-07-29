@@ -24,11 +24,15 @@ struct RefCount
     }
 
     /// Reference count. If below zero, the object has been destroyed.
-    int refs_;
+    long refs_;
     /// Weak reference count.
-    int weakRefs_;
+    long weakRefs_;
 
 	Object* obj_;
+
+#ifdef _DEBUG
+	unsigned long threadId_;
+#endif
 };
 
 class LTK_CPP_API Object : public RTTI
@@ -47,7 +51,6 @@ public:
 
 	virtual ~Object()
 	{
-		LTK_ASSERT(refCount_);
 		LTK_ASSERT(refCount_->weakRefs_ > 0);
 
 		if (refCount_->weakRefs_ == 1) {
@@ -55,6 +58,7 @@ public:
 		}
 		else {
 			(refCount_->weakRefs_)--; // 判断==1就可以自杀了 完了再-- 这样可以少污染一次缓存 
+			refCount_->obj_ = nullptr;
 		}
 	}
 

@@ -89,9 +89,6 @@ TimerManager::~TimerManager()
     if (m_hwnd) {
         ::DestroyWindow(m_hwnd);
     }
-    for (auto iter: m_mapCallback) {
-        delete iter.second;
-    }
 }
 
 LRESULT CALLBACK TimerManager::MyWndProc(

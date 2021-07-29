@@ -66,10 +66,9 @@ DemoWindow::~DemoWindow()
 
 void DemoWindow::BuildDemoWindow()
 {
-	Window *wnd = this;
 	//BoxLayout *hbox = new BoxLayout(ltk::Horizontal);
 	Ptr spitter1(new Splitter(ltk::Horizontal));
-	wnd->SetCentralWidget(spitter1); // TODO 分成2个类 Window是空窗口 最基础的 MainWindow有最大化最小化关闭 菜单栏 工具栏 状态栏
+	this->SetCentralWidget(spitter1); // TODO 分成2个类 Window是空窗口 最基础的 MainWindow有最大化最小化关闭 菜单栏 工具栏 状态栏
 
 
 	Ptr tree(new TreeView);
@@ -163,7 +162,7 @@ void DemoWindow::BuildDemoWindow()
 		this, &DemoWindow::OnLightThemeClicked);
 
 	Ptr menu_bar (new MenuBar);
-	wnd->SetMenu(menu_bar);
+	this->SetMenu(menu_bar);
 	menu_bar->AddItem(L"文件");
 	menu_bar->AddItem(L"编辑");
 	menu_bar->AddItem(L"自适应长度");
@@ -421,7 +420,7 @@ int CALLBACK WinMain(
     ltk::LtkInitialize();
 
 	
-	auto wnd = new DemoWindow;
+	Ptr wnd (new DemoWindow);
     //wnd->SetBackground("window_bg");
 	wnd->BuildDemoWindow();
 	//wnd->BuildSplitterTest2();
@@ -450,8 +449,6 @@ int CALLBACK WinMain(
             DispatchMessage(&msg);
         }
     }
-
-	delete wnd;
 
     LTK_LOG("MessageLoop END");
 

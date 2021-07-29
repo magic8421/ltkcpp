@@ -151,21 +151,18 @@ template <class T> class Weak
 public:
     /// Construct a null weak pointer.
     Weak() :
-        ptr_(0),
-        refCount_(0)
+        refCount_(nullptr)
     {
     }
 
     /// Construct a null weak pointer.
     Weak(std::nullptr_t) :
-        ptr_(0),
-        refCount_(0)
+        refCount_(nullptr)
     {
     }
 
     /// Copy-construct from another weak pointer.
     Weak(const Weak<T>& rhs) :
-        ptr_(rhs.ptr_),
         refCount_(rhs.refCount_)
     {
         AddRef();
@@ -173,27 +170,29 @@ public:
 
     /// Copy-construct from another weak pointer allowing implicit upcasting.
     template <class U> Weak(const Weak<U>& rhs) :
-        ptr_(rhs.ptr_),
+        //ptr_(rhs.ptr_),
         refCount_(rhs.refCount_)
     {
+        static_assert(std::is_convertible<U*, T*>());
         AddRef();
     }
 
     /// Construct from a shared pointer.
     Weak(const Ptr<T>& rhs) :
-        ptr_(rhs.Get()),
         refCount_(rhs.RefCountPtr())
     {
         AddRef();
     }
 
     /// Construct from a raw pointer.
+    /*
     explicit Weak(T* ptr) :
         ptr_(ptr),
         refCount_(ptr ? ptr->RefCountPtr() : 0)
     {
         AddRef();
     }
+    */
 
     /// Destruct. Release the weak reference to the object.
     ~Weak()
@@ -204,11 +203,10 @@ public:
     /// Assign from a shared pointer.
     Weak<T>& operator =(const Ptr<T>& rhs)
     {
-        if (ptr_ == rhs.Get() && refCount_ == rhs.RefCountPtr())
+        if (refCount_ == rhs.RefCountPtr())
             return *this;
 
         ReleaseRef();
-        ptr_ = rhs.Get();
         refCount_ = rhs.RefCountPtr();
         AddRef();
 
@@ -218,11 +216,10 @@ public:
     /// Assign from a weak pointer.
     Weak<T>& operator =(const Weak<T>& rhs)
     {
-        if (ptr_ == rhs.ptr_ && refCount_ == rhs.refCount_)
+        if (refCount_ == rhs.refCount_)
             return *this;
 
         ReleaseRef();
-        ptr_ = rhs.ptr_;
         refCount_ = rhs.refCount_;
         AddRef();
 
@@ -232,11 +229,12 @@ public:
     /// Assign from another weak pointer allowing implicit upcasting.
     template <class U> Weak<T>& operator =(const Weak<U>& rhs)
     {
-        if (ptr_ == rhs.ptr_ && refCount_ == rhs.refCount_)
+        static_assert(std::is_convertible<U*, T*>());
+
+        if (refCount_ == rhs.refCount_)
             return *this;
 
         ReleaseRef();
-        ptr_ = rhs.ptr_;
         refCount_ = rhs.refCount_;
         AddRef();
 
@@ -248,11 +246,10 @@ public:
     {
         RefCount* refCount = ptr ? ptr->RefCountPtr() : 0;
 
-        if (ptr_ == ptr && refCount_ == refCount)
+        if (refCount_ == refCount)
             return *this;
 
         ReleaseRef();
-        ptr_ = ptr;
         refCount_ = refCount;
         AddRef();
 
@@ -265,53 +262,48 @@ public:
         if (Expired())
             return Ptr<T>();
         else
-            return Ptr<T>(ptr_);
+            return Ptr<T>(static_cast<T*>(refCount_->obj_));
     }
 
     /// Return raw pointer. If expired, return null.
     T* Get() const
     {
-        if (Expired())
-            return 0;
-        else
-            return ptr_;
+        return refCount_ ? static_cast<T*>(refCount_->obj_) : nullptr;
     }
 
+    /*
     /// Point to the object.
     T* operator ->() const
     {
-        T* rawPtr = Get();
-        assert(rawPtr);
-        return rawPtr;
+        return static_cast<T*>(refCount_->obj_);
     }
 
     /// Dereference the object.
     T& operator *() const
     {
-        T* rawPtr = Get();
-        assert(rawPtr);
+        T* rawPtr = static_cast<T*>(refCount_->obj_);
         return *rawPtr;
     }
 
     /// Subscript the object if applicable.
     T& operator [](const int index)
     {
-        T* rawPtr = Get();
-        assert(rawPtr);
+        T* rawPtr = static_cast<T*>(refCount_->obj_);
         return (*rawPtr)[index];
     }
+    */
 
     /// Test for equality with another weak pointer.
-    template <class U> bool operator ==(const Weak<U>& rhs) const { return ptr_ == rhs.ptr_ && refCount_ == rhs.refCount_; }
+    template <class U> bool operator ==(const Weak<U>& rhs) const { return refCount_ == rhs.refCount_; }
 
     /// Test for inequality with another weak pointer.
-    template <class U> bool operator !=(const Weak<U>& rhs) const { return ptr_ != rhs.ptr_ || refCount_ != rhs.refCount_; }
+    template <class U> bool operator !=(const Weak<U>& rhs) const { return refCount_ != rhs.refCount_; }
 
     /// Test for less than with another weak pointer.
-    template <class U> bool operator <(const Weak<U>& rhs) const { return ptr_ < rhs.ptr_; }
+    template <class U> bool operator <(const Weak<U>& rhs) const { return refCount_ < rhs.refCount_; }
 
     /// Convert to a raw pointer, null if the object is expired.
-    operator T* () const { return Get(); }
+    //operator T* () const { return Get(); }
 
     /// Reset to null and release the weak reference.
     void Reset() { ReleaseRef(); }
@@ -319,8 +311,9 @@ public:
     /// Perform a static cast from a weak pointer of another type.
     template <class U> void StaticCast(const Weak<U>& rhs)
     {
+        static_assert(std::is_convertible<U*, T*>());
+
         ReleaseRef();
-        ptr_ = static_cast<T*>(rhs.Get());
         refCount_ = rhs.refCount_;
         AddRef();
     }
@@ -329,9 +322,9 @@ public:
     template <class U> void DynamicCast(const Weak<U>& rhs)
     {
         ReleaseRef();
-        ptr_ = dynamic_cast<T*>(rhs.Get());
+        auto ptr_ = dynamic_cast<T*>(rhs.Get());
 
-        if (ptr_)         {
+        if (ptr_) {
             refCount_ = rhs.refCount_;
             AddRef();
         }
@@ -340,31 +333,28 @@ public:
     }
 
     /// Check if the pointer is null.
-    bool Null() const { return refCount_ == 0; }
+    bool Null() const { return refCount_ == 0 || refCount_->obj_ == 0; }
 
     /// Check if the pointer is not null.
-    bool NotNull() const { return refCount_ != 0; }
+    bool NotNull() const { return refCount_ != 0 && refCount_->obj_ != 0; }
 
     /// Return the object's reference count, or 0 if null pointer or if object has expired.
-    int Refs() const { return (refCount_ && refCount_->refs_ >= 0) ? refCount_->refs_ : 0; }
+    int Refs() const { return (refCount_ && refCount_->obj_ != 0) ? refCount_->refs_ : 0; }
 
     /// Return the object's weak reference count.
     int WeakRefs() const
     {
-        if (!Expired())
-            return ptr_->WeakRefs();
-        else
-            return refCount_ ? refCount_->weakRefs_ : 0;
+        return refCount_ ? refCount_->weakRefs_ : 0;
     }
 
     /// Return whether the object has expired. If null pointer, always return true.
-    bool Expired() const { return refCount_ ? refCount_->refs_ < 0 : true; }
+    bool Expired() const { return refCount_ ? refCount_->obj_ == 0 : true; }
 
     /// Return pointer to the RefCount structure.
     RefCount* RefCountPtr() const { return refCount_; }
 
     /// Return hash value for HashSet & HashMap.
-    unsigned ToHash() const { return (unsigned)((size_t)ptr_ / sizeof(T)); }
+    unsigned ToHash() const { return (unsigned)((size_t)refCount_->obj_ / sizeof(T)); }
 
 private:
     template <class U> friend class Weak;
@@ -372,8 +362,8 @@ private:
     /// Add a weak reference to the object pointed to.
     void AddRef()
     {
-        if (refCount_)         {
-            assert(refCount_->weakRefs_ >= 0);
+        if (refCount_) {
+            LTK_ASSERT(refCount_->weakRefs_ >= 0);
             ++(refCount_->weakRefs_);
         }
     }
@@ -382,19 +372,16 @@ private:
     void ReleaseRef()
     {
         if (refCount_) {
-            assert(refCount_->weakRefs_ > 0);
+            LTK_ASSERT(refCount_->weakRefs_ > 0);
             --(refCount_->weakRefs_);
 
-            if (Expired() && !refCount_->weakRefs_)
+            if (Expired() && !refCount_->weakRefs_) {
                 delete refCount_;
+            }
+            refCount_ = 0;
         }
-
-        ptr_ = 0;
-        refCount_ = 0;
     }
 
-    /// Pointer to the object.
-    T* ptr_;
     /// Pointer to the RefCount structure.
     RefCount* refCount_;
 };

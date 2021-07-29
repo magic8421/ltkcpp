@@ -323,6 +323,9 @@
     <ClInclude Include="Delegate.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="RefCounted.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />

@@ -47,14 +47,14 @@ RectF Widget::GetClientRect()
 
 RectF Widget::GetAbsRect()
 {
-	Widget *sp = m_parent;
+	auto sp = m_parent.Lock();
 	RectF rcSelf = GetRect();
 	RectF rcParent;
 	while(sp)
 	{
 		rcParent = sp->GetRect();
 		rcSelf.Offset(rcParent.X, rcParent.Y);
-		sp = sp->m_parent;
+		sp = sp->m_parent.Lock();
 	}
 	return rcSelf;
 }
@@ -182,12 +182,13 @@ void Widget::AddChild(Ptr<Widget> sp)
         }
     }
 	//sp->SetWindow(m_window);
-    if (sp->m_parent) {
+    auto parent = sp->m_parent.Lock();
+    if (parent) {
         // if sp already has a parent, remove it first.
-        sp->m_parent->RemoveChild(sp);
+        parent->RemoveChild(sp);
     }
 	m_children.push_back(sp);
-	sp->OnParentChanged(sp->m_parent, this);
+	sp->OnParentChanged(parent.Get(), this);
 	sp->m_parent = this;
 }
 
@@ -225,10 +226,12 @@ void Widget::HandleImeInput(LPCTSTR text)
 // return weak ref
 Window * Widget::GetWindow()
 {
-	Widget *sp = this;
-	while (sp->m_parent)
+	Ptr sp (this);
+    auto parent = sp->m_parent.Lock();
+	while (parent)
 	{
-		sp = sp->m_parent;
+		sp = parent;
+        parent = sp->m_parent.Lock();
 	}
 	return sp->m_window;
 }
@@ -265,8 +268,8 @@ bool Widget::IsCapturing()
 
 void Widget::BringToFront()
 {
-    auto parent = m_parent;
-	m_parent->RemoveChild(Ptr<Widget>(this));
+    auto parent = m_parent.Lock();
+    parent->RemoveChild(Ptr<Widget>(this));
     parent->AddChild(Ptr<Widget>(this));
 }
 
@@ -289,7 +292,7 @@ void Widget::EnableClipChildren( bool bClip )
 	if (m_bClipChildren != bClip)
 	{
 		m_bClipChildren = bClip;
-		Invalidate();
+		//Invalidate();
 	}
 }
 
@@ -318,19 +321,21 @@ bool Widget::DispatchMouseEvent(MouseEvent *ev)
     return this->OnEvent(ev);
 }
 
-Widget * Widget::GetAncestor()
+Ptr<Widget> Widget::GetAncestor()
 {
-	Widget *sp = this;
-	while (sp->m_parent)
+	Ptr sp (this);
+    auto parent = sp->m_parent.Lock();
+	while (parent)
 	{
-		sp = sp->m_parent;
+        sp = parent;
+        parent = sp->m_parent.Lock();
 	}
 	return sp;
 }
 
-Widget * Widget::GetParent()
+Ptr<Widget> Widget::GetParent()
 {
-	return m_parent;
+	return m_parent.Lock();
 }
 
 void Widget::TrackMouseLeave()
@@ -482,8 +487,9 @@ void Widget::SetAttribute(LPCSTR name, LPCSTR value)
         return;
     }
 
-    if (m_parent) {
-        m_parent->OnChildAttribute(Ptr(this), name, value);
+    auto parent = m_parent.Lock();
+    if (parent) {
+        parent->OnChildAttribute(Ptr(this), name, value);
     }
 }
 

@@ -79,8 +79,8 @@ public:
 
 	void TrackMouseLeave();
 
-	Widget *GetAncestor();
-	Widget *GetParent();
+	Ptr<Widget> GetAncestor();
+    Ptr<Widget> GetParent();
 
     void ShowCaret();
     void SetCaretPos(RectF rc);
@@ -135,7 +135,7 @@ private:
     Window *m_window = nullptr;
 
     std::vector<Ptr<Widget>> m_children;
-    Widget *m_parent = nullptr;
+    Weak<Widget> m_parent;
 
 	DISALLOW_COPY_AND_ASSIGN(Widget);
 };

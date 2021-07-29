@@ -30,14 +30,14 @@ Window::Window() :
 m_shadowLeft(ShadowFrame::eLeft),
 m_shadowTop(ShadowFrame::eTop),
 m_shadowRight(ShadowFrame::eRight),
-m_shadowBottom(ShadowFrame::eBottom)
+m_shadowBottom(ShadowFrame::eBottom),
+m_root(new WindowLayout)
 {
 	m_rectComposition.left = 0;
 	m_rectComposition.top = 0;
 	m_rectComposition.right = 5;
 	m_rectComposition.bottom = 20;
 
-    m_root = new WindowLayout;
     m_root->SetWindow(this);
     
 	m_caretHeight = 20;
@@ -50,9 +50,6 @@ Window::~Window(void)
     m_bDeleting = true;
     if (m_hwnd) {
         ::DestroyWindow(m_hwnd);
-    }
-    if (m_root) {
-        delete m_root;
     }
 
     m_spFocus = INVALID_POINTER(Widget);
@@ -715,7 +712,7 @@ void Window::SetImePosition( float x, float y )
 	m_rectComposition.bottom = (int)y + 20;
 }
 
-Widget *Window::GetRootWidget()
+Ptr<Widget> Window::GetRootWidget()
 {
     return m_root;
 }
