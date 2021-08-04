@@ -15,45 +15,6 @@
 
 namespace ltk {
 
-Timer::~Timer()
-{
-	TimerManager::Instance()->KillTimer(this);
-}
-
-void Timer::SetInterval(UINT ms)
-{
-	this->elapse = ms;
-}
-
-void Timer::Start()
-{
-	this->bOnce = false;
-	TimerManager::Instance()->SetTimer(this);
-}
-
-void Timer::StartOnce()
-{
-	this->bOnce = true;
-	TimerManager::Instance()->SetTimer(this);
-}
-
-void Timer::Stop()
-{
-	TimerManager::Instance()->KillTimer(this);
-}
-
-UINT Timer::GetId()
-{
-	return this->id;
-}
-
-void Timer::Triger()
-{
-	// Object::SetDelegeteInvoker(q_func());
-	this->TimeoutDelegate();
-}
-
-//////////////////////////////////////////////////////////////////////////
 
 TimerManager *TimerManager::m_instance = nullptr;
 
@@ -115,9 +76,12 @@ void TimerManager::OnTimer(UINT id)
 {
 	auto iter = m_mapCallback.find(id);
 	if (iter != m_mapCallback.end()) {
-		Timer *timer = iter->second;
+		auto timer = iter->second;
 		LTK_ASSERT(timer->id == id);
-		timer->Triger();
+		if (!timer->ref.Expired()) {
+			auto strong_ref = timer->ref.Lock(); // 机智如我 强引用防止回调内this意外无效
+			timer->callback(id);
+		}
 		if (timer->bOnce) {
 			timer->id = 0;
 			::KillTimer(m_hwnd, id);
@@ -129,10 +93,14 @@ void TimerManager::OnTimer(UINT id)
 	}
 }
 
-UINT TimerManager::SetTimer(Timer *timer)
+UINT TimerManager::Start(UINT id, UINT elapse, bool bOnce, Weak<Object> ref, std::function<void(UINT)> callback)
 {
-	UINT id = timer->id;
-	UINT elapse = timer->elapse;
+	Ptr timer (new Timer);
+	timer->id = id;
+	timer->elapse = elapse;
+	timer->bOnce = bOnce;
+	timer->ref = ref;
+	timer->callback = callback;
 
 	if (id == 0) {
 		auto iter = m_mapCallback.end();
@@ -158,16 +126,14 @@ UINT TimerManager::SetTimer(Timer *timer)
 	return id;
 }
 
-void TimerManager::KillTimer(Timer *timer)
+void TimerManager::Stop(UINT id)
 {
-	UINT id = timer->id;
-
 	if (id == 0) {
 		return; // TODO [0] cannot be searched by stl hash table?
 	}
 	auto iter = m_mapCallback.find(id);
 	if (iter != m_mapCallback.end()) {
-		timer->id = 0;
+		//timer->id = 0;
 		::KillTimer(m_hwnd, id);
 		m_mapCallback.erase(iter);
 	}

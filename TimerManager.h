@@ -7,26 +7,14 @@
 
 #pragma once
 #include "Object.h"
-#include "MulticastDelegate.h"
+#include "RefCounted.h"
 
 namespace ltk {
 
-class LTK_CPP_API Timer : public Object
+class Timer : public Object
 {
-public:
-	Timer() {}
-	virtual ~Timer();
-
-	void SetInterval(UINT ms);
-	void Start();
-	void StartOnce();
-	void Stop();
-	UINT GetId();
-
-	MulticastDelegate0 TimeoutDelegate;
-
-private:
-	void Triger();
+	std::function<void(UINT)> callback;
+	Weak<Object> ref;
 
 	UINT id = 0;
 	UINT elapse = 0;
@@ -41,8 +29,8 @@ public:
     static TimerManager *Instance();
     static void Free();
 
-	UINT SetTimer(Timer *timer);
-	void KillTimer(Timer *timer);
+	UINT Start(UINT id, UINT elapse, bool bOnce, Weak<Object> ref, std::function<void(UINT)> callback);
+	void Stop(UINT id);
 
 private:
     TimerManager();
@@ -53,7 +41,7 @@ private:
     void OnTimer(UINT id);
 
     HWND m_hwnd = 0;
-	std::unordered_map<UINT, Timer *> m_mapCallback;
+	std::unordered_map<UINT, Ptr<Timer>> m_mapCallback;
 };
 
 } // namespace ltk

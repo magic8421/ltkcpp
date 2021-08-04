@@ -246,7 +246,12 @@ public:
     {}
 
     void erase(size_t idx)
-    {}
+    {
+        for (size_t i = idx; i < m_d->size - 1; i++) {
+            m_d->data[i] = m_d->data[i + 1];
+        }
+        this->pop_back();
+    }
 
     void clear()
     {

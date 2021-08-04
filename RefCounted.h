@@ -170,7 +170,6 @@ public:
 
     /// Copy-construct from another weak pointer allowing implicit upcasting.
     template <class U> Weak(const Weak<U>& rhs) :
-        //ptr_(rhs.ptr_),
         refCount_(rhs.refCount_)
     {
         static_assert(std::is_convertible<U*, T*>());
@@ -185,14 +184,12 @@ public:
     }
 
     /// Construct from a raw pointer.
-    /*
+
     explicit Weak(T* ptr) :
-        ptr_(ptr),
         refCount_(ptr ? ptr->RefCountPtr() : 0)
     {
         AddRef();
     }
-    */
 
     /// Destruct. Release the weak reference to the object.
     ~Weak()
@@ -270,28 +267,6 @@ public:
     {
         return refCount_ ? static_cast<T*>(refCount_->obj_) : nullptr;
     }
-
-    /*
-    /// Point to the object.
-    T* operator ->() const
-    {
-        return static_cast<T*>(refCount_->obj_);
-    }
-
-    /// Dereference the object.
-    T& operator *() const
-    {
-        T* rawPtr = static_cast<T*>(refCount_->obj_);
-        return *rawPtr;
-    }
-
-    /// Subscript the object if applicable.
-    T& operator [](const int index)
-    {
-        T* rawPtr = static_cast<T*>(refCount_->obj_);
-        return (*rawPtr)[index];
-    }
-    */
 
     /// Test for equality with another weak pointer.
     template <class U> bool operator ==(const Weak<U>& rhs) const { return refCount_ == rhs.refCount_; }

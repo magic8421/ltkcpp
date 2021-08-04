@@ -47,9 +47,7 @@ static void RecBuildNodes(Ptr<TreeNode> parent, int depth)
 }
 
 
-DemoWindow::DemoWindow() :
-	m_timer (new Timer),
-	m_onceTimer (new Timer)
+DemoWindow::DemoWindow()
 {
 	//m_timer->SetParent(this);
 	m_timer->SetInterval(1000);
@@ -122,7 +120,12 @@ void DemoWindow::BuildDemoWindow()
 
 	Ptr<Button> btnRepeatTimer (new Button);
 	btnRepeatTimer->SetText(L"循环定时器");
-	btnRepeatTimer->ClickedDelegate += MakeDelegate(m_timer.Get(), &Timer::Start);
+	btnRepeatTimer->OnClick.Attach(Weak(this), [this]() {
+		TimerManager::Instance()->Start(0, 10, false, Weak(this), [this](UINT id) {
+			// 惊为天人的多层lambda嵌套
+			LTK_LOG("tick: %d", id);
+		});
+	});
 	hboxTimerTest->AddLayoutItem(btnRepeatTimer, 0, 1);
 
 	Ptr<Button> btnStopRepeatTimer (new Button);

@@ -35,8 +35,6 @@ public:
 	void InternStringTest();
 
 private:
-	ltk::Ptr<ltk::Timer> m_timer;
-	ltk::Ptr<ltk::Timer> m_onceTimer;
 	
 	DISALLOW_COPY_AND_ASSIGN(DemoWindow);
 };

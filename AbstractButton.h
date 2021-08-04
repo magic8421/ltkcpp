@@ -10,6 +10,7 @@
 #include "StyleManager.h"
 #include "MulticastDelegate.h"
 #include "Delegate2.h"
+#include "Delegate.h"
 
 namespace ltk {
 
@@ -30,6 +31,7 @@ public:
 
 	MulticastDelegate0 ClickedDelegate;
 	delegate2::MuticastDelegate<MouseEvent*, bool&> MouseEventDelegate;
+    Delegate<void()> OnClick;
 
     virtual bool OnEvent(Event *ev) override;
 
