@@ -18,31 +18,42 @@ public:
 };
 
 template<typename T>
+class Delegate;
+
+class Object;
+
+template<typename T>
 class DelegateNode : public Object, public IDelegateNode
 {
 public:
-    DelegateNode(Delegate* p) : parent(p) {}
+    DelegateNode(Delegate<T>* p) : parent(p) {}
 
     virtual void Disconnect() override
     {
-        parent->Disconnect();
+        parent->Disconnect(this);
     }
 
 private:
     Delegate<T>* parent;
     std::function<T> lambda;
     Weak<Object> ref;
+
+    friend class Delegate<T>;
 };
 
 class DelegateTracker
 {
 public:
-    DelegateTracker(Weak<Object> node, IDelegateNode iface) :
+    DelegateTracker(Weak<Object> node, IDelegateNode *iface) :
         node_(node), iface_(iface)
     {}
+    DelegateTracker() {}
 
     void Disconnect()
     {
+        if (!this->iface_) {
+            return;
+        }
         if (node_.Expired()) {
             return;
         }
@@ -51,7 +62,7 @@ public:
 
 private:
     Weak<Object> node_;
-    IDelegateNode iface_;
+    IDelegateNode *iface_ = 0;
 };
 
 template<typename T>
@@ -67,20 +78,20 @@ public:
         // check duplicate
         int i;
         for (i = m_vecItems.size() - 1; i >= 0; i++) {
-            if (m_vecItems[i].Get() == node) {
+            if (m_vecItems[i]->ref == ref) {
                 break;
             }
         }
         if (i >= 0) {
             LTK_ASSERT(false);
-            return;
+            return DelegateTracker();
         }
 
         Ptr node (new DelegateNode<T>(this));
         node->ref = ref;
         node->lambda = cb;
         m_vecItems.push_back(node);
-        DelegateTracker tracker(Weak<Object>(node), node);
+        DelegateTracker tracker(Weak<Object>(node), node.Get());
         return tracker;
     }
 
@@ -89,10 +100,10 @@ public:
     {
         std::vector<size_t> expired;
         for (size_t i = 0; i < m_vecItems.size(); i ++) {
-            auto& node = m_vecItems[i];
-            if (!node.ref.Expired()) {
-                auto strong_ref = node.ref.Lock(); // 机智如我 强引用防止回调内this意外无效
-                (node.lambda)(std::forward<Params>(params)...);
+            auto node = m_vecItems[i];
+            if (!node->ref.Expired()) {
+                auto strong_ref = node->ref.Lock(); // 机智如我 强引用防止回调内this意外无效
+                (node->lambda)(std::forward<Params>(params)...);
             }
             else {
                 expired.push_back(i);
@@ -104,7 +115,7 @@ public:
     }
 
 private:
-    void Disconnect(Objcet* node)
+    void Disconnect(Object* node)
     {
         int i;
         for (i = m_vecItems.size() - 1; i >= 0; i++) {
@@ -120,7 +131,7 @@ private:
 private:
     ArrayList<Ptr<DelegateNode<T>>> m_vecItems;
 
-    friend class DelegateTracker;
+    friend class DelegateNode<T>;
 };
 
 } // namespace ltk

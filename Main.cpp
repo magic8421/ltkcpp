@@ -49,13 +49,6 @@ static void RecBuildNodes(Ptr<TreeNode> parent, int depth)
 
 DemoWindow::DemoWindow()
 {
-	//m_timer->SetParent(this);
-	m_timer->SetInterval(1000);
-	m_timer->TimeoutDelegate += MakeDelegate(this, &DemoWindow::OnTimer);
-
-	//m_onceTimer->SetParent(this);
-	m_onceTimer->SetInterval(1000);
-	m_onceTimer->TimeoutDelegate += MakeDelegate(this, &DemoWindow::OnOnceTimer);
 }
 
 DemoWindow::~DemoWindow()
@@ -121,8 +114,7 @@ void DemoWindow::BuildDemoWindow()
 	Ptr<Button> btnRepeatTimer (new Button);
 	btnRepeatTimer->SetText(L"循环定时器");
 	btnRepeatTimer->OnClick.Attach(Weak(this), [this]() {
-		TimerManager::Instance()->Start(0, 10, false, Weak(this), [this](UINT id) {
-			// 惊为天人的多层lambda嵌套
+		m_timer = TimerManager::Instance()->Start(0, 1000, false, Weak(this), [this](UINT id) {
 			LTK_LOG("tick: %d", id);
 		});
 	});
@@ -130,17 +122,25 @@ void DemoWindow::BuildDemoWindow()
 
 	Ptr<Button> btnStopRepeatTimer (new Button);
 	btnStopRepeatTimer->SetText(L"停止");
-	btnStopRepeatTimer->ClickedDelegate += MakeDelegate(m_timer.Get(), &Timer::Stop);
+	btnStopRepeatTimer->OnClick.Attach(Weak(this), [this]() {
+		TimerManager::Instance()->Stop(m_timer);
+	});
 	hboxTimerTest->AddLayoutItem(btnStopRepeatTimer, 0, 1);
 
 	Ptr<Button> btnOnceTimer (new Button);
 	btnOnceTimer->SetText(L"单次定时器");
-	btnOnceTimer->ClickedDelegate += MakeDelegate(m_onceTimer.Get(), &Timer::StartOnce);
+	btnOnceTimer->OnClick.Attach(Weak(this), [this]() {
+		m_onceTimer = TimerManager::Instance()->Start(0, 1000, true, Weak(this), [this](UINT id) {
+			LTK_LOG("tick: %d", id);
+		});
+	});
 	hboxTimerTest->AddLayoutItem(btnOnceTimer, 0, 1);
 
 	Ptr<Button> btnStopOnceTimer (new Button);
 	btnStopOnceTimer->SetText(L"停止");
-	btnStopOnceTimer->ClickedDelegate += MakeDelegate(m_onceTimer.Get(), &Timer::Stop);
+	btnStopOnceTimer->OnClick.Attach(Weak(this), [this]() {
+		TimerManager::Instance()->Stop(m_onceTimer);
+	});
 	hboxTimerTest->AddLayoutItem(btnStopOnceTimer, 0, 1);
 
 	Ptr<BoxLayout> hboxTheme (new BoxLayout(ltk::Horizontal));
@@ -270,18 +270,6 @@ void DemoWindow::BuildSplitterTest()
 	spitter1->SetClientSize(1, 500);
 	spitter1->AddClient(sp_right);
 	spitter1->SetClientSize(2, 100);
-}
-
-
-
-void DemoWindow::OnTimer()
-{
-	LTK_LOG("tick: %d", m_timer->GetId());
-}
-
-void DemoWindow::OnOnceTimer()
-{
-	LTK_LOG("tick: %d", m_onceTimer->GetId());
 }
 
 void DemoWindow::OnPixelThemeClicked()

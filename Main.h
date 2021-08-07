@@ -20,9 +20,6 @@ public:
 	void BuildSplitterTest();
 	void BuildSplitterTest2();
 
-	void OnTimer();
-	void OnOnceTimer();
-
 	void OnPixelThemeClicked();
 	void OnDarkThemeClicked();
 	void OnLightThemeClicked();
@@ -35,7 +32,8 @@ public:
 	void InternStringTest();
 
 private:
-	
+	UINT m_timer = 0;
+	UINT m_onceTimer = 0;
 	DISALLOW_COPY_AND_ASSIGN(DemoWindow);
 };
 

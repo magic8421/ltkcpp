@@ -117,6 +117,7 @@ void AbstractButton::OnClicked()
 {
 	Object::SetDelegateInvoker(this);
 	this->ClickedDelegate();
+    this->OnClick.Invoke();
 }
 
 } // namespace ltk

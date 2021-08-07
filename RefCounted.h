@@ -178,7 +178,7 @@ public:
 
     /// Construct from a shared pointer.
     Weak(const Ptr<T>& rhs) :
-        refCount_(rhs.RefCountPtr())
+        refCount_(rhs.Get()->RefCountPtr())
     {
         AddRef();
     }
