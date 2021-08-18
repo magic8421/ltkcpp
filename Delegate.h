@@ -73,8 +73,9 @@ public:
     {
     }
 
-    DelegateTracker Attach(Weak<Object> ref, const std::function<T> &cb)
+    DelegateTracker Attach(Object *pRef, const std::function<T> &cb)
     {
+        Weak<Object> ref(pRef);
         // check duplicate
         int i;
         for (i = m_vecItems.size() - 1; i >= 0; i++) {

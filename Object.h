@@ -8,21 +8,45 @@ namespace ltk {
 class Object;
 
 /// Reference count structure.
-struct RefCount
+class RefCount
 {
-    /// Construct.
-    RefCount(Object *obj) :
-        refs_(0),
-        weakRefs_(0),
+public:
+	RefCount(Object* obj) :
+		refs_(0),
+		weakRefs_(0),
 		obj_(obj)
-    {
-    }
+	{
+	}
 
-    /// Destruct.
-    ~RefCount()
-    {
-    }
+	~RefCount()
+	{
+	}
 
+	void AddRef()
+	{
+		LTK_ASSERT(weakRefs_ >= 0);
+		++weakRefs_;
+	}
+
+	void Release()
+	{
+		LTK_ASSERT(weakRefs_ > 0);
+
+		if (weakRefs_ == 1) {
+			delete this;
+		}
+		else {
+			--weakRefs_;
+		}
+	}
+
+	bool Expired() const { return obj_ == nullptr; }
+
+	void Lock(Object** ppObj); // TODO how to inline this function?
+	
+	friend class Object;
+
+private:
     /// Reference count. If below zero, the object has been destroyed.
     long refs_;
     /// Weak reference count.
@@ -35,7 +59,7 @@ struct RefCount
 #endif
 };
 
-class LTK_CPP_API Object : public RTTI
+class Object : public RTTI
 {
 public:
 	RTTI_DECLARATIONS(Object, RTTI);
@@ -45,21 +69,12 @@ public:
 
 	Object() : refCount_(new RefCount(this)) 
 	{
-		// Hold a weak ref to self to avoid possible double delete of the refcount
-		(refCount_->weakRefs_)++;
+		refCount_->AddRef();
 	}
 
 	virtual ~Object()
 	{
-		LTK_ASSERT(refCount_->weakRefs_ > 0);
-
-		if (refCount_->weakRefs_ == 1) {
-			delete refCount_;
-		}
-		else {
-			(refCount_->weakRefs_)--; // 判断==1就可以自杀了 完了再-- 这样可以少污染一次缓存 
-			refCount_->obj_ = nullptr;
-		}
+		refCount_->Release();
 	}
 
 	void AddRef()
@@ -72,11 +87,18 @@ public:
 		LTK_ASSERT(refCount_->refs_ > 0);
 
 		if (refCount_->refs_ == 1) {
+			refCount_->Release();
 			delete this;
 		}
 		else {
 			(refCount_->refs_)--;
 		}
+	}
+
+	void GetWeakRef(RefCount** ppWeak)
+	{
+		refCount_->AddRef();
+		*ppWeak = refCount_;
 	}
 
 	virtual void Dispose() {}
@@ -90,6 +112,8 @@ public:
 	LPCSTR GetName() { return m_name; }
 
 	static LPCSTR InternString(LPCSTR str);
+
+	friend class RefCount;
 
 private:
 	RefCount * const refCount_;

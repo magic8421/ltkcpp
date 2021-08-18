@@ -143,7 +143,6 @@ private:
     T *m_ptr;
 }; // Ptr
 
-struct RefCount;
 
 /// Weak pointer template class with intrusive reference counting. Does not keep the object pointed to alive.
 template <class T> class Weak
@@ -256,10 +255,23 @@ public:
     /// Convert to a shared pointer. If expired, return a null shared pointer.
     Ptr<T> Lock() const
     {
+        if (refCount_) {
+            Object* pObj;
+            refCount_->Lock(&pObj);
+            if (pObj) {
+                Ptr<T> ret(static_cast<T*>(pObj));
+                pObj->Release();
+                return ret;
+            }
+        }
+        return Ptr<T>();
+
+        /*
         if (Expired())
             return Ptr<T>();
         else
             return Ptr<T>(static_cast<T*>(refCount_->obj_));
+        */
     }
 
     /// Return raw pointer. If expired, return null.
@@ -323,7 +335,7 @@ public:
     }
 
     /// Return whether the object has expired. If null pointer, always return true.
-    bool Expired() const { return refCount_ ? refCount_->obj_ == 0 : true; }
+    bool Expired() const { return refCount_ ? refCount_->Expired() : true; }
 
     /// Return pointer to the RefCount structure.
     RefCount* RefCountPtr() const { return refCount_; }
@@ -338,8 +350,7 @@ private:
     void AddRef()
     {
         if (refCount_) {
-            LTK_ASSERT(refCount_->weakRefs_ >= 0);
-            ++(refCount_->weakRefs_);
+            refCount_->AddRef();
         }
     }
 
@@ -347,13 +358,7 @@ private:
     void ReleaseRef()
     {
         if (refCount_) {
-            LTK_ASSERT(refCount_->weakRefs_ > 0);
-            --(refCount_->weakRefs_);
-
-            if (Expired() && !refCount_->weakRefs_) {
-                delete refCount_;
-            }
-            refCount_ = 0;
+            refCount_->Release();
         }
     }
 

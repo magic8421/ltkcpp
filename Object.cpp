@@ -96,4 +96,15 @@ LPCSTR Object::InternString(LPCSTR psz)
 	return result;
 }
 
+void RefCount::Lock(Object** ppObj)
+{
+	if (obj_) {
+		obj_->AddRef();
+		*ppObj = obj_;
+	}
+	else {
+		*ppObj = nullptr;
+	}
+}
+
 } // namespace ltk

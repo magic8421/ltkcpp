@@ -113,7 +113,7 @@ void DemoWindow::BuildDemoWindow()
 
 	Ptr<Button> btnRepeatTimer (new Button);
 	btnRepeatTimer->SetText(L"循环定时器");
-	btnRepeatTimer->OnClick.Attach(Weak(this), [this]() {
+	btnRepeatTimer->OnClick.Attach(this, [this]() {
 		m_timer = TimerManager::Instance()->Start(0, 1000, false, Weak(this), [this](UINT id) {
 			LTK_LOG("tick: %d", id);
 		});
@@ -122,14 +122,14 @@ void DemoWindow::BuildDemoWindow()
 
 	Ptr<Button> btnStopRepeatTimer (new Button);
 	btnStopRepeatTimer->SetText(L"停止");
-	btnStopRepeatTimer->OnClick.Attach(Weak(this), [this]() {
+	btnStopRepeatTimer->OnClick.Attach(this, [this]() {
 		TimerManager::Instance()->Stop(m_timer);
 	});
 	hboxTimerTest->AddLayoutItem(btnStopRepeatTimer, 0, 1);
 
 	Ptr<Button> btnOnceTimer (new Button);
 	btnOnceTimer->SetText(L"单次定时器");
-	btnOnceTimer->OnClick.Attach(Weak(this), [this]() {
+	btnOnceTimer->OnClick.Attach(this, [this]() {
 		m_onceTimer = TimerManager::Instance()->Start(0, 1000, true, Weak(this), [this](UINT id) {
 			LTK_LOG("tick: %d", id);
 		});
@@ -138,7 +138,7 @@ void DemoWindow::BuildDemoWindow()
 
 	Ptr<Button> btnStopOnceTimer (new Button);
 	btnStopOnceTimer->SetText(L"停止");
-	btnStopOnceTimer->OnClick.Attach(Weak(this), [this]() {
+	btnStopOnceTimer->OnClick.Attach(this, [this]() {
 		TimerManager::Instance()->Stop(m_onceTimer);
 	});
 	hboxTimerTest->AddLayoutItem(btnStopOnceTimer, 0, 1);
